@@ -16,6 +16,11 @@
     "test:integration": "jest __tests__/integration",
     "test:e2e": "jest __tests__/e2e"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "dependencies": {
     "@hookform/resolvers": "latest",
     "@radix-ui/react-accordion": "1.2.2",
