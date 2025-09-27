@@ -1,14 +1,25 @@
-# Next Tailwind TS Boiler Plate
+# Next.js Enterprise Starter Kit
 
-A production-minded Next.js App Router starter focused on performance, accessibility, and DX. It includes theming, state management, form validation, a typed API client with interceptors, real-time sockets, structured logging, dynamic layouts (landing vs admin shell), an auth 50/50 layout, and a curated UI kit.
+A production-ready Next.js 15 starter template with advanced dynamic layout system, comprehensive form handling, real-time features, and enterprise-grade architecture. Built with TypeScript, Tailwind CSS 4, and modern React patterns.
+
+## Key Features
+
+- **Dynamic Layout System**: Fully configurable layout engine with multiple variants
+- **Advanced Form Builder**: Type-safe forms with 20+ field types and dynamic validation
+- **Real-time Dashboard**: Live updates with Socket.IO and WebSocket support
+- **Enterprise Authentication**: Complete auth flow with role-based access control
+- **Modern UI Components**: 50+ shadcn/ui components with custom theming
+- **State Management**: Redux Toolkit with persistence and React Query integration
+- **Testing Suite**: Unit, integration, and E2E testing setup
+- **Performance Optimized**: Server components, lazy loading, and bundle optimization
 
 ## Tech Stack
 
 <p align="left">
-  <a href="https://nextjs.org" target="_blank"><img alt="Next.js" src="https://img.shields.io/badge/Next.js-14-black?logo=next.js&logoColor=white"></a>
-  <a href="https://react.dev" target="_blank"><img alt="React" src="https://img.shields.io/badge/React-18/19-20232A?logo=react&logoColor=61DAFB"></a>
+  <a href="https://nextjs.org" target="_blank"><img alt="Next.js" src="https://img.shields.io/badge/Next.js-15.5.4-black?logo=next.js&logoColor=white"></a>
+  <a href="https://react.dev" target="_blank"><img alt="React" src="https://img.shields.io/badge/React-18-20232A?logo=react&logoColor=61DAFB"></a>
   <a href="https://www.typescriptlang.org/" target="_blank"><img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white"></a>
-  <a href="https://tailwindcss.com" target="_blank"><img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind%20CSS-4-06B6D4?logo=tailwindcss&logoColor=white"></a>
+  <a href="https://tailwindcss.com" target="_blank"><img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind%20CSS-4.1.9-06B6D4?logo=tailwindcss&logoColor=white"></a>
   <a href="https://ui.shadcn.com" target="_blank"><img alt="shadcn/ui" src="https://img.shields.io/badge/shadcn%2Fui-Components-000000"></a>
   <a href="https://www.radix-ui.com/" target="_blank"><img alt="Radix UI" src="https://img.shields.io/badge/Radix%20UI-Primitives-161618?logo=radixui&logoColor=white"></a>
   <a href="https://redux-toolkit.js.org/" target="_blank"><img alt="Redux Toolkit" src="https://img.shields.io/badge/Redux%20Toolkit-Store-764ABC?logo=redux&logoColor=white"></a>
@@ -20,172 +31,308 @@ A production-minded Next.js App Router starter focused on performance, accessibi
   <a href="https://sonner.emilkowal.ski" target="_blank"><img alt="Sonner" src="https://img.shields.io/badge/Sonner-Toasts-000000"></a>
 </p>
 
-## Features
+## What's New in Dynamic Layout Branch
 
-- Theming: next-themes with light, dark, and ocean palettes
-- State: Redux Toolkit + redux-persist (UI + Auth slices), TanStack React Query
-- Forms: React Hook Form + Zod resolvers with typed schemas
-- API: Axios client with request/response interceptors and typed helpers
-- Realtime: Socket.IO client and WebSocket singleton
-- Logging: Structured app logger helper
-- Layouts: Landing layout and Admin shell (Header/Sidebar/Content) via LayoutContext
-- Auth: Dedicated 50/50 split layout and sample pages (login/signup/otp/forgot/reset)
-- UI Kit: shadcn/ui components (cards, forms, dialogs, tables, nav, etc.)
-- Navigation & RBAC: central link registry and role-aware helpers
-- Accessibility: semantic HTML, keyboard-friendly primitives, toasts, ARIA-friendly components
+### Dynamic Layout System
+- **Configurable Layouts**: Toggle between landing page and admin shell layouts
+- **Responsive Design**: Mobile-first approach with breakpoint-specific configurations
+- **Layout Context**: Centralized layout state management with TypeScript support
+- **Multiple Variants**: Fixed, drawer, and overlay sidebar variants
+- **Real-time Updates**: Layout changes apply instantly without page refresh
 
-## Architecture
+### Advanced Form Builder
+- **20+ Field Types**: Text, email, password, select, multiselect, date, file upload, rich text, and more
+- **Dynamic Validation**: Zod-based schemas with conditional field rendering
+- **Nested Forms**: Section-based form organization with repeatable fields
+- **Type Safety**: End-to-end TypeScript support from schema to submission
+- **Custom Components**: Currency selectors, tag inputs, and dynamic selects
 
-- Providers: wraps Theme, Redux + Persist, React Query, and Toaster
-- Axios Client: centralizes baseURL, headers, auth token, error normalization
-- Sockets: lazily initialized singletons for Socket.IO and native WebSocket
-- Logger: normalized logging utility
-- RBAC: role-based guards and navigational filtering
-- LayoutContext: toggles landing vs admin shell (header/sidebar)
+### Real-time Dashboard
+- **Live Metrics**: Real-time data updates with Socket.IO integration
+- **Interactive Charts**: Recharts-powered visualizations with live data
+- **Activity Feeds**: Real-time notifications and activity streams
+- **Performance Monitoring**: Built-in error tracking and performance metrics
+
+### Enhanced Authentication
+- **Complete Auth Flow**: Login, signup, OTP verification, password reset
+- **Role-Based Access**: RBAC system with route protection
+- **Session Management**: Persistent auth state with Redux
+- **Security Headers**: CSP and security middleware integration
+
+## Core Architecture
+
+### Dynamic Layout Engine
+- **Layout Context**: Centralized configuration for header, sidebar, footer, and content areas
+- **Responsive Breakpoints**: Mobile-first design with customizable breakpoints
+- **Variant System**: Multiple layout variants (fixed, drawer, overlay) with smooth transitions
+- **State Persistence**: Layout preferences saved in localStorage with Redux integration
+
+### Advanced Form System
+- **BaseForm Component**: Universal form component with automatic validation
+- **Field Registry**: 20+ pre-built field components with consistent API
+- **Schema-Driven**: Zod validation schemas with TypeScript inference
+- **Conditional Logic**: Dynamic field visibility based on form state
+- **Nested Structures**: Support for sections and repeatable field groups
+
+### State Management Architecture
+- **Redux Toolkit**: Centralized state with slices for UI, Auth, and App data
+- **Redux Persist**: Automatic state persistence with selective hydration
+- **React Query**: Server state management with caching and synchronization
+- **Context Providers**: Layout and error contexts for component communication
+
+### Real-time Infrastructure
+- **Socket.IO Integration**: Bidirectional real-time communication
+- **WebSocket Support**: Native WebSocket implementation for high-frequency updates
+- **Event Management**: Typed event handlers with automatic cleanup
+- **Connection Management**: Automatic reconnection and error recovery
+
+### API & Networking
+- **Axios Client**: Pre-configured HTTP client with interceptors
+- **Request/Response Middleware**: Authentication, error handling, and logging
+- **Type-Safe Endpoints**: Generated TypeScript interfaces for API responses
+- **Error Normalization**: Consistent error handling across the application
 
 ## Project Structure
 
-Condensed file map of the most relevant pieces.
-
 ```
-├─ app/
-│  ├─ layout.tsx                # Root layout wiring Providers and theming
-│  ├─ globals.css               # Tailwind v4 theme tokens + base styles
-│  ├─ page.tsx                  # Landing page
-│  ├─ dashboard/
-│  │  ├─ layout.tsx             # Admin shell (Header/Sidebar)
-│  │  └─ page.tsx               # Protected dashboard sample
-│  └─ auth/
-│     ├─ layout.tsx             # 50/50 split auth layout
-│     ├─ login/page.tsx
-│     ├─ signup/page.tsx
-│     ├─ otp/page.tsx
-│     ├─ forgot/page.tsx
-│     └─ reset/page.tsx
-├─ components/
-│  ├─ layout/{header,sidebar,footer,theme-toggle}.tsx
-│  ├─ common/{button,input}.tsx
-│  ├─ ui/*                      # shadcn/ui primitives (form, dialog, table, etc.)
-│  ├─ providers.tsx             # Theme + Redux/Persist + Query + Toaster
-│  └─ theme-provider.tsx
-├─ contexts/layout-context.tsx  # Landing/Admin layout mode
-├─ navigation/{links.ts,rbac.ts}
-├─ store/
-│  ├─ index.ts                  # configureStore + persist
-│  ├─ hooks.ts                  # typed hooks
-│  └─ slices/{auth-slice,ui-slice}.ts
-├─ lib/
-│  ├─ api/client.ts             # axios instance + interceptors
-│  ├─ socket.ts                 # socket.io client singleton
-│  ├─ ws.ts                     # WebSocket singleton
-│  ├─ logger.ts                 # logger helper
-│  └─ utils.ts                  # cn(), formatting, helpers
-├─ types/{index.ts,api.ts,user.ts}
-├─ lib/actions/actions.ts                    # Consolidated utility functions
-├─ constants/keys.ts
-├─ public/placeholder-logo.{svg,png}
-├─ styles/globals.css
-├─ package.json
-├─ tsconfig.json
-└─ next.config.mjs
-
+├── app/                          # Next.js App Router
+│   ├── layout.tsx               # Root layout with providers
+│   ├── globals.css              # Tailwind v4 theme tokens + animations
+│   ├── page.tsx                 # Landing page
+│   ├── not-found.tsx            # Custom 404 page
+│   ├── global-error.tsx         # Global error boundary
+│   ├── dashboard/               # Admin dashboard section
+│   │   ├── layout.tsx           # Dynamic layout wrapper
+│   │   ├── page.tsx             # Main dashboard with real-time features
+│   │   └── components/          # Dashboard-specific components
+│   │       ├── metrics-cards.tsx
+│   │       ├── interactive-charts.tsx
+│   │       ├── data-lists.tsx
+│   │       └── real-time-provider.tsx
+│   └── auth/                    # Authentication pages
+│       ├── layout.tsx           # 50/50 split auth layout
+│       ├── login/page.tsx       # Login form with validation
+│       ├── signup/page.tsx      # Registration form
+│       ├── otp/page.tsx         # OTP verification
+│       ├── forgot/page.tsx      # Password reset request
+│       └── reset/page.tsx       # Password reset form
+├── components/                   # Reusable components
+│   ├── form/                    # Advanced form system
+│   │   ├── base-form.tsx        # Universal form component
+│   │   ├── base-field.tsx       # Base field wrapper
+│   │   ├── form-wrapper.tsx     # Form section wrapper
+│   │   └── fields/              # Field type implementations
+│   │       ├── input.tsx        # Text input with password toggle
+│   │       ├── select.tsx       # Dropdown select
+│   │       ├── multi-select.tsx # Multi-selection dropdown
+│   │       ├── checkbox.tsx     # Checkbox input
+│   │       ├── date-input.tsx   # Date picker
+│   │       ├── file-upload.tsx  # File upload handler
+│   │       ├── tag-input.tsx    # Tag management
+│   │       ├── dynamic-select.tsx # API-driven select
+│   │       └── repeatable-field.tsx # Dynamic field groups
+│   ├── layout/                  # Layout components
+│   │   ├── dynamic-layout.tsx   # Main layout engine
+│   │   ├── header.tsx           # Responsive header
+│   │   ├── sidebar.tsx          # Collapsible sidebar
+│   │   ├── footer.tsx           # Footer component
+│   │   ├── mobile-menu.tsx      # Mobile navigation
+│   │   ├── theme-toggle.tsx     # Theme switcher
+│   │   └── user-profile.tsx     # User menu dropdown
+│   ├── shared/                  # Shared utility components
+│   │   ├── error-boundary.tsx   # React error boundary
+│   │   ├── loader-overlay.tsx   # Loading states
+│   │   ├── data-table.tsx       # Advanced data table
+│   │   ├── pagination-section.tsx # Table pagination
+│   │   ├── breadcrumbs.tsx      # Navigation breadcrumbs
+│   │   └── page-head.tsx        # SEO meta tags
+│   ├── providers/               # Context providers
+│   │   ├── providers.tsx        # Root provider composition
+│   │   └── theme-provider.tsx   # Theme context
+│   └── ui/                      # shadcn/ui components (50+ components)
+│       ├── form.tsx             # Form primitives
+│       ├── button.tsx           # Button variants
+│       ├── input.tsx            # Input styles
+│       ├── dialog.tsx           # Modal dialogs
+│       ├── table.tsx            # Table components
+│       └── ...                  # Additional UI primitives
+├── contexts/                    # React contexts
+│   ├── layout-context.tsx       # Dynamic layout state
+│   └── error-context.tsx        # Global error handling
+├── hooks/                       # Custom React hooks
+│   ├── use-base-form.tsx        # Form management hook
+│   ├── use-loading-state.tsx    # Loading state management
+│   ├── use-mobile-detection.ts  # Mobile breakpoint detection
+│   └── use-sidebar.tsx          # Sidebar state management
+├── lib/                         # Utility libraries
+│   ├── api/                     # API configuration
+│   ├── actions/                 # Server and client actions
+│   │   └── actions.ts           # Utility functions
+│   ├── utils.ts                 # Common utilities (cn, formatters)
+│   ├── logger.ts                # Structured logging
+│   ├── icons.ts                 # Icon components
+│   └── error-factory.ts         # Error handling utilities
+├── navigation/                  # Navigation configuration
+│   ├── config.ts                # Navigation structure
+│   ├── links.ts                 # Link definitions
+│   └── rbac.ts                  # Role-based access control
+├── socket/                      # Real-time communication
+│   ├── index.ts                 # Socket.IO client
+│   ├── websocket.ts             # WebSocket implementation
+│   └── config.ts                # Socket configuration
+├── store/                       # Redux state management
+│   ├── index.ts                 # Store configuration
+│   ├── hooks.ts                 # Typed Redux hooks
+│   └── slices/                  # Redux slices
+├── types/                       # TypeScript definitions
+│   ├── index.ts                 # Type exports
+│   ├── api.ts                   # API response types
+│   ├── form.ts                  # Form field types
+│   ├── layout.ts                # Layout configuration types
+│   └── user.ts                  # User/auth types
+├── constants/                   # Application constants
+│   ├── dashboard.ts             # Dashboard configuration
+│   ├── keys.ts                  # Storage keys
+│   └── loading.ts               # Loading states
+├── utils/                       # Utility functions
+│   ├── safe-json-parse.ts       # Safe JSON parsing
+│   ├── storage.ts               # LocalStorage utilities
+│   ├── sleep.ts                 # Async utilities
+│   └── try-catch.ts             # Error handling
+├── __tests__/                   # Test suites
+│   ├── unit/                    # Unit tests
+│   ├── integration/             # Integration tests
+│   └── e2e/                     # End-to-end tests
+├── public/                      # Static assets
+└── Configuration files          # Config files (Next.js, TypeScript, etc.)
 ```
 
-## Environment Variables
+## Quick Start
 
-The following environment variables need to be configured for the application to work properly:
+### Prerequisites
+- Node.js 18+ and pnpm (recommended) or npm
+- Git for version control
 
-- `NEXT_PUBLIC_API_BASE_URL` - Base URL for your API endpoints (client-side)
-- `API_BASE_URL` - Base URL for server-side API calls (Route Handlers/Server Actions)
-- `NEXT_PUBLIC_SOCKET_URL` - Socket.IO server URL for real-time features
-- `NEXT_PUBLIC_WS_URL` - WebSocket server URL for WebSocket connections
 
-**Note:** Variables prefixed with `NEXT_PUBLIC_` are exposed to the browser, while others are only available on the server side.
+## Theming & UI
 
-## Theming
+### Theme System
+- **next-themes** integration with system preference detection
+- **3 Built-in Themes**: Light, Dark, and Ocean (custom palette)
+- **CSS Variables**: Tailwind v4 CSS variables for consistent theming
+- **Theme Toggle**: Accessible theme switcher in header/sidebar
+- **Semantic Tokens**: All components use design tokens (bg-background, text-foreground, etc.)
 
-- Implemented with next-themes
-- Modes: light, dark, ocean (custom token set via Tailwind v4 CSS variables)
-- Toggle: components/layout/theme-toggle.tsx
-- All components use semantic tokens (bg-background, text-foreground, etc.)
+### UI Component Library (50+ Components)
 
-## UI Components (shadcn/ui)
+Built on **shadcn/ui** and **Radix UI** primitives for accessibility and customization:
 
-Included highlights: accordion, alert, alert-dialog, avatar, badge, breadcrumb, button, calendar, card, carousel, checkbox, collapsible, command, context-menu, dialog, drawer, dropdown-menu, form, hover-card, input, input-otp, label, menubar, navigation-menu, pagination, popover, progress, radio-group, resizable, scroll-area, select, separator, sheet, skeleton, slider, sonner, switch, table, tabs, textarea, toast/toaster, toggle, toggle-group, tooltip.
+#### Layout & Navigation
+- `accordion`, `breadcrumb`, `navigation-menu`, `menubar`, `tabs`
+- `sheet`, `drawer`, `collapsible`, `resizable`
 
-## File-by-File Highlights
+#### Forms & Inputs
+- `form`, `input`, `textarea`, `select`, `checkbox`, `radio-group`
+- `input-otp`, `switch`, `toggle`, `toggle-group`, `slider`
+- `calendar`, `date-picker`, `command` (combobox)
 
-- app/layout.tsx: root HTML, theme class, global Providers
-- components/providers.tsx: ThemeProvider, Redux + PersistGate, React Query, Toaster
-- lib/api/client.ts: axios setup and interceptors
-- contexts/layout-context.tsx: toggle landing vs admin shell
-- app/dashboard/layout.tsx: shell composition with Header/Sidebar
-- app/auth/\*: auth layout and example forms
-- store/\*: redux toolkit store configuration and slices
+#### Feedback & Overlays
+- `alert`, `alert-dialog`, `dialog`, `popover`, `tooltip`
+- `toast`/`toaster` (Sonner), `progress`, `skeleton`
+- `hover-card`, `context-menu`
 
-## State Management
+#### Data Display
+- `table`, `card`, `avatar`, `badge`, `separator`
+- `carousel`, `scroll-area`, `aspect-ratio`
 
-- Redux Toolkit slices:
-  - ui-slice: sidebar open, layout mode, etc.
-  - auth-slice: session/user snapshot suitable for client-side use
-- redux-persist to persist minimal UI/auth state in localStorage
-- Typed hooks: store/hooks.ts (useAppDispatch/useAppSelector)
+#### Interactive
+- `button` (5 variants), `dropdown-menu`, `pagination`
+- Custom components: `data-table`, `file-upload`, `color-picker`
 
-## Data Fetching
+### Styling Architecture
+- **Tailwind CSS 4**: Latest version with improved performance
+- **CSS-in-JS**: No runtime CSS generation, all static
+- **Design System**: Consistent spacing, typography, and color scales
+- **Responsive**: Mobile-first approach with breakpoint utilities
+- **Animations**: Tailwind animations with custom keyframes
 
-- TanStack React Query for server cache, retries, and deduplication
-- Prefer React Server Components for initial data where possible; use SWR/Query in clients when interactivity or sync is needed
-- No fetching inside useEffect; use query hooks or RSC
+##  Advanced Features
 
-## Forms & Validation
+### Dynamic Layout System
 
-- React Hook Form with Zod resolvers for type-safe validation
-- Example auth forms: login/signup/otp/forgot/reset
-- Shared UI via components/ui/form.tsx and shadcn/ui inputs
+The layout system provides complete control over application structure:
 
-## API Client
+```typescript
+// Layout configuration example
+const layoutConfig: LayoutConfig = {
+  header: {
+    enabled: true,
+    fixed: false,
+    height: 'md',
+    showLogo: true,
+    showNavigation: true,
+    showUserMenu: true,
+    collapsible: true,
+  },
+  sidebar: {
+    enabled: true,
+    position: 'left',
+    variant: 'fixed', // 'drawer' | 'overlay'
+    width: 'md', // 'sm' | 'lg' | 'xl'
+    collapsible: true,
+    defaultCollapsed: false,
+    showOnMobile: false,
+  },
+  // ... more configuration
+};
+```
 
-- lib/api/client.ts wraps axios with:
-  - Base URL: from env
-  - Request interceptors: attach auth token if available
-  - Response interceptors: normalize errors, handle 401/403, toast feedback
-- Example use:
-  ```ts
-  import { api } from "@/lib/api/client";
-  const { data } = await api.get("/me");
-  ```
+**Key Features:**
+- **Responsive Breakpoints**: Different configurations for mobile/desktop
+- **Multiple Variants**: Fixed sidebar, drawer, or overlay modes
+- **State Persistence**: Layout preferences saved automatically
+- **Smooth Transitions**: CSS transitions for all layout changes
+- **Mobile Optimization**: Touch-friendly mobile navigation
 
-Environment variables:
+### Advanced Form Builder
 
-- NEXT_PUBLIC_API_BASE_URL (client)
-- API_BASE_URL (server; for Route Handlers/Server Actions if used)
+**Supported Field Types:**
+- **Basic**: text, email, password, number, textarea
+- **Selection**: select, multiselect, radio, checkbox, toggle
+- **Advanced**: date, file, color, range, tags
+- **Dynamic**: dynamicselect (API-driven), repeatable fields
+- **Rich**: rich text editor, currency selector
 
-## Realtime
 
-- Socket.IO (lib/socket.ts) and native WebSocket (lib/ws.ts) as lazy singletons
-- Reuse a single live connection per tab, clean up listeners on unmount
-- Provide typed event helpers for consistent usage
+### Testing Suite
 
-## Logger
+**Complete testing setup:**
+- **Unit Tests**: Jest + Testing Library for components
+- **Integration Tests**: API integration testing
+- **E2E Tests**: Authentication and critical user flows
+- **Coverage**: Comprehensive coverage reporting
 
-- lib/logger.ts provides a small structured logger (info/warn/error) with levels and prefixes
-- Replaceable with your preferred logging library
+### Accessibility Features
 
-## Navigation & RBAC
+- **Keyboard Navigation**: Full keyboard support for all interactive elements
+- **Screen Reader Support**: ARIA labels and semantic HTML
+- **Focus Management**: Proper focus handling in modals and dropdowns
+- **Color Contrast**: WCAG AA compliant color schemes
+- **Responsive Text**: Scalable text sizes for better readability
 
-- navigation/links.ts: central link registry with metadata (title, icon, role guard)
-- navigation/rbac.ts: helpers for role checks and filtered menus
-- Sidebar/Header consume filtered links to show role-appropriate navigation
+### Browser Support
 
-## Layouts
+- **Modern Browsers**: Chrome 91+, Firefox 90+, Safari 14+, Edge 91+
+- **Mobile**: iOS Safari 14+, Chrome Android 91+
+- **Progressive Enhancement**: Graceful degradation for older browsers
 
-- Landing layout: minimal header, marketing-friendly page sections
-- Admin shell: Header + Sidebar + Content with responsive behavior and keyboard navigation
-- Auth layout: 50/50 split with an image on the side and centered form content
+## Additional Resources
 
-## Accessibility & Performance
+### Component Documentation
+Each component includes TypeScript interfaces and JSDoc comments for better developer experience.
 
-- Semantic HTML and ARIA attributes via Radix UI primitives and shadcn/ui patterns
-- Keyboard navigable menus/dialogs/tooltips
-- Image alt text and sr-only labels where needed
-- Avoid heavy client bundles; favor RSC and selective client components
+### Deployment Guide
+- **Vercel**: Zero-config deployment (recommended)
+- **Docker**: Dockerfile included for containerization
+- **Self-hosted**: Compatible with any Node.js hosting platform
+
