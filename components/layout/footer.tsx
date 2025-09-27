@@ -1,17 +1,141 @@
 "use client";
 import Link from "next/link";
-import { footerLinks } from "@/navigation/links";
+import { useLayout } from "@/contexts/layout-context";
+import { cn } from "@/lib/utils";
+import { footerNavigation, socialLinks } from "@/navigation/config";
 
-export function Footer() {
+interface FooterProps {
+  className?: string;
+}
+
+export function Footer({ className }: FooterProps) {
+  const { config } = useLayout();
+
+  const footerClasses = cn(
+    "border-t border-border/40 bg-background",
+    className
+  );
+
+  const containerClasses = cn(
+    "px-4 lg:px-6 py-6",
+    {
+      "max-w-7xl mx-auto": config.content.maxWidth === 'container',
+      "max-w-4xl mx-auto": config.content.maxWidth === 'prose',
+    }
+  );
+
+  // Render different footer variants
+  const renderFooterContent = () => {
+    switch (config.footer.variant) {
+      case 'minimal':
+        return (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
+            <span className="text-muted-foreground">
+              © {new Date().getFullYear()} Your Company
+            </span>
+            <div className="flex items-center gap-4">
+              <Link href="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">
+                Privacy
+              </Link>
+              <Link href="/terms" className="text-muted-foreground hover:text-foreground transition-colors">
+                Terms
+              </Link>
+            </div>
+          </div>
+        );
+
+      case 'detailed':
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {/* Company Info */}
+            <div className="md:col-span-2">
+              <h3 className="font-semibold text-lg mb-4">Your Company</h3>
+              <p className="text-muted-foreground text-sm mb-4">
+                Building amazing web experiences with configurable layouts and modern technologies.
+              </p>
+              <div className="flex items-center gap-4">
+                {socialLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {link.title}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Quick Links */}
+            <div>
+              <h4 className="font-medium mb-4">Quick Links</h4>
+              <nav className="space-y-2">
+                {footerNavigation.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="block text-muted-foreground hover:text-foreground transition-colors text-sm"
+                  >
+                    {link.title}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+
+            {/* Additional Links */}
+            <div>
+              <h4 className="font-medium mb-4">Resources</h4>
+              <nav className="space-y-2">
+                <Link href="/docs" className="block text-muted-foreground hover:text-foreground transition-colors text-sm">
+                  Documentation
+                </Link>
+                <Link href="/support" className="block text-muted-foreground hover:text-foreground transition-colors text-sm">
+                  Support
+                </Link>
+                <Link href="/changelog" className="block text-muted-foreground hover:text-foreground transition-colors text-sm">
+                  Changelog
+                </Link>
+              </nav>
+            </div>
+
+            {/* Copyright */}
+            <div className="md:col-span-4 pt-6 border-t border-border/40">
+              <p className="text-muted-foreground text-sm text-center">
+                © {new Date().getFullYear()} Your Company. All rights reserved.
+              </p>
+            </div>
+          </div>
+        );
+
+      case 'simple':
+      default:
+        return (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+              {footerNavigation.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {link.title}
+                </Link>
+              ))}
+            </div>
+            <span className="text-muted-foreground">
+              © {new Date().getFullYear()} Your Company
+            </span>
+          </div>
+        );
+    }
+  };
+
   return (
-    <footer className="border-t">
-      <div className="mx-auto max-w-7xl px-4 py-6 text-sm flex flex-wrap items-center gap-x-4 gap-y-2">
-        {footerLinks.map((l) => (
-          <Link key={l.href} href={l.href} className="text-muted-foreground hover:underline">
-            {l.label}
-          </Link>
-        ))}
-        <span className="ml-auto text-muted-foreground">© {new Date().getFullYear()}</span>
+    <footer className={footerClasses}>
+      <div className={containerClasses}>
+        {renderFooterContent()}
       </div>
     </footer>
   );

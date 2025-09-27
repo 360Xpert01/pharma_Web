@@ -81,7 +81,7 @@ Condensed file map of the most relevant pieces.
 │  ├─ logger.ts                 # logger helper
 │  └─ utils.ts                  # cn(), formatting, helpers
 ├─ types/{index.ts,api.ts,user.ts}
-├─ utils/{try-catch.ts,safe-json-parse.ts,storage.ts,sleep.ts}
+├─ lib/actions/actions.ts                    # Consolidated utility functions
 ├─ constants/keys.ts
 ├─ public/placeholder-logo.{svg,png}
 ├─ styles/globals.css

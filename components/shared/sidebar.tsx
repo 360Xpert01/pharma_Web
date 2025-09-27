@@ -1,7 +1,7 @@
 import DashboardNav from "@/components/shared/dashboard-nav";
 import { useSidebar } from "@/hooks/use-sidebar";
 import { cn } from "@/lib/utils";
-import { ChevronsLeft } from "lucide-react";
+import { SidebarCollapseIcon } from "@/lib/icons";
 import { useState } from "react";
 import { useAuth } from "@/context/auth-context";
 import { usePermissions } from "@/hooks/usePermissions";
@@ -236,7 +236,7 @@ export default function Sidebar({ className }: SidebarProps) {
               boxShadow: "var(--layout-shadow)",
             }}
           >
-            <ChevronsLeft className="size-6" />
+            <SidebarCollapseIcon className="size-6" />
           </button>
         </div>
       </div>

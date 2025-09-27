@@ -1,26 +1,21 @@
 "use client";
 import { type PropsWithChildren, useEffect } from "react";
 import { useLayout } from "@/contexts/layout-context";
-import { Header } from "@/components/layout/header";
-import { Sidebar } from "@/components/layout/sidebar";
+import { DynamicLayout } from "@/components/layout/dynamic-layout";
 
 export default function DashboardLayout({ children }: PropsWithChildren) {
-  const { header, setHeader } = useLayout();
+  const { config, updateConfig, applyPreset } = useLayout();
 
   useEffect(() => {
-    // dashboard prefers admin chrome enabled
-    if (!header) setHeader(true);
-  }, [header, setHeader]);
+    // Apply dashboard preset if not already configured
+    if (!config.header.enabled || !config.sidebar.enabled) {
+      applyPreset('dashboard');
+    }
+  }, [config.header.enabled, config.sidebar.enabled, applyPreset]);
 
   return (
-    <div className="min-h-dvh grid grid-rows-[auto_1fr]">
-      <Header />
-      <div className="grid grid-cols-1 md:grid-cols-[240px_1fr]">
-        <aside className="hidden md:block border-r">
-          <Sidebar />
-        </aside>
-        <main className="p-4 md:p-6">{children}</main>
-      </div>
-    </div>
+    <DynamicLayout>
+      {children}
+    </DynamicLayout>
   );
 }

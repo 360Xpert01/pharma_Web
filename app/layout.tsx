@@ -6,6 +6,10 @@ import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import Providers from "@/components/providers/providers";
+import { LayoutProvider } from "@/contexts/layout-context";
+import { ErrorProvider } from "@/contexts/error-context";
+import { ErrorBoundary } from "@/components/shared/error-boundary";
+import LoaderOverlay from "@/components/shared/loader-overlay";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
@@ -27,9 +31,26 @@ export default function RootLayout({
           enableSystem
           themes={["light", "dark", "ocean"]}
         >
-          <Suspense fallback={null}>
-            <Providers>{children}</Providers>
-          </Suspense>
+          <ErrorProvider maxErrors={10}>
+            <ErrorBoundary 
+              showDetails={process.env.NODE_ENV === 'development'}
+            >
+              <LayoutProvider>
+                <Suspense 
+                  fallback={
+                    <LoaderOverlay 
+                      isLoading={true} 
+                      text="Next Boiler" 
+                      variant="default" 
+                      size="lg" 
+                    />
+                  }
+                >
+                  <Providers>{children}</Providers>
+                </Suspense>
+              </LayoutProvider>
+            </ErrorBoundary>
+          </ErrorProvider>
         </ThemeProvider>
         <Analytics />
       </body>

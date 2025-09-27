@@ -13,7 +13,7 @@ import { TagsInputField } from "./fields/tag-input";
 import { DynamicSelectField } from "./fields/dynamic-select";
 import { RichTextField } from "./fields/text-editor";
 import { FormWrapper } from "./form-wrapper";
-import { Loader2 } from "lucide-react";
+import { LoadingIcon } from "@/lib/icons";
 import { TextareaField } from "./fields/textarea";
 import { ToggleField } from "./fields/toggle";
 import { ColorField } from "./fields/color-picker";
@@ -136,7 +136,7 @@ export const BaseForm: React.FC<BaseFormProps> = ({
     <>
       {isFormLoading ? (
         <div className="flex h-64 items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin" />
+          <LoadingIcon className="h-8 w-8 animate-spin" />
         </div>
       ) : (
         <>
@@ -171,7 +171,7 @@ export const BaseForm: React.FC<BaseFormProps> = ({
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <LoadingIcon className="mr-2 h-4 w-4 animate-spin" />
                   Processing...
                 </>
               ) : (

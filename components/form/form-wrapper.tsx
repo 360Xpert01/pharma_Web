@@ -1,7 +1,8 @@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ExpandIcon, CollapseIcon } from "@/lib/icons";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { logger } from "@/lib/logger";
 
 interface SectionWrapperProps {
   field: {
@@ -40,7 +41,11 @@ export const FormWrapper = ({ field, children }: SectionWrapperProps) => {
     }
 
     const result = classes.join(" ");
-    console.log("Form wrapper grid classes:", result, "for field:", field.id);
+    logger.debug("Form wrapper grid classes calculated", { 
+      classes: result, 
+      fieldId: field.id, 
+      gridConfig: field.grid 
+    });
     return result;
   };
 
@@ -53,7 +58,7 @@ export const FormWrapper = ({ field, children }: SectionWrapperProps) => {
           <CollapsibleTrigger className="w-full">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold">{field.label}</h3>
-              {isOpen ? <ChevronDown /> : <ChevronRight />}
+              {isOpen ? <ExpandIcon /> : <CollapseIcon />}
             </div>
             {field.description && (
               <p className="text-sm text-muted-foreground">{field.description}</p>

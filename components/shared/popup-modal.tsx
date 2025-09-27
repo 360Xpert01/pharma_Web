@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
-import { Plus } from "lucide-react";
+import { AddIcon } from "@/lib/icons";
 import { useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 
@@ -32,7 +32,7 @@ export default function PopupModal({
         variant={buttonVariant}
         size={buttonSize}
       >
-        <Plus className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
+        <AddIcon className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
         <span className="hidden sm:inline">{buttonText}</span>
         <span className="sm:hidden">Add</span>
       </Button>

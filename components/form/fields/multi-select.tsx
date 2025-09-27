@@ -1,7 +1,7 @@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { X } from "lucide-react";
+import { CloseIcon } from "@/lib/icons";
 import { Button } from "@/components/ui/button";
 import { BaseField } from "../base-field";
 import { FormField } from "@/types/form";
@@ -31,7 +31,7 @@ export const MultiSelectField = ({ field }: { field: FormField }) => {
                         }}
                         className="ml-1"
                       >
-                        <X size={14} />
+                        <CloseIcon size={14} />
                       </button>
                     </Badge>
                   ))
