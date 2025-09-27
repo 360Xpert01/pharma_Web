@@ -1,6 +1,6 @@
 "use client";
 import { useTheme } from "next-themes";
-import { Button } from "@/components/common/button";
+import { Button } from "@/components/ui/button";
 
 const next = (current: string | undefined) => {
   const order = ["light", "dark", "ocean"];

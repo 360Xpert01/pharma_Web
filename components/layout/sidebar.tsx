@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { 
   ChevronLeft,
   ChevronRight
-} from "lucide-react";
+} from "@/lib/icons";
 import { useLayout } from "@/contexts/layout-context";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";

@@ -2,8 +2,9 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "@/components/common/input";
-import { Button } from "@/components/common/button";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { getFormErrorMessage } from "@/lib/actions/actions";
 
 const schema = z.object({
   code: z.string().min(6),
@@ -22,7 +23,7 @@ export default function OtpPage() {
           </label>
           <Input id="code" inputMode="numeric" {...form.register("code")} />
           {form.formState.errors.code && (
-            <p className="text-sm text-destructive">{form.formState.errors.code.message}</p>
+            <p className="text-sm text-destructive">{getFormErrorMessage(form.formState.errors.code)}</p>
           )}
         </div>
         <Button type="submit" className="w-full">

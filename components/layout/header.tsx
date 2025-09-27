@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { MenuIcon, CloseIcon } from "@/lib/icons";
 import { ThemeToggle } from "./theme-toggle";
 import { UserProfile } from "./user-profile";
 import { MobileNavigationMenu } from "./mobile-navigation-menu";
@@ -47,7 +47,7 @@ export function Header({ className }: HeaderProps) {
               className="md:hidden h-9 w-9 p-0"
               aria-label="Toggle mobile navigation"
             >
-              {mobileNavOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {mobileNavOpen ? <CloseIcon className="h-5 w-5" /> : <MenuIcon className="h-5 w-5" />}
             </Button>
           )}
 
@@ -60,7 +60,7 @@ export function Header({ className }: HeaderProps) {
               className="hidden md:flex h-9 w-9 p-0"
               aria-label="Toggle sidebar"
             >
-              <Menu className="h-4 w-4" />
+              <MenuIcon className="h-4 w-4" />
             </Button>
           )}
 

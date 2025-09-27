@@ -1,15 +1,15 @@
 import { 
-  Home, 
-  BarChart3, 
-  Settings, 
-  Users, 
-  FileText, 
-  Palette,
-  HelpCircle,
-  Globe,
-  Shield,
-  Mail
-} from "lucide-react";
+  HomeIcon, 
+  BarChartIcon, 
+  SettingsIcon, 
+  UsersIcon, 
+  FileIcon, 
+  PaletteIcon,
+  HelpIcon,
+  GlobeIcon,
+  ShieldIcon,
+  MailIcon
+} from "@/lib/icons";
 
 // Navigation item interface
 export interface NavigationItem {
@@ -27,26 +27,26 @@ export const headerNavigation: NavigationItem[] = [
   {
     title: "Home",
     href: "/dashboard",
-    icon: Home,
+    icon: HomeIcon,
     description: "Dashboard overview"
   },
   {
     title: "Site",
     href: "/",
-    icon: Globe,
+    icon: GlobeIcon,
     description: "Visit main site",
     external: true
   },
   {
     title: "Layout",
     href: "/dashboard/layout-settings",
-    icon: Palette,
+    icon: PaletteIcon,
     description: "Configure layout"
   },
   {
     title: "Settings",
     href: "/dashboard/settings",
-    icon: Settings,
+    icon: SettingsIcon,
     description: "Application settings"
   }
 ];
@@ -56,41 +56,41 @@ export const sidebarNavigation: NavigationItem[] = [
   {
     title: "Overview",
     href: "/dashboard",
-    icon: Home,
+    icon: HomeIcon,
     description: "Dashboard overview"
   },
   {
     title: "Analytics", 
     href: "/dashboard/analytics",
-    icon: BarChart3,
+    icon: BarChartIcon,
     description: "View analytics and metrics",
     badge: "New"
   },
   {
     title: "Users",
     href: "/dashboard/users",
-    icon: Users,
+    icon: UsersIcon,
     description: "Manage users and permissions",
     badge: "Demo"
   },
   {
     title: "Content",
     href: "/dashboard/content",
-    icon: FileText,
+    icon: FileIcon,
     description: "Manage content and resources",
     badge: "Demo"
   },
   {
     title: "Layout Settings",
     href: "/dashboard/layout-settings",
-    icon: Palette,
+    icon: PaletteIcon,
     description: "Configure layout options",
     badge: "Live"
   },
   {
     title: "Settings",
     href: "/dashboard/settings",
-    icon: Settings,
+    icon: SettingsIcon,
     description: "Application settings"
   }
 ];
@@ -101,7 +101,7 @@ export const mobileNavigation: NavigationItem[] = [
   {
     title: "Help",
     href: "/help",
-    icon: HelpCircle,
+    icon: HelpIcon,
     description: "Get help and support"
   }
 ];
@@ -111,7 +111,7 @@ export const footerNavigation: NavigationItem[] = [
   {
     title: "Privacy",
     href: "/privacy",
-    icon: Shield,
+    icon: ShieldIcon,
     description: "Privacy policy"
   },
   {
@@ -122,7 +122,7 @@ export const footerNavigation: NavigationItem[] = [
   {
     title: "Contact",
     href: "/contact",
-    icon: Mail,
+    icon: MailIcon,
     description: "Contact us"
   },
   {

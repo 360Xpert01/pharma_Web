@@ -8,6 +8,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { storage } from "@/lib/actions/actions";
 
 // Layout configuration types
 export interface LayoutConfig {
@@ -183,17 +184,8 @@ function useIsMobile(breakpoint: number = 768): boolean {
 export function LayoutProvider({ children }: PropsWithChildren) {
   const [config, setConfig] = useState<LayoutConfig>(() => {
     // Load from localStorage if available
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('layout-config');
-      if (saved) {
-        try {
-          return { ...defaultLayoutConfig, ...JSON.parse(saved) };
-        } catch {
-          return defaultLayoutConfig;
-        }
-      }
-    }
-    return defaultLayoutConfig;
+    const saved = storage.getJson('layout-config', defaultLayoutConfig);
+    return { ...defaultLayoutConfig, ...saved };
   });
 
   const [state, setState] = useState<LayoutState>(defaultLayoutState);
@@ -201,9 +193,7 @@ export function LayoutProvider({ children }: PropsWithChildren) {
 
   // Save config to localStorage when it changes
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('layout-config', JSON.stringify(config));
-    }
+    storage.setJson('layout-config', config);
   }, [config]);
 
   const updateConfig = useCallback((updates: Partial<LayoutConfig>) => {
@@ -226,9 +216,7 @@ export function LayoutProvider({ children }: PropsWithChildren) {
 
   const resetConfig = useCallback(() => {
     setConfig(defaultLayoutConfig);
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('layout-config');
-    }
+    storage.remove('layout-config');
   }, []);
 
   const updateState = useCallback((updates: Partial<LayoutState>) => {

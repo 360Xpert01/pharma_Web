@@ -7,7 +7,7 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Loader2, Search, X } from "lucide-react";
+import { LoadingIcon, SearchInputIcon, CloseIcon } from "@/lib/icons";
 import { Controller, FieldValues, useController, UseControllerProps, Path } from "react-hook-form";
 import { cn } from "@/lib/utils";
 
@@ -157,7 +157,7 @@ const SearchableSelectBase = ({
                 onClick={handleClear}
               />
             )}
-            <Search size={14} className="text-gray-400" />
+            <SearchInputIcon size={14} className="text-gray-400" />
           </div>
         </div>
       </PopoverTrigger>
@@ -168,7 +168,7 @@ const SearchableSelectBase = ({
         <Command className="w-full">
           {search && (
             <div className="flex items-center border-b dark:border-gray-700">
-              <Search size={16} className="ml-2 text-gray-400" />
+              <SearchInputIcon size={16} className="ml-2 text-gray-400" />
               <CommandInput
                 placeholder="Search..."
                 value={searchQuery}
@@ -180,7 +180,7 @@ const SearchableSelectBase = ({
           <CommandList className="max-h-60 overflow-y-auto">
             {isLoading && (
               <div className="flex items-center justify-center p-4 text-gray-500 dark:text-gray-400">
-                <Loader2 className="animate-spin" />
+                <LoadingIcon className="animate-spin" />
               </div>
             )}
 

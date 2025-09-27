@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { BaseField } from "../base-field";
 import { FormField } from "@/types/form";
-import { Eye, EyeOff } from "lucide-react"; // or use any eye icon component
+import { Eye, EyeOff } from "@/lib/icons";
 
 export const InputField = ({ field }: { field: FormField }) => {
   const [showPassword, setShowPassword] = useState(false);

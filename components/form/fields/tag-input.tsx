@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { X } from "lucide-react";
+import { CloseIcon } from "@/lib/icons";
 import { useState, KeyboardEvent } from "react";
 import { BaseField } from "../base-field";
 import { FormField } from "@/types/form";

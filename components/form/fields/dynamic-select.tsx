@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { Loader2, X } from "lucide-react";
+import { LoadingIcon, CloseIcon } from "@/lib/icons";
 import {
   Select,
   SelectContent,
@@ -49,7 +49,7 @@ export const DynamicSelectField = ({ field }: { field: FormField }) => {
                     <span className="text-muted-foreground">
                       {loading ? (
                         <span className="flex items-center">
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          <LoadingIcon className="mr-2 h-4 w-4 animate-spin" />
                           Loading
                         </span>
                       ) : (
@@ -68,7 +68,7 @@ export const DynamicSelectField = ({ field }: { field: FormField }) => {
                           }}
                           className="ml-1"
                         >
-                          <X size={14} />
+                          <CloseIcon size={14} />
                         </button>
                       </Badge>
                     ))
@@ -80,7 +80,7 @@ export const DynamicSelectField = ({ field }: { field: FormField }) => {
               <div className="grid gap-2">
                 {loading ? (
                   <div className="flex items-center">
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <LoadingIcon className="mr-2 h-4 w-4 animate-spin" />
                     Loading
                   </div>
                 ) : (
@@ -108,7 +108,7 @@ export const DynamicSelectField = ({ field }: { field: FormField }) => {
             <SelectTrigger>
               {loading ? (
                 <div className="flex items-center">
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <LoadingIcon className="mr-2 h-4 w-4 animate-spin" />
                   Loading
                 </div>
               ) : (

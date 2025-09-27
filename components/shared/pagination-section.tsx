@@ -5,9 +5,7 @@ import {
   PaginationItem,
   PaginationLink,
   PaginationNext,
-  PaginationNextLast,
   PaginationPrevious,
-  PaginationPreviousLast,
 } from "@/components/ui/pagination";
 
 type TPaginationSectionProps = {
@@ -98,7 +96,6 @@ export default function PaginationSection({
       <Pagination>
         <PaginationContent>
           <PaginationItem>
-            <PaginationPreviousLast onClick={handlePrevPageLast} />
             <PaginationPrevious onClick={handlePrevPage} />
           </PaginationItem>
 
@@ -106,7 +103,6 @@ export default function PaginationSection({
 
           <PaginationItem>
             <PaginationNext onClick={handleNextPage} />
-            <PaginationNextLast onClick={handleNextPageLast} />
           </PaginationItem>
         </PaginationContent>
       </Pagination>

@@ -24,7 +24,7 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@/lib/icons";
 import React from "react";
 import { useSearchParams } from "react-router-dom";
 

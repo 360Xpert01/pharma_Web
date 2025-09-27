@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { LogOut, User, Settings, HelpCircle } from "lucide-react";
+import { LogoutIcon, UserIcon, SettingsIcon, HelpIcon } from "@/lib/icons";
+import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -45,7 +46,9 @@ export function UserProfile({ className }: UserProfileProps) {
       // Redirect to login or home page
       window.location.href = "/auth/login";
     } catch (error) {
-      console.error("Logout failed:", error);
+      logger.error("User logout failed", { 
+        error: error instanceof Error ? error.message : String(error) 
+      });
     } finally {
       setIsLoggingOut(false);
     }
@@ -105,7 +108,7 @@ export function UserProfile({ className }: UserProfileProps) {
             onClick={handleProfileClick}
             className="cursor-pointer"
           >
-            <User className="mr-2 h-4 w-4" />
+            <UserIcon className="mr-2 h-4 w-4" />
             <span>Profile</span>
           </DropdownMenuItem>
           
@@ -113,12 +116,12 @@ export function UserProfile({ className }: UserProfileProps) {
             onClick={handleSettingsClick}
             className="cursor-pointer"
           >
-            <Settings className="mr-2 h-4 w-4" />
+            <SettingsIcon className="mr-2 h-4 w-4" />
             <span>Settings</span>
           </DropdownMenuItem>
           
           <DropdownMenuItem className="cursor-pointer">
-            <HelpCircle className="mr-2 h-4 w-4" />
+            <HelpIcon className="mr-2 h-4 w-4" />
             <span>Help & Support</span>
           </DropdownMenuItem>
           
@@ -129,7 +132,7 @@ export function UserProfile({ className }: UserProfileProps) {
             disabled={isLoggingOut}
             className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-900/20"
           >
-            <LogOut className="mr-2 h-4 w-4" />
+            <LogoutIcon className="mr-2 h-4 w-4" />
             <span>{isLoggingOut ? "Logging out..." : "Log out"}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { useLayout } from "@/contexts/layout-context";
-import { Button } from "@/components/common/button";
+import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { DynamicLayout } from "@/components/layout/dynamic-layout";
 

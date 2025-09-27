@@ -1,3 +1,4 @@
+'use client';
 type THeadingProps = {
   title: string;
   description?: string;

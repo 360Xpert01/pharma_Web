@@ -8,6 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useFormContext } from "react-hook-form";
+import { logger } from "@/lib/logger";
 import { cn } from "@/lib/utils";
 import { useCallback } from "react";
 
@@ -47,7 +48,11 @@ export const BaseField: React.FC<BaseFieldProps> = ({ field, renderInput }) => {
     if (span.lg) classes.push(`lg:${spanMap[span.lg]}`);
 
     const result = classes.join(" ");
-    console.log("Base field span classes:", result, "for field:", field.name);
+    logger.debug("Base field span classes calculated", { 
+      classes: result, 
+      fieldName: field.name, 
+      spanConfig: field.span 
+    });
     return result;
   };
 

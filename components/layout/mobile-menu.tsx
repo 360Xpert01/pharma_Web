@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { X, Home, BarChart3, Settings, Users, FileText, Palette } from "lucide-react";
+import { CloseIcon, HomeIcon, BarChartIcon, SettingsIcon, UsersIcon, FileIcon, PaletteIcon } from "@/lib/icons";
 import { useLayout } from "@/contexts/layout-context";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -12,32 +12,32 @@ const navigationItems = [
   {
     title: "Overview",
     href: "/dashboard",
-    icon: Home,
+    icon: HomeIcon,
   },
   {
     title: "Analytics", 
     href: "/dashboard/analytics",
-    icon: BarChart3,
+    icon: BarChartIcon,
   },
   {
     title: "Users",
     href: "/dashboard/users",
-    icon: Users,
+    icon: UsersIcon,
   },
   {
     title: "Content",
     href: "/dashboard/content",
-    icon: FileText,
+    icon: FileIcon,
   },
   {
     title: "Layout Settings",
     href: "/dashboard/layout-settings",
-    icon: Palette,
+    icon: PaletteIcon,
   },
   {
     title: "Settings",
     href: "/dashboard/settings",
-    icon: Settings,
+    icon: SettingsIcon,
   },
 ];
 
@@ -78,7 +78,7 @@ export function MobileMenu({ className }: MobileMenuProps) {
           onClick={closeMobileMenu}
           aria-label="Close mobile menu"
         >
-          <X className="h-5 w-5" />
+          <CloseIcon className="h-5 w-5" />
         </Button>
       </div>
 
