@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import Providers from "@/components/providers/providers";
+import { LayoutProvider } from "@/contexts/layout-context";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
@@ -27,9 +28,11 @@ export default function RootLayout({
           enableSystem
           themes={["light", "dark", "ocean"]}
         >
-          <Suspense fallback={null}>
-            <Providers>{children}</Providers>
-          </Suspense>
+          <LayoutProvider>
+            <Suspense fallback={null}>
+              <Providers>{children}</Providers>
+            </Suspense>
+          </LayoutProvider>
         </ThemeProvider>
         <Analytics />
       </body>
