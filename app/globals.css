@@ -158,3 +158,52 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* RTL Support for Urdu Language */
+[dir="rtl"] {
+  --tw-rotate: -180deg;
+}
+
+[dir="rtl"] .rtl\:space-x-reverse > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 1;
+}
+
+[dir="rtl"] .rtl\:divide-x-reverse > :not([hidden]) ~ :not([hidden]) {
+  --tw-divide-x-reverse: 1;
+}
+
+/* Font support for Arabic/Urdu text */
+.font-arabic {
+  font-family: "Arial", "Tahoma", "Segoe UI", sans-serif;
+  font-weight: 400;
+  text-align: right;
+}
+
+/* Better RTL support for dropdowns and modals */
+[dir="rtl"] .dropdown-content {
+  right: 0;
+  left: auto;
+}
+
+[dir="rtl"] .tooltip {
+  right: 0;
+  left: auto;
+}
+
+/* RTL support for navigation */
+[dir="rtl"] .nav-item {
+  text-align: right;
+}
+
+/* RTL support for forms */
+[dir="rtl"] input,
+[dir="rtl"] textarea,
+[dir="rtl"] select {
+  text-align: right;
+  direction: rtl;
+}
+
+/* RTL support for buttons with icons */
+[dir="rtl"] .btn-with-icon {
+  flex-direction: row-reverse;
+}

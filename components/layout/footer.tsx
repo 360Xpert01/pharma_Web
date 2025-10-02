@@ -1,5 +1,6 @@
 "use client";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { useLayout } from "@/contexts/layout-context";
 import { cn } from "@/lib/utils";
 import { footerNavigation, socialLinks } from "@/navigation/config";
@@ -10,41 +11,41 @@ interface FooterProps {
 
 export function Footer({ className }: FooterProps) {
   const { config } = useLayout();
+  const t = useTranslations("layout.footer");
+  const commonT = useTranslations("common");
 
-  const footerClasses = cn(
-    "border-t border-border/40 bg-background",
-    className
-  );
+  const footerClasses = cn("border-t border-border/40 bg-background", className);
 
-  const containerClasses = cn(
-    "px-4 lg:px-6 py-6",
-    {
-      "max-w-7xl mx-auto": config.content.maxWidth === 'container',
-      "max-w-4xl mx-auto": config.content.maxWidth === 'prose',
-    }
-  );
+  const containerClasses = cn("px-4 lg:px-6 py-6", {
+    "max-w-7xl mx-auto": config.content.maxWidth === "container",
+    "max-w-4xl mx-auto": config.content.maxWidth === "prose",
+  });
 
   // Render different footer variants
   const renderFooterContent = () => {
     switch (config.footer.variant) {
-      case 'minimal':
+      case "minimal":
         return (
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
-            <span className="text-muted-foreground">
-              © {new Date().getFullYear()} Your Company
-            </span>
+            <span className="text-muted-foreground">{t("copyright")}</span>
             <div className="flex items-center gap-4">
-              <Link href="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">
-                Privacy
+              <Link
+                href="/privacy"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {t("privacyPolicy")}
               </Link>
-              <Link href="/terms" className="text-muted-foreground hover:text-foreground transition-colors">
-                Terms
+              <Link
+                href="/terms"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {t("termsOfService")}
               </Link>
             </div>
           </div>
         );
 
-      case 'detailed':
+      case "detailed":
         return (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* Company Info */}
@@ -88,13 +89,22 @@ export function Footer({ className }: FooterProps) {
             <div>
               <h4 className="font-medium mb-4">Resources</h4>
               <nav className="space-y-2">
-                <Link href="/docs" className="block text-muted-foreground hover:text-foreground transition-colors text-sm">
+                <Link
+                  href="/docs"
+                  className="block text-muted-foreground hover:text-foreground transition-colors text-sm"
+                >
                   Documentation
                 </Link>
-                <Link href="/support" className="block text-muted-foreground hover:text-foreground transition-colors text-sm">
+                <Link
+                  href="/support"
+                  className="block text-muted-foreground hover:text-foreground transition-colors text-sm"
+                >
                   Support
                 </Link>
-                <Link href="/changelog" className="block text-muted-foreground hover:text-foreground transition-colors text-sm">
+                <Link
+                  href="/changelog"
+                  className="block text-muted-foreground hover:text-foreground transition-colors text-sm"
+                >
                   Changelog
                 </Link>
               </nav>
@@ -109,7 +119,7 @@ export function Footer({ className }: FooterProps) {
           </div>
         );
 
-      case 'simple':
+      case "simple":
       default:
         return (
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
@@ -134,9 +144,7 @@ export function Footer({ className }: FooterProps) {
 
   return (
     <footer className={footerClasses}>
-      <div className={containerClasses}>
-        {renderFooterContent()}
-      </div>
+      <div className={containerClasses}>{renderFooterContent()}</div>
     </footer>
   );
 }

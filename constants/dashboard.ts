@@ -1,124 +1,195 @@
-export const DASHBOARD_CONSTANTS = {
+export const DASHBOARD_TEXTS = {
   // Page Title and Meta
-  TITLE: "Dashboard",
-  DESCRIPTION: "Comprehensive dashboard with real-time metrics and analytics",
-  
+  title: "Dashboard",
+  description: "Comprehensive dashboard with real-time metrics and analytics",
+
+  // Page sections
+  sections: {
+    metrics: "Analytics",
+    metricsDescription: "Key performance metrics and statistics",
+    charts: "Data Visualization",
+    chartsDescription: "Interactive charts and data visualizations",
+    dataLists: "Recent Activity",
+    dataListsDescription: "Latest updates and activity logs",
+  },
+
+  // Buttons and actions
+  actions: {
+    refresh: "Refresh",
+    loadingDemo: "Loading Demo",
+    settings: "Settings",
+    export: "Export",
+    filter: "Filter",
+    viewAll: "View All",
+    configure: "Configure",
+  },
+
+  // Loading states
+  loading: {
+    refreshing: "Refreshing...",
+    loadingCharts: "Loading charts...",
+    loadingData: "Loading data...",
+    processing: "Processing...",
+  },
+
+  // Success messages
+  success: {
+    refreshed: "Dashboard refreshed successfully",
+    dataUpdated: "Data updated successfully",
+    settingsSaved: "Settings saved successfully",
+  },
+
+  // Error messages
+  errors: {
+    refreshFailed: "Failed to refresh dashboard data",
+    loadFailed: "Failed to load dashboard",
+    connectionError: "Connection error occurred",
+    dataError: "Error loading data",
+  },
+
   // Metrics Cards
-  METRICS: {
-    TOTAL_USERS: "Total Users",
-    ACTIVE_SESSIONS: "Active Sessions", 
-    REVENUE: "Revenue",
-    CONVERSION_RATE: "Conversion Rate",
-    ORDERS: "Orders",
-    GROWTH: "Growth",
-    BOUNCE_RATE: "Bounce Rate",
-    PAGE_VIEWS: "Page Views"
+  metrics: {
+    totalUsers: "Total Users",
+    activeUsers: "Active Users",
+    revenue: "Revenue",
+    conversionRate: "Conversion Rate",
+    orders: "Orders",
+    growth: "Growth",
+    bounceRate: "Bounce Rate",
+    pageViews: "Page Views",
+    sessions: "Sessions",
+    avgSessionDuration: "Avg Session Duration",
+    newUsers: "New Users",
+    returningUsers: "Returning Users",
   },
 
-  // Chart Titles
-  CHARTS: {
-    REVENUE_TREND: "Revenue Trend",
-    USER_ACTIVITY: "User Activity",
-    SALES_COMPARISON: "Sales Comparison",
-    TRAFFIC_SOURCES: "Traffic Sources",
-    PERFORMANCE_METRICS: "Performance Metrics",
-    MONTHLY_SALES: "Monthly Sales",
-    USER_DEMOGRAPHICS: "User Demographics",
-    CONVERSION_FUNNEL: "Conversion Funnel"
+  // Chart Titles and Descriptions
+  charts: {
+    revenueTrend: {
+      title: "Revenue Overview",
+      description: "Monthly revenue and user growth",
+      badge: "Updated",
+    },
+    userActivity: {
+      title: "User Activity",
+      description: "Daily active users and engagement",
+    },
+    salesComparison: {
+      title: "Sales Performance",
+      description: "Quarterly sales comparison",
+    },
+    trafficSources: {
+      title: "Traffic Sources",
+      description: "Website traffic by source",
+    },
+    performanceMetrics: {
+      title: "Performance Metrics",
+      description: "Key performance indicators",
+    },
+    conversionFunnel: {
+      title: "Conversion Funnel",
+      description: "User conversion journey",
+    },
   },
 
-  // Data Table Headers
-  TABLE_HEADERS: {
-    NAME: "Name",
-    EMAIL: "Email",
-    STATUS: "Status",
-    ROLE: "Role",
-    CREATED_AT: "Created At",
-    LAST_LOGIN: "Last Login",
-    ACTIONS: "Actions",
-    PRODUCT: "Product",
-    PRICE: "Price",
-    QUANTITY: "Quantity",
-    TOTAL: "Total",
-    DATE: "Date"
+  // Data Table
+  table: {
+    headers: {
+      name: "Name",
+      email: "Email",
+      status: "Status",
+      role: "Role",
+      createdAt: "Created At",
+      lastLogin: "Last Login",
+      actions: "Actions",
+      product: "Product",
+      price: "Price",
+      quantity: "Quantity",
+      total: "Total",
+      date: "Date",
+      user: "User",
+      activity: "Activity",
+      time: "Time",
+    },
+    noData: "No data available",
+    loading: "Loading...",
+    error: "Failed to load data",
+    empty: "No records found",
+    rowsSelected: "rows selected",
   },
 
   // Status Labels
-  STATUS: {
-    ACTIVE: "Active",
-    INACTIVE: "Inactive",
-    PENDING: "Pending",
-    COMPLETED: "Completed",
-    CANCELLED: "Cancelled",
-    PROCESSING: "Processing"
+  status: {
+    active: "Active",
+    inactive: "Inactive",
+    pending: "Pending",
+    completed: "Completed",
+    cancelled: "Cancelled",
+    processing: "Processing",
+    verified: "Verified",
+    suspended: "Suspended",
   },
 
-  // Button Labels
-  BUTTONS: {
-    VIEW_ALL: "View All",
-    EXPORT: "Export",
-    FILTER: "Filter",
-    REFRESH: "Refresh",
-    ADD_NEW: "Add New",
-    EDIT: "Edit",
-    DELETE: "Delete",
-    SAVE: "Save",
-    CANCEL: "Cancel"
+  // Time periods for filtering
+  timePeriods: {
+    today: "Today",
+    yesterday: "Yesterday",
+    last7Days: "Last 7 Days",
+    last30Days: "Last 30 Days",
+    thisMonth: "This Month",
+    lastMonth: "Last Month",
+    thisYear: "This Year",
+    lastYear: "Last Year",
+    custom: "Custom Range",
   },
 
-  // Section Titles
-  SECTIONS: {
-    OVERVIEW: "Overview",
-    ANALYTICS: "Analytics", 
-    RECENT_ACTIVITY: "Recent Activity",
-    TOP_PRODUCTS: "Top Products",
-    USER_MANAGEMENT: "User Management",
-    SALES_DATA: "Sales Data",
-    PERFORMANCE: "Performance",
-    REPORTS: "Reports"
+  // Chart colors
+  colors: {
+    primary: "#3b82f6",
+    secondary: "#64748b",
+    success: "#10b981",
+    warning: "#f59e0b",
+    danger: "#ef4444",
+    info: "#06b6d4",
+    purple: "#8b5cf6",
+    pink: "#ec4899",
   },
 
-  // Time Periods
-  TIME_PERIODS: {
-    TODAY: "Today",
-    YESTERDAY: "Yesterday",
-    LAST_7_DAYS: "Last 7 Days",
-    LAST_30_DAYS: "Last 30 Days",
-    THIS_MONTH: "This Month",
-    LAST_MONTH: "Last Month",
-    THIS_YEAR: "This Year"
-  },
-
-  // Chart Colors
-  COLORS: {
-    PRIMARY: "#3b82f6",
-    SECONDARY: "#64748b",
-    SUCCESS: "#10b981",
-    WARNING: "#f59e0b",
-    DANGER: "#ef4444",
-    INFO: "#06b6d4",
-    PURPLE: "#8b5cf6",
-    PINK: "#ec4899"
-  },
-
-  // Notification Messages
-  MESSAGES: {
-    DATA_LOADED: "Data loaded successfully",
-    DATA_ERROR: "Error loading data",
-    REAL_TIME_CONNECTED: "Real-time updates connected",
-    REAL_TIME_DISCONNECTED: "Real-time updates disconnected",
-    EXPORT_SUCCESS: "Data exported successfully",
-    SAVE_SUCCESS: "Changes saved successfully"
+  // Notification messages
+  notifications: {
+    dataLoaded: "Data loaded successfully",
+    dataError: "Error loading data",
+    realTimeConnected: "Real-time updates connected",
+    realTimeDisconnected: "Real-time updates disconnected",
+    exportSuccess: "Data exported successfully",
+    saveSuccess: "Changes saved successfully",
+    updateAvailable: "New data available",
+    connectionLost: "Connection lost, retrying...",
   },
 
   // Placeholders
-  PLACEHOLDERS: {
-    SEARCH: "Search...",
-    SELECT_DATE: "Select date range",
-    NO_DATA: "No data available",
-    LOADING: "Next Boiler",
-    SELECT_OPTION: "Select an option"
-  }
+  placeholders: {
+    search: "Search...",
+    selectDate: "Select date range",
+    noData: "No data available",
+    loading: "Loading...",
+    selectOption: "Select an option",
+    enterValue: "Enter value",
+    chooseFile: "Choose file",
+  },
+
+  // Tooltips
+  tooltips: {
+    refresh: "Refresh dashboard data",
+    export: "Export data to CSV",
+    filter: "Filter results",
+    settings: "Dashboard settings",
+    fullscreen: "Toggle fullscreen",
+    help: "Get help",
+  },
 } as const;
 
-export type DashboardConstants = typeof DASHBOARD_CONSTANTS;
+export type DashboardTexts = typeof DASHBOARD_TEXTS;
+
+// For backward compatibility, also export as DASHBOARD_CONSTANTS
+export const DASHBOARD_CONSTANTS = DASHBOARD_TEXTS;

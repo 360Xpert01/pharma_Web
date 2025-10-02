@@ -1,14 +1,17 @@
 "use client";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { MenuIcon, CloseIcon } from "@/lib/icons";
 import { ThemeToggle } from "./theme-toggle";
 import { UserProfile } from "./user-profile";
 import { MobileNavigationMenu } from "./mobile-navigation-menu";
+import { LanguageSwitcher } from "./language-switcher";
+import { NavigationMenu } from "@/components/navigation/navigation-menu";
 import { useLayout } from "@/contexts/layout-context";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { headerNavigation } from "@/navigation/config";
+import { headerNavigation } from "@/navigation/i18n-config";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface HeaderProps {
   className?: string;
@@ -18,6 +21,7 @@ export function Header({ className }: HeaderProps) {
   const { config, state, computed, toggleSidebar } = useLayout();
   const { showSidebar, headerHeight, isMobile } = computed;
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const t = useTranslations("layout.header");
 
   const headerClasses = cn(
     "border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
@@ -25,13 +29,10 @@ export function Header({ className }: HeaderProps) {
     className
   );
 
-  const containerClasses = cn(
-    "h-full px-4 lg:px-6 flex items-center justify-between",
-    {
-      "max-w-7xl mx-auto": config.content.maxWidth === 'container',
-      "max-w-4xl mx-auto": config.content.maxWidth === 'prose',
-    }
-  );
+  const containerClasses = cn("h-full px-4 lg:px-6 flex items-center justify-between", {
+    "max-w-7xl mx-auto": config.content.maxWidth === "container",
+    "max-w-4xl mx-auto": config.content.maxWidth === "prose",
+  });
 
   return (
     <header className={headerClasses}>
@@ -45,20 +46,20 @@ export function Header({ className }: HeaderProps) {
               size="sm"
               onClick={() => setMobileNavOpen(!mobileNavOpen)}
               className="md:hidden h-9 w-9 p-0"
-              aria-label="Toggle mobile navigation"
+              aria-label={t("toggleMobileNavLabel")}
             >
               {mobileNavOpen ? <CloseIcon className="h-5 w-5" /> : <MenuIcon className="h-5 w-5" />}
             </Button>
           )}
 
           {/* Desktop sidebar toggle */}
-          {(!isMobile && showSidebar && config.sidebar.collapsible) && (
+          {!isMobile && showSidebar && config.sidebar.collapsible && (
             <Button
               variant="ghost"
               size="sm"
               onClick={toggleSidebar}
               className="hidden md:flex h-9 w-9 p-0"
-              aria-label="Toggle sidebar"
+              aria-label={t("toggleSidebarLabel")}
             >
               <MenuIcon className="h-4 w-4" />
             </Button>
@@ -66,19 +67,19 @@ export function Header({ className }: HeaderProps) {
 
           {/* Logo/Brand */}
           {config.header.showLogo && (
-            <Link 
-              href="/dashboard" 
+            <Link
+              href="/dashboard"
               className="flex items-center gap-2 font-semibold text-lg hover:opacity-80 transition-opacity"
               onClick={() => setMobileNavOpen(false)}
             >
               <div className="w-8 h-8 rounded-md bg-primary" />
-              <span className="hidden sm:block">Dashboard</span>
+              <span className="hidden sm:block">{t("logoText")}</span>
             </Link>
           )}
         </div>
 
         {/* Center section: Desktop Navigation */}
-        {config.header.showNavigation && config.navigation.style === 'horizontal' && (
+        {config.header.showNavigation && config.navigation.style === "horizontal" && (
           <nav className="hidden lg:flex items-center gap-6 text-sm font-medium">
             {headerNavigation.map((item) => (
               <Link
@@ -94,22 +95,18 @@ export function Header({ className }: HeaderProps) {
           </nav>
         )}
 
-        {/* Right section: User profile + Theme toggle */}
+        {/* Right section: Language switcher + Theme toggle + User profile */}
         <div className="flex items-center gap-2">
+          <LanguageSwitcher />
           <ThemeToggle />
-          
-          {config.header.showUserMenu && (
-            <UserProfile className="ml-1" />
-          )}
+
+          {config.header.showUserMenu && <UserProfile className="ml-1" />}
         </div>
       </div>
 
       {/* Mobile Navigation Menu */}
       {isMobile && mobileNavOpen && config.header.showNavigation && (
-        <MobileNavigationMenu 
-          isOpen={mobileNavOpen} 
-          onClose={() => setMobileNavOpen(false)} 
-        />
+        <MobileNavigationMenu isOpen={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
       )}
     </header>
   );
