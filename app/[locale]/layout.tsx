@@ -2,6 +2,7 @@ import type React from "react";
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
+import { urduFont } from "@/lib/fonts";
 import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "next-themes";
 import { NextIntlClientProvider } from "next-intl";
@@ -27,9 +28,14 @@ type Props = {
 export default async function RootLayout({ children, params: { locale } }: Props) {
   const messages = await getMessages();
 
+  const bodyClasses =
+    locale === "ur"
+      ? `font-urdu ${urduFont.variable} ${GeistSans.variable} ${GeistMono.variable} antialiased`
+      : `font-sans ${GeistSans.variable} ${GeistMono.variable} ${urduFont.variable} antialiased`;
+
   return (
     <html lang={locale} suppressHydrationWarning dir={locale === "ur" ? "rtl" : "ltr"}>
-      <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable} antialiased`}>
+      <body className={bodyClasses}>
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider
             attribute="class"

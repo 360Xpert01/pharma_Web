@@ -12,7 +12,22 @@ interface FooterProps {
 export function Footer({ className }: FooterProps) {
   const { config } = useLayout();
   const t = useTranslations("layout.footer");
+  const navT = useTranslations("navigation");
   const commonT = useTranslations("common");
+
+  // Helper function to get the correct translation key for navigation items
+  const getNavTranslationKey = (title: string): string => {
+    const keyMap: Record<string, string> = {
+      Privacy: "privacy",
+      Terms: "terms",
+      Contact: "contact",
+      About: "about",
+      GitHub: "github",
+      Twitter: "twitter",
+      LinkedIn: "linkedin",
+    };
+    return keyMap[title] || title.toLowerCase();
+  };
 
   const footerClasses = cn("border-t border-border/40 bg-background", className);
 
@@ -50,36 +65,34 @@ export function Footer({ className }: FooterProps) {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* Company Info */}
             <div className="md:col-span-2">
-              <h3 className="font-semibold text-lg mb-4">Your Company</h3>
-              <p className="text-muted-foreground text-sm mb-4">
-                Building amazing web experiences with configurable layouts and modern technologies.
-              </p>
+              <h3 className="font-semibold text-lg mb-4">{t("companyName")}</h3>
+              <p className="text-muted-foreground text-sm mb-4">{t("companyDescription")}</p>
               <div className="flex items-center gap-4">
                 {socialLinks.map((link) => (
-                  <Link
+                  <a
                     key={link.href}
                     href={link.href}
                     className="text-muted-foreground hover:text-foreground transition-colors text-sm"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {link.title}
-                  </Link>
+                    {navT(getNavTranslationKey(link.title))}
+                  </a>
                 ))}
               </div>
             </div>
 
             {/* Quick Links */}
             <div>
-              <h4 className="font-medium mb-4">Quick Links</h4>
+              <h4 className="font-medium mb-4">{t("quickLinksTitle")}</h4>
               <nav className="space-y-2">
                 {footerNavigation.map((link) => (
                   <Link
                     key={link.href}
-                    href={link.href}
+                    href={link.href as any}
                     className="block text-muted-foreground hover:text-foreground transition-colors text-sm"
                   >
-                    {link.title}
+                    {navT(getNavTranslationKey(link.title))}
                   </Link>
                 ))}
               </nav>
@@ -87,25 +100,25 @@ export function Footer({ className }: FooterProps) {
 
             {/* Additional Links */}
             <div>
-              <h4 className="font-medium mb-4">Resources</h4>
+              <h4 className="font-medium mb-4">{t("resourcesTitle")}</h4>
               <nav className="space-y-2">
                 <Link
                   href="/docs"
                   className="block text-muted-foreground hover:text-foreground transition-colors text-sm"
                 >
-                  Documentation
+                  {navT("documentation")}
                 </Link>
                 <Link
                   href="/support"
                   className="block text-muted-foreground hover:text-foreground transition-colors text-sm"
                 >
-                  Support
+                  {navT("support")}
                 </Link>
                 <Link
                   href="/changelog"
                   className="block text-muted-foreground hover:text-foreground transition-colors text-sm"
                 >
-                  Changelog
+                  {navT("changelog")}
                 </Link>
               </nav>
             </div>
@@ -113,7 +126,7 @@ export function Footer({ className }: FooterProps) {
             {/* Copyright */}
             <div className="md:col-span-4 pt-6 border-t border-border/40">
               <p className="text-muted-foreground text-sm text-center">
-                © {new Date().getFullYear()} Your Company. All rights reserved.
+                © {new Date().getFullYear()} {t("companyName")}. {t("allRightsReserved")}
               </p>
             </div>
           </div>
@@ -127,15 +140,15 @@ export function Footer({ className }: FooterProps) {
               {footerNavigation.map((link) => (
                 <Link
                   key={link.href}
-                  href={link.href}
+                  href={link.href as any}
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  {link.title}
+                  {navT(getNavTranslationKey(link.title))}
                 </Link>
               ))}
             </div>
             <span className="text-muted-foreground">
-              © {new Date().getFullYear()} Your Company
+              © {new Date().getFullYear()} {t("companyName")}
             </span>
           </div>
         );

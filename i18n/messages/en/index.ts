@@ -149,6 +149,18 @@ const messages = {
       privacyPolicy: "Privacy Policy",
       termsOfService: "Terms of Service",
       contact: "Contact",
+      companyName: "Your Company",
+      companyDescription:
+        "Building amazing web experiences with configurable layouts and modern technologies.",
+      quickLinksTitle: "Quick Links",
+      resourcesTitle: "Resources",
+      documentation: "Documentation",
+      support: "Support",
+      changelog: "Changelog",
+      about: "About",
+      privacy: "Privacy",
+      terms: "Terms",
+      allRightsReserved: "All rights reserved.",
     },
     theme: {
       toggleLabel: "Toggle theme",
@@ -361,6 +373,17 @@ const messages = {
     help: "Help",
     documentation: "Documentation",
     logout: "Logout",
+    // Social links
+    github: "GitHub",
+    twitter: "Twitter",
+    linkedin: "LinkedIn",
+    // Footer navigation
+    privacy: "Privacy",
+    terms: "Terms",
+    contact: "Contact",
+    about: "About",
+    support: "Support",
+    changelog: "Changelog",
   },
   time: {
     now: "now",

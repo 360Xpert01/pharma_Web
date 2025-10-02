@@ -26,6 +26,34 @@ export const routing = defineRouting({
       en: "/auth/reset",
       ur: "/auth/reset",
     },
+    "/privacy": {
+      en: "/privacy",
+      ur: "/privacy",
+    },
+    "/terms": {
+      en: "/terms",
+      ur: "/terms",
+    },
+    "/contact": {
+      en: "/contact",
+      ur: "/contact",
+    },
+    "/about": {
+      en: "/about",
+      ur: "/about",
+    },
+    "/docs": {
+      en: "/docs",
+      ur: "/docs",
+    },
+    "/support": {
+      en: "/support",
+      ur: "/support",
+    },
+    "/changelog": {
+      en: "/changelog",
+      ur: "/changelog",
+    },
   },
 } as const);
 

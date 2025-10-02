@@ -1,6 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
 import { useLayout } from "@/contexts/layout-context";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
@@ -9,6 +10,8 @@ import { DynamicLayout } from "@/components/layout/dynamic-layout";
 export default function HomePage() {
   const { applyPreset } = useLayout();
   const t = useTranslations("home");
+  const params = useParams();
+  const isUrdu = params.locale === "ur";
 
   useEffect(() => {
     // Apply website preset for landing page
@@ -23,7 +26,13 @@ export default function HomePage() {
         <div className="flex-1 py-16">
           <div className="mx-auto max-w-6xl px-6 grid gap-8 md:grid-cols-2 items-center">
             <div className="space-y-6">
-              <h1 className="text-3xl md:text-5xl font-bold text-balance">{t("hero.title")}</h1>
+              <h1
+                className={`text-3xl md:text-4xl font-bold text-balance ${
+                  isUrdu ? "leading-snug md:leading-normal tracking-wide" : ""
+                }`}
+              >
+                {t("hero.title")}
+              </h1>
               <p className="text-muted-foreground leading-relaxed">{t("hero.description")}</p>
               <div className="flex gap-3">
                 <Button asChild>
