@@ -1,8 +1,10 @@
 "use client";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { useLayout } from "@/contexts/layout-context";
 import { cn } from "@/lib/utils";
 import { footerNavigation, socialLinks } from "@/navigation/config";
+import { getNavItemTitle } from "@/lib/navigation-utils";
 
 interface FooterProps {
   className?: string;
@@ -10,75 +12,74 @@ interface FooterProps {
 
 export function Footer({ className }: FooterProps) {
   const { config } = useLayout();
+  const footerT = useTranslations("layout.footer");
+  const navT = useTranslations("navigation");
+  const commonT = useTranslations("common");
 
-  const footerClasses = cn(
-    "border-t border-border/40 bg-background",
-    className
-  );
+  const footerClasses = cn("border-t border-border/40 bg-background", className);
 
-  const containerClasses = cn(
-    "px-4 lg:px-6 py-6",
-    {
-      "max-w-7xl mx-auto": config.content.maxWidth === 'container',
-      "max-w-4xl mx-auto": config.content.maxWidth === 'prose',
-    }
-  );
+  const containerClasses = cn("px-4 lg:px-6 py-6", {
+    "max-w-7xl mx-auto": config.content.maxWidth === "container",
+    "max-w-4xl mx-auto": config.content.maxWidth === "prose",
+  });
 
   // Render different footer variants
   const renderFooterContent = () => {
     switch (config.footer.variant) {
-      case 'minimal':
+      case "minimal":
         return (
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
-            <span className="text-muted-foreground">
-              © {new Date().getFullYear()} Your Company
-            </span>
+            <span className="text-muted-foreground">{footerT("copyright")}</span>
             <div className="flex items-center gap-4">
-              <Link href="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">
-                Privacy
+              <Link
+                href="/privacy"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {navT("footer.privacyPolicy")}
               </Link>
-              <Link href="/terms" className="text-muted-foreground hover:text-foreground transition-colors">
-                Terms
+              <Link
+                href="/terms"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {navT("footer.termsOfService")}
               </Link>
             </div>
           </div>
         );
 
-      case 'detailed':
+      case "detailed":
         return (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* Company Info */}
             <div className="md:col-span-2">
-              <h3 className="font-semibold text-lg mb-4">Your Company</h3>
-              <p className="text-muted-foreground text-sm mb-4">
-                Building amazing web experiences with configurable layouts and modern technologies.
-              </p>
+              <h3 className="font-semibold text-lg mb-4">{footerT("companyName")}</h3>
+              <p className="text-muted-foreground text-sm mb-4">{footerT("companyDescription")}</p>
               <div className="flex items-center gap-4">
                 {socialLinks.map((link) => (
-                  <Link
+                  <a
                     key={link.href}
                     href={link.href}
                     className="text-muted-foreground hover:text-foreground transition-colors text-sm"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {link.title}
-                  </Link>
+                    {getNavItemTitle(link, navT)}
+                  </a>
                 ))}
               </div>
             </div>
 
             {/* Quick Links */}
             <div>
-              <h4 className="font-medium mb-4">Quick Links</h4>
+              <h4 className="font-medium mb-4">{footerT("quickLinksTitle")}</h4>
               <nav className="space-y-2">
                 {footerNavigation.map((link) => (
                   <Link
                     key={link.href}
-                    href={link.href}
+                    href={link.href as any}
                     className="block text-muted-foreground hover:text-foreground transition-colors text-sm"
                   >
-                    {link.title}
+                    {getNavItemTitle(link, navT)}
                   </Link>
                 ))}
               </nav>
@@ -86,16 +87,25 @@ export function Footer({ className }: FooterProps) {
 
             {/* Additional Links */}
             <div>
-              <h4 className="font-medium mb-4">Resources</h4>
+              <h4 className="font-medium mb-4">{footerT("resourcesTitle")}</h4>
               <nav className="space-y-2">
-                <Link href="/docs" className="block text-muted-foreground hover:text-foreground transition-colors text-sm">
-                  Documentation
+                <Link
+                  href="/docs"
+                  className="block text-muted-foreground hover:text-foreground transition-colors text-sm"
+                >
+                  {navT("footer.documentation")}
                 </Link>
-                <Link href="/support" className="block text-muted-foreground hover:text-foreground transition-colors text-sm">
-                  Support
+                <Link
+                  href="/support"
+                  className="block text-muted-foreground hover:text-foreground transition-colors text-sm"
+                >
+                  {navT("footer.support")}
                 </Link>
-                <Link href="/changelog" className="block text-muted-foreground hover:text-foreground transition-colors text-sm">
-                  Changelog
+                <Link
+                  href="/changelog"
+                  className="block text-muted-foreground hover:text-foreground transition-colors text-sm"
+                >
+                  {navT("footer.changelog")}
                 </Link>
               </nav>
             </div>
@@ -103,13 +113,14 @@ export function Footer({ className }: FooterProps) {
             {/* Copyright */}
             <div className="md:col-span-4 pt-6 border-t border-border/40">
               <p className="text-muted-foreground text-sm text-center">
-                © {new Date().getFullYear()} Your Company. All rights reserved.
+                © {new Date().getFullYear()} {footerT("companyName")}.{" "}
+                {footerT("allRightsReserved")}
               </p>
             </div>
           </div>
         );
 
-      case 'simple':
+      case "simple":
       default:
         return (
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
@@ -117,15 +128,15 @@ export function Footer({ className }: FooterProps) {
               {footerNavigation.map((link) => (
                 <Link
                   key={link.href}
-                  href={link.href}
+                  href={link.href as any}
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  {link.title}
+                  {getNavItemTitle(link, navT)}
                 </Link>
               ))}
             </div>
             <span className="text-muted-foreground">
-              © {new Date().getFullYear()} Your Company
+              © {new Date().getFullYear()} {footerT("companyName")}
             </span>
           </div>
         );
@@ -134,9 +145,7 @@ export function Footer({ className }: FooterProps) {
 
   return (
     <footer className={footerClasses}>
-      <div className={containerClasses}>
-        {renderFooterContent()}
-      </div>
+      <div className={containerClasses}>{renderFooterContent()}</div>
     </footer>
   );
 }

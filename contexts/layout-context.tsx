@@ -16,47 +16,47 @@ export interface LayoutConfig {
   header: {
     enabled: boolean;
     fixed: boolean;
-    height: 'sm' | 'md' | 'lg';
+    height: "sm" | "md" | "lg";
     showLogo: boolean;
     showNavigation: boolean;
     showUserMenu: boolean;
     collapsible: boolean;
   };
-  
+
   // Sidebar configuration
   sidebar: {
     enabled: boolean;
-    position: 'left' | 'right';
-    variant: 'fixed' | 'drawer' | 'overlay';
-    width: 'sm' | 'md' | 'lg' | 'xl';
+    position: "left" | "right";
+    variant: "fixed" | "drawer" | "overlay";
+    width: "sm" | "md" | "lg" | "xl";
     collapsible: boolean;
     defaultCollapsed: boolean;
     showOnMobile: boolean;
-    mobileBreakpoint: 'sm' | 'md' | 'lg' | 'xl';
+    mobileBreakpoint: "sm" | "md" | "lg" | "xl";
   };
-  
+
   // Footer configuration
   footer: {
     enabled: boolean;
     fixed: boolean;
-    variant: 'simple' | 'detailed' | 'minimal';
+    variant: "simple" | "detailed" | "minimal";
     showOnMobile: boolean;
   };
-  
+
   // Content area configuration
   content: {
-    maxWidth: 'full' | 'container' | 'prose';
-    padding: 'none' | 'sm' | 'md' | 'lg';
+    maxWidth: "full" | "container" | "prose";
+    padding: "none" | "sm" | "md" | "lg";
     centered: boolean;
   };
-  
+
   // Navigation configuration
   navigation: {
-    style: 'horizontal' | 'vertical' | 'tabs' | 'breadcrumb';
+    style: "horizontal" | "vertical" | "tabs" | "breadcrumb";
     showBreadcrumbs: boolean;
-    mobileMenuType: 'drawer' | 'dropdown' | 'fullscreen';
+    mobileMenuType: "drawer" | "dropdown" | "fullscreen";
   };
-  
+
   // Theme and responsive settings
   responsive: {
     mobileFirst: boolean;
@@ -74,7 +74,7 @@ const defaultLayoutConfig: LayoutConfig = {
   header: {
     enabled: true,
     fixed: false,
-    height: 'md',
+    height: "md",
     showLogo: true,
     showNavigation: true,
     showUserMenu: true,
@@ -82,29 +82,29 @@ const defaultLayoutConfig: LayoutConfig = {
   },
   sidebar: {
     enabled: true,
-    position: 'left',
-    variant: 'fixed',
-    width: 'md',
+    position: "left",
+    variant: "fixed",
+    width: "md",
     collapsible: true,
     defaultCollapsed: false,
     showOnMobile: false,
-    mobileBreakpoint: 'md',
+    mobileBreakpoint: "md",
   },
   footer: {
     enabled: true,
     fixed: false,
-    variant: 'simple',
+    variant: "simple",
     showOnMobile: true,
   },
   content: {
-    maxWidth: 'full',
-    padding: 'md',
+    maxWidth: "full",
+    padding: "md",
     centered: false,
   },
   navigation: {
-    style: 'horizontal',
+    style: "horizontal",
     showBreadcrumbs: true,
-    mobileMenuType: 'drawer',
+    mobileMenuType: "drawer",
   },
   responsive: {
     mobileFirst: true,
@@ -135,11 +135,11 @@ type LayoutContextValue = {
   config: LayoutConfig;
   updateConfig: (updates: Partial<LayoutConfig>) => void;
   resetConfig: () => void;
-  
+
   // Runtime state
   state: LayoutState;
   updateState: (updates: Partial<LayoutState>) => void;
-  
+
   // Computed values
   computed: {
     showHeader: boolean;
@@ -152,14 +152,15 @@ type LayoutContextValue = {
     isSidebarCollapsed: boolean;
     effectiveSidebarWidth: number;
   };
-  
+
   // Actions
   toggleSidebar: () => void;
   toggleMobileMenu: () => void;
   closeMobileMenu: () => void;
-  
+  setHeader: (enabled: boolean) => void;
+
   // Presets
-  applyPreset: (preset: 'website' | 'dashboard' | 'portal' | 'blog' | 'minimal') => void;
+  applyPreset: (preset: "website" | "dashboard" | "portal" | "blog" | "minimal") => void;
 };
 
 const LayoutContext = createContext<LayoutContextValue | undefined>(undefined);
@@ -174,8 +175,8 @@ function useIsMobile(breakpoint: number = 768): boolean {
     };
 
     checkIsMobile();
-    window.addEventListener('resize', checkIsMobile);
-    return () => window.removeEventListener('resize', checkIsMobile);
+    window.addEventListener("resize", checkIsMobile);
+    return () => window.removeEventListener("resize", checkIsMobile);
   }, [breakpoint]);
 
   return isMobile;
@@ -184,7 +185,7 @@ function useIsMobile(breakpoint: number = 768): boolean {
 export function LayoutProvider({ children }: PropsWithChildren) {
   const [config, setConfig] = useState<LayoutConfig>(() => {
     // Load from localStorage if available
-    const saved = storage.getJson('layout-config', defaultLayoutConfig);
+    const saved = storage.getJson("layout-config", defaultLayoutConfig);
     return { ...defaultLayoutConfig, ...saved };
   });
 
@@ -193,46 +194,50 @@ export function LayoutProvider({ children }: PropsWithChildren) {
 
   // Save config to localStorage when it changes
   useEffect(() => {
-    storage.setJson('layout-config', config);
+    storage.setJson("layout-config", config);
   }, [config]);
 
   const updateConfig = useCallback((updates: Partial<LayoutConfig>) => {
-    setConfig(prev => {
+    setConfig((prev) => {
       const newConfig = { ...prev };
-      
+
       // Deep merge for nested objects
-      Object.keys(updates).forEach(key => {
+      Object.keys(updates).forEach((key) => {
         const updateKey = key as keyof LayoutConfig;
-        if (typeof updates[updateKey] === 'object' && updates[updateKey] !== null) {
+        if (typeof updates[updateKey] === "object" && updates[updateKey] !== null) {
           newConfig[updateKey] = { ...prev[updateKey], ...updates[updateKey] } as any;
         } else {
           newConfig[updateKey] = updates[updateKey] as any;
         }
       });
-      
+
       return newConfig;
     });
   }, []);
 
   const resetConfig = useCallback(() => {
     setConfig(defaultLayoutConfig);
-    storage.remove('layout-config');
+    storage.remove("layout-config");
   }, []);
 
   const updateState = useCallback((updates: Partial<LayoutState>) => {
-    setState(prev => ({ ...prev, ...updates }));
+    setState((prev) => ({ ...prev, ...updates }));
   }, []);
 
   const toggleSidebar = useCallback(() => {
-    setState(prev => ({ ...prev, sidebarOpen: !prev.sidebarOpen }));
+    setState((prev) => ({ ...prev, sidebarOpen: !prev.sidebarOpen }));
   }, []);
 
   const toggleMobileMenu = useCallback(() => {
-    setState(prev => ({ ...prev, mobileMenuOpen: !prev.mobileMenuOpen }));
+    setState((prev) => ({ ...prev, mobileMenuOpen: !prev.mobileMenuOpen }));
   }, []);
 
   const closeMobileMenu = useCallback(() => {
-    setState(prev => ({ ...prev, mobileMenuOpen: false }));
+    setState((prev) => ({ ...prev, mobileMenuOpen: false }));
+  }, []);
+
+  const setHeader = useCallback((enabled: boolean) => {
+    setConfig((prev) => ({ ...prev, header: { ...prev.header, enabled } }));
   }, []);
 
   // Computed values
@@ -243,16 +248,16 @@ export function LayoutProvider({ children }: PropsWithChildren) {
 
     // Dynamic width classes
     const sidebarWidthMap = {
-      sm: 'w-48',
-      md: 'w-64',
-      lg: 'w-72',
-      xl: 'w-80',
+      sm: "w-48",
+      md: "w-64",
+      lg: "w-72",
+      xl: "w-80",
     };
 
     const headerHeightMap = {
-      sm: 'h-12',
-      md: 'h-16',
-      lg: 'h-20',
+      sm: "h-12",
+      md: "h-16",
+      lg: "h-20",
     };
 
     const sidebarWidth = sidebarWidthMap[config.sidebar.width];
@@ -261,25 +266,38 @@ export function LayoutProvider({ children }: PropsWithChildren) {
     // Content classes based on configuration
     const contentClasses = [
       // Max width
-      config.content.maxWidth === 'container' ? 'max-w-7xl' : 
-      config.content.maxWidth === 'prose' ? 'max-w-4xl' : 'w-full',
-      
+      config.content.maxWidth === "container"
+        ? "max-w-7xl"
+        : config.content.maxWidth === "prose"
+          ? "max-w-4xl"
+          : "w-full",
+
       // Padding
-      config.content.padding === 'none' ? '' :
-      config.content.padding === 'sm' ? 'p-2' :
-      config.content.padding === 'md' ? 'p-4 md:p-6' :
-      'p-6 md:p-8',
-      
+      config.content.padding === "none"
+        ? ""
+        : config.content.padding === "sm"
+          ? "p-2"
+          : config.content.padding === "md"
+            ? "p-4 md:p-6"
+            : "p-6 md:p-8",
+
       // Centering
-      config.content.centered ? 'mx-auto' : '',
-    ].filter(Boolean).join(' ');
+      config.content.centered ? "mx-auto" : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
 
     // Additional computed values for layout
     const isSidebarCollapsed = state.sidebarOpen && config.sidebar.collapsible;
-    const effectiveSidebarWidth = isSidebarCollapsed ? 64 : // 4rem for collapsed sidebar
-      config.sidebar.width === 'sm' ? 192 :
-      config.sidebar.width === 'md' ? 256 :
-      config.sidebar.width === 'lg' ? 288 : 320;
+    const effectiveSidebarWidth = isSidebarCollapsed
+      ? 64 // 4rem for collapsed sidebar
+      : config.sidebar.width === "sm"
+        ? 192
+        : config.sidebar.width === "md"
+          ? 256
+          : config.sidebar.width === "lg"
+            ? 288
+            : 320;
 
     return {
       showHeader,
@@ -295,172 +313,175 @@ export function LayoutProvider({ children }: PropsWithChildren) {
   }, [config, isMobile, state.sidebarOpen]);
 
   // Layout presets
-  const applyPreset = useCallback((preset: 'website' | 'dashboard' | 'portal' | 'blog' | 'minimal') => {
-    const presets: Record<string, Partial<LayoutConfig>> = {
-      website: {
-        header: { 
-          enabled: true, 
-          fixed: false, 
-          height: 'md',
-          showLogo: true,
-          showNavigation: true,
-          showUserMenu: true,
-          collapsible: true
+  const applyPreset = useCallback(
+    (preset: "website" | "dashboard" | "portal" | "blog" | "minimal") => {
+      const presets: Record<string, Partial<LayoutConfig>> = {
+        website: {
+          header: {
+            enabled: true,
+            fixed: false,
+            height: "md",
+            showLogo: true,
+            showNavigation: true,
+            showUserMenu: true,
+            collapsible: true,
+          },
+          sidebar: {
+            enabled: false,
+            position: "left",
+            variant: "fixed",
+            width: "md",
+            collapsible: true,
+            defaultCollapsed: false,
+            showOnMobile: false,
+            mobileBreakpoint: "md",
+          },
+          footer: {
+            enabled: true,
+            fixed: false,
+            variant: "detailed",
+            showOnMobile: true,
+          },
+          content: {
+            maxWidth: "container",
+            padding: "md",
+            centered: true,
+          },
         },
-        sidebar: { 
-          enabled: false,
-          position: 'left',
-          variant: 'fixed',
-          width: 'md',
-          collapsible: true,
-          defaultCollapsed: false,
-          showOnMobile: false,
-          mobileBreakpoint: 'md'
+        dashboard: {
+          header: {
+            enabled: true,
+            fixed: true,
+            height: "md",
+            showLogo: true,
+            showNavigation: true,
+            showUserMenu: true,
+            collapsible: true,
+          },
+          sidebar: {
+            enabled: true,
+            position: "left",
+            variant: "fixed",
+            width: "md",
+            collapsible: true,
+            defaultCollapsed: false,
+            showOnMobile: false,
+            mobileBreakpoint: "md",
+          },
+          footer: {
+            enabled: false,
+            fixed: false,
+            variant: "simple",
+            showOnMobile: false,
+          },
+          content: {
+            maxWidth: "full",
+            padding: "md",
+            centered: false,
+          },
         },
-        footer: { 
-          enabled: true, 
-          fixed: false,
-          variant: 'detailed',
-          showOnMobile: true
+        portal: {
+          header: {
+            enabled: true,
+            fixed: true,
+            height: "lg",
+            showLogo: true,
+            showNavigation: true,
+            showUserMenu: true,
+            collapsible: true,
+          },
+          sidebar: {
+            enabled: true,
+            position: "left",
+            variant: "drawer",
+            width: "lg",
+            collapsible: true,
+            defaultCollapsed: false,
+            showOnMobile: true,
+            mobileBreakpoint: "md",
+          },
+          footer: {
+            enabled: true,
+            fixed: false,
+            variant: "minimal",
+            showOnMobile: true,
+          },
+          content: {
+            maxWidth: "full",
+            padding: "lg",
+            centered: false,
+          },
         },
-        content: { 
-          maxWidth: 'container', 
-          padding: 'md',
-          centered: true 
+        blog: {
+          header: {
+            enabled: true,
+            fixed: false,
+            height: "md",
+            showLogo: true,
+            showNavigation: false,
+            showUserMenu: false,
+            collapsible: true,
+          },
+          sidebar: {
+            enabled: false,
+            position: "left",
+            variant: "fixed",
+            width: "md",
+            collapsible: true,
+            defaultCollapsed: false,
+            showOnMobile: false,
+            mobileBreakpoint: "md",
+          },
+          footer: {
+            enabled: true,
+            fixed: false,
+            variant: "simple",
+            showOnMobile: true,
+          },
+          content: {
+            maxWidth: "prose",
+            padding: "lg",
+            centered: true,
+          },
         },
-      },
-      dashboard: {
-        header: { 
-          enabled: true, 
-          fixed: true, 
-          height: 'md',
-          showLogo: true,
-          showNavigation: true,
-          showUserMenu: true,
-          collapsible: true
+        minimal: {
+          header: {
+            enabled: false,
+            fixed: false,
+            height: "md",
+            showLogo: false,
+            showNavigation: false,
+            showUserMenu: false,
+            collapsible: false,
+          },
+          sidebar: {
+            enabled: false,
+            position: "left",
+            variant: "fixed",
+            width: "md",
+            collapsible: false,
+            defaultCollapsed: false,
+            showOnMobile: false,
+            mobileBreakpoint: "md",
+          },
+          footer: {
+            enabled: false,
+            fixed: false,
+            variant: "simple",
+            showOnMobile: false,
+          },
+          content: {
+            maxWidth: "full",
+            padding: "md",
+            centered: true,
+          },
         },
-        sidebar: { 
-          enabled: true, 
-          position: 'left',
-          variant: 'fixed', 
-          width: 'md',
-          collapsible: true,
-          defaultCollapsed: false,
-          showOnMobile: false,
-          mobileBreakpoint: 'md'
-        },
-        footer: { 
-          enabled: false,
-          fixed: false,
-          variant: 'simple',
-          showOnMobile: false
-        },
-        content: { 
-          maxWidth: 'full', 
-          padding: 'md',
-          centered: false 
-        },
-      },
-      portal: {
-        header: { 
-          enabled: true, 
-          fixed: true, 
-          height: 'lg',
-          showLogo: true,
-          showNavigation: true,
-          showUserMenu: true,
-          collapsible: true
-        },
-        sidebar: { 
-          enabled: true, 
-          position: 'left',
-          variant: 'drawer', 
-          width: 'lg',
-          collapsible: true,
-          defaultCollapsed: false,
-          showOnMobile: true,
-          mobileBreakpoint: 'md'
-        },
-        footer: { 
-          enabled: true, 
-          fixed: false,
-          variant: 'minimal',
-          showOnMobile: true
-        },
-        content: { 
-          maxWidth: 'full', 
-          padding: 'lg',
-          centered: false 
-        },
-      },
-      blog: {
-        header: { 
-          enabled: true, 
-          fixed: false,
-          height: 'md',
-          showLogo: true,
-          showNavigation: false,
-          showUserMenu: false,
-          collapsible: true
-        },
-        sidebar: { 
-          enabled: false,
-          position: 'left',
-          variant: 'fixed',
-          width: 'md',
-          collapsible: true,
-          defaultCollapsed: false,
-          showOnMobile: false,
-          mobileBreakpoint: 'md'
-        },
-        footer: { 
-          enabled: true, 
-          fixed: false,
-          variant: 'simple',
-          showOnMobile: true
-        },
-        content: { 
-          maxWidth: 'prose', 
-          padding: 'lg',
-          centered: true 
-        },
-      },
-      minimal: {
-        header: { 
-          enabled: false,
-          fixed: false,
-          height: 'md',
-          showLogo: false,
-          showNavigation: false,
-          showUserMenu: false,
-          collapsible: false
-        },
-        sidebar: { 
-          enabled: false,
-          position: 'left',
-          variant: 'fixed',
-          width: 'md',
-          collapsible: false,
-          defaultCollapsed: false,
-          showOnMobile: false,
-          mobileBreakpoint: 'md'
-        },
-        footer: { 
-          enabled: false,
-          fixed: false,
-          variant: 'simple',
-          showOnMobile: false
-        },
-        content: { 
-          maxWidth: 'full', 
-          padding: 'md', 
-          centered: true 
-        },
-      },
-    };
+      };
 
-    updateConfig(presets[preset]);
-  }, [updateConfig]);
+      updateConfig(presets[preset]);
+    },
+    [updateConfig]
+  );
 
   const value = useMemo(
     () => ({
@@ -473,6 +494,7 @@ export function LayoutProvider({ children }: PropsWithChildren) {
       toggleSidebar,
       toggleMobileMenu,
       closeMobileMenu,
+      setHeader,
       applyPreset,
     }),
     [
@@ -485,6 +507,7 @@ export function LayoutProvider({ children }: PropsWithChildren) {
       toggleSidebar,
       toggleMobileMenu,
       closeMobileMenu,
+      setHeader,
       applyPreset,
     ]
   );

@@ -112,6 +112,7 @@
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-urdu: var(--font-urdu);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -157,4 +158,143 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* RTL Support for Urdu Language */
+[dir="rtl"] {
+  --tw-rotate: -180deg;
+}
+
+[dir="rtl"] .rtl\:space-x-reverse > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 1;
+}
+
+[dir="rtl"] .rtl\:divide-x-reverse > :not([hidden]) ~ :not([hidden]) {
+  --tw-divide-x-reverse: 1;
+}
+
+/* Font support for Arabic/Urdu text */
+.font-urdu {
+  font-family:
+    var(--font-urdu), "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Arial Unicode MS", "Tahoma",
+    sans-serif;
+  font-weight: 400;
+  text-align: right;
+  line-height: 1.8;
+}
+
+.font-arabic {
+  font-family: "Arial", "Tahoma", "Segoe UI", sans-serif;
+  font-weight: 400;
+  text-align: right;
+}
+
+/* Better RTL support for dropdowns and modals */
+[dir="rtl"] .dropdown-content {
+  right: 0;
+  left: auto;
+}
+
+[dir="rtl"] .tooltip {
+  right: 0;
+  left: auto;
+}
+
+/* RTL support for navigation */
+[dir="rtl"] .nav-item {
+  text-align: right;
+}
+
+/* RTL support for forms */
+[dir="rtl"] input,
+[dir="rtl"] textarea,
+[dir="rtl"] select {
+  text-align: right;
+  direction: rtl;
+}
+
+/* RTL support for buttons with icons */
+[dir="rtl"] .btn-with-icon {
+  flex-direction: row-reverse;
+}
+
+/* RTL improvements for dashboard layout */
+[dir="rtl"] .dashboard-card {
+  text-align: right;
+}
+
+[dir="rtl"] .sidebar-navigation {
+  direction: rtl;
+}
+
+/* RTL improvements for mobile navigation */
+[dir="rtl"] .mobile-nav-item {
+  text-align: right;
+  direction: rtl;
+}
+
+/* RTL improvements for responsive design */
+@media (max-width: 768px) {
+  [dir="rtl"] .mobile-sidebar {
+    right: 0;
+    left: auto;
+  }
+}
+
+/* Enhanced RTL spacing for Urdu text */
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] h5,
+[dir="rtl"] h6 {
+  text-align: right;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+[dir="rtl"] p {
+  text-align: right;
+  line-height: 1.8;
+  margin-bottom: 0.75rem;
+}
+
+/* Better spacing for RTL cards and components */
+[dir="rtl"] .card-header {
+  text-align: right;
+}
+
+[dir="rtl"] .card-title {
+  text-align: right;
+  margin-bottom: 0.5rem;
+}
+
+[dir="rtl"] .card-description {
+  text-align: right;
+  line-height: 1.7;
+}
+
+/* RTL button spacing */
+[dir="rtl"] .btn {
+  direction: rtl;
+}
+
+[dir="rtl"] .btn svg {
+  margin-left: 0.5rem;
+  margin-right: 0;
+}
+
+/* RTL flex improvements */
+[dir="rtl"] .flex-rtl {
+  flex-direction: row-reverse;
+}
+
+/* RTL table improvements */
+[dir="rtl"] table {
+  direction: rtl;
+}
+
+[dir="rtl"] th,
+[dir="rtl"] td {
+  text-align: right;
 }
