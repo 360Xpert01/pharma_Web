@@ -6,6 +6,8 @@ import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { getFormErrorMessage } from "@/lib/actions/actions";
+import { useAuthLoading } from "@/hooks/use-loading-state";
+import LoaderOverlay from "@/components/shared/loader-overlay";
 
 const schema = z.object({
   email: z.string().email(),
@@ -16,17 +18,32 @@ type FormValues = z.infer<typeof schema>;
 
 export default function SignupPage() {
   const t = useTranslations("auth.signup");
+  const vt = useTranslations("auth.validation");
+  const { isLoading, executeWithLoading } = useAuthLoading();
+
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { email: "", password: "" },
   });
+
   async function onSubmit(values: FormValues) {
-    // await api.auth.signup(values)
-    window.location.href = "/auth/login";
+    await executeWithLoading(async () => {
+      // Simulate API signup; integrate axios client here
+      // const { data } = await api.auth.signup(values)
+
+      // Simulate network delay
+      const { sleep } = await import("@/lib/actions/actions");
+      await sleep(1500);
+
+      window.location.href = "/auth/login";
+    });
   }
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">{t("title")}</h1>
+    <div className="relative space-y-6">
+      <LoaderOverlay isLoading={isLoading} />
+      <div className="space-y-2">
+        <h1 className="text-2xl font-bold">{t("title")}</h1>
+      </div>
       <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)} noValidate>
         <div className="grid gap-2">
           <label htmlFor="email" className="text-sm font-medium">
@@ -60,8 +77,8 @@ export default function SignupPage() {
             </p>
           )}
         </div>
-        <Button type="submit" className="w-full">
-          {t("submitButton")}
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? t("submittingButton") : t("submitButton")}
         </Button>
       </form>
       <p className="text-sm text-muted-foreground">

@@ -6,7 +6,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AppError, ErrorFactory } from "@/lib/error-factory";
 import { AlertIcon, RefreshIcon, HomeIcon, BugIcon } from "@/lib/icons";
 import { logger } from "@/lib/logger";
-import { SHARED_TEXTS } from "@/constants";
+import { useTranslations } from "next-intl";
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -20,6 +20,12 @@ interface ErrorBoundaryProps {
   onError?: (error: AppError, errorInfo: ErrorInfo) => void;
   showDetails?: boolean;
   isolation?: boolean; // Whether to isolate the error to this boundary
+  translations?: {
+    title: string;
+    subtitle: string;
+    retryButton: string;
+    homeButton: string;
+  };
 }
 
 // Error Boundary Component
@@ -126,25 +132,29 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-destructive/10 flex items-center justify-center">
                 <AlertIcon className="h-6 w-6 text-destructive" />
               </div>
-              <CardTitle className="text-xl">{SHARED_TEXTS.errorBoundary.title}</CardTitle>
+              <CardTitle className="text-xl">
+                {this.props.translations?.title || "Something went wrong"}
+              </CardTitle>
             </CardHeader>
 
             <CardContent className="space-y-4">
               <Alert>
                 <AlertDescription>
-                  {this.state.error.message || SHARED_TEXTS.errorBoundary.subtitle}
+                  {this.state.error.message ||
+                    this.props.translations?.subtitle ||
+                    "An error occurred while loading this page"}
                 </AlertDescription>
               </Alert>
 
               <div className="flex flex-col sm:flex-row gap-2">
                 <Button onClick={this.handleRetry} className="flex-1" variant="default">
                   <RefreshIcon className="h-4 w-4 mr-2" />
-                  {SHARED_TEXTS.errorBoundary.retryButton}
+                  {this.props.translations?.retryButton || "Try again"}
                 </Button>
 
                 <Button onClick={this.handleGoHome} variant="outline" className="flex-1">
                   <HomeIcon className="h-4 w-4 mr-2" />
-                  {SHARED_TEXTS.errorBoundary.homeButton}
+                  {this.props.translations?.homeButton || "Go to home"}
                 </Button>
               </div>
 
@@ -188,3 +198,27 @@ export function useErrorBoundary() {
 
   return { throwError };
 }
+
+// Functional wrapper that provides translations to the ErrorBoundary
+export function ErrorBoundaryWithTranslations({
+  children,
+  ...props
+}: Omit<ErrorBoundaryProps, "translations">) {
+  const t = useTranslations("shared.errorBoundary");
+
+  const translations = {
+    title: t("title"),
+    subtitle: t("subtitle"),
+    retryButton: t("retryButton"),
+    homeButton: t("homeButton"),
+  };
+
+  return (
+    <ErrorBoundary translations={translations} {...props}>
+      {children}
+    </ErrorBoundary>
+  );
+}
+
+// Export the wrapper as the default export for easier usage
+export default ErrorBoundaryWithTranslations;

@@ -2,44 +2,19 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CloseIcon, HomeIcon, BarChartIcon, SettingsIcon, UsersIcon, FileIcon, PaletteIcon } from "@/lib/icons";
+import { useTranslations } from "next-intl";
+import {
+  CloseIcon,
+  HomeIcon,
+  BarChartIcon,
+  SettingsIcon,
+  UsersIcon,
+  FileIcon,
+  PaletteIcon,
+} from "@/lib/icons";
 import { useLayout } from "@/contexts/layout-context";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-// Same navigation items as sidebar
-const navigationItems = [
-  {
-    title: "Overview",
-    href: "/dashboard",
-    icon: HomeIcon,
-  },
-  {
-    title: "Analytics", 
-    href: "/dashboard/analytics",
-    icon: BarChartIcon,
-  },
-  {
-    title: "Users",
-    href: "/dashboard/users",
-    icon: UsersIcon,
-  },
-  {
-    title: "Content",
-    href: "/dashboard/content",
-    icon: FileIcon,
-  },
-  {
-    title: "Layout Settings",
-    href: "/dashboard/layout-settings",
-    icon: PaletteIcon,
-  },
-  {
-    title: "Settings",
-    href: "/dashboard/settings",
-    icon: SettingsIcon,
-  },
-];
 
 interface MobileMenuProps {
   className?: string;
@@ -48,6 +23,41 @@ interface MobileMenuProps {
 export function MobileMenu({ className }: MobileMenuProps) {
   const { config, state, closeMobileMenu } = useLayout();
   const pathname = usePathname();
+  const t = useTranslations("layout.navigation");
+
+  // Same navigation items as sidebar - now using translations
+  const navigationItems = [
+    {
+      title: t("dashboard"),
+      href: "/dashboard",
+      icon: HomeIcon,
+    },
+    {
+      title: t("analytics"),
+      href: "/dashboard/analytics",
+      icon: BarChartIcon,
+    },
+    {
+      title: t("users"),
+      href: "/dashboard/users",
+      icon: UsersIcon,
+    },
+    {
+      title: t("content"),
+      href: "/dashboard/content",
+      icon: FileIcon,
+    },
+    {
+      title: t("layoutSettings"),
+      href: "/dashboard/layout-settings",
+      icon: PaletteIcon,
+    },
+    {
+      title: t("settings"),
+      href: "/dashboard/settings",
+      icon: SettingsIcon,
+    },
+  ];
 
   if (!state.mobileMenuOpen) return null;
 
@@ -76,7 +86,7 @@ export function MobileMenu({ className }: MobileMenuProps) {
           variant="ghost"
           size="sm"
           onClick={closeMobileMenu}
-          aria-label="Close mobile menu"
+          aria-label={t("closeMobileMenu")}
         >
           <CloseIcon className="h-5 w-5" />
         </Button>

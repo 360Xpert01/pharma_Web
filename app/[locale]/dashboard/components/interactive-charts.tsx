@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DASHBOARD_TEXTS } from "@/constants/dashboard";
+import { useTranslations } from "next-intl";
 import {
   LineChart,
   Line,
@@ -41,11 +41,11 @@ const salesData = [
 ];
 
 const trafficSources = [
-  { name: "Direct", value: 400, color: DASHBOARD_TEXTS.colors.primary },
-  { name: "Organic Search", value: 300, color: DASHBOARD_TEXTS.colors.success },
-  { name: "Social Media", value: 200, color: DASHBOARD_TEXTS.colors.warning },
-  { name: "Email", value: 100, color: DASHBOARD_TEXTS.colors.danger },
-  { name: "Referral", value: 150, color: DASHBOARD_TEXTS.colors.info },
+  { name: "Direct", value: 400, color: "#3b82f6" },
+  { name: "Organic Search", value: 300, color: "#10b981" },
+  { name: "Social Media", value: 200, color: "#f59e0b" },
+  { name: "Email", value: 100, color: "#ef4444" },
+  { name: "Referral", value: 150, color: "#8b5cf6" },
 ];
 
 const userActivityData = [
@@ -68,6 +68,8 @@ interface ChartCardProps {
 }
 
 function ChartCard({ title, description, children, icon: Icon, badge, className }: ChartCardProps) {
+  const t = useTranslations("dashboard");
+
   return (
     <Card className={className}>
       <CardHeader className="flex flex-row items-center justify-between">
@@ -84,7 +86,7 @@ function ChartCard({ title, description, children, icon: Icon, badge, className 
           {description && <p className="text-sm text-muted-foreground">{description}</p>}
         </div>
         <Button variant="outline" size="sm">
-          {DASHBOARD_TEXTS.actions.viewAll}
+          {t("actions.viewAll")}
         </Button>
       </CardHeader>
       <CardContent>{children}</CardContent>
@@ -97,6 +99,34 @@ interface InteractiveChartsProps {
 }
 
 export function InteractiveCharts({ isLoading = false }: InteractiveChartsProps) {
+  const t = useTranslations("dashboard");
+
+  // Translated chart data
+  const revenueDataTranslated = [
+    { month: t("charts.data.months.jan"), revenue: 4000, users: 2400, orders: 240 },
+    { month: t("charts.data.months.feb"), revenue: 3000, users: 1398, orders: 221 },
+    { month: t("charts.data.months.mar"), revenue: 5000, users: 9800, orders: 329 },
+    { month: t("charts.data.months.apr"), revenue: 4500, users: 3908, orders: 400 },
+    { month: t("charts.data.months.may"), revenue: 6000, users: 4800, orders: 481 },
+    { month: t("charts.data.months.jun"), revenue: 7500, users: 3800, orders: 380 },
+  ];
+
+  const salesDataTranslated = [
+    { product: t("charts.data.products.productA"), sales: 4000, profit: 2400 },
+    { product: t("charts.data.products.productB"), sales: 3000, profit: 1398 },
+    { product: t("charts.data.products.productC"), sales: 2000, profit: 1200 },
+    { product: t("charts.data.products.productD"), sales: 2780, profit: 1800 },
+    { product: t("charts.data.products.productE"), sales: 1890, profit: 1100 },
+  ];
+
+  const trafficSourcesTranslated = [
+    { name: t("charts.data.traffic.direct"), value: 400, color: "#3b82f6" },
+    { name: t("charts.data.traffic.organicSearch"), value: 300, color: "#10b981" },
+    { name: t("charts.data.traffic.socialMedia"), value: 200, color: "#f59e0b" },
+    { name: t("charts.data.traffic.email"), value: 100, color: "#ef4444" },
+    { name: t("charts.data.traffic.referral"), value: 150, color: "#8b5cf6" },
+  ];
+
   if (isLoading) {
     return (
       <div className="grid gap-6 md:grid-cols-2">
@@ -124,17 +154,17 @@ export function InteractiveCharts({ isLoading = false }: InteractiveChartsProps)
     <div className="space-y-6">
       {/* Revenue Trend Chart */}
       <ChartCard
-        title={DASHBOARD_TEXTS.charts.revenueTrend.title}
-        description={DASHBOARD_TEXTS.charts.revenueTrend.description}
+        title={t("charts.revenueTrend.title")}
+        description={t("charts.revenueTrend.description")}
         icon={TrendingUpIcon}
         badge="Updated"
       >
         <ResponsiveContainer width="100%" height={300}>
-          <AreaChart data={revenueData}>
+          <AreaChart data={revenueDataTranslated}>
             <defs>
               <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={DASHBOARD_TEXTS.colors.primary} stopOpacity={0.8} />
-                <stop offset="95%" stopColor={DASHBOARD_TEXTS.colors.primary} stopOpacity={0.1} />
+                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1} />
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" />
@@ -148,10 +178,10 @@ export function InteractiveCharts({ isLoading = false }: InteractiveChartsProps)
             <Area
               type="monotone"
               dataKey="revenue"
-              stroke={DASHBOARD_TEXTS.colors.primary}
+              stroke="#3b82f6"
               fillOpacity={1}
               fill="url(#colorRevenue)"
-              name="Revenue"
+              name={t("charts.data.labels.revenue")}
             />
           </AreaChart>
         </ResponsiveContainer>
@@ -160,12 +190,12 @@ export function InteractiveCharts({ isLoading = false }: InteractiveChartsProps)
       <div className="grid gap-6 md:grid-cols-2">
         {/* Sales Comparison Chart */}
         <ChartCard
-          title={DASHBOARD_TEXTS.charts.salesComparison.title}
+          title={t("charts.salesComparison.title")}
           description="Product sales vs profit comparison"
           icon={BarChartIcon}
         >
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={salesData}>
+            <BarChart data={salesDataTranslated}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="product" />
               <YAxis />
@@ -173,14 +203,14 @@ export function InteractiveCharts({ isLoading = false }: InteractiveChartsProps)
               <Legend />
               <Bar
                 dataKey="sales"
-                fill={DASHBOARD_TEXTS.colors.primary}
-                name="Sales"
+                fill="#3b82f6"
+                name={t("charts.data.labels.sales")}
                 radius={[4, 4, 0, 0]}
               />
               <Bar
                 dataKey="profit"
-                fill={DASHBOARD_TEXTS.colors.success}
-                name="Profit"
+                fill="#10b981"
+                name={t("charts.data.labels.profit")}
                 radius={[4, 4, 0, 0]}
               />
             </BarChart>
@@ -189,7 +219,7 @@ export function InteractiveCharts({ isLoading = false }: InteractiveChartsProps)
 
         {/* Traffic Sources Pie Chart */}
         <ChartCard
-          title={DASHBOARD_TEXTS.charts.trafficSources.title}
+          title={t("charts.trafficSources.title")}
           description="Website traffic breakdown by source"
           icon={PieChartIcon}
         >
@@ -204,7 +234,7 @@ export function InteractiveCharts({ isLoading = false }: InteractiveChartsProps)
                 paddingAngle={5}
                 dataKey="value"
               >
-                {trafficSources.map((entry, index) => (
+                {trafficSourcesTranslated.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
@@ -218,7 +248,7 @@ export function InteractiveCharts({ isLoading = false }: InteractiveChartsProps)
       <div className="grid gap-6 md:grid-cols-2">
         {/* User Activity Chart */}
         <ChartCard
-          title={DASHBOARD_TEXTS.charts.userActivity.title}
+          title={t("charts.userActivity.title")}
           description="Daily user activity pattern"
           icon={ActivityIcon}
         >
@@ -234,9 +264,9 @@ export function InteractiveCharts({ isLoading = false }: InteractiveChartsProps)
               <Line
                 type="monotone"
                 dataKey="active"
-                stroke={DASHBOARD_TEXTS.colors.success}
+                stroke="#10b981"
                 strokeWidth={3}
-                dot={{ fill: DASHBOARD_TEXTS.colors.success, strokeWidth: 2, r: 4 }}
+                dot={{ fill: "#10b981", strokeWidth: 2, r: 4 }}
                 activeDot={{ r: 6 }}
               />
             </LineChart>
@@ -245,7 +275,7 @@ export function InteractiveCharts({ isLoading = false }: InteractiveChartsProps)
 
         {/* Performance Metrics */}
         <ChartCard
-          title={DASHBOARD_TEXTS.charts.performanceMetrics.title}
+          title={t("charts.performanceMetrics.title")}
           description="Key performance indicators over time"
           icon={BarChartIcon}
         >
@@ -255,12 +285,7 @@ export function InteractiveCharts({ isLoading = false }: InteractiveChartsProps)
               <XAxis dataKey="month" />
               <YAxis />
               <Tooltip />
-              <Bar
-                dataKey="orders"
-                fill={DASHBOARD_TEXTS.colors.info}
-                name="Orders"
-                radius={[4, 4, 0, 0]}
-              />
+              <Bar dataKey="orders" fill="#8b5cf6" name="Orders" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>

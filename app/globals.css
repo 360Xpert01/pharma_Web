@@ -217,3 +217,84 @@
 [dir="rtl"] .btn-with-icon {
   flex-direction: row-reverse;
 }
+
+/* RTL improvements for dashboard layout */
+[dir="rtl"] .dashboard-card {
+  text-align: right;
+}
+
+[dir="rtl"] .sidebar-navigation {
+  direction: rtl;
+}
+
+/* RTL improvements for mobile navigation */
+[dir="rtl"] .mobile-nav-item {
+  text-align: right;
+  direction: rtl;
+}
+
+/* RTL improvements for responsive design */
+@media (max-width: 768px) {
+  [dir="rtl"] .mobile-sidebar {
+    right: 0;
+    left: auto;
+  }
+}
+
+/* Enhanced RTL spacing for Urdu text */
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] h5,
+[dir="rtl"] h6 {
+  text-align: right;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+[dir="rtl"] p {
+  text-align: right;
+  line-height: 1.8;
+  margin-bottom: 0.75rem;
+}
+
+/* Better spacing for RTL cards and components */
+[dir="rtl"] .card-header {
+  text-align: right;
+}
+
+[dir="rtl"] .card-title {
+  text-align: right;
+  margin-bottom: 0.5rem;
+}
+
+[dir="rtl"] .card-description {
+  text-align: right;
+  line-height: 1.7;
+}
+
+/* RTL button spacing */
+[dir="rtl"] .btn {
+  direction: rtl;
+}
+
+[dir="rtl"] .btn svg {
+  margin-left: 0.5rem;
+  margin-right: 0;
+}
+
+/* RTL flex improvements */
+[dir="rtl"] .flex-rtl {
+  flex-direction: row-reverse;
+}
+
+/* RTL table improvements */
+[dir="rtl"] table {
+  direction: rtl;
+}
+
+[dir="rtl"] th,
+[dir="rtl"] td {
+  text-align: right;
+}

@@ -1,4 +1,4 @@
-export const AUTH_TEXTS = {
+const auth = {
   // Login page
   login: {
     title: "Welcome back",
@@ -17,6 +17,7 @@ export const AUTH_TEXTS = {
     emailLabel: "Email",
     passwordLabel: "Password",
     submitButton: "Sign up",
+    submittingButton: "Creating account...",
     hasAccountText: "Already have an account?",
     loginLink: "Log in",
   },
@@ -77,4 +78,7 @@ export const AUTH_TEXTS = {
     networkError: "Network error. Please check your connection.",
     serverError: "Server error. Please try again later.",
   },
-};
+} as const;
+
+export default auth;
+export type AuthMessages = typeof auth;

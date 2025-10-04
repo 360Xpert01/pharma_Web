@@ -1,4 +1,4 @@
-export const SHARED_TEXTS = {
+const shared = {
   // Error boundary component
   errorBoundary: {
     title: "Something went wrong",
@@ -150,61 +150,7 @@ export const SHARED_TEXTS = {
     fileSize: "File size must be less than {size}",
     fileType: "Please select a valid file type",
   },
+} as const;
 
-  // Common actions
-  actions: {
-    save: "Save",
-    cancel: "Cancel",
-    edit: "Edit",
-    delete: "Delete",
-    view: "View",
-    create: "Create",
-    update: "Update",
-    submit: "Submit",
-    reset: "Reset",
-    clear: "Clear",
-    copy: "Copy",
-    paste: "Paste",
-    cut: "Cut",
-    undo: "Undo",
-    redo: "Redo",
-    print: "Print",
-    download: "Download",
-    upload: "Upload",
-    share: "Share",
-    export: "Export",
-    import: "Import",
-    refresh: "Refresh",
-    reload: "Reload",
-    back: "Back",
-    forward: "Forward",
-    close: "Close",
-    open: "Open",
-    expand: "Expand",
-    collapse: "Collapse",
-    minimize: "Minimize",
-    maximize: "Maximize",
-  },
-
-  // Status messages
-  status: {
-    success: "Success",
-    error: "Error",
-    warning: "Warning",
-    info: "Information",
-    loading: "Loading",
-    saving: "Saving",
-    saved: "Saved",
-    deleted: "Deleted",
-    updated: "Updated",
-    created: "Created",
-    uploaded: "Uploaded",
-    downloaded: "Downloaded",
-    copied: "Copied",
-    failed: "Failed",
-    completed: "Completed",
-    pending: "Pending",
-    processing: "Processing",
-    cancelled: "Cancelled",
-  },
-};
+export default shared;
+export type SharedMessages = typeof shared;

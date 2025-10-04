@@ -8,7 +8,7 @@ import PageHead from "@/components/shared/page-head";
 import { HomeIcon, BackIcon, SearchInputIcon, RefreshIcon } from "@/lib/icons";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
-import { ERROR_TEXTS } from "@/constants";
+import { useTranslations } from "next-intl";
 
 interface NotFoundPageProps {
   title?: string;
@@ -21,6 +21,7 @@ interface NotFoundPageProps {
 function NotFoundAnimation() {
   const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const t = useTranslations("error.notFound");
 
   useEffect(() => {
     setMounted(true);
@@ -33,7 +34,7 @@ function NotFoundAnimation() {
       <div className="text-center">
         <div className="relative inline-block">
           <h1 className="text-9xl font-bold text-primary/20 select-none animate-pulse">
-            {ERROR_TEXTS.notFound.heading}
+            {t("heading")}
           </h1>
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin" />
@@ -46,10 +47,13 @@ function NotFoundAnimation() {
 
 // Search Suggestions Component
 function SearchSuggestions() {
+  const t = useTranslations("error.notFound");
+  const nt = useTranslations("navigation.main");
+
   const commonPages = [
-    { name: ERROR_TEXTS.notFound.primaryButton, href: "/", icon: HomeIcon },
-    { name: "Dashboard", href: "/dashboard", icon: SearchInputIcon },
-    { name: "Settings", href: "/dashboard/layout-settings", icon: SearchInputIcon },
+    { name: t("primaryButton"), href: "/", icon: HomeIcon },
+    { name: nt("dashboard"), href: "/dashboard", icon: SearchInputIcon },
+    { name: nt("settings"), href: "/dashboard/layout-settings", icon: SearchInputIcon },
   ];
 
   return (
@@ -57,7 +61,7 @@ function SearchSuggestions() {
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-2">
           <SearchInputIcon className="h-5 w-5" />
-          {ERROR_TEXTS.notFound.searchTitle}
+          {t("searchTitle")}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -80,14 +84,21 @@ function SearchSuggestions() {
 }
 
 export default function NotFoundPage({
-  title = ERROR_TEXTS.notFound.title,
-  description = ERROR_TEXTS.notFound.description,
+  title,
+  description,
   showSearchSuggestions = true,
   customActions,
 }: NotFoundPageProps) {
+  const t = useTranslations("error.notFound");
+  const mt = useTranslations("metadata.pages.notFound");
+
   const router = useRouter();
   const [countdown, setCountdown] = useState(10);
   const [autoRedirect, setAutoRedirect] = useState(true);
+
+  // Use translations as default values
+  const pageTitle = title || mt("title");
+  const pageDescription = description || mt("description");
 
   // Auto redirect countdown
   useEffect(() => {
@@ -120,15 +131,15 @@ export default function NotFoundPage({
 
   return (
     <>
-      <PageHead title={title} description={description} />
+      <PageHead title={pageTitle} description={pageDescription} />
 
       <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background to-muted">
         <div className="w-full max-w-2xl space-y-8">
           <NotFoundAnimation />
 
           <div className="text-center space-y-4">
-            <h2 className="text-3xl font-bold tracking-tight">{title}</h2>
-            <p className="text-xl text-muted-foreground max-w-md mx-auto">{description}</p>
+            <h2 className="text-3xl font-bold tracking-tight">{pageTitle}</h2>
+            <p className="text-xl text-muted-foreground max-w-md mx-auto">{pageDescription}</p>
           </div>
 
           {/* Auto-redirect notification */}
@@ -136,14 +147,9 @@ export default function NotFoundPage({
             <Alert>
               <RefreshIcon className="h-4 w-4" />
               <AlertDescription className="flex items-center justify-between">
-                <span>
-                  {ERROR_TEXTS.notFound.autoRedirectMessage.replace(
-                    "{count}",
-                    countdown.toString()
-                  )}
-                </span>
+                <span>{t("autoRedirectMessage").replace("{count}", countdown.toString())}</span>
                 <Button variant="ghost" size="sm" onClick={handleStopRedirect}>
-                  {ERROR_TEXTS.notFound.cancelRedirect}
+                  {t("cancelRedirect")}
                 </Button>
               </AlertDescription>
             </Alert>
@@ -155,13 +161,13 @@ export default function NotFoundPage({
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button onClick={handleGoBack} variant="outline" className="flex-1">
                   <BackIcon className="h-4 w-4 mr-2" />
-                  {ERROR_TEXTS.notFound.secondaryButton}
+                  {t("secondaryButton")}
                 </Button>
 
                 <Button asChild className="flex-1">
                   <Link href="/">
                     <HomeIcon className="h-4 w-4 mr-2" />
-                    {ERROR_TEXTS.notFound.primaryButton}
+                    {t("primaryButton")}
                   </Link>
                 </Button>
 
@@ -171,7 +177,7 @@ export default function NotFoundPage({
                   className="flex-1"
                 >
                   <RefreshIcon className="h-4 w-4 mr-2" />
-                  {ERROR_TEXTS.notFound.refreshButton}
+                  {t("refreshButton")}
                 </Button>
               </div>
 
@@ -185,9 +191,9 @@ export default function NotFoundPage({
           {/* Help Text */}
           <div className="text-center">
             <p className="text-sm text-muted-foreground">
-              {ERROR_TEXTS.notFound.supportText}{" "}
+              {t("supportText")}{" "}
               <Button variant="link" className="p-0 h-auto">
-                {ERROR_TEXTS.notFound.contactSupport}
+                {t("contactSupport")}
               </Button>
             </p>
           </div>

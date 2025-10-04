@@ -1,7 +1,7 @@
 "use client";
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { io, Socket } from "socket.io-client";
-import { DASHBOARD_TEXTS } from "@/constants/dashboard";
+import { useTranslations } from "next-intl";
 import { logger } from "@/lib/logger";
 
 interface RealTimeData {
@@ -67,9 +67,71 @@ export function RealTimeProvider({ children }: RealTimeProviderProps) {
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
   useEffect(() => {
-    // Initialize socket connection
-    // Note: Replace with your actual WebSocket server URL
-    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3001";
+    // Initialize socket connection only if WebSocket server URL is provided
+    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL;
+
+    // Skip socket connection if no URL is provided (development mode)
+    if (!socketUrl) {
+      logger.info("No WebSocket server URL provided, using mock data mode");
+      setIsConnected(false);
+      setConnectionStatus("disconnected");
+
+      // Start mock data simulation immediately
+      const interval = setInterval(() => {
+        // Simulate metrics updates
+        const mockMetrics = {
+          totalUsers: Math.floor(Math.random() * 1000) + 12000,
+          activeSessions: Math.floor(Math.random() * 500) + 2000,
+          revenue: Math.floor(Math.random() * 10000) + 40000,
+          conversionRate: Math.round((Math.random() * 2 + 2) * 100) / 100,
+          orders: Math.floor(Math.random() * 200) + 1800,
+          growth: Math.round((Math.random() * 10 + 10) * 100) / 100,
+          bounceRate: Math.round((Math.random() * 10 + 30) * 100) / 100,
+          pageViews: Math.floor(Math.random() * 10000) + 90000,
+        };
+
+        // Simulate activity updates
+        const mockActivities = [
+          {
+            id: Date.now().toString(),
+            user: "احمد علی",
+            action: "نیا آرڈر #1234 بنایا",
+            timestamp: new Date().toISOString(),
+            type: "order" as const,
+          },
+          {
+            id: (Date.now() + 1).toString(),
+            user: "فاطمہ خان",
+            action: "پروفائل کی معلومات اپ ڈیٹ کیں",
+            timestamp: new Date().toISOString(),
+            type: "user" as const,
+          },
+          {
+            id: (Date.now() + 2).toString(),
+            user: "محمد حسن",
+            action: "نیا پروڈکٹ خریدا",
+            timestamp: new Date().toISOString(),
+            type: "user" as const,
+          },
+          {
+            id: (Date.now() + 3).toString(),
+            user: "عائشہ احمد",
+            action: "جائزہ چھوڑا",
+            timestamp: new Date().toISOString(),
+            type: "user" as const,
+          },
+        ];
+
+        setData((prev) => ({
+          ...prev,
+          metrics: mockMetrics,
+          activities: mockActivities,
+        }));
+        setLastUpdate(new Date());
+      }, 10000); // Update every 10 seconds
+
+      return () => clearInterval(interval);
+    }
 
     const newSocket = io(socketUrl, {
       transports: ["websocket", "polling"],
@@ -81,14 +143,14 @@ export function RealTimeProvider({ children }: RealTimeProviderProps) {
     newSocket.on("connect", () => {
       logger.info("Connected to real-time server", { socketId: newSocket.id });
       setIsConnected(true);
-      setConnectionStatus(DASHBOARD_TEXTS.notifications.realTimeConnected);
+      setConnectionStatus("connected");
       setSocket(newSocket);
     });
 
     newSocket.on("disconnect", () => {
       logger.info("Disconnected from real-time server");
       setIsConnected(false);
-      setConnectionStatus(DASHBOARD_TEXTS.notifications.realTimeDisconnected);
+      setConnectionStatus("disconnected");
     });
 
     newSocket.on("connect_error", (error) => {
@@ -122,53 +184,6 @@ export function RealTimeProvider({ children }: RealTimeProviderProps) {
     };
   }, []);
 
-  // Simulate real-time data updates when no WebSocket server is available
-  useEffect(() => {
-    if (!isConnected) {
-      const interval = setInterval(() => {
-        // Simulate metrics updates
-        const mockMetrics = {
-          totalUsers: Math.floor(Math.random() * 1000) + 12000,
-          activeSessions: Math.floor(Math.random() * 500) + 2000,
-          revenue: Math.floor(Math.random() * 10000) + 40000,
-          conversionRate: Math.round((Math.random() * 2 + 2) * 100) / 100,
-          orders: Math.floor(Math.random() * 200) + 1800,
-          growth: Math.round((Math.random() * 10 + 10) * 100) / 100,
-          bounceRate: Math.round((Math.random() * 10 + 30) * 100) / 100,
-          pageViews: Math.floor(Math.random() * 10000) + 90000,
-        };
-
-        // Simulate activity updates
-        const mockActivities = [
-          {
-            id: Date.now().toString(),
-            user: "John Doe",
-            action: "Created new order #1234",
-            timestamp: new Date().toISOString(),
-            type: "order" as const,
-          },
-          {
-            id: (Date.now() + 1).toString(),
-            user: "Jane Smith",
-            action: "Updated profile information",
-            timestamp: new Date().toISOString(),
-            type: "user" as const,
-          },
-        ];
-
-        setData((prev) => ({
-          ...prev,
-          metrics: mockMetrics,
-          activities: mockActivities,
-        }));
-        setLastUpdate(new Date());
-        setConnectionStatus("Simulated data");
-      }, 10000); // Update every 10 seconds
-
-      return () => clearInterval(interval);
-    }
-  }, [isConnected]);
-
   const value: RealTimeContextType = {
     socket,
     isConnected,
@@ -183,13 +198,21 @@ export function RealTimeProvider({ children }: RealTimeProviderProps) {
 // Real-time status indicator component
 export function RealTimeStatus() {
   const { isConnected, connectionStatus, lastUpdate } = useRealTime();
+  const t = useTranslations("dashboard.realTime.status");
+
+  const getStatusText = () => {
+    if (isConnected) return t("connected");
+    return connectionStatus === "connecting" ? t("connecting") : t("disconnected");
+  };
 
   return (
     <div className="flex items-center gap-2 text-sm text-muted-foreground">
       <div className={`w-2 h-2 rounded-full ${isConnected ? "bg-green-500" : "bg-red-500"}`} />
-      <span>{connectionStatus}</span>
+      <span>{getStatusText()}</span>
       {lastUpdate && (
-        <span className="text-xs">Last update: {lastUpdate.toLocaleTimeString()}</span>
+        <span className="text-xs">
+          {t("lastUpdate")}: {lastUpdate.toLocaleTimeString()}
+        </span>
       )}
     </div>
   );
@@ -199,13 +222,14 @@ export function RealTimeStatus() {
 export function RecentActivities() {
   const { data } = useRealTime();
   const activities = data.activities || [];
+  const t = useTranslations("dashboard.realTime.activities");
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold">{DASHBOARD_TEXTS.sections.dataLists}</h3>
+      <h3 className="text-lg font-semibold">{t("title")}</h3>
       <div className="space-y-2">
         {activities.length === 0 ? (
-          <p className="text-muted-foreground text-sm">{DASHBOARD_TEXTS.placeholders.noData}</p>
+          <p className="text-muted-foreground text-sm">{t("noData")}</p>
         ) : (
           activities.slice(0, 5).map((activity) => (
             <div key={activity.id} className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">

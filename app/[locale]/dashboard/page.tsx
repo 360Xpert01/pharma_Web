@@ -8,18 +8,10 @@ import { DataLists } from "./components/data-lists";
 import {
   RealTimeProvider,
   RealTimeStatus,
-  RecentActivities,
   RealTimeNotifications,
   useRealTime,
 } from "./components/real-time-provider";
-import {
-  BarChartIcon,
-  TrendingUpIcon,
-  UsersIcon,
-  ActivityIcon,
-  SettingsIcon,
-  RefreshIcon,
-} from "@/lib/icons";
+import { SettingsIcon, RefreshIcon, TrendingUpIcon } from "@/lib/icons";
 import { useState } from "react";
 import Heading from "@/components/shared/heading";
 import PageHead from "@/components/shared/page-head";
@@ -27,9 +19,9 @@ import { logger } from "@/lib/logger";
 import LoaderOverlay from "@/components/shared/loader-overlay";
 import { ErrorBoundary } from "@/components/shared/error-boundary";
 import { useError, useAsyncError } from "@/contexts/error-context";
-import { DASHBOARD_TEXTS } from "@/constants";
 
 function DashboardContent() {
+  const t = useTranslations("dashboard");
   const [isLoading, setIsLoading] = useState(false);
   const { data } = useRealTime();
   const { addError } = useError();
@@ -60,28 +52,34 @@ function DashboardContent() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       {/* Page Header */}
-      <PageHead title={DASHBOARD_TEXTS.title} description={DASHBOARD_TEXTS.description} />
+      <PageHead title={t("title")} description={t("description")} />
 
       {/* Dashboard Header with Actions */}
-      <div className="flex items-center justify-between">
-        <Heading title={DASHBOARD_TEXTS.title} description={DASHBOARD_TEXTS.description} />
-        <div className="flex items-center gap-4">
+      <div className="flex items-start gap-6">
+        {/* Heading - Always on right in RTL */}
+        <div className="flex-1">
+          <Heading title={t("title")} description={t("description")} />
+        </div>
+        {/* Action Buttons - Always on left in RTL */}
+        <div className="flex items-center gap-3 flex-shrink-0">
           <RealTimeStatus />
           <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isLoading}>
-            <RefreshIcon className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
-            {DASHBOARD_TEXTS.actions.refresh}
+            <RefreshIcon
+              className={`h-4 w-4 ${isLoading ? "animate-spin" : ""} rtl:ml-2 ltr:mr-2`}
+            />
+            {t("actions.refresh")}
           </Button>
           <Button variant="outline" size="sm" asChild>
             <a href="/demo/loading">
-              <ActivityIcon className="h-4 w-4 mr-2" />
-              {DASHBOARD_TEXTS.actions.loadingDemo}
+              <TrendingUpIcon className="h-4 w-4 rtl:ml-2 ltr:mr-2" />
+              {t("actions.loadingDemo")}
             </a>
           </Button>
           <Button variant="outline" size="sm">
-            <SettingsIcon className="h-4 w-4 mr-2" />
-            {DASHBOARD_TEXTS.actions.settings}
+            <SettingsIcon className="h-4 w-4 rtl:ml-2 ltr:mr-2" />
+            {t("actions.settings")}
           </Button>
         </div>
       </div>
@@ -90,87 +88,58 @@ function DashboardContent() {
       <RealTimeNotifications />
 
       {/* Metrics Cards Section */}
-      <section>
-        <div className="flex items-center gap-2 mb-6">
-          <TrendingUpIcon className="h-5 w-5" />
-          <Heading
-            title={DASHBOARD_TEXTS.sections.metrics}
-            description={DASHBOARD_TEXTS.sections.metricsDescription}
-            className="mb-0"
-          />
-        </div>
+      <section className="space-y-6">
+        <Heading
+          title={t("sections.metrics")}
+          description={t("sections.metricsDescription")}
+          className="mb-8"
+        />
         <MetricsCards data={data.metrics} isLoading={isLoading} />
       </section>
 
       {/* Charts Section */}
-      <section>
-        <div className="flex items-center gap-2 mb-6">
-          <BarChartIcon className="h-5 w-5" />
-          <Heading
-            title={DASHBOARD_TEXTS.sections.charts}
-            description={DASHBOARD_TEXTS.sections.chartsDescription}
-            className="mb-0"
-          />
-        </div>
+      <section className="space-y-6">
+        <Heading
+          title={t("sections.charts")}
+          description={t("sections.chartsDescription")}
+          className="mb-8"
+        />
         <InteractiveCharts isLoading={isLoading} />
       </section>
 
-      {/* Side Panel with Recent Activity */}
-      <div className="grid gap-8 lg:grid-cols-4">
-        <div className="lg:col-span-3">
-          {/* Data Tables Section */}
-          <section>
-            <div className="flex items-center gap-2 mb-6">
-              <UsersIcon className="h-5 w-5" />
-              <Heading
-                title={DASHBOARD_TEXTS.sections.dataLists}
-                description={DASHBOARD_TEXTS.sections.dataListsDescription}
-                className="mb-0"
-              />
-            </div>
-            <DataLists isLoading={isLoading} />
-          </section>
-        </div>
-
-        <div className="lg:col-span-1">
-          {/* Recent Activity Sidebar */}
-          <Card className="sticky top-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ActivityIcon className="h-4 w-4" />
-                {DASHBOARD_TEXTS.sections.dataLists}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <RecentActivities />
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      {/* Data Tables Section */}
+      <section className="space-y-6">
+        <Heading
+          title={t("sections.dataLists")}
+          description={t("sections.dataListsDescription")}
+          className="mb-8"
+        />
+        <DataLists isLoading={isLoading} />
+      </section>
 
       {/* Quick Stats Footer */}
       <section>
         <Card>
           <CardHeader>
-            <CardTitle>Performance Metrics</CardTitle>
+            <CardTitle>{t("performance.title")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-4">
               <div className="text-center">
                 <p className="text-2xl font-bold text-blue-600">99.9%</p>
-                <p className="text-sm text-muted-foreground">Uptime</p>
+                <p className="text-sm text-muted-foreground">{t("performance.uptime")}</p>
               </div>
               <div className="text-center">
                 <p className="text-2xl font-bold text-green-600">1.2s</p>
-                <p className="text-sm text-muted-foreground">Avg Response</p>
+                <p className="text-sm text-muted-foreground">{t("performance.avgResponse")}</p>
               </div>
               <div className="text-center">
                 <p className="text-2xl font-bold text-purple-600">15.3k</p>
-                <p className="text-sm text-muted-foreground">API Calls</p>
+                <p className="text-sm text-muted-foreground">{t("performance.apiCalls")}</p>
               </div>
               <div className="text-center">
                 <p className="text-2xl font-bold text-orange-600">2.1GB</p>
-                <p className="text-sm text-muted-foreground">Data Transfer</p>
+                <p className="text-sm text-muted-foreground">{t("performance.dataTransfer")}</p>
               </div>
             </div>
           </CardContent>
@@ -180,7 +149,7 @@ function DashboardContent() {
       {/* Enhanced Loader Overlay */}
       <LoaderOverlay
         isLoading={isLoading}
-        text={DASHBOARD_TEXTS.placeholders.loading}
+        text={t("loading.refreshing")}
         variant="default"
         size="lg"
       />

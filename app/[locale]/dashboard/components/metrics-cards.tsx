@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { DASHBOARD_TEXTS } from "@/constants/dashboard";
+import { useTranslations } from "next-intl";
 import {
   TrendingUpIcon,
   TrendingDownIcon,
@@ -25,6 +25,7 @@ interface MetricCardProps {
   suffix?: string;
   description?: string;
   color?: "default" | "success" | "warning" | "danger" | "info";
+  fromLastMonthText?: string;
 }
 
 function MetricCard({
@@ -37,6 +38,7 @@ function MetricCard({
   suffix = "",
   description,
   color = "default",
+  fromLastMonthText = "from last month",
 }: MetricCardProps) {
   const formatValue = (val: string | number) => {
     if (typeof val === "number") {
@@ -90,7 +92,7 @@ function MetricCard({
             ) : changeType === "decrease" ? (
               <TrendingDownIcon className="h-3 w-3 mr-1" />
             ) : null}
-            {Math.abs(change)}% from last month
+            {Math.abs(change)}% {fromLastMonthText}
           </p>
         )}
         {description && <p className="text-xs text-muted-foreground mt-1">{description}</p>}
@@ -114,6 +116,8 @@ interface MetricsCardsProps {
 }
 
 export function MetricsCards({ data, isLoading = false }: MetricsCardsProps) {
+  const t = useTranslations("dashboard");
+
   // Default mock data if none provided
   const defaultData = {
     totalUsers: 12543,
@@ -130,80 +134,80 @@ export function MetricsCards({ data, isLoading = false }: MetricsCardsProps) {
 
   const metrics = [
     {
-      title: DASHBOARD_TEXTS.metrics.totalUsers,
+      title: t("metrics.totalUsers"),
       value: metricsData.totalUsers,
       change: 12.5,
       changeType: "increase" as const,
       icon: UsersIcon,
       color: "info" as const,
-      description: "Total registered users",
+      description: t("metrics.descriptions.totalUsers"),
     },
     {
-      title: DASHBOARD_TEXTS.metrics.activeUsers,
+      title: t("metrics.activeUsers"),
       value: metricsData.activeSessions,
       change: 8.2,
       changeType: "increase" as const,
       icon: ActivityIcon,
       color: "success" as const,
-      description: "Currently active users",
+      description: t("metrics.descriptions.activeUsers"),
     },
     {
-      title: DASHBOARD_TEXTS.metrics.revenue,
+      title: t("metrics.revenue"),
       value: metricsData.revenue,
       change: 15.3,
       changeType: "increase" as const,
       icon: DollarIcon,
       prefix: "$",
       color: "success" as const,
-      description: "Total revenue this month",
+      description: t("metrics.descriptions.revenue"),
     },
     {
-      title: DASHBOARD_TEXTS.metrics.conversionRate,
+      title: t("metrics.conversionRate"),
       value: metricsData.conversionRate,
       change: -2.1,
       changeType: "decrease" as const,
       icon: PercentIcon,
       suffix: "%",
       color: "warning" as const,
-      description: "Visitor to customer conversion",
+      description: t("metrics.descriptions.conversionRate"),
     },
     {
-      title: DASHBOARD_TEXTS.metrics.orders,
+      title: t("metrics.orders"),
       value: metricsData.orders,
       change: 23.1,
       changeType: "increase" as const,
       icon: CartIcon,
       color: "info" as const,
-      description: "Total orders this month",
+      description: t("metrics.descriptions.orders"),
     },
     {
-      title: DASHBOARD_TEXTS.metrics.growth,
+      title: t("metrics.growth"),
       value: metricsData.growth,
       change: 5.4,
       changeType: "increase" as const,
       icon: TrendingUpIcon,
       suffix: "%",
       color: "success" as const,
-      description: "Month over month growth",
+      description: t("metrics.descriptions.growth"),
     },
     {
-      title: DASHBOARD_TEXTS.metrics.bounceRate,
+      title: t("metrics.bounceRate"),
       value: metricsData.bounceRate,
       change: -3.2,
       changeType: "decrease" as const,
       icon: TrendingDownIcon,
       suffix: "%",
       color: "success" as const,
-      description: "Percentage of single-page visits",
+      description: t("metrics.descriptions.bounceRate"),
     },
     {
-      title: DASHBOARD_TEXTS.metrics.pageViews,
+      title: t("metrics.pageViews"),
       value: metricsData.pageViews,
       change: 18.7,
       changeType: "increase" as const,
       icon: VisibilityIcon,
       color: "info" as const,
-      description: "Total page views this month",
+      description: t("metrics.descriptions.pageViews"),
     },
   ];
 
@@ -220,7 +224,7 @@ export function MetricsCards({ data, isLoading = false }: MetricsCardsProps) {
               <div className="h-8 bg-primary/20 rounded w-24 mb-2 animate-pulse"></div>
               <div className="h-3 bg-primary/10 rounded w-32 animate-pulse"></div>
               <div className="text-xs text-muted-foreground mt-2 animate-pulse">
-                Loading Next Boiler metrics...
+                {t("metrics.loading")}
               </div>
             </CardContent>
           </Card>
@@ -243,6 +247,7 @@ export function MetricsCards({ data, isLoading = false }: MetricsCardsProps) {
           suffix={metric.suffix}
           description={metric.description}
           color={metric.color}
+          fromLastMonthText={t("metrics.fromLastMonth")}
         />
       ))}
     </div>

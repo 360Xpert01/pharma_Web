@@ -7,15 +7,15 @@ const intlMiddleware = createMiddleware(routing);
 export default function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  // 🔒 Auth protection for dashboard (optional)
-  if (pathname.match(/^\/(en|ur)?\/dashboard$/)) {
-    const isAuthenticated = request.cookies.get("user_logged_in");
-    if (!isAuthenticated) {
-      return NextResponse.redirect(
-        new URL(`/${getLocaleFromPath(pathname)}/auth/login`, request.url)
-      );
-    }
-  }
+  // 🔒 Auth protection for dashboard (commented out for development)
+  // if (pathname.match(/^\/(en|ur)?\/dashboard$/)) {
+  //   const isAuthenticated = request.cookies.get("user_logged_in");
+  //   if (!isAuthenticated) {
+  //     return NextResponse.redirect(
+  //       new URL(`/${getLocaleFromPath(pathname)}/auth/login`, request.url)
+  //     );
+  //   }
+  // }
 
   // 🌐 Default locale redirect
   if (pathname === "/") {

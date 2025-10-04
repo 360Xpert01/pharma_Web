@@ -20,8 +20,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DASHBOARD_TEXTS } from "@/constants/dashboard";
-import { SHARED_TEXTS } from "@/constants/shared";
+import { useTranslations } from "next-intl";
 import {
   SearchInputIcon,
   FilterIcon,
@@ -231,6 +230,9 @@ function DataTable<T extends Record<string, any>>({
   searchKey,
   filterOptions,
 }: DataTableProps<T>) {
+  const t = useTranslations("dashboard");
+  const tShared = useTranslations("shared");
+
   const [searchTerm, setSearchTerm] = useState("");
   const [sortColumn, setSortColumn] = useState<keyof T | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
@@ -324,7 +326,7 @@ function DataTable<T extends Record<string, any>>({
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm">
               <DownloadIcon className="h-4 w-4 mr-2" />
-              {DASHBOARD_TEXTS.actions.export}
+              {t("actions.export")}
             </Button>
           </div>
         </div>
@@ -334,7 +336,7 @@ function DataTable<T extends Record<string, any>>({
             <div className="relative flex-1 max-w-sm">
               <SearchInputIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
-                placeholder={DASHBOARD_TEXTS.placeholders.search}
+                placeholder={t("placeholders.search")}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -347,7 +349,7 @@ function DataTable<T extends Record<string, any>>({
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
                   <FilterIcon className="h-4 w-4 mr-2" />
-                  {DASHBOARD_TEXTS.actions.filter}
+                  {t("actions.filter")}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
@@ -382,14 +384,14 @@ function DataTable<T extends Record<string, any>>({
                     </div>
                   </TableHead>
                 ))}
-                <TableHead>{DASHBOARD_TEXTS.table.headers.actions}</TableHead>
+                <TableHead>{t("table.headers.actions")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredAndSortedData.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={columns.length + 1} className="text-center py-8">
-                    {DASHBOARD_TEXTS.table.noData}
+                    {t("table.noData")}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -410,9 +412,9 @@ function DataTable<T extends Record<string, any>>({
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
-                          <DropdownMenuItem>{SHARED_TEXTS.actions.edit}</DropdownMenuItem>
+                          <DropdownMenuItem>{tShared("actions.edit")}</DropdownMenuItem>
                           <DropdownMenuItem className="text-red-600">
-                            {SHARED_TEXTS.actions.delete}
+                            {tShared("actions.delete")}
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -433,6 +435,149 @@ interface DataListsProps {
 }
 
 export function DataLists({ isLoading = false }: DataListsProps) {
+  const t = useTranslations("dashboard");
+
+  // Translated sample data
+  const sampleUsersTranslated: User[] = [
+    {
+      id: "1",
+      name: t("sampleData.users.user1.name"),
+      email: "ahmad@example.com",
+      status: "active",
+      role: t("sampleData.users.user1.role"),
+      createdAt: "2024-01-15",
+      lastLogin: "2024-09-27",
+    },
+    {
+      id: "2",
+      name: t("sampleData.users.user2.name"),
+      email: "fatima@example.com",
+      status: "active",
+      role: t("sampleData.users.user2.role"),
+      createdAt: "2024-02-20",
+      lastLogin: "2024-09-26",
+    },
+    {
+      id: "3",
+      name: t("sampleData.users.user3.name"),
+      email: "hassan@example.com",
+      status: "inactive",
+      role: t("sampleData.users.user3.role"),
+      createdAt: "2024-01-30",
+      lastLogin: "2024-09-20",
+    },
+    {
+      id: "4",
+      name: t("sampleData.users.user4.name"),
+      email: "aisha@example.com",
+      status: "pending",
+      role: t("sampleData.users.user4.role"),
+      createdAt: "2024-03-10",
+      lastLogin: t("sampleData.never"),
+    },
+    {
+      id: "5",
+      name: t("sampleData.users.user5.name"),
+      email: "omar@example.com",
+      status: "active",
+      role: t("sampleData.users.user5.role"),
+      createdAt: "2024-02-05",
+      lastLogin: "2024-09-27",
+    },
+  ];
+
+  const sampleProductsTranslated: Product[] = [
+    {
+      id: "1",
+      name: t("sampleData.products.product1.name"),
+      price: 299.99,
+      quantity: 25,
+      total: 7499.75,
+      date: "2024-09-27",
+      status: "completed",
+    },
+    {
+      id: "2",
+      name: t("sampleData.products.product2.name"),
+      price: 24.99,
+      quantity: 150,
+      total: 3748.5,
+      date: "2024-09-26",
+      status: "processing",
+    },
+    {
+      id: "3",
+      name: t("sampleData.products.product3.name"),
+      price: 79.99,
+      quantity: 45,
+      total: 3599.55,
+      date: "2024-09-25",
+      status: "completed",
+    },
+    {
+      id: "4",
+      name: t("sampleData.products.product4.name"),
+      price: 12.99,
+      quantity: 200,
+      total: 2598.0,
+      date: "2024-09-24",
+      status: "cancelled",
+    },
+    {
+      id: "5",
+      name: t("sampleData.products.product5.name"),
+      price: 49.99,
+      quantity: 80,
+      total: 3999.2,
+      date: "2024-09-23",
+      status: "processing",
+    },
+  ];
+
+  const sampleOrdersTranslated: Order[] = [
+    {
+      id: "ORD001",
+      customer: t("sampleData.users.user1.name"),
+      email: "ahmad@example.com",
+      total: 299.99,
+      status: "completed",
+      date: "2024-09-27",
+    },
+    {
+      id: "ORD002",
+      customer: t("sampleData.users.user2.name"),
+      email: "fatima@example.com",
+      total: 149.5,
+      status: "processing",
+      date: "2024-09-26",
+    },
+    {
+      id: "ORD003",
+      customer: t("sampleData.users.user3.name"),
+      email: "hassan@example.com",
+      total: 75.25,
+      status: "pending",
+      date: "2024-09-25",
+    },
+    {
+      id: "ORD004",
+      customer: t("sampleData.users.user4.name"),
+      email: "aisha@example.com",
+      total: 199.99,
+      status: "cancelled",
+      date: "2024-09-24",
+    },
+    {
+      id: "ORD005",
+      customer: t("sampleData.users.user5.name"),
+      email: "omar@example.com",
+      total: 449.75,
+      status: "completed",
+      date: "2024-09-23",
+    },
+  ];
+  const tShared = useTranslations("shared");
+
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -440,7 +585,7 @@ export function DataLists({ isLoading = false }: DataListsProps) {
           <Card key={i} className="animate-pulse border-primary/20">
             <CardHeader>
               <div className="h-6 bg-primary/20 rounded w-32 animate-pulse"></div>
-              <div className="h-4 bg-primary/10 rounded w-48 mt-2 animate-pulse"></div>
+              {/* <div className="h-4 bg-primary/10 rounded w-48 mt-2 animate-pulse"></div> */}
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -466,50 +611,50 @@ export function DataLists({ isLoading = false }: DataListsProps) {
   }
 
   const userColumns = [
-    { key: "name" as keyof User, label: DASHBOARD_TEXTS.table.headers.name, sortable: true },
-    { key: "email" as keyof User, label: DASHBOARD_TEXTS.table.headers.email, sortable: true },
+    { key: "name" as keyof User, label: t("table.headers.name"), sortable: true },
+    { key: "email" as keyof User, label: t("table.headers.email"), sortable: true },
     {
       key: "status" as keyof User,
-      label: DASHBOARD_TEXTS.table.headers.status,
+      label: t("table.headers.status"),
       sortable: true,
       render: (status: string) => getStatusBadge(status),
     },
-    { key: "role" as keyof User, label: DASHBOARD_TEXTS.table.headers.role, sortable: true },
+    { key: "role" as keyof User, label: t("table.headers.role"), sortable: true },
     {
       key: "createdAt" as keyof User,
-      label: DASHBOARD_TEXTS.table.headers.createdAt,
+      label: t("table.headers.createdAt"),
       sortable: true,
     },
     {
       key: "lastLogin" as keyof User,
-      label: DASHBOARD_TEXTS.table.headers.lastLogin,
+      label: t("table.headers.lastLogin"),
       sortable: true,
     },
   ];
 
   const productColumns = [
-    { key: "name" as keyof Product, label: DASHBOARD_TEXTS.table.headers.product, sortable: true },
+    { key: "name" as keyof Product, label: t("table.headers.product"), sortable: true },
     {
       key: "price" as keyof Product,
-      label: DASHBOARD_TEXTS.table.headers.price,
+      label: t("table.headers.price"),
       sortable: true,
       render: (price: number) => `$${price.toFixed(2)}`,
     },
     {
       key: "quantity" as keyof Product,
-      label: DASHBOARD_TEXTS.table.headers.quantity,
+      label: t("table.headers.quantity"),
       sortable: true,
     },
     {
       key: "total" as keyof Product,
-      label: DASHBOARD_TEXTS.table.headers.total,
+      label: t("table.headers.total"),
       sortable: true,
       render: (total: number) => `$${total.toFixed(2)}`,
     },
-    { key: "date" as keyof Product, label: DASHBOARD_TEXTS.table.headers.date, sortable: true },
+    { key: "date" as keyof Product, label: t("table.headers.date"), sortable: true },
     {
       key: "status" as keyof Product,
-      label: DASHBOARD_TEXTS.table.headers.status,
+      label: t("table.headers.status"),
       sortable: true,
       render: (status: string) => getStatusBadge(status),
     },
@@ -520,17 +665,17 @@ export function DataLists({ isLoading = false }: DataListsProps) {
     { key: "customer" as keyof Order, label: "Customer", sortable: true },
     {
       key: "total" as keyof Order,
-      label: DASHBOARD_TEXTS.table.headers.total,
+      label: t("table.headers.total"),
       sortable: true,
       render: (total: number) => `$${total.toFixed(2)}`,
     },
     {
       key: "status" as keyof Order,
-      label: DASHBOARD_TEXTS.table.headers.status,
+      label: t("table.headers.status"),
       sortable: true,
       render: (status: string) => getStatusBadge(status),
     },
-    { key: "date" as keyof Order, label: DASHBOARD_TEXTS.table.headers.date, sortable: true },
+    { key: "date" as keyof Order, label: t("table.headers.date"), sortable: true },
   ];
 
   const getStatusBadge = (status: string) => {
@@ -555,50 +700,50 @@ export function DataLists({ isLoading = false }: DataListsProps) {
   return (
     <div className="space-y-8">
       <DataTable
-        title="User Management"
-        data={sampleUsers}
+        title={t("sections.userManagement")}
+        data={sampleUsersTranslated}
         columns={userColumns}
         icon={UsersIcon}
         searchKey="name"
         filterOptions={{
           key: "status",
           options: [
-            { label: "Active", value: "active" },
-            { label: "Inactive", value: "inactive" },
-            { label: "Pending", value: "pending" },
+            { label: t("status.active"), value: "active" },
+            { label: t("status.inactive"), value: "inactive" },
+            { label: t("status.pending"), value: "pending" },
           ],
         }}
       />
 
       <DataTable
-        title="Top Products"
-        data={sampleProducts}
+        title={t("sections.topProducts")}
+        data={sampleProductsTranslated}
         columns={productColumns}
         icon={BagIcon}
         searchKey="name"
         filterOptions={{
           key: "status",
           options: [
-            { label: "Completed", value: "completed" },
-            { label: "Processing", value: "processing" },
-            { label: "Cancelled", value: "cancelled" },
+            { label: t("status.completed"), value: "completed" },
+            { label: t("status.processing"), value: "processing" },
+            { label: t("status.cancelled"), value: "cancelled" },
           ],
         }}
       />
 
       <DataTable
-        title="Recent Orders"
-        data={sampleOrders}
+        title={t("sections.recentOrders")}
+        data={sampleOrdersTranslated}
         columns={orderColumns}
         icon={UserCheckIcon}
         searchKey="customer"
         filterOptions={{
           key: "status",
           options: [
-            { label: "Completed", value: "completed" },
-            { label: "Processing", value: "processing" },
-            { label: "Pending", value: "pending" },
-            { label: "Cancelled", value: "cancelled" },
+            { label: t("status.completed"), value: "completed" },
+            { label: t("status.processing"), value: "processing" },
+            { label: t("status.pending"), value: "pending" },
+            { label: t("status.cancelled"), value: "cancelled" },
           ],
         }}
       />

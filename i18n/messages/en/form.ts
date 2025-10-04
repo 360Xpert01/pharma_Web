@@ -1,4 +1,4 @@
-export const FORM_TEXTS = {
+const form = {
   // Common form labels
   labels: {
     email: "Email",
@@ -228,4 +228,7 @@ export const FORM_TEXTS = {
     notFoundError: "Requested resource not found",
     conflictError: "Conflict with existing data",
   },
-};
+} as const;
+
+export default form;
+export type FormMessages = typeof form;

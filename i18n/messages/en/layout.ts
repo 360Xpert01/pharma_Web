@@ -1,4 +1,4 @@
-export const LAYOUT_TEXTS = {
+const layout = {
   // Header component
   header: {
     logoText: "Dashboard",
@@ -19,6 +19,12 @@ export const LAYOUT_TEXTS = {
     privacyPolicy: "Privacy Policy",
     termsOfService: "Terms of Service",
     contact: "Contact",
+    companyName: "Next Starter",
+    companyDescription:
+      "A modern Next.js starter template with TypeScript, Tailwind CSS, and more.",
+    allRightsReserved: "All rights reserved",
+    quickLinksTitle: "Quick Links",
+    resourcesTitle: "Resources",
   },
 
   // Theme toggle component
@@ -58,26 +64,7 @@ export const LAYOUT_TEXTS = {
     help: "Help",
     documentation: "Documentation",
   },
+} as const;
 
-  // Common layout labels
-  common: {
-    loading: "Loading...",
-    error: "Error",
-    retry: "Retry",
-    close: "Close",
-    cancel: "Cancel",
-    save: "Save",
-    edit: "Edit",
-    delete: "Delete",
-    view: "View",
-    back: "Back",
-    next: "Next",
-    previous: "Previous",
-    search: "Search",
-    filter: "Filter",
-    sort: "Sort",
-    export: "Export",
-    import: "Import",
-    refresh: "Refresh",
-  },
-};
+export default layout;
+export type LayoutMessages = typeof layout;

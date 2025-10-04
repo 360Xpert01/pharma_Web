@@ -5,36 +5,58 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { getFormErrorMessage } from "@/lib/actions/actions";
-import { AUTH_TEXTS } from "@/constants";
+import { useTranslations } from "next-intl";
+import { useAuthLoading } from "@/hooks/use-loading-state";
+import LoaderOverlay from "@/components/shared/loader-overlay";
 
-const schema = z
-  .object({
-    password: z.string().min(6),
-    confirmPassword: z.string().min(6),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: AUTH_TEXTS.validation.passwordMismatch,
-    path: ["confirmPassword"],
-  });
+const createSchema = (passwordMismatchMsg: string) =>
+  z
+    .object({
+      password: z.string().min(6),
+      confirmPassword: z.string().min(6),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: passwordMismatchMsg,
+      path: ["confirmPassword"],
+    });
 
-type FormValues = z.infer<typeof schema>;
+type FormValues = {
+  password: string;
+  confirmPassword: string;
+};
 
 export default function ResetPage() {
+  const t = useTranslations("auth.reset");
+  const vt = useTranslations("auth.validation");
+  const { isLoading, executeWithLoading } = useAuthLoading();
+
+  const schema = createSchema(vt("passwordMismatch"));
+
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { password: "", confirmPassword: "" },
   });
 
+  async function onSubmit(values: FormValues) {
+    await executeWithLoading(async () => {
+      // Simulate API call
+      const { sleep } = await import("@/lib/actions/actions");
+      await sleep(1500);
+      // Reset password and redirect
+    });
+  }
+
   return (
-    <div className="space-y-6">
+    <div className="relative space-y-6">
+      <LoaderOverlay isLoading={isLoading} />
       <div className="space-y-2">
-        <h1 className="text-2xl font-bold">{AUTH_TEXTS.reset.title}</h1>
-        <p className="text-muted-foreground">{AUTH_TEXTS.reset.subtitle}</p>
+        <h1 className="text-2xl font-bold">{t("title")}</h1>
+        <p className="text-muted-foreground">{t("subtitle")}</p>
       </div>
-      <form className="space-y-4" onSubmit={form.handleSubmit(() => {})} noValidate>
+      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)} noValidate>
         <div className="grid gap-2">
           <label htmlFor="password" className="text-sm font-medium">
-            {AUTH_TEXTS.reset.newPasswordLabel}
+            {t("newPasswordLabel")}
           </label>
           <Input
             id="password"
@@ -50,7 +72,7 @@ export default function ResetPage() {
         </div>
         <div className="grid gap-2">
           <label htmlFor="confirmPassword" className="text-sm font-medium">
-            {AUTH_TEXTS.reset.confirmPasswordLabel}
+            {t("confirmPasswordLabel")}
           </label>
           <Input
             id="confirmPassword"
@@ -64,13 +86,13 @@ export default function ResetPage() {
             </p>
           )}
         </div>
-        <Button type="submit" className="w-full">
-          {AUTH_TEXTS.reset.submitButton}
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? t("submittingButton") : t("submitButton")}
         </Button>
       </form>
       <p className="text-sm text-muted-foreground text-center">
         <a className="underline" href="/auth/login">
-          {AUTH_TEXTS.reset.backToLogin}
+          {t("backToLogin")}
         </a>
       </p>
     </div>

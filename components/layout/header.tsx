@@ -9,7 +9,8 @@ import { NavigationMenu } from "@/components/navigation/navigation-menu";
 import { useLayout } from "@/contexts/layout-context";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { headerNavigation } from "@/navigation/i18n-config";
+import { headerNavigation } from "@/navigation/config";
+import { getNavItemTitle } from "@/lib/navigation-utils";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 
@@ -21,7 +22,7 @@ export function Header({ className }: HeaderProps) {
   const { config, state, computed, toggleSidebar } = useLayout();
   const { showSidebar, headerHeight, isMobile } = computed;
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const t = useTranslations("layout.header");
+  const t = useTranslations("navigation");
 
   const headerClasses = cn(
     "border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
@@ -46,7 +47,7 @@ export function Header({ className }: HeaderProps) {
               size="sm"
               onClick={() => setMobileNavOpen(!mobileNavOpen)}
               className="md:hidden h-9 w-9 p-0"
-              aria-label={t("toggleMobileNavLabel")}
+              aria-label={t("labels.toggleMobileNav")}
             >
               {mobileNavOpen ? <CloseIcon className="h-5 w-5" /> : <MenuIcon className="h-5 w-5" />}
             </Button>
@@ -59,7 +60,7 @@ export function Header({ className }: HeaderProps) {
               size="sm"
               onClick={toggleSidebar}
               className="hidden md:flex h-9 w-9 p-0"
-              aria-label={t("toggleSidebarLabel")}
+              aria-label={t("labels.toggleSidebar")}
             >
               <MenuIcon className="h-4 w-4" />
             </Button>
@@ -73,7 +74,7 @@ export function Header({ className }: HeaderProps) {
               onClick={() => setMobileNavOpen(false)}
             >
               <div className="w-8 h-8 rounded-md bg-primary" />
-              <span className="hidden sm:block">{t("logoText")}</span>
+              <span className="hidden sm:block">{t("layout.logoText")}</span>
             </Link>
           )}
         </div>
@@ -81,17 +82,21 @@ export function Header({ className }: HeaderProps) {
         {/* Center section: Desktop Navigation */}
         {config.header.showNavigation && config.navigation.style === "horizontal" && (
           <nav className="hidden lg:flex items-center gap-6 text-sm font-medium">
-            {headerNavigation.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-foreground/80 hover:text-foreground transition-colors px-3 py-2 rounded-md hover:bg-accent"
-                target={item.external ? "_blank" : undefined}
-                rel={item.external ? "noopener noreferrer" : undefined}
-              >
-                {item.title}
-              </Link>
-            ))}
+            {headerNavigation.map((item) => {
+              const translatedTitle = getNavItemTitle(item, t);
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href as any}
+                  className="text-foreground/80 hover:text-foreground transition-colors px-3 py-2 rounded-md hover:bg-accent"
+                  target={item.external ? "_blank" : undefined}
+                  rel={item.external ? "noopener noreferrer" : undefined}
+                >
+                  {translatedTitle}
+                </Link>
+              );
+            })}
           </nav>
         )}
 
