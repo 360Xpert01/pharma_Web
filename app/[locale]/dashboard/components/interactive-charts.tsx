@@ -22,42 +22,6 @@ import {
 } from "recharts";
 import { TrendingUpIcon, BarChartIcon, PieChartIcon, ActivityIcon } from "@/lib/icons";
 
-// Sample data for charts
-const revenueData = [
-  { month: "Jan", revenue: 4000, users: 2400, orders: 240 },
-  { month: "Feb", revenue: 3000, users: 1398, orders: 221 },
-  { month: "Mar", revenue: 5000, users: 9800, orders: 329 },
-  { month: "Apr", revenue: 4500, users: 3908, orders: 400 },
-  { month: "May", revenue: 6000, users: 4800, orders: 481 },
-  { month: "Jun", revenue: 7500, users: 3800, orders: 380 },
-];
-
-const salesData = [
-  { product: "Product A", sales: 4000, profit: 2400 },
-  { product: "Product B", sales: 3000, profit: 1398 },
-  { product: "Product C", sales: 2000, profit: 1200 },
-  { product: "Product D", sales: 2780, profit: 1800 },
-  { product: "Product E", sales: 1890, profit: 1100 },
-];
-
-const trafficSources = [
-  { name: "Direct", value: 400, color: "#3b82f6" },
-  { name: "Organic Search", value: 300, color: "#10b981" },
-  { name: "Social Media", value: 200, color: "#f59e0b" },
-  { name: "Email", value: 100, color: "#ef4444" },
-  { name: "Referral", value: 150, color: "#8b5cf6" },
-];
-
-const userActivityData = [
-  { time: "00:00", active: 12 },
-  { time: "04:00", active: 8 },
-  { time: "08:00", active: 45 },
-  { time: "12:00", active: 78 },
-  { time: "16:00", active: 92 },
-  { time: "20:00", active: 65 },
-  { time: "23:59", active: 23 },
-];
-
 interface ChartCardProps {
   title: string;
   description?: string;
@@ -127,6 +91,16 @@ export function InteractiveCharts({ isLoading = false }: InteractiveChartsProps)
     { name: t("charts.data.traffic.referral"), value: 150, color: "#8b5cf6" },
   ];
 
+  const userActivityTranslated = [
+    { time: t("charts.data.times.midnight"), active: 12 },
+    { time: t("charts.data.times.earlyMorning"), active: 8 },
+    { time: t("charts.data.times.morning"), active: 45 },
+    { time: t("charts.data.times.noon"), active: 78 },
+    { time: t("charts.data.times.afternoon"), active: 92 },
+    { time: t("charts.data.times.evening"), active: 65 },
+    { time: t("charts.data.times.night"), active: 23 },
+  ];
+
   if (isLoading) {
     return (
       <div className="grid gap-6 md:grid-cols-2">
@@ -191,7 +165,7 @@ export function InteractiveCharts({ isLoading = false }: InteractiveChartsProps)
         {/* Sales Comparison Chart */}
         <ChartCard
           title={t("charts.salesComparison.title")}
-          description="Product sales vs profit comparison"
+          description={t("charts.salesComparison.description")}
           icon={BarChartIcon}
         >
           <ResponsiveContainer width="100%" height={300}>
@@ -220,13 +194,13 @@ export function InteractiveCharts({ isLoading = false }: InteractiveChartsProps)
         {/* Traffic Sources Pie Chart */}
         <ChartCard
           title={t("charts.trafficSources.title")}
-          description="Website traffic breakdown by source"
+          description={t("charts.trafficSources.description")}
           icon={PieChartIcon}
         >
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
-                data={trafficSources}
+                data={trafficSourcesTranslated}
                 cx="50%"
                 cy="50%"
                 innerRadius={60}
@@ -249,11 +223,11 @@ export function InteractiveCharts({ isLoading = false }: InteractiveChartsProps)
         {/* User Activity Chart */}
         <ChartCard
           title={t("charts.userActivity.title")}
-          description="Daily user activity pattern"
+          description={t("charts.userActivity.description")}
           icon={ActivityIcon}
         >
           <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={userActivityData}>
+            <LineChart data={userActivityTranslated}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="time" />
               <YAxis />
@@ -276,11 +250,11 @@ export function InteractiveCharts({ isLoading = false }: InteractiveChartsProps)
         {/* Performance Metrics */}
         <ChartCard
           title={t("charts.performanceMetrics.title")}
-          description="Key performance indicators over time"
+          description={t("charts.performanceMetrics.description")}
           icon={BarChartIcon}
         >
           <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={revenueData.slice(-4)}>
+            <BarChart data={revenueDataTranslated.slice(-4)}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
               <YAxis />

@@ -126,19 +126,25 @@ function DashboardContent() {
           <CardContent>
             <div className="grid gap-4 md:grid-cols-4">
               <div className="text-center">
-                <p className="text-2xl font-bold text-blue-600">99.9%</p>
+                <p className="text-2xl font-bold text-blue-600">{t("performance.uptimeValue")}</p>
                 <p className="text-sm text-muted-foreground">{t("performance.uptime")}</p>
               </div>
               <div className="text-center">
-                <p className="text-2xl font-bold text-green-600">1.2s</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {t("performance.avgResponseValue")}
+                </p>
                 <p className="text-sm text-muted-foreground">{t("performance.avgResponse")}</p>
               </div>
               <div className="text-center">
-                <p className="text-2xl font-bold text-purple-600">15.3k</p>
+                <p className="text-2xl font-bold text-purple-600">
+                  {t("performance.apiCallsValue")}
+                </p>
                 <p className="text-sm text-muted-foreground">{t("performance.apiCalls")}</p>
               </div>
               <div className="text-center">
-                <p className="text-2xl font-bold text-orange-600">2.1GB</p>
+                <p className="text-2xl font-bold text-orange-600">
+                  {t("performance.dataTransferValue")}
+                </p>
                 <p className="text-sm text-muted-foreground">{t("performance.dataTransfer")}</p>
               </div>
             </div>

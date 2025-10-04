@@ -80,6 +80,18 @@ const dashboard = {
     loading: "Loading metrics...",
   },
 
+  performance: {
+    title: "Performance Metrics",
+    uptime: "Uptime",
+    uptimeValue: "99.9%",
+    avgResponse: "Average Response Time",
+    avgResponseValue: "1.2s",
+    apiCalls: "API Calls",
+    apiCallsValue: "15.3k",
+    dataTransfer: "Data Transfer",
+    dataTransferValue: "2.1GB",
+  },
+
   // Chart Titles and Descriptions
   charts: {
     revenueTrend: {
@@ -145,6 +157,24 @@ const dashboard = {
         orders: "Orders",
         active: "Active Users",
         visitors: "Visitors",
+      },
+      times: {
+        midnight: "00:00",
+        earlyMorning: "04:00",
+        morning: "08:00",
+        noon: "12:00",
+        afternoon: "16:00",
+        evening: "20:00",
+        night: "23:59",
+      },
+      activeCounts: {
+        twelve: 12,
+        eight: 8,
+        fortyFive: 45,
+        seventyEight: 78,
+        ninetyTwo: 92,
+        sixtyFive: 65,
+        twentyThree: 23,
       },
     },
     noDataAvailable: "No data available",
@@ -264,12 +294,6 @@ const dashboard = {
     help: "Get help",
   },
 
-  // Performance section (missing from dashboard page)
-  performance: {
-    title: "Performance Overview",
-    subtitle: "Track your key performance indicators and system health",
-  },
-
   // Sample data for data-lists component
   sampleData: {
     users: {
@@ -343,6 +367,22 @@ const dashboard = {
       },
       product3: {
         name: "Enterprise Solution",
+        category: "Software",
+        price: "$299.99",
+        sales: "456",
+        revenue: "$136,800",
+        status: "Active",
+      },
+      product4: {
+        name: "Enterprise Solution 2",
+        category: "Software",
+        price: "$299.99",
+        sales: "456",
+        revenue: "$136,800",
+        status: "Active",
+      },
+      product5: {
+        name: "Enterprise Solution 3",
         category: "Software",
         price: "$299.99",
         sales: "456",
