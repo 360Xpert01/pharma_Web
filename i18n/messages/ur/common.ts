@@ -32,6 +32,8 @@ const common = {
     collapse: "سکیڑیں",
     minimize: "چھوٹا کریں",
     maximize: "بڑا کریں",
+    chooseOption: "آپ کیا کرنا چاہیں گے؟",
+    continueMessage: "برائوزنگ جاری رکھنے کے لیے ذیل میں سے کوئی آپشن منتخب کریں",
   },
 
   // Status messages
@@ -54,6 +56,7 @@ const common = {
     pending: "زیر التواء",
     processing: "پروسیسنگ ہو رہی ہے",
     cancelled: "منسوخ کر دیا گیا",
+    redirecting: "ری ڈائریکٹ ہو رہا ہے...",
   },
 
   // Common phrases
@@ -88,6 +91,25 @@ const common = {
     thisYear: "اس سال",
     lastYear: "پچھلے سال",
     nextYear: "اگلے سال",
+  },
+
+  // Navigation
+  navigation: {
+    home: "ہوم",
+    dashboard: "ڈیش بورڈ",
+    settings: "سیٹنگز",
+    profile: "پروفائل",
+    about: "ہمارے بارے میں",
+    contact: "رابطہ",
+    help: "مدد",
+    docs: "دستاویزات",
+  },
+
+  // Troubleshooting
+  troubleshooting: {
+    clearCache: "اگر مسئلہ برقرار رہے تو اپنے براؤزر کا کیش صاف کریں",
+    refreshPage: "صفحہ ریفریش کرنے کی کوشش کریں",
+    contactSupport: "اگر مسئلہ جاری رہے تو سپورٹ سے رابطہ کریں",
   },
 
   // Language switcher

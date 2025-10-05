@@ -1,204 +1,226 @@
 "use client";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import PageHead from "@/components/shared/page-head";
-import { HomeIcon, BackIcon, SearchInputIcon, RefreshIcon } from "@/lib/icons";
-import { useTheme } from "next-themes";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { ArrowLeft, Home, RefreshCw, Search, AlertTriangle } from "lucide-react";
+import { DynamicLayout } from "@/components/layout/dynamic-layout";
+import { useLayout } from "@/contexts/layout-context";
 
-interface NotFoundPageProps {
-  title?: string;
-  description?: string;
-  showSearchSuggestions?: boolean;
-  customActions?: React.ReactNode;
-}
-
-// 404 Animation Component
-function NotFoundAnimation() {
-  const { theme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+export default function LocalizedNotFound() {
+  const router = useRouter();
+  const params = useParams();
+  const locale = params.locale as string;
   const t = useTranslations("error.notFound");
+  const tCommon = useTranslations("common");
+  const { applyPreset } = useLayout();
 
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  // Apply website preset for 404 page
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    applyPreset("website");
+  }, [applyPreset]);
 
-  if (!mounted) return null;
+  // Auto-redirect countdown
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
 
-  return (
-    <div className="relative mb-8">
-      <div className="text-center">
-        <div className="relative inline-block">
-          <h1 className="text-9xl font-bold text-primary/20 select-none animate-pulse">
-            {t("heading")}
-          </h1>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+    if (countdown !== null && countdown > 0) {
+      interval = setInterval(() => {
+        setCountdown((prev) => (prev && prev > 1 ? prev - 1 : 0));
+      }, 1000);
+    } else if (countdown === 0) {
+      setIsRedirecting(true);
+      router.push(`/${locale}`);
+    }
 
-// Search Suggestions Component
-function SearchSuggestions() {
-  const t = useTranslations("error.notFound");
-  const nt = useTranslations("navigation.main");
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [countdown, router, locale]);
 
-  const commonPages = [
-    { name: t("primaryButton"), href: "/", icon: HomeIcon },
-    { name: nt("dashboard"), href: "/dashboard", icon: SearchInputIcon },
-    { name: nt("settings"), href: "/dashboard/layout-settings", icon: SearchInputIcon },
+  const handleGoHome = () => {
+    setIsRedirecting(true);
+    router.push(`/${locale}`);
+  };
+
+  const handleGoBack = () => {
+    router.back();
+  };
+
+  const handleRefresh = () => {
+    window.location.reload();
+  };
+
+  const startAutoRedirect = () => {
+    setCountdown(10);
+  };
+
+  const cancelAutoRedirect = () => {
+    setCountdown(null);
+  };
+
+  // Popular/suggested pages
+  const popularPages = [
+    { title: tCommon("navigation.home"), href: `/${locale}`, icon: Home },
+    { title: tCommon("navigation.dashboard"), href: `/${locale}/dashboard`, icon: Search },
   ];
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-lg flex items-center gap-2">
-          <SearchInputIcon className="h-5 w-5" />
-          {t("searchTitle")}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid gap-2">
-          {commonPages.map((page) => {
-            const Icon = page.icon;
-            return (
-              <Button key={page.href} asChild variant="ghost" className="justify-start h-auto py-3">
-                <Link href={page.href}>
-                  <Icon className="h-4 w-4 mr-2" />
-                  {page.name}
-                </Link>
-              </Button>
-            );
-          })}
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-export default function NotFoundPage({
-  title,
-  description,
-  showSearchSuggestions = true,
-  customActions,
-}: NotFoundPageProps) {
-  const t = useTranslations("error.notFound");
-  const mt = useTranslations("metadata.pages.notFound");
-
-  const router = useRouter();
-  const [countdown, setCountdown] = useState(10);
-  const [autoRedirect, setAutoRedirect] = useState(true);
-
-  // Use translations as default values
-  const pageTitle = title || mt("title");
-  const pageDescription = description || mt("description");
-
-  // Auto redirect countdown
-  useEffect(() => {
-    if (!autoRedirect) return;
-
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          router.push("/");
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [router, autoRedirect]);
-
-  const handleGoBack = () => {
-    if (window.history.length > 1) {
-      router.back();
-    } else {
-      router.push("/");
-    }
-  };
-
-  const handleStopRedirect = () => {
-    setAutoRedirect(false);
-  };
-
-  return (
-    <>
-      <PageHead title={pageTitle} description={pageDescription} />
-
-      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background to-muted">
+    <DynamicLayout>
+      <div className="min-h-[80vh] flex items-center justify-center bg-gradient-to-br from-background to-muted/20 p-4">
         <div className="w-full max-w-2xl space-y-8">
-          <NotFoundAnimation />
-
+          {/* Main 404 Display */}
           <div className="text-center space-y-4">
-            <h2 className="text-3xl font-bold tracking-tight">{pageTitle}</h2>
-            <p className="text-xl text-muted-foreground max-w-md mx-auto">{pageDescription}</p>
+            <div className="relative">
+              <h1 className="text-9xl md:text-[12rem] font-black text-muted-foreground/20 select-none">
+                {t("heading")}
+              </h1>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <AlertTriangle className="h-16 w-16 md:h-20 md:w-20 text-destructive animate-pulse" />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight">{t("title")}</h2>
+              <p className="text-lg text-muted-foreground max-w-md mx-auto">{t("description")}</p>
+            </div>
           </div>
 
-          {/* Auto-redirect notification */}
-          {autoRedirect && countdown > 0 && (
-            <Alert>
-              <RefreshIcon className="h-4 w-4" />
-              <AlertDescription className="flex items-center justify-between">
-                <span>{t("autoRedirectMessage").replace("{count}", countdown.toString())}</span>
-                <Button variant="ghost" size="sm" onClick={handleStopRedirect}>
-                  {t("cancelRedirect")}
-                </Button>
-              </AlertDescription>
-            </Alert>
-          )}
+          {/* Action Card */}
+          <Card className="border-dashed">
+            <CardHeader className="text-center pb-4">
+              <CardTitle className="text-xl">
+                {tCommon("actions.chooseOption") || "What would you like to do?"}
+              </CardTitle>
+              <CardDescription>
+                {tCommon("actions.continueMessage") ||
+                  "Choose an option below to continue browsing"}
+              </CardDescription>
+            </CardHeader>
 
-          {/* Action Buttons */}
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button onClick={handleGoBack} variant="outline" className="flex-1">
-                  <BackIcon className="h-4 w-4 mr-2" />
-                  {t("secondaryButton")}
-                </Button>
-
-                <Button asChild className="flex-1">
-                  <Link href="/">
-                    <HomeIcon className="h-4 w-4 mr-2" />
-                    {t("primaryButton")}
-                  </Link>
+            <CardContent className="space-y-6">
+              {/* Primary Actions */}
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Button
+                  onClick={handleGoHome}
+                  className="flex items-center gap-2"
+                  size="lg"
+                  disabled={isRedirecting}
+                >
+                  <Home className="h-4 w-4" />
+                  {isRedirecting
+                    ? tCommon("status.redirecting") || "Redirecting..."
+                    : t("primaryButton")}
                 </Button>
 
                 <Button
-                  onClick={() => window.location.reload()}
+                  onClick={handleGoBack}
                   variant="outline"
-                  className="flex-1"
+                  className="flex items-center gap-2"
+                  size="lg"
                 >
-                  <RefreshIcon className="h-4 w-4 mr-2" />
+                  <ArrowLeft className="h-4 w-4" />
+                  {t("secondaryButton")}
+                </Button>
+
+                <Button
+                  onClick={handleRefresh}
+                  variant="outline"
+                  className="flex items-center gap-2"
+                  size="lg"
+                >
+                  <RefreshCw className="h-4 w-4" />
                   {t("refreshButton")}
                 </Button>
               </div>
 
-              {customActions && <div className="mt-4 pt-4 border-t">{customActions}</div>}
+              {/* Auto Redirect Section */}
+              {countdown === null && !isRedirecting && (
+                <div className="text-center">
+                  <Button
+                    onClick={startAutoRedirect}
+                    variant="ghost"
+                    size="sm"
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    {t("autoRedirectMessage").replace("{count}", "10")}
+                  </Button>
+                </div>
+              )}
+
+              {countdown !== null && countdown > 0 && (
+                <div className="text-center space-y-2">
+                  <p className="text-sm text-muted-foreground">
+                    {t("autoRedirectMessage").replace("{count}", countdown.toString())}
+                  </p>
+                  <Button onClick={cancelAutoRedirect} variant="ghost" size="sm">
+                    {t("cancelRedirect")}
+                  </Button>
+                </div>
+              )}
+
+              <Separator />
+
+              {/* Popular Pages */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-center text-muted-foreground uppercase tracking-wider">
+                  {t("searchTitle")}
+                </h3>
+                <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                  {popularPages.map((page) => {
+                    const Icon = page.icon;
+                    return (
+                      <Button
+                        key={page.href}
+                        onClick={() => router.push(page.href)}
+                        variant="ghost"
+                        className="flex items-center gap-2 justify-start sm:justify-center"
+                      >
+                        <Icon className="h-4 w-4" />
+                        {page.title}
+                      </Button>
+                    );
+                  })}
+                </div>
+              </div>
             </CardContent>
+
+            <CardFooter className="text-center pt-6">
+              <p className="text-sm text-muted-foreground w-full">
+                {t("supportText")}{" "}
+                <Button
+                  variant="link"
+                  className="p-0 h-auto text-sm font-normal underline"
+                  onClick={() => (window.location.href = "mailto:support@example.com")}
+                >
+                  {t("contactSupport")}
+                </Button>
+              </p>
+            </CardFooter>
           </Card>
 
-          {/* Search Suggestions */}
-          {showSearchSuggestions && <SearchSuggestions />}
-
-          {/* Help Text */}
-          <div className="text-center">
-            <p className="text-sm text-muted-foreground">
-              {t("supportText")}{" "}
-              <Button variant="link" className="p-0 h-auto">
-                {t("contactSupport")}
-              </Button>
+          {/* Additional Help */}
+          <div className="text-center text-xs text-muted-foreground space-y-1">
+            <p>Error Code: 404 • {t("title")}</p>
+            <p>
+              {tCommon("troubleshooting.clearCache") ||
+                "If the problem persists, try clearing your browser cache"}
             </p>
           </div>
         </div>
       </div>
-    </>
+    </DynamicLayout>
   );
 }
