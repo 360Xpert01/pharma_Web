@@ -9,6 +9,7 @@ const auth = {
     submittingButton: "سائن اِن ہو رہا ہے...",
     noAccountText: "کیا آپ کا اکاؤنٹ نہیں ہے؟",
     signupLink: "اکاؤنٹ بنائیں",
+    forgotLink: "کیا آپ پاس ورڈ بھول گئے؟",
   },
 
   // Signup page

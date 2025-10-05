@@ -2,30 +2,25 @@
 import React, { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
+import { Loader2 } from "@/lib/icons";
 
 interface LoaderOverlayProps {
   isLoading: boolean;
   text?: string;
   size?: "sm" | "md" | "lg";
   variant?: "default" | "minimal" | "dots";
+  showOverlay?: boolean;
 }
 
-// Spinner Component with Strategy Pattern
+// Improved Spinner Component with moving animation
 const SpinnerVariants = {
   default: ({ size, isDark, mounted }: { size: string; isDark: boolean; mounted: boolean }) => (
     <div className="relative">
-      <div
+      <Loader2
         className={cn(
-          "animate-spin rounded-full border-4 border-t-transparent",
-          mounted ? "border-white dark:border-white" : "border-white",
-          size
-        )}
-      />
-      <div
-        className={cn(
-          "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-30",
-          mounted ? "bg-white dark:bg-white" : "bg-white",
-          size === "h-8 w-8" ? "h-4 w-4" : size === "h-12 w-12" ? "h-6 w-6" : "h-8 w-8"
+          "animate-spin",
+          mounted ? "text-primary" : "text-primary",
+          size === "h-8 w-8" ? "h-8 w-8" : size === "h-12 w-12" ? "h-12 w-12" : "h-10 w-10"
         )}
       />
     </div>

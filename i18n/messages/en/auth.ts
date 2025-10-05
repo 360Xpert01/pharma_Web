@@ -9,6 +9,7 @@ const auth = {
     submittingButton: "Signing in...",
     noAccountText: "Don't have an account?",
     signupLink: "Sign up",
+    forgotLink: "Forgot your password?",
   },
 
   // Signup page

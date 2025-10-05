@@ -9,6 +9,7 @@ import { GlobalLoadingProvider } from "@/contexts/global-loading-context";
 import LoaderOverlay from "@/components/shared/loader-overlay";
 import GlobalLoadingOverlay from "@/components/shared/global-loading-overlay";
 import { AppInitializer } from "./app-initializer";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function Providers({ children }: PropsWithChildren) {
   const [queryClient] = useState(() => new QueryClient());
@@ -28,6 +29,7 @@ export default function Providers({ children }: PropsWithChildren) {
               <AppInitializer>
                 {children}
                 <GlobalLoadingOverlay />
+                <Toaster />
               </AppInitializer>
             </LayoutProvider>
           </QueryClientProvider>
