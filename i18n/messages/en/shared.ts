@@ -116,6 +116,19 @@ const shared = {
     noFilters: "No filters applied",
   },
 
+  // Actions (for buttons and dropdowns)
+  actions: {
+    edit: "Edit",
+    delete: "Delete",
+    view: "View",
+    create: "Create",
+    update: "Update",
+    save: "Save",
+    cancel: "Cancel",
+    confirm: "Confirm",
+    close: "Close",
+  },
+
   // Breadcrumbs component
   breadcrumbs: {
     home: "Home",

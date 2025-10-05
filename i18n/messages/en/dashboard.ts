@@ -265,8 +265,6 @@ const dashboard = {
   notifications: {
     dataLoaded: "Data loaded successfully",
     dataError: "Error loading data",
-    realTimeConnected: "Real-time updates connected",
-    realTimeDisconnected: "Real-time updates disconnected",
     exportSuccess: "Data exported successfully",
     saveSuccess: "Changes saved successfully",
     updateAvailable: "New data available",
@@ -296,6 +294,7 @@ const dashboard = {
 
   // Sample data for data-lists component
   sampleData: {
+    never: "Never",
     users: {
       user1: {
         name: "John Doe",
@@ -415,20 +414,6 @@ const dashboard = {
         status: "Shipped",
         date: "2024-01-13",
       },
-    },
-  },
-
-  // Real-time components
-  realTime: {
-    status: {
-      connected: "Connected",
-      connecting: "Connecting...",
-      disconnected: "Disconnected",
-      lastUpdate: "Last update",
-    },
-    activities: {
-      title: "Recent Activities",
-      noData: "No recent activities",
     },
   },
 

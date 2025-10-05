@@ -89,6 +89,18 @@ const common = {
     lastYear: "پچھلے سال",
     nextYear: "اگلے سال",
   },
+
+  // Language switcher
+  languageSwitcher: {
+    selectLanguage: "زبان منتخب کریں",
+    changeLanguage: "زبان تبدیل کریں",
+    currentLanguage: "موجودہ زبان",
+    english: "English",
+    urdu: "اردو",
+    switchTo: "تبدیل کریں",
+    tooltip: "زبان منتخب کریں",
+    ariaLabel: "زبان تبدیل کرنے والا",
+  },
 } as const;
 
 export default common;

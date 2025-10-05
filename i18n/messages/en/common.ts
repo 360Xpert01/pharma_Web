@@ -89,6 +89,18 @@ const common = {
     lastYear: "Last year",
     nextYear: "Next year",
   },
+
+  // Language switcher
+  languageSwitcher: {
+    selectLanguage: "Select language",
+    changeLanguage: "Change language",
+    currentLanguage: "Current language",
+    english: "English",
+    urdu: "اردو",
+    switchTo: "Switch to",
+    tooltip: "Select language",
+    ariaLabel: "Language switcher",
+  },
 } as const;
 
 export default common;
