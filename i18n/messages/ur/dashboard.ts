@@ -146,6 +146,24 @@ const dashboard = {
         active: "فعال صارفین",
         visitors: "وزٹرز",
       },
+      times: {
+        midnight: "۰۰:۰۰",
+        earlyMorning: "۰۴:۰۰",
+        morning: "۰۸:۰۰",
+        noon: "۱۲:۰۰",
+        afternoon: "۱۶:۰۰",
+        evening: "۲۰:۰۰",
+        night: "۲۳:۵۹",
+      },
+      activeCounts: {
+        twelve: "۱۲",
+        eight: "۸",
+        fortyFive: "۴۵",
+        seventyEight: "۷۸",
+        ninetyTwo: "۹۲",
+        sixtyFive: "۶۵",
+        twentyThree: "۲۳",
+      },
     },
     noDataAvailable: "کوئی ڈیٹا دستیاب نہیں",
     loading: "چارٹ ڈیٹا لوڈ ہو رہا ہے...",
@@ -266,8 +284,15 @@ const dashboard = {
 
   // Performance section
   performance: {
-    title: "کارکردگی کا جائزہ",
-    subtitle: "اہم کارکردگی کے اشارے اور سسٹم کی صحت ٹریک کریں",
+    title: "کارکردگی کے پیمانے",
+    uptime: "اپ ٹائم",
+    uptimeValue: "۹۹.۹٪",
+    avgResponse: "اوسط ردعمل کا وقت",
+    avgResponseValue: "۱.۲ سیکنڈ",
+    apiCalls: "اے پی آئی کالز",
+    apiCallsValue: "۱۵.۳ ہزار",
+    dataTransfer: "ڈیٹا ٹرانسفر",
+    dataTransferValue: "۲.۱ گیگا بائٹ",
   },
 
   // Sample data for data-lists component
@@ -343,6 +368,22 @@ const dashboard = {
       },
       product3: {
         name: "انٹرپرائز سلوشن",
+        category: "سافٹ ویئر",
+        price: "$299.99",
+        sales: "456",
+        revenue: "$136,800",
+        status: "فعال",
+      },
+      product4: {
+        name: "2 انٹرپرائز سلوشن",
+        category: "سافٹ ویئر",
+        price: "$299.99",
+        sales: "456",
+        revenue: "$136,800",
+        status: "فعال",
+      },
+      product5: {
+        name: "3 انٹرپرائز سلوشن",
         category: "سافٹ ویئر",
         price: "$299.99",
         sales: "456",
