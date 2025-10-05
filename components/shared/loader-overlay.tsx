@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 
@@ -12,86 +12,90 @@ interface LoaderOverlayProps {
 
 // Spinner Component with Strategy Pattern
 const SpinnerVariants = {
-  default: ({ size, isDark }: { size: string; isDark: boolean }) => (
+  default: ({ size, isDark, mounted }: { size: string; isDark: boolean; mounted: boolean }) => (
     <div className="relative">
       <div
         className={cn(
           "animate-spin rounded-full border-4 border-t-transparent",
-          size,
-          isDark 
-            ? "border-primary border-t-transparent" 
-            : "border-primary border-t-transparent"
+          mounted ? "border-white dark:border-white" : "border-white",
+          size
         )}
       />
       <div
         className={cn(
           "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-30",
-          size === "h-8 w-8" ? "h-4 w-4" : 
-          size === "h-12 w-12" ? "h-6 w-6" : "h-8 w-8",
-          "bg-primary"
+          mounted ? "bg-white dark:bg-white" : "bg-white",
+          size === "h-8 w-8" ? "h-4 w-4" : size === "h-12 w-12" ? "h-6 w-6" : "h-8 w-8"
         )}
       />
     </div>
   ),
-  
-  minimal: ({ size, isDark }: { size: string; isDark: boolean }) => (
+
+  minimal: ({ size, isDark, mounted }: { size: string; isDark: boolean; mounted: boolean }) => (
     <div
       className={cn(
-        "animate-spin rounded-full border-2 border-t-transparent border-primary",
+        "animate-spin rounded-full border-2 border-t-transparent",
+        mounted ? "border-white dark:border-white" : "border-white",
         size
       )}
     />
   ),
-  
-  dots: ({ size, isDark }: { size: string; isDark: boolean }) => (
+
+  dots: ({ size, isDark, mounted }: { size: string; isDark: boolean; mounted: boolean }) => (
     <div className="flex space-x-1">
       {[0, 1, 2].map((i) => (
         <div
           key={i}
           className={cn(
-            "animate-bounce rounded-full bg-primary",
-            size === "h-8 w-8" ? "h-2 w-2" : 
-            size === "h-12 w-12" ? "h-3 w-3" : "h-4 w-4"
+            "animate-bounce rounded-full",
+            mounted ? "bg-white dark:bg-white" : "bg-white",
+            size === "h-8 w-8" ? "h-2 w-2" : size === "h-12 w-12" ? "h-3 w-3" : "h-4 w-4"
           )}
           style={{ animationDelay: `${i * 0.1}s` }}
         />
       ))}
     </div>
-  )
+  ),
 };
 
-const LoaderOverlay: React.FC<LoaderOverlayProps> = ({ 
-  isLoading, 
-  text = "Next Boiler",
+const LoaderOverlay: React.FC<LoaderOverlayProps> = ({
+  isLoading,
+  text = "Next Boilerplate",
   size = "md",
-  variant = "default"
+  variant = "default",
 }) => {
   const { theme, resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
+  const [mounted, setMounted] = useState(false);
+
+  // Ensure component is mounted before using theme to avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   if (!isLoading) return null;
+
+  // Use a default theme state until mounted to prevent hydration mismatch
+  const isDark = mounted ? resolvedTheme === "dark" : false;
 
   const sizeClasses = {
     sm: "h-8 w-8",
     md: "h-12 w-12",
-    lg: "h-16 w-16"
+    lg: "h-16 w-16",
   };
 
   const textSizeClasses = {
     sm: "text-lg sm:text-xl",
     md: "text-xl sm:text-2xl md:text-3xl",
-    lg: "text-2xl sm:text-3xl md:text-4xl"
+    lg: "text-2xl sm:text-3xl md:text-4xl",
   };
 
   const SpinnerComponent = SpinnerVariants[variant];
 
   return (
-    <div 
+    <div
       className={cn(
         "fixed inset-0 z-[1000] flex items-center justify-center backdrop-blur-sm transition-all duration-300",
-        isDark 
-          ? "bg-black/80" 
-          : "bg-white/80"
+        mounted ? "bg-black/90 dark:bg-black/90" : "bg-black/90"
       )}
       role="dialog"
       aria-modal="true"
@@ -99,24 +103,25 @@ const LoaderOverlay: React.FC<LoaderOverlayProps> = ({
     >
       <div className="flex flex-col items-center space-y-6 p-8">
         <div className="relative">
-          <SpinnerComponent 
-            size={sizeClasses[size]} 
-            isDark={isDark}
-          />
+          <SpinnerComponent size={sizeClasses[size]} isDark={isDark} mounted={mounted} />
         </div>
-        
+
         <div className="text-center">
-          <h2 
+          <h2
             className={cn(
               "font-bold tracking-wider animate-pulse",
               textSizeClasses[size],
-              isDark ? "text-white" : "text-gray-900"
+              mounted ? "text-white dark:text-white" : "text-white"
             )}
-            style={{
-              textShadow: isDark 
-                ? "0 2px 8px rgba(59, 130, 246, 0.5)" 
-                : "0 2px 8px rgba(59, 130, 246, 0.3)"
-            }}
+            style={
+              mounted
+                ? {
+                    textShadow: "0 2px 8px rgba(255, 255, 255, 0.3)",
+                  }
+                : {
+                    textShadow: "0 2px 8px rgba(255, 255, 255, 0.3)",
+                  }
+            }
           >
             {text}
           </h2>
@@ -126,7 +131,7 @@ const LoaderOverlay: React.FC<LoaderOverlayProps> = ({
                 key={i}
                 className={cn(
                   "h-1 w-1 rounded-full animate-pulse",
-                  isDark ? "bg-primary/60" : "bg-primary/40"
+                  mounted ? "bg-white/60 dark:bg-white/60" : "bg-white/60"
                 )}
                 style={{ animationDelay: `${i * 0.2}s` }}
               />
@@ -134,13 +139,6 @@ const LoaderOverlay: React.FC<LoaderOverlayProps> = ({
           </div>
         </div>
       </div>
-      
-      <style jsx>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-      `}</style>
     </div>
   );
 };

@@ -5,12 +5,6 @@ import { Button } from "@/components/ui/button";
 import { MetricsCards } from "./components/metrics-cards";
 import { InteractiveCharts } from "./components/interactive-charts";
 import { DataLists } from "./components/data-lists";
-import {
-  RealTimeProvider,
-  RealTimeStatus,
-  RealTimeNotifications,
-  useRealTime,
-} from "./components/real-time-provider";
 import { SettingsIcon, RefreshIcon, TrendingUpIcon } from "@/lib/icons";
 import { useState } from "react";
 import Heading from "@/components/shared/heading";
@@ -19,36 +13,50 @@ import { logger } from "@/lib/logger";
 import LoaderOverlay from "@/components/shared/loader-overlay";
 import { ErrorBoundary } from "@/components/shared/error-boundary";
 import { useError, useAsyncError } from "@/contexts/error-context";
+import { useLoading } from "@/hooks/use-loading";
 
 function DashboardContent() {
   const t = useTranslations("dashboard");
-  const [isLoading, setIsLoading] = useState(false);
-  const { data } = useRealTime();
+  const [isLocalLoading, setIsLocalLoading] = useState(false);
   const { addError } = useError();
   const { executeAsync } = useAsyncError();
+  const { executeWithLoadingAndErrorHandling, isLoading } = useLoading({
+    text: "Refreshing Dashboard...",
+    variant: "default",
+    size: "lg",
+  });
 
   const handleRefresh = async () => {
-    setIsLoading(true);
+    setIsLocalLoading(true);
 
-    const result = await executeAsync(async () => {
-      // Simulate refresh delay and potential errors
-      const { sleep } = await import("@/lib/actions/actions");
-      await sleep(2000);
+    const result = await executeWithLoadingAndErrorHandling(
+      async () => {
+        // Simulate refresh delay and potential errors
+        const { sleep } = await import("@/lib/actions/actions");
+        await sleep(2000);
 
-      // 10% chance of simulated error for demo purposes
-      if (Math.random() < 0.1) {
-        throw new Error("Failed to refresh dashboard data");
+        // 10% chance of simulated error for demo purposes
+        if (Math.random() < 0.1) {
+          throw new Error("Failed to refresh dashboard data");
+        }
+
+        return "Dashboard refreshed successfully";
+      },
+      {
+        text: "Refreshing Dashboard Data...",
+        onSuccess: (result) => {
+          logger.info("Dashboard refresh completed successfully", { result });
+        },
+        onError: (error) => {
+          addError({
+            message: "Failed to refresh dashboard",
+            details: error?.message || "Unknown error",
+          } as any);
+        },
       }
+    );
 
-      return "Dashboard refreshed successfully";
-    }, "Failed to refresh dashboard");
-
-    setIsLoading(false);
-
-    if (result) {
-      // Optionally show success message
-      logger.info("Dashboard refresh completed successfully", { result });
-    }
+    setIsLocalLoading(false);
   };
 
   return (
@@ -64,18 +72,11 @@ function DashboardContent() {
         </div>
         {/* Action Buttons - Always on left in RTL */}
         <div className="flex items-center gap-3 flex-shrink-0">
-          <RealTimeStatus />
           <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isLoading}>
             <RefreshIcon
               className={`h-4 w-4 ${isLoading ? "animate-spin" : ""} rtl:ml-2 ltr:mr-2`}
             />
             {t("actions.refresh")}
-          </Button>
-          <Button variant="outline" size="sm" asChild>
-            <a href="/demo/loading">
-              <TrendingUpIcon className="h-4 w-4 rtl:ml-2 ltr:mr-2" />
-              {t("actions.loadingDemo")}
-            </a>
           </Button>
           <Button variant="outline" size="sm">
             <SettingsIcon className="h-4 w-4 rtl:ml-2 ltr:mr-2" />
@@ -84,9 +85,6 @@ function DashboardContent() {
         </div>
       </div>
 
-      {/* Real-time Notifications */}
-      <RealTimeNotifications />
-
       {/* Metrics Cards Section */}
       <section className="space-y-6">
         <Heading
@@ -94,7 +92,7 @@ function DashboardContent() {
           description={t("sections.metricsDescription")}
           className="mb-8"
         />
-        <MetricsCards data={data.metrics} isLoading={isLoading} />
+        <MetricsCards isLoading={isLoading} />
       </section>
 
       {/* Charts Section */}
@@ -152,12 +150,12 @@ function DashboardContent() {
         </Card>
       </section>
 
-      {/* Enhanced Loader Overlay */}
+      {/* Enhanced Loader Overlay - Now handled globally, but keeping local for component-level loading */}
       <LoaderOverlay
-        isLoading={isLoading}
+        isLoading={isLocalLoading}
         text={t("loading.refreshing")}
-        variant="default"
-        size="lg"
+        variant="minimal"
+        size="md"
       />
     </div>
   );
@@ -166,9 +164,7 @@ function DashboardContent() {
 export default function DashboardPage() {
   return (
     <ErrorBoundary>
-      <RealTimeProvider>
-        <DashboardContent />
-      </RealTimeProvider>
+      <DashboardContent />
     </ErrorBoundary>
   );
 }

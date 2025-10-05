@@ -4,7 +4,7 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { urduFont } from "@/lib/fonts";
 import { Analytics } from "@vercel/analytics/next";
-import { ThemeProvider } from "next-themes";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import Providers from "@/components/providers/providers";
@@ -38,12 +38,7 @@ export default async function RootLayout({ children, params }: Props) {
     <html lang={locale} suppressHydrationWarning dir={locale === "ur" ? "rtl" : "ltr"}>
       <body className={bodyClasses}>
         <NextIntlClientProvider messages={messages}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            themes={["light", "dark", "ocean"]}
-          >
+          <ThemeProvider themes={["light", "dark", "ocean"]}>
             <ErrorProvider maxErrors={10}>
               <ErrorBoundary showDetails={process.env.NODE_ENV === "development"}>
                 <LayoutProvider>
@@ -51,7 +46,7 @@ export default async function RootLayout({ children, params }: Props) {
                     fallback={
                       <LoaderOverlay
                         isLoading={true}
-                        text="Next Boiler"
+                        text="Initializing App..."
                         variant="default"
                         size="lg"
                       />

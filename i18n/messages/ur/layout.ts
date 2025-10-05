@@ -32,6 +32,7 @@ const layout = {
     toggleLabel: "تھیم تبدیل کریں",
     lightMode: "لائٹ موڈ",
     darkMode: "ڈارک موڈ",
+    oceanMode: "اوشن موڈ",
     systemMode: "سسٹم موڈ",
   },
 

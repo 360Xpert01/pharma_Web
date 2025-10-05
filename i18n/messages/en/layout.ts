@@ -32,6 +32,7 @@ const layout = {
     toggleLabel: "Toggle theme",
     lightMode: "Light mode",
     darkMode: "Dark mode",
+    oceanMode: "Ocean mode",
     systemMode: "System mode",
   },
 

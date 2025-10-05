@@ -253,8 +253,6 @@ const dashboard = {
   notifications: {
     dataLoaded: "ڈیٹا کامیابی سے لوڈ ہو گیا",
     dataError: "ڈیٹا لوڈ کرنے میں خرابی",
-    realTimeConnected: "ریئل ٹائم اپ ڈیٹس منسلک ہیں",
-    realTimeDisconnected: "ریئل ٹائم اپ ڈیٹس منقطع ہو گئیں",
     exportSuccess: "ڈیٹا کامیابی سے ایکسپورٹ ہو گیا",
     saveSuccess: "تبدیلیاں کامیابی سے محفوظ ہو گئیں",
     updateAvailable: "نیا ڈیٹا دستیاب ہے",
@@ -297,6 +295,7 @@ const dashboard = {
 
   // Sample data for data-lists component
   sampleData: {
+    never: "کبھی نہیں",
     users: {
       user1: {
         name: "جان ڈو",
@@ -416,20 +415,6 @@ const dashboard = {
         status: "بھیجا گیا",
         date: "2024-01-13",
       },
-    },
-  },
-
-  // Real-time components
-  realTime: {
-    status: {
-      connected: "منسلک",
-      connecting: "منسلک ہو رہا ہے...",
-      disconnected: "منقطع",
-      lastUpdate: "آخری اپ ڈیٹ",
-    },
-    activities: {
-      title: "حالیہ سرگرمیاں",
-      noData: "کوئی حالیہ سرگرمیاں نہیں",
     },
   },
 

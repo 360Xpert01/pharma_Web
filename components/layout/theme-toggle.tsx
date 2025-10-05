@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Sun, Moon, Monitor } from "lucide-react";
+import { Sun, Moon, Monitor, Waves } from "lucide-react";
 
 const themes = [
   {
@@ -21,6 +21,11 @@ const themes = [
     name: "dark",
     icon: Moon,
     labelKey: "darkMode",
+  },
+  {
+    name: "ocean",
+    icon: Waves,
+    labelKey: "oceanMode",
   },
   {
     name: "system",

@@ -32,6 +32,8 @@ const common = {
     collapse: "Collapse",
     minimize: "Minimize",
     maximize: "Maximize",
+    chooseOption: "What would you like to do?",
+    continueMessage: "Choose an option below to continue browsing",
   },
 
   // Status messages
@@ -54,6 +56,7 @@ const common = {
     pending: "Pending",
     processing: "Processing",
     cancelled: "Cancelled",
+    redirecting: "Redirecting...",
   },
 
   // Common phrases
@@ -88,6 +91,37 @@ const common = {
     thisYear: "This year",
     lastYear: "Last year",
     nextYear: "Next year",
+  },
+
+  // Navigation
+  navigation: {
+    home: "Home",
+    dashboard: "Dashboard",
+    settings: "Settings",
+    profile: "Profile",
+    about: "About",
+    contact: "Contact",
+    help: "Help",
+    docs: "Documentation",
+  },
+
+  // Troubleshooting
+  troubleshooting: {
+    clearCache: "If the problem persists, try clearing your browser cache",
+    refreshPage: "Try refreshing the page",
+    contactSupport: "Contact support if the issue continues",
+  },
+
+  // Language switcher
+  languageSwitcher: {
+    selectLanguage: "Select language",
+    changeLanguage: "Change language",
+    currentLanguage: "Current language",
+    english: "English",
+    urdu: "اردو",
+    switchTo: "Switch to",
+    tooltip: "Select language",
+    ariaLabel: "Language switcher",
   },
 } as const;
 

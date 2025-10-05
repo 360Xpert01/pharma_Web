@@ -4,8 +4,15 @@ import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { useLayout } from "@/contexts/layout-context";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { withLazyLoading } from "@/lib/lazy-loading";
 import { DynamicLayout } from "@/components/layout/dynamic-layout";
+
+// Wrap DynamicLayout with lazy loading for better performance
+const LazyDynamicLayout = withLazyLoading(DynamicLayout, {
+  fallbackText: "Loading page layout...",
+  fallbackVariant: "default",
+  fallbackSize: "md",
+});
 
 export default function HomePage() {
   const { applyPreset } = useLayout();
@@ -19,7 +26,7 @@ export default function HomePage() {
   }, [applyPreset]);
 
   return (
-    <DynamicLayout>
+    <LazyDynamicLayout>
       {/* Landing page content - this will be wrapped by the dynamic layout */}
       <div className="min-h-screen flex flex-col">
         {/* Custom header for landing page when using website preset */}
@@ -61,6 +68,6 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-    </DynamicLayout>
+    </LazyDynamicLayout>
   );
 }
