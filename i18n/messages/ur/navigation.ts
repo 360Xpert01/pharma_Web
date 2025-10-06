@@ -1,17 +1,17 @@
 const navigation = {
   // مرکزی نیویگیشن آئٹمز
   main: {
-    home: "ہوم",
+    home: "صفحہ اول",
     dashboard: "ڈیش بورڈ",
     settings: "ترتیبات",
     profile: "پروفائل",
     help: "مدد",
     about: "ہمارے بارے میں",
-    contact: "رابطہ",
+    contact: "رابطہ کریں",
     documentation: "دستاویزات",
     site: "سائٹ",
     layout: "لے آؤٹ",
-    layoutSettings: "لے آؤٹ کی ترتیبات",
+    layoutSettings: "لے آؤٹ ترتیبات",
   },
 
   // ڈیش بورڈ نیویگیشن
@@ -26,12 +26,12 @@ const navigation = {
     content: "مواد",
   },
 
-  // آتھ نیویگیشن
+  // توثیق (Auth) نیویگیشن
   auth: {
     login: "لاگ ان",
     signup: "سائن اپ",
     logout: "لاگ آؤٹ",
-    forgotPassword: "پاس ورڈ بھول گئے",
+    forgotPassword: "پاس ورڈ بھول گئے؟",
     resetPassword: "پاس ورڈ ری سیٹ کریں",
     profile: "پروفائل",
     account: "اکاؤنٹ",
@@ -43,9 +43,9 @@ const navigation = {
     privacyPolicy: "رازداری کی پالیسی",
     terms: "شرائط",
     termsOfService: "سروس کی شرائط",
-    contact: "رابطہ",
+    contact: "رابطہ کریں",
     about: "ہمارے بارے میں",
-    github: "گٹ ہب",
+    github: "گِٹ ہب",
     twitter: "ٹوئٹر",
     linkedin: "لنکڈ اِن",
     support: "مدد",
@@ -55,9 +55,9 @@ const navigation = {
 
   // بریڈ کرم لیبلز
   breadcrumbs: {
-    home: "ہوم",
+    home: "صفحہ اول",
     dashboard: "ڈیش بورڈ",
-    current: "موجودہ",
+    current: "موجودہ صفحہ",
   },
 
   // مینو لیبلز اور ایکشنز
@@ -66,25 +66,26 @@ const navigation = {
     close: "بند کریں",
     expand: "پھیلائیں",
     collapse: "سکیڑیں",
-    toggle: "ٹگل",
+    toggle: "تبدیل کریں",
     open: "کھولیں",
     moreOptions: "مزید اختیارات",
     navigation: "نیویگیشن",
     navigationLabel: "ڈیش بورڈ",
-    toggleMobileNav: "موبائل نیویگیشن ٹگل کریں",
-    toggleSidebar: "سائیڈبار ٹگل کریں",
-    collapseSidebar: "سائیڈبار سکیڑیں",
-    expandSidebar: "سائیڈبار پھیلائیں",
+    toggleMobileNav: "موبائل نیویگیشن تبدیل کریں",
+    toggleSidebar: "سائیڈ بار تبدیل کریں",
+    collapseSidebar: "سائیڈ بار سکیڑیں",
+    expandSidebar: "سائیڈ بار پھیلائیں",
+    goToHome: "صفحہ اول پر جائیں",
   },
 
   // لے آؤٹ نیویگیشن ریفرنسز
   layout: {
-    variant: "ورژن",
+    variant: "انداز",
     width: "چوڑائی",
     logoText: "نیکسٹ اسٹارٹر",
   },
 
-  // روٹ ٹائٹلز اور وضاحتیں
+  // راستوں (Routes) کے عنوانات اور تفصیلات
   routes: {
     "/dashboard": {
       title: "ڈیش بورڈ",
@@ -92,7 +93,7 @@ const navigation = {
     },
     "/": {
       title: "سائٹ",
-      description: "مرکزی سائٹ پر جائیں",
+      description: "مرکزی سائٹ دیکھیں",
     },
     "/dashboard/layout-settings": {
       title: "لے آؤٹ",
@@ -104,7 +105,7 @@ const navigation = {
     },
     "/dashboard/analytics": {
       title: "تجزیہ",
-      description: "تجزیہ اور میٹرکس دیکھیں",
+      description: "تجزیات اور میٹرکس دیکھیں",
     },
     "/dashboard/users": {
       title: "صارفین",
@@ -127,12 +128,12 @@ const navigation = {
       description: "سروس کی شرائط",
     },
     "/contact": {
-      title: "رابطہ",
+      title: "رابطہ کریں",
       description: "ہم سے رابطہ کریں",
     },
     "/about": {
       title: "ہمارے بارے میں",
-      description: "ہمارے بارے میں معلومات",
+      description: "ہمارے بارے میں مزید معلومات",
     },
     "/docs": {
       title: "دستاویزات",
@@ -140,19 +141,19 @@ const navigation = {
     },
     "/support": {
       title: "مدد",
-      description: "مدد حاصل کریں",
+      description: "سپورٹ حاصل کریں",
     },
     "/changelog": {
       title: "تبدیلیوں کا ریکارڈ",
-      description: "تبدیلیوں کی فہرست دیکھیں",
+      description: "تازہ تبدیلیاں دیکھیں",
     },
   },
 
-  // بیج لیبلز
+  // بیجز کے لیبلز
   badges: {
     new: "نیا",
     demo: "ڈیمو",
-    live: "لائیو",
+    live: "براہِ راست",
     updated: "اپ ڈیٹ شدہ",
   },
 } as const;

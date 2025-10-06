@@ -1,69 +1,104 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/store/hooks";
 import { authActions } from "@/store/slices/auth-slice";
 import { getFormErrorMessage } from "@/lib/actions/actions";
-import { useAuthLoading } from "@/hooks/use-loading-state";
-import LoaderOverlay from "@/components/shared/loader-overlay";
-
-const schema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-});
-
-type FormValues = z.infer<typeof schema>;
+import { authAPI } from "@/lib/api/auth";
+import { AuthFlowManager, setAuthSession } from "@/lib/auth-flow";
+import { Eye, EyeOff } from "@/lib/icons";
+import { toast } from "sonner";
+import { createLoginSchema, type LoginFormValues } from "@/validations/authValidation";
 
 export default function LoginPage() {
   const t = useTranslations("auth.login");
   const vt = useTranslations("auth.validation");
   const dispatch = useAppDispatch();
-  const { isLoading, executeWithLoading } = useAuthLoading();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(schema),
+  const loginSchema = createLoginSchema(vt);
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
   });
 
-  async function onSubmit(values: FormValues) {
-    await executeWithLoading(async () => {
-      // Simulate API login; integrate axios client here
-      // const { data } = await api.auth.login(values)
-      // dispatch(authActions.setSession({ token: data.token, user: data.user }))
+  async function onSubmit(values: LoginFormValues) {
+    setIsLoading(true);
 
-      // Simulate network delay
-      const { sleep } = await import("@/lib/actions/actions");
-      await sleep(1500);
+    try {
+      const response = await authAPI.login(values);
 
-      const fakeToken = "demo-token";
-      dispatch(
-        authActions.setSession({
-          token: fakeToken,
-          user: { id: "1", email: values.email, role: "user" },
-        })
-      );
-    });
+      if (!response.success) {
+        toast.error("Login Failed", {
+          description: response.error || "Please check your credentials and try again.",
+        });
+        return;
+      }
+
+      // Check if the API response requires OTP verification
+      const loginData = response.data as any;
+      if (loginData?.requiresOtp) {
+        // Set auth flow to awaiting OTP
+        AuthFlowManager.setFlow({
+          step: "awaiting-otp",
+          email: values.email,
+        });
+
+        dispatch(
+          authActions.setFlowStep({
+            step: "awaiting-otp",
+            email: values.email,
+          })
+        );
+
+        toast.success("OTP Sent", {
+          description: "Please check your email for the verification code.",
+        });
+
+        router.push("/auth/otp");
+      } else {
+        // Direct login success
+        const { token, user } = loginData as { token: string; user: any };
+        setAuthSession(token, user);
+        dispatch(authActions.setSession({ token, user }));
+
+        toast.success("Welcome back!", {
+          description: "You have been logged in successfully.",
+        });
+
+        router.push("/dashboard");
+      }
+    } catch (error) {
+      toast.error("Login Failed", {
+        description: "An unexpected error occurred. Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
     <div className="relative space-y-6">
-      <LoaderOverlay isLoading={isLoading} />
       <div className="space-y-2">
-        <h1 className="text-2xl font-bold">{t("title")}</h1>
-        <p className="text-muted-foreground">{t("subtitle")}</p>
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold">{t("title")}</h1>
+        <p className="text-muted-foreground text-sm md:text-base">{t("subtitle")}</p>
       </div>
       <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)} noValidate>
         <div className="grid gap-2">
-          <label htmlFor="email" className="text-sm font-medium">
+          <label htmlFor="email" className="text-sm md:text-base font-medium">
             {t("emailLabel")}
           </label>
           <Input
             id="email"
             type="email"
+            className="text-sm md:text-base"
             {...form.register("email")}
             aria-invalid={!!form.formState.errors.email}
           />
@@ -74,31 +109,66 @@ export default function LoginPage() {
           )}
         </div>
         <div className="grid gap-2">
-          <label htmlFor="password" className="text-sm font-medium">
+          <label htmlFor="password" className="text-sm md:text-base font-medium">
             {t("passwordLabel")}
           </label>
-          <Input
-            id="password"
-            type="password"
-            {...form.register("password")}
-            aria-invalid={!!form.formState.errors.password}
-          />
+          <div className="relative">
+            <Input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              className="text-sm md:text-base pr-10"
+              {...form.register("password")}
+              aria-invalid={!!form.formState.errors.password}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
           {form.formState.errors.password && (
             <p className="text-sm text-destructive">
               {getFormErrorMessage(form.formState.errors.password)}
             </p>
           )}
         </div>
-        <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? t("submittingButton") : t("submitButton")}
+        <div className="text-right">
+          <a
+            className="text-sm md:text-base text-muted-foreground underline hover:text-primary cursor-pointer transition-colors"
+            href="/auth/forgot"
+          >
+            {t("forgotLink")}
+          </a>
+        </div>
+        <Button
+          type="submit"
+          className="w-full cursor-pointer text-sm md:text-base font-medium"
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <div className="flex items-center gap-2">
+              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+              {t("submittingButton")}
+            </div>
+          ) : (
+            t("submitButton")
+          )}
         </Button>
       </form>
-      <p className="text-sm text-muted-foreground">
-        {t("noAccountText")}{" "}
-        <a className="underline" href="/auth/signup">
-          {t("signupLink")}
-        </a>
-      </p>
+      <div className="text-center text-sm md:text-base text-muted-foreground">
+        <p>
+          {t("noAccountText")}{" "}
+          <a
+            className="underline hover:text-primary cursor-pointer transition-colors font-medium"
+            href="/auth/signup"
+          >
+            {t("signupLink")}
+          </a>
+        </p>
+      </div>
     </div>
   );
 }

@@ -9,6 +9,7 @@ const auth = {
     submittingButton: "سائن اِن ہو رہا ہے...",
     noAccountText: "کیا آپ کا اکاؤنٹ نہیں ہے؟",
     signupLink: "اکاؤنٹ بنائیں",
+    forgotLink: "کیا آپ پاس ورڈ بھول گئے؟",
   },
 
   // Signup page
@@ -77,6 +78,24 @@ const auth = {
     passwordResetFailed: "پاس ورڈ ری سیٹ ناکام ہو گیا۔ دوبارہ کوشش کریں۔",
     networkError: "نیٹ ورک کی خرابی۔ براہ کرم اپنا کنکشن چیک کریں۔",
     serverError: "سرور کی خرابی۔ براہ کرم بعد میں دوبارہ کوشش کریں۔",
+  },
+
+  // Auth buttons and navigation
+  buttons: {
+    login: "لاگ ان",
+    signup: "اکاؤنٹ بنائیں",
+    getStarted: "شروع کریں",
+    signIn: "سائن ان",
+    register: "رجسٹر کریں",
+    joinNow: "اب شامل ہوں",
+  },
+
+  // Auth labels and tooltips
+  labels: {
+    loginToAccount: "اپنے اکاؤنٹ میں لاگ ان کریں",
+    createNewAccount: "نیا اکاؤنٹ بنائیں",
+    welcomeBack: "خوش آمدید",
+    joinUs: "آج ہی ہمارے ساتھ جڑیں",
   },
 } as const;
 

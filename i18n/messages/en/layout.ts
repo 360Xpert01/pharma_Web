@@ -41,10 +41,23 @@ const layout = {
     profileLabel: "User profile",
     accountSettings: "Account Settings",
     preferences: "Preferences",
+    profile: "Profile",
+    settings: "Settings",
+    help: "Help & Support",
     logout: "Logout",
+    loggingOut: "Logging out...",
     logoutConfirm: "Are you sure you want to logout?",
     cancel: "Cancel",
     confirm: "Confirm",
+    clickForOptions: "Click for options",
+  },
+
+  // Authentication section
+  auth: {
+    authSection: "Authentication",
+    notLoggedIn: "Not logged in",
+    loginRequired: "Please login to continue",
+    guestUser: "Guest User",
   },
 
   // Mobile menu component

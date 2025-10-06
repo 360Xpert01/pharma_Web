@@ -2,8 +2,14 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 import { LogoutIcon, UserIcon, SettingsIcon, HelpIcon } from "@/lib/icons";
 import { logger } from "@/lib/logger";
+import { useAppDispatch } from "@/store/hooks";
+import { authActions } from "@/store/slices/auth-slice";
+import { clearAuthSession } from "@/lib/auth-flow";
+import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -20,31 +26,93 @@ interface UserProfileProps {
   className?: string;
 }
 
-// Mock user data - in real app this would come from auth context/API
-const userData = {
-  name: "John Doe",
-  email: "john.doe@example.com",
-  avatar: "", // Could be user's avatar URL
-  initials: "JD",
+// Cookie-based user data interface for consistency across admin/user contexts
+interface CookieUserData {
+  email: string;
+  name?: string;
+  avatar?: string;
+  id?: string;
+  role?: string;
+}
+
+// Helper function to get user data from cookies (ensures same email as admin)
+const getUserFromCookies = (): CookieUserData | null => {
+  if (typeof window === "undefined") return null;
+
+  const email = Cookies.get("user_email");
+  const isLoggedIn = Cookies.get("user_logged_in");
+
+  if (!email || !isLoggedIn) return null;
+
+  return {
+    email,
+    name: Cookies.get("user_name") || "",
+    avatar: Cookies.get("user_avatar") || "",
+    id: Cookies.get("user_id") || "",
+    role: Cookies.get("user_role") || "user",
+  };
+};
+
+// Helper function to generate user initials
+const getUserInitials = (name?: string, email?: string): string => {
+  if (name) {
+    const nameParts = name.trim().split(" ");
+    if (nameParts.length >= 2) {
+      return `${nameParts[0][0]}${nameParts[1][0]}`.toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  }
+  if (email) {
+    return email.substring(0, 2).toUpperCase();
+  }
+  return "U";
 };
 
 export function UserProfile({ className }: UserProfileProps) {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const t = useTranslations("layout.profile");
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+
+  // Use optimized auth hook instead of duplicating logic
+  const { isAuthenticated, user } = useAuth();
+
+  // If user is not authenticated, don't render the component
+  if (!isAuthenticated || !user) {
+    return null;
+  }
+
+  const userInitials = getUserInitials(user.name, user.email);
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
 
-    // Simulate logout process
     try {
-      // In real app, call your logout API here
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Clear auth session (existing cookies)
+      clearAuthSession();
 
-      // Redirect to login or home page
-      window.location.href = "/auth/login";
+      // Clear additional user cookies using js-cookie
+      Cookies.remove("user_email", { path: "/" });
+      Cookies.remove("user_name", { path: "/" });
+      Cookies.remove("user_avatar", { path: "/" });
+      Cookies.remove("user_id", { path: "/" });
+      Cookies.remove("user_role", { path: "/" });
+
+      // Clear Redux auth state
+      dispatch(authActions.clearSession());
+
+      // Log the logout action
+      logger.info("User logged out successfully", {
+        userId: user.id,
+        email: user.email,
+      });
+
+      // Redirect to login page
+      router.push("/auth/login");
     } catch (error) {
       logger.error("User logout failed", {
         error: error instanceof Error ? error.message : String(error),
+        userId: user.id,
       });
     } finally {
       setIsLoggingOut(false);
@@ -53,12 +121,17 @@ export function UserProfile({ className }: UserProfileProps) {
 
   const handleProfileClick = () => {
     // Navigate to profile page
-    window.location.href = "/dashboard/profile";
+    router.push("/dashboard/profile");
   };
 
   const handleSettingsClick = () => {
     // Navigate to settings page
-    window.location.href = "/dashboard/settings";
+    router.push("/dashboard/settings");
+  };
+
+  const handleHelpClick = () => {
+    // Navigate to help page
+    router.push("/help");
   };
 
   return (
@@ -70,16 +143,16 @@ export function UserProfile({ className }: UserProfileProps) {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-9 w-9 rounded-full hover:bg-accent">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={userData.avatar} alt={userData.name} />
-                    <AvatarFallback className="text-xs font-medium">
-                      {userData.initials}
-                    </AvatarFallback>
+                    <AvatarImage src={user.avatar} alt={user.name} />
+                    <AvatarFallback className="text-xs font-medium">{userInitials}</AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
             </TooltipTrigger>
             <TooltipContent side="bottom" align="center">
-              <p className="text-sm">{userData.name} • Click for options</p>
+              <p className="text-sm">
+                {user.name} • {t("clickForOptions")}
+              </p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -87,8 +160,8 @@ export function UserProfile({ className }: UserProfileProps) {
         <DropdownMenuContent className="w-56" align="end" forceMount>
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">{userData.name}</p>
-              <p className="text-xs leading-none text-muted-foreground">{userData.email}</p>
+              <p className="text-sm font-medium leading-none">{user.name}</p>
+              <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
             </div>
           </DropdownMenuLabel>
 
@@ -96,17 +169,17 @@ export function UserProfile({ className }: UserProfileProps) {
 
           <DropdownMenuItem onClick={handleProfileClick} className="cursor-pointer">
             <UserIcon className="mr-2 h-4 w-4" />
-            <span>Profile</span>
+            <span>{t("profile")}</span>
           </DropdownMenuItem>
 
           <DropdownMenuItem onClick={handleSettingsClick} className="cursor-pointer">
             <SettingsIcon className="mr-2 h-4 w-4" />
-            <span>Settings</span>
+            <span>{t("settings")}</span>
           </DropdownMenuItem>
 
-          <DropdownMenuItem className="cursor-pointer">
+          <DropdownMenuItem onClick={handleHelpClick} className="cursor-pointer">
             <HelpIcon className="mr-2 h-4 w-4" />
-            <span>Help & Support</span>
+            <span>{t("help")}</span>
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
@@ -117,7 +190,7 @@ export function UserProfile({ className }: UserProfileProps) {
             className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-900/20"
           >
             <LogoutIcon className="mr-2 h-4 w-4" />
-            <span>{isLoggingOut ? "Logging out..." : "Log out"}</span>
+            <span>{isLoggingOut ? t("loggingOut") : t("logout")}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

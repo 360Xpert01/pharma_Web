@@ -6,16 +6,39 @@ const intlMiddleware = createMiddleware(routing);
 
 export default function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+  const locale = getLocaleFromPath(pathname);
 
-  // 🔒 Auth protection for dashboard (commented out for development)
-  // if (pathname.match(/^\/(en|ur)?\/dashboard$/)) {
-  //   const isAuthenticated = request.cookies.get("user_logged_in");
-  //   if (!isAuthenticated) {
-  //     return NextResponse.redirect(
-  //       new URL(`/${getLocaleFromPath(pathname)}/auth/login`, request.url)
-  //     );
-  //   }
-  // }
+  // 🔒 Auth flow protection
+  const authFlowData = request.cookies.get("auth_flow");
+  let authFlow = null;
+
+  try {
+    authFlow = authFlowData ? JSON.parse(authFlowData.value) : null;
+  } catch {
+    // Invalid JSON, treat as no flow data
+  }
+
+  // Protect OTP page - only accessible after login attempt
+  if (pathname.match(/^\/(en|ur)?\/auth\/otp$/)) {
+    if (!authFlow || authFlow.step !== "awaiting-otp") {
+      return NextResponse.redirect(new URL(`/${locale}/auth/login`, request.url));
+    }
+  }
+
+  // Protect reset password page - only accessible with valid reset token
+  if (pathname.match(/^\/(en|ur)?\/auth\/reset$/)) {
+    if (!authFlow || authFlow.step !== "reset-password" || !authFlow.resetToken) {
+      return NextResponse.redirect(new URL(`/${locale}/auth/login`, request.url));
+    }
+  }
+
+  // 🔒 Dashboard protection
+  if (pathname.match(/^\/(en|ur)?\/dashboard/)) {
+    const isAuthenticated = request.cookies.get("user_logged_in");
+    if (!isAuthenticated) {
+      return NextResponse.redirect(new URL(`/${locale}/auth/login`, request.url));
+    }
+  }
 
   // 🌐 Default locale redirect
   if (pathname === "/") {

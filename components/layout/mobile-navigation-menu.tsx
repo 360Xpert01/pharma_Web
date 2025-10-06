@@ -11,6 +11,9 @@ import {
   isRouteActive,
 } from "@/lib/navigation-utils";
 import { useTranslations } from "next-intl";
+import { useAuth } from "@/hooks/use-auth";
+import { AuthButtons } from "@/components/auth/auth-buttons";
+import { UserProfile } from "./user-profile";
 
 interface MobileNavigationMenuProps {
   isOpen: boolean;
@@ -20,12 +23,37 @@ interface MobileNavigationMenuProps {
 
 export function MobileNavigationMenu({ isOpen, onClose, className }: MobileNavigationMenuProps) {
   const pathname = usePathname();
+  const { isAuthenticated, isLoading } = useAuth();
   const t = useTranslations("navigation");
+  const tLayout = useTranslations("layout");
 
   if (!isOpen) return null;
 
   const handleLinkClick = () => {
     onClose();
+  };
+
+  // Memoized auth section for mobile
+  const renderMobileAuthSection = () => {
+    if (isLoading) {
+      return (
+        <div className="px-4 py-2">
+          <div className="w-full h-10 bg-muted animate-pulse rounded-md" />
+        </div>
+      );
+    }
+
+    return (
+      <div className="px-4 py-2">
+        {isAuthenticated ? (
+          <div className="flex items-center justify-between">
+            <UserProfile />
+          </div>
+        ) : (
+          <AuthButtons variant="default" />
+        )}
+      </div>
+    );
   };
 
   return (
@@ -80,6 +108,16 @@ export function MobileNavigationMenu({ isOpen, onClose, className }: MobileNavig
             </Link>
           );
         })}
+
+        {/* Authentication section for mobile */}
+        <div className="mt-6 pt-4 border-t border-border/40">
+          <div className="px-4 py-1 mb-2">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              {tLayout("auth.authSection")}
+            </span>
+          </div>
+          {renderMobileAuthSection()}
+        </div>
       </nav>
     </div>
   );
