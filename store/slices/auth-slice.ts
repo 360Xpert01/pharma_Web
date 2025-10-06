@@ -1,19 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { User } from "@/types/user";
-
-type AuthFlowState = {
-  step: "idle" | "login" | "awaiting-otp" | "forgot-password" | "reset-password";
-  email?: string;
-  resetToken?: string;
-  canAccessOtp: boolean;
-  canAccessReset: boolean;
-};
-
-type AuthState = {
-  token: string | null;
-  user: User | null;
-  flow: AuthFlowState;
-};
+import type { AuthFlowState, AuthState, AuthFlowStep } from "@/app/[locale]/auth/types";
 
 const initialState: AuthState = {
   token: null,
@@ -41,7 +28,7 @@ const slice = createSlice({
     },
     setFlowStep(
       state,
-      action: PayloadAction<{ step: AuthFlowState["step"]; email?: string; resetToken?: string }>
+      action: PayloadAction<{ step: AuthFlowStep; email?: string; resetToken?: string }>
     ) {
       state.flow.step = action.payload.step;
       if (action.payload.email) state.flow.email = action.payload.email;

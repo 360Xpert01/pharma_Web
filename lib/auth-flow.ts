@@ -1,9 +1,5 @@
-type AuthFlowData = {
-  step: "idle" | "login" | "awaiting-otp" | "forgot-password" | "reset-password";
-  email?: string;
-  resetToken?: string;
-  timestamp: number;
-};
+import type { AuthFlowData, AuthSession } from "@/app/[locale]/auth/types";
+import type { User } from "@/types/user";
 
 const AUTH_FLOW_COOKIE = "auth_flow";
 const FLOW_EXPIRY_TIME = 10 * 60 * 1000; // 10 minutes
@@ -84,15 +80,31 @@ export class AuthFlowManager {
 }
 
 // Auth session management
-export const setAuthSession = (token: string, user: any) => {
+export const setAuthSession = (token: string, user: User) => {
   setCookie("user_logged_in", "true", 7 * 24 * 60); // 7 days in minutes
   setCookie("auth_token", token, 7 * 24 * 60); // 7 days in minutes
+
+  // Set user data cookies for consistency across admin/user contexts
+  setCookie("user_email", user.email, 7 * 24 * 60);
+  setCookie("user_id", user.id, 7 * 24 * 60);
+  if (user.name) setCookie("user_name", user.name, 7 * 24 * 60);
+  if (user.avatar) setCookie("user_avatar", user.avatar, 7 * 24 * 60);
+  setCookie("user_role", user.role, 7 * 24 * 60);
+
   AuthFlowManager.clearFlow();
 };
 
 export const clearAuthSession = () => {
   deleteCookie("user_logged_in");
   deleteCookie("auth_token");
+
+  // Clear user data cookies
+  deleteCookie("user_email");
+  deleteCookie("user_name");
+  deleteCookie("user_avatar");
+  deleteCookie("user_id");
+  deleteCookie("user_role");
+
   AuthFlowManager.clearFlow();
 };
 

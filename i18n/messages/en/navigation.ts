@@ -75,6 +75,7 @@ const navigation = {
     toggleSidebar: "Toggle sidebar",
     collapseSidebar: "Collapse sidebar",
     expandSidebar: "Expand sidebar",
+    goToHome: "Go to Home",
   },
 
   // Layout navigation references

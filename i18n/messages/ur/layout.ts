@@ -41,10 +41,23 @@ const layout = {
     profileLabel: "صارف پروفائل",
     accountSettings: "اکاؤنٹ سیٹنگز",
     preferences: "ترجیحات",
+    profile: "پروفائل",
+    settings: "سیٹنگز",
+    help: "مدد اور سپورٹ",
     logout: "لاگ آؤٹ",
+    loggingOut: "لاگ آؤٹ ہو رہا ہے...",
     logoutConfirm: "کیا آپ واقعی لاگ آؤٹ کرنا چاہتے ہیں؟",
     cancel: "منسوخ کریں",
     confirm: "تصدیق کریں",
+    clickForOptions: "اختیارات کے لیے کلک کریں",
+  },
+
+  // تصدیقی سیکشن
+  auth: {
+    authSection: "تصدیق",
+    notLoggedIn: "لاگ ان نہیں ہے",
+    loginRequired: "آگے بڑھنے کے لیے براہ کرم لاگ ان کریں",
+    guestUser: "مہمان صارف",
   },
 
   // موبائل مینو کمپوننٹ

@@ -1,6 +1,5 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -17,22 +16,10 @@ import { useAppDispatch } from "@/store/hooks";
 import { authActions } from "@/store/slices/auth-slice";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff } from "@/lib/icons";
-
-const createSchema = (passwordMismatchMsg: string) =>
-  z
-    .object({
-      password: z.string().min(6),
-      confirmPassword: z.string().min(6),
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-      message: passwordMismatchMsg,
-      path: ["confirmPassword"],
-    });
-
-type FormValues = {
-  password: string;
-  confirmPassword: string;
-};
+import {
+  createResetPasswordSchema,
+  type ResetPasswordFormValues,
+} from "@/validations/authValidation";
 
 export default function ResetPage() {
   const t = useTranslations("auth.reset");
@@ -44,14 +31,13 @@ export default function ResetPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const schema = createSchema(vt("passwordMismatch"));
-
-  const form = useForm<FormValues>({
-    resolver: zodResolver(schema),
+  const resetPasswordSchema = createResetPasswordSchema(vt);
+  const form = useForm<ResetPasswordFormValues>({
+    resolver: zodResolver(resetPasswordSchema),
     defaultValues: { password: "", confirmPassword: "" },
   });
 
-  async function onSubmit(values: FormValues) {
+  async function onSubmit(values: ResetPasswordFormValues) {
     await executeWithLoading(async () => {
       const flow = AuthFlowManager.getFlow();
       if (!flow?.resetToken) {

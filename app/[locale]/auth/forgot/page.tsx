@@ -1,6 +1,5 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -14,9 +13,10 @@ import { AuthFlowManager } from "@/lib/auth-flow";
 import { useAppDispatch } from "@/store/hooks";
 import { authActions } from "@/store/slices/auth-slice";
 import { useToast } from "@/hooks/use-toast";
-
-const schema = z.object({ email: z.string().email() });
-type FormValues = z.infer<typeof schema>;
+import {
+  createForgotPasswordSchema,
+  type ForgotPasswordFormValues,
+} from "@/validations/authValidation";
 
 export default function ForgotPage() {
   const t = useTranslations("auth.forgot");
@@ -26,9 +26,13 @@ export default function ForgotPage() {
   const { toast } = useToast();
   const { isLoading, executeWithLoading } = useAuthLoading();
 
-  const form = useForm<FormValues>({ resolver: zodResolver(schema), defaultValues: { email: "" } });
+  const forgotPasswordSchema = createForgotPasswordSchema(vt);
+  const form = useForm<ForgotPasswordFormValues>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: { email: "" },
+  });
 
-  async function onSubmit(values: FormValues) {
+  async function onSubmit(values: ForgotPasswordFormValues) {
     await executeWithLoading(async () => {
       const response = await authAPI.forgotPassword(values.email);
 

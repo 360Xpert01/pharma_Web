@@ -1,6 +1,5 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -10,19 +9,11 @@ import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/store/hooks";
 import { authActions } from "@/store/slices/auth-slice";
 import { getFormErrorMessage } from "@/lib/actions/actions";
-import { useAuthLoading } from "@/hooks/use-loading-state";
-import LoaderOverlay from "@/components/shared/loader-overlay";
 import { authAPI } from "@/lib/api/auth";
 import { AuthFlowManager, setAuthSession } from "@/lib/auth-flow";
 import { Eye, EyeOff } from "@/lib/icons";
 import { toast } from "sonner";
-
-const schema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-});
-
-type FormValues = z.infer<typeof schema>;
+import { createLoginSchema, type LoginFormValues } from "@/validations/authValidation";
 
 export default function LoginPage() {
   const t = useTranslations("auth.login");
@@ -32,12 +23,13 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(schema),
+  const loginSchema = createLoginSchema(vt);
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
   });
 
-  async function onSubmit(values: FormValues) {
+  async function onSubmit(values: LoginFormValues) {
     setIsLoading(true);
 
     try {

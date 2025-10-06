@@ -79,6 +79,24 @@ const auth = {
     networkError: "Network error. Please check your connection.",
     serverError: "Server error. Please try again later.",
   },
+
+  // Auth buttons and navigation
+  buttons: {
+    login: "Login",
+    signup: "Sign Up",
+    getStarted: "Get Started",
+    signIn: "Sign In",
+    register: "Register",
+    joinNow: "Join Now",
+  },
+
+  // Auth labels and tooltips
+  labels: {
+    loginToAccount: "Login to your account",
+    createNewAccount: "Create a new account",
+    welcomeBack: "Welcome back",
+    joinUs: "Join us today",
+  },
 } as const;
 
 export default auth;

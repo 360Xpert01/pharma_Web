@@ -1,6 +1,5 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -16,11 +15,7 @@ import { AuthFlowManager, setAuthSession } from "@/lib/auth-flow";
 import { useAppDispatch } from "@/store/hooks";
 import { authActions } from "@/store/slices/auth-slice";
 import { toast } from "sonner";
-
-const schema = z.object({
-  code: z.string().min(6),
-});
-type FormValues = z.infer<typeof schema>;
+import { createOtpSchema, type OtpFormValues } from "@/validations/authValidation";
 
 export default function OtpPage() {
   const t = useTranslations("auth.otp");
@@ -29,9 +24,13 @@ export default function OtpPage() {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
-  const form = useForm<FormValues>({ resolver: zodResolver(schema), defaultValues: { code: "" } });
+  const otpSchema = createOtpSchema(vt);
+  const form = useForm<OtpFormValues>({
+    resolver: zodResolver(otpSchema),
+    defaultValues: { code: "" },
+  });
 
-  async function onSubmit(values: FormValues) {
+  async function onSubmit(values: OtpFormValues) {
     setIsLoading(true);
 
     try {

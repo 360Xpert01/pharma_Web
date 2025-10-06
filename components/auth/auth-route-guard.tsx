@@ -2,12 +2,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AuthFlowManager } from "@/lib/auth-flow";
-
-type AuthRouteGuardProps = {
-  requiresFlow?: "otp" | "reset" | "forgot";
-  redirectTo?: string;
-  children: React.ReactNode;
-};
+import type { AuthRouteGuardProps } from "@/app/[locale]/auth/types";
 
 export function AuthRouteGuard({
   requiresFlow,

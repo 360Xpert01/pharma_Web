@@ -1,6 +1,5 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -13,13 +12,7 @@ import LoaderOverlay from "@/components/shared/loader-overlay";
 import { authAPI } from "@/lib/api/auth";
 import { Eye, EyeOff } from "@/lib/icons";
 import { toast } from "sonner";
-
-const schema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-});
-
-type FormValues = z.infer<typeof schema>;
+import { createSignupSchema, type SignupFormValues } from "@/validations/authValidation";
 
 export default function SignupPage() {
   const t = useTranslations("auth.signup");
@@ -28,12 +21,13 @@ export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(schema),
+  const signupSchema = createSignupSchema(vt);
+  const form = useForm<SignupFormValues>({
+    resolver: zodResolver(signupSchema),
     defaultValues: { email: "", password: "" },
   });
 
-  async function onSubmit(values: FormValues) {
+  async function onSubmit(values: SignupFormValues) {
     setIsLoading(true);
 
     try {
