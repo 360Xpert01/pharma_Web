@@ -1,27 +1,33 @@
 import React, { useCallback } from "react";
 import { Input } from "../ui/input";
 import { useDebounce } from "use-debounce";
-import { useSearchParams } from "react-router-dom";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function TableSearchInput({ placeholder }: { placeholder?: string }) {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const search = searchParams.get("search") || "";
   const [searchTerm, setSearchTerm] = React.useState(search);
   // debounce the search input
   const [debouncedValue] = useDebounce(searchTerm, 1000);
-  const handleSettingSearchParams = useCallback((newSearchValue: string) => {
-    // Update the URL with the new search value
-    if (newSearchValue === "" || newSearchValue === undefined || !newSearchValue) {
-      searchParams.delete("search");
-      setSearchParams(searchParams);
-      return;
-    }
-    setSearchParams({
-      ...Object.fromEntries(searchParams),
-      page: "1", // Spread the existing search params
-      search: newSearchValue, // Update the search value
-    });
-  }, []);
+
+  const handleSettingSearchParams = useCallback(
+    (newSearchValue: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      // Update the URL with the new search value
+      if (newSearchValue === "" || newSearchValue === undefined || !newSearchValue) {
+        params.delete("search");
+      } else {
+        params.set("search", newSearchValue);
+        params.set("page", "1"); // Reset to page 1 when searching
+      }
+
+      const newUrl = `${window.location.pathname}?${params.toString()}`;
+      router.push(newUrl, { scroll: false });
+    },
+    [router, searchParams]
+  );
 
   React.useEffect(() => {
     handleSettingSearchParams(debouncedValue);
@@ -31,6 +37,7 @@ export default function TableSearchInput({ placeholder }: { placeholder?: string
   React.useEffect(() => {
     setSearchTerm(search);
   }, [search]);
+
   return (
     <Input
       placeholder={placeholder || `Search...`}
