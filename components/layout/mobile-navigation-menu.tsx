@@ -1,0 +1,126 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { mobileNavigation } from "@/navigation/config";
+import {
+  getNavItemTitle,
+  getNavItemBadge,
+  getNavItemDescription,
+  isRouteActive,
+} from "@/lib/navigation-utils";
+import { useTranslations } from "next-intl";
+import { useAuth } from "@/hooks/use-auth";
+import { AuthButtons } from "@/components/auth/auth-buttons";
+import { UserProfile } from "./user-profile";
+
+interface MobileNavigationMenuProps {
+  isOpen: boolean;
+  onClose: () => void;
+  className?: string;
+}
+
+export function MobileNavigationMenu({ isOpen, onClose, className }: MobileNavigationMenuProps) {
+  const pathname = usePathname();
+  const { isAuthenticated, isLoading } = useAuth();
+  const t = useTranslations("navigation");
+  const tLayout = useTranslations("layout");
+
+  if (!isOpen) return null;
+
+  const handleLinkClick = () => {
+    onClose();
+  };
+
+  // Memoized auth section for mobile
+  const renderMobileAuthSection = () => {
+    if (isLoading) {
+      return (
+        <div className="px-4 py-2">
+          <div className="w-full h-10 bg-muted animate-pulse rounded-md" />
+        </div>
+      );
+    }
+
+    return (
+      <div className="px-4 py-2">
+        {isAuthenticated ? (
+          <div className="flex items-center justify-between">
+            <UserProfile />
+          </div>
+        ) : (
+          <AuthButtons variant="default" />
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div
+      className={cn(
+        "absolute top-full left-0 right-0 bg-background/95",
+        "border-b border-border/40 shadow-lg md:hidden",
+        className
+      )}
+    >
+      <nav className="p-4 space-y-2 overflow-y-auto">
+        {mobileNavigation.map((item) => {
+          const isActive = isRouteActive(item.href, pathname);
+          const Icon = item.icon;
+          const translatedTitle = getNavItemTitle(item, t);
+          const translatedBadge = getNavItemBadge(item, t);
+          const translatedDescription = getNavItemDescription(item, t);
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={handleLinkClick}
+              target={item.external ? "_blank" : undefined}
+              rel={item.external ? "noopener noreferrer" : undefined}
+              className={cn(
+                "flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-all",
+                "hover:bg-accent hover:text-accent-foreground active:scale-95",
+                "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+                {
+                  "bg-accent text-accent-foreground shadow-sm": isActive,
+                  "text-muted-foreground hover:text-foreground": !isActive,
+                }
+              )}
+            >
+              {Icon && <Icon className="h-5 w-5 flex-shrink-0" />}
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <span>{translatedTitle}</span>
+                  {translatedBadge && (
+                    <span className="px-1.5 py-0.5 text-xs bg-primary/10 text-primary rounded">
+                      {translatedBadge}
+                    </span>
+                  )}
+                </div>
+                {translatedDescription && (
+                  <div className="text-xs text-muted-foreground mt-0.5">
+                    {translatedDescription}
+                  </div>
+                )}
+              </div>
+            </Link>
+          );
+        })}
+
+        {/* Authentication section for mobile */}
+        <div className="mt-6 pt-4 border-t border-border/40">
+          <div className="px-4 py-1 mb-2">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              {tLayout("auth.authSection")}
+            </span>
+          </div>
+          {renderMobileAuthSection()}
+        </div>
+      </nav>
+    </div>
+  );
+}
+
+export default MobileNavigationMenu;

@@ -10,7 +10,8 @@ import { SelectField } from "./select";
 import { TextareaField } from "./textarea";
 import { CheckboxField } from "./checkbox";
 import { DateField } from "./date-input";
-import { Plus, Trash2 } from "lucide-react";
+import { AddIcon, DeleteIcon } from "@/lib/icons";
+import { logger } from "@/lib/logger";
 import { DynamicSelectField } from "./dynamic-select";
 import { ToggleField } from "./toggle";
 
@@ -42,7 +43,11 @@ export const RepeatableField = ({ field }: RepeatableFieldProps) => {
     }
 
     const result = classes.join(" ");
-    console.log("Repeatable field grid classes:", result, "for field:", field.name);
+    logger.debug("Repeatable field grid classes calculated", { 
+      classes: result, 
+      fieldName: field.name, 
+      gridConfig: field.grid 
+    });
     return result;
   };
 
@@ -167,7 +172,7 @@ export const RepeatableField = ({ field }: RepeatableFieldProps) => {
                         }
                         className="h-8 w-8 p-0"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <DeleteIcon className="h-4 w-4" />
                       </Button>
                     </div>
                   </CardHeader>
@@ -234,7 +239,7 @@ export const RepeatableField = ({ field }: RepeatableFieldProps) => {
                 disabled={field.maxItems ? (formField.value || []).length >= field.maxItems : false}
                 className="w-full"
               >
-                <Plus className="mr-2 h-4 w-4" />
+                <AddIcon className="mr-2 h-4 w-4" />
                 {field.addButtonText || `Add ${field.label}`}
               </Button>
             </div>

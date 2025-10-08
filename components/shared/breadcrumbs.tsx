@@ -1,4 +1,4 @@
-import { Slash } from "lucide-react";
+import { SeparatorIcon } from "@/lib/icons";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -27,7 +27,7 @@ export function Breadcrumbs({ items }: { items: BreadcrumbItemProps[] }) {
             )}
             {index < items.length - 1 && (
               <BreadcrumbSeparator>
-                <Slash />
+                <SeparatorIcon />
               </BreadcrumbSeparator>
             )}
             {index === items.length - 1 && <BreadcrumbPage>{item.title}</BreadcrumbPage>}

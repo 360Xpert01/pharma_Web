@@ -2,7 +2,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { CalendarInputIcon } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 import { FormField } from "@/types/form";
 import { BaseField } from "../base-field";
@@ -30,7 +30,7 @@ export const DateField = ({ field }: { field: FormField }) => {
                   !displayValue && "text-muted-foreground"
                 )}
               >
-                <CalendarIcon className="mr-2 h-4 w-4" />
+                <CalendarInputIcon className="mr-2 h-4 w-4" />
                 {displayValue ? (
                   format(displayValue, "PPP")
                 ) : (

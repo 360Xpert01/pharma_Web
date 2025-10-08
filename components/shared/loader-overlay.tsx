@@ -1,48 +1,139 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
+import { cn } from "@/lib/utils";
+import { Loader2 } from "@/lib/icons";
 
-// LoaderOverlay using global color theme (CSS variables)
-const LoaderOverlay: React.FC<{ isLoading: boolean }> = ({ isLoading }) => {
+interface LoaderOverlayProps {
+  isLoading: boolean;
+  text?: string;
+  size?: "sm" | "md" | "lg";
+  variant?: "default" | "minimal" | "dots";
+  showOverlay?: boolean;
+}
+
+// Improved Spinner Component with moving animation
+const SpinnerVariants = {
+  default: ({ size, isDark, mounted }: { size: string; isDark: boolean; mounted: boolean }) => (
+    <div className="relative">
+      <Loader2
+        className={cn(
+          "animate-spin",
+          mounted ? "text-primary" : "text-primary",
+          size === "h-8 w-8" ? "h-8 w-8" : size === "h-12 w-12" ? "h-12 w-12" : "h-10 w-10"
+        )}
+      />
+    </div>
+  ),
+
+  minimal: ({ size, isDark, mounted }: { size: string; isDark: boolean; mounted: boolean }) => (
+    <div
+      className={cn(
+        "animate-spin rounded-full border-2 border-t-transparent",
+        mounted ? "border-white dark:border-white" : "border-white",
+        size
+      )}
+    />
+  ),
+
+  dots: ({ size, isDark, mounted }: { size: string; isDark: boolean; mounted: boolean }) => (
+    <div className="flex space-x-1">
+      {[0, 1, 2].map((i) => (
+        <div
+          key={i}
+          className={cn(
+            "animate-bounce rounded-full",
+            mounted ? "bg-white dark:bg-white" : "bg-white",
+            size === "h-8 w-8" ? "h-2 w-2" : size === "h-12 w-12" ? "h-3 w-3" : "h-4 w-4"
+          )}
+          style={{ animationDelay: `${i * 0.1}s` }}
+        />
+      ))}
+    </div>
+  ),
+};
+
+const LoaderOverlay: React.FC<LoaderOverlayProps> = ({
+  isLoading,
+  text = "Next Boilerplate",
+  size = "md",
+  variant = "default",
+}) => {
+  const { theme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Ensure component is mounted before using theme to avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   if (!isLoading) return null;
+
+  // Use a default theme state until mounted to prevent hydration mismatch
+  const isDark = mounted ? resolvedTheme === "dark" : false;
+
+  const sizeClasses = {
+    sm: "h-8 w-8",
+    md: "h-12 w-12",
+    lg: "h-16 w-16",
+  };
+
+  const textSizeClasses = {
+    sm: "text-lg sm:text-xl",
+    md: "text-xl sm:text-2xl md:text-3xl",
+    lg: "text-2xl sm:text-3xl md:text-4xl",
+  };
+
+  const SpinnerComponent = SpinnerVariants[variant];
+
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/70 backdrop-blur-sm transition-all">
-      <div className="flex flex-col items-center">
-        {/* Animated spinner */}
-        <div className="relative mb-6">
-          <span
-            className="animate-spin-slow block h-10 w-10 rounded-full border-4 border-b-primary border-l-transparent border-r-transparent border-t-primary sm:h-16 sm:w-16 md:h-20 md:w-20"
-            style={{
-              borderTopColor: "var(--color-primary, #2563eb)",
-              borderBottomColor: "var(--color-primary, #2563eb)",
-              borderLeftColor: "transparent",
-              borderRightColor: "transparent",
-            }}
-          ></span>
-          <span
-            className="absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-30 sm:h-8 sm:w-8 md:h-10 md:w-10"
-            style={{
-              backgroundColor: "var(--color-primary, #2563eb)",
-            }}
-          ></span>
+    <div
+      className={cn(
+        "fixed inset-0 z-[1000] flex items-center justify-center backdrop-blur-sm transition-all duration-300",
+        mounted ? "bg-black/90 dark:bg-black/90" : "bg-black/90"
+      )}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Loading"
+    >
+      <div className="flex flex-col items-center space-y-6 p-8">
+        <div className="relative">
+          <SpinnerComponent size={sizeClasses[size]} isDark={isDark} mounted={mounted} />
         </div>
-        <span
-          className="animate-pulse text-xl font-extrabold tracking-wider drop-shadow-lg sm:text-2xl md:text-3xl"
-          style={{
-            color: "var(--color-on-primary, #fff)",
-            textShadow: "0 2px 8px var(--color-primary, #2563eb)",
-          }}
-        >
-          Floormaster
-        </span>
+
+        <div className="text-center">
+          <h2
+            className={cn(
+              "font-bold tracking-wider animate-pulse",
+              textSizeClasses[size],
+              mounted ? "text-white dark:text-white" : "text-white"
+            )}
+            style={
+              mounted
+                ? {
+                    textShadow: "0 2px 8px rgba(255, 255, 255, 0.3)",
+                  }
+                : {
+                    textShadow: "0 2px 8px rgba(255, 255, 255, 0.3)",
+                  }
+            }
+          >
+            {text}
+          </h2>
+          <div className="mt-2 flex justify-center space-x-1">
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className={cn(
+                  "h-1 w-1 rounded-full animate-pulse",
+                  mounted ? "bg-white/60 dark:bg-white/60" : "bg-white/60"
+                )}
+                style={{ animationDelay: `${i * 0.2}s` }}
+              />
+            ))}
+          </div>
+        </div>
       </div>
-      <style>{`
-        @keyframes spin-slow {
-          0% { transform: rotate(0deg);}
-          100% { transform: rotate(360deg);}
-        }
-        .animate-spin-slow {
-          animation: spin-slow 1.2s linear infinite;
-        }
-      `}</style>
     </div>
   );
 };
