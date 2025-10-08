@@ -7,7 +7,7 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { LoadingIcon, SearchInputIcon, CloseIcon } from "@/lib/icons";
+import { LoadingIcon, SearchInputIcon, CloseIcon, X } from "@/lib/icons";
 import { Controller, FieldValues, useController, UseControllerProps, Path } from "react-hook-form";
 import { cn } from "@/lib/utils";
 
