@@ -1,0 +1,144 @@
+# Installation Guide
+
+This comprehensive guide covers various installation methods and advanced setup options for the Next.js Tailwind TypeScript Starter.
+
+## Method 1: Git Clone (Recommended)
+
+The most straightforward way to get started:
+
+```bash
+git clone https://github.com/yourusername/next-tailwind-ts-starter.git
+cd next-tailwind-ts-starter
+npm install
+npm run dev
+```
+
+## Method 2: Use as Template
+
+1. Click "Use this template" on the GitHub repository
+2. Create a new repository from the template
+3. Clone your new repository
+4. Install dependencies and start developing
+
+## Method 3: Download ZIP
+
+1. Download the ZIP file from GitHub
+2. Extract the files
+3. Navigate to the project directory
+4. Install dependencies
+
+## Advanced Configuration
+
+### Database Setup
+
+If you plan to use a database, here are some popular options:
+
+#### PostgreSQL with Prisma
+
+```bash
+npm install prisma @prisma/client
+npx prisma init
+```
+
+#### MongoDB with Mongoose
+
+```bash
+npm install mongoose
+npm install -D @types/mongoose
+```
+
+### Authentication Setup
+
+#### NextAuth.js
+
+```bash
+npm install next-auth
+```
+
+#### Clerk
+
+```bash
+npm install @clerk/nextjs
+```
+
+### State Management
+
+#### Zustand (Recommended)
+
+```bash
+npm install zustand
+```
+
+#### Redux Toolkit
+
+```bash
+npm install @reduxjs/toolkit react-redux
+```
+
+### UI Components
+
+#### Shadcn/ui
+
+```bash
+npx shadcn-ui@latest init
+```
+
+#### Headless UI
+
+```bash
+npm install @headlessui/react
+```
+
+## Deployment
+
+### Vercel (Recommended)
+
+1. Push your code to GitHub
+2. Connect your repository to Vercel
+3. Deploy with zero configuration
+
+### Netlify
+
+1. Build the project: `npm run build`
+2. Deploy the `out` folder to Netlify
+
+### Self-hosted
+
+1. Build the project: `npm run build`
+2. Start the server: `npm start`
+
+## Troubleshooting
+
+### Common Issues
+
+#### Port Already in Use
+
+```bash
+# Kill process on port 3000
+npx kill-port 3000
+
+# Or use a different port
+npm run dev -- -p 3001
+```
+
+#### Module Not Found
+
+```bash
+# Clear node_modules and reinstall
+rm -rf node_modules package-lock.json
+npm install
+```
+
+#### Build Errors
+
+```bash
+# Clear Next.js cache
+rm -rf .next
+npm run build
+```
+
+### Getting Help
+
+- Check the [Next.js Documentation](https://nextjs.org/docs)
+- Visit the [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- Review [TypeScript Documentation](https://www.typescriptlang.org/docs)

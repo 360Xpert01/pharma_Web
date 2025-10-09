@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   Select,

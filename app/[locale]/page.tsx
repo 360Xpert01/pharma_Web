@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { useLayout } from "@/contexts/layout-context";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button/button";
 import { withLazyLoading } from "@/lib/lazy-loading";
 import { DynamicLayout } from "@/components/layout/dynamic-layout";
 

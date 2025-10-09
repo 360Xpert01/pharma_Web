@@ -10,7 +10,7 @@ import { useAppDispatch } from "@/store/hooks";
 import { authActions } from "@/store/slices/auth-slice";
 import { clearAuthSession } from "@/lib/auth-flow";
 import { useAuth } from "@/hooks/use-auth";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button/button";
 import {
   DropdownMenu,
   DropdownMenuContent,

@@ -1,21 +1,21 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Progress } from '@/components/ui/progress';
-import { useTheme } from 'next-themes';
-import { 
-  WifiOff, 
-  RefreshIcon, 
-  AlertIcon, 
-  CheckCircle, 
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert/alert";
+import { Progress } from "@/components/ui/progress";
+import { useTheme } from "next-themes";
+import {
+  WifiOff,
+  RefreshIcon,
+  AlertIcon,
+  CheckCircle,
   XCircle,
   GlobeIcon,
   Router,
-  Server
-} from '@/lib/icons';
-import { logger } from '@/lib/logger';
+  Server,
+} from "@/lib/icons";
+import { logger } from "@/lib/logger";
 
 interface NetworkErrorProps {
   error?: {
@@ -33,31 +33,32 @@ interface NetworkErrorProps {
 // Network Status Hook
 function useNetworkStatus() {
   const [isOnline, setIsOnline] = useState(true);
-  const [connectionType, setConnectionType] = useState<string>('');
+  const [connectionType, setConnectionType] = useState<string>("");
 
   useEffect(() => {
     const updateOnlineStatus = () => setIsOnline(navigator.onLine);
-    
+
     // Get connection info if available
     const updateConnectionInfo = () => {
-      const connection = (navigator as any).connection || 
-                        (navigator as any).mozConnection || 
-                        (navigator as any).webkitConnection;
-      
+      const connection =
+        (navigator as any).connection ||
+        (navigator as any).mozConnection ||
+        (navigator as any).webkitConnection;
+
       if (connection) {
-        setConnectionType(connection.effectiveType || connection.type || '');
+        setConnectionType(connection.effectiveType || connection.type || "");
       }
     };
 
     updateOnlineStatus();
     updateConnectionInfo();
 
-    window.addEventListener('online', updateOnlineStatus);
-    window.addEventListener('offline', updateOnlineStatus);
+    window.addEventListener("online", updateOnlineStatus);
+    window.addEventListener("offline", updateOnlineStatus);
 
     return () => {
-      window.removeEventListener('online', updateOnlineStatus);
-      window.removeEventListener('offline', updateOnlineStatus);
+      window.removeEventListener("online", updateOnlineStatus);
+      window.removeEventListener("offline", updateOnlineStatus);
     };
   }, []);
 
@@ -67,49 +68,49 @@ function useNetworkStatus() {
 // Network Diagnostics Component
 function NetworkDiagnostics() {
   const [diagnostics, setDiagnostics] = useState<{
-    connectivity: 'checking' | 'success' | 'failed';
-    dns: 'checking' | 'success' | 'failed';
-    server: 'checking' | 'success' | 'failed';
+    connectivity: "checking" | "success" | "failed";
+    dns: "checking" | "success" | "failed";
+    server: "checking" | "success" | "failed";
   }>({
-    connectivity: 'checking',
-    dns: 'checking',
-    server: 'checking'
+    connectivity: "checking",
+    dns: "checking",
+    server: "checking",
   });
 
   useEffect(() => {
     const runDiagnostics = async () => {
       // Test basic connectivity
       try {
-        await fetch('https://httpbin.org/get', { 
-          method: 'HEAD', 
-          mode: 'no-cors',
-          cache: 'no-cache'
+        await fetch("https://httpbin.org/get", {
+          method: "HEAD",
+          mode: "no-cors",
+          cache: "no-cache",
         });
-        setDiagnostics(prev => ({ ...prev, connectivity: 'success' }));
+        setDiagnostics((prev) => ({ ...prev, connectivity: "success" }));
       } catch {
-        setDiagnostics(prev => ({ ...prev, connectivity: 'failed' }));
+        setDiagnostics((prev) => ({ ...prev, connectivity: "failed" }));
       }
 
       // Test DNS resolution
       try {
-        await fetch('https://dns.google/resolve?name=google.com&type=A', {
-          method: 'GET',
-          cache: 'no-cache'
+        await fetch("https://dns.google/resolve?name=google.com&type=A", {
+          method: "GET",
+          cache: "no-cache",
         });
-        setDiagnostics(prev => ({ ...prev, dns: 'success' }));
+        setDiagnostics((prev) => ({ ...prev, dns: "success" }));
       } catch {
-        setDiagnostics(prev => ({ ...prev, dns: 'failed' }));
+        setDiagnostics((prev) => ({ ...prev, dns: "failed" }));
       }
 
       // Test server connectivity
       try {
-        await fetch(window.location.origin + '/api/health', { 
-          method: 'HEAD',
-          cache: 'no-cache'
+        await fetch(window.location.origin + "/api/health", {
+          method: "HEAD",
+          cache: "no-cache",
         });
-        setDiagnostics(prev => ({ ...prev, server: 'success' }));
+        setDiagnostics((prev) => ({ ...prev, server: "success" }));
       } catch {
-        setDiagnostics(prev => ({ ...prev, server: 'failed' }));
+        setDiagnostics((prev) => ({ ...prev, server: "failed" }));
       }
     };
 
@@ -118,9 +119,9 @@ function NetworkDiagnostics() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'success':
+      case "success":
         return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'failed':
+      case "failed":
         return <XCircle className="h-4 w-4 text-red-500" />;
       default:
         return <RefreshIcon className="h-4 w-4 animate-spin text-blue-500" />;
@@ -140,7 +141,7 @@ function NetworkDiagnostics() {
           </div>
           {getStatusIcon(diagnostics.connectivity)}
         </div>
-        
+
         <div className="flex items-center justify-between p-2 rounded border">
           <div className="flex items-center gap-2">
             <Router className="h-4 w-4" />
@@ -148,7 +149,7 @@ function NetworkDiagnostics() {
           </div>
           {getStatusIcon(diagnostics.dns)}
         </div>
-        
+
         <div className="flex items-center justify-between p-2 rounded border">
           <div className="flex items-center gap-2">
             <Server className="h-4 w-4" />
@@ -173,7 +174,7 @@ function useRetryWithBackoff() {
 
     // Calculate backoff delay: 1s, 2s, 4s, 8s, 16s (max)
     const delay = Math.min(1000 * Math.pow(2, retryCount), 16000);
-    
+
     // Show progress during delay
     const startTime = Date.now();
     const progressInterval = setInterval(() => {
@@ -183,16 +184,16 @@ function useRetryWithBackoff() {
     }, 50);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, delay));
+      await new Promise((resolve) => setTimeout(resolve, delay));
       clearInterval(progressInterval);
       setRetryProgress(100);
-      
+
       await retryFn();
-      
+
       // Reset on success
       setRetryCount(0);
     } catch (error) {
-      setRetryCount(prev => prev + 1);
+      setRetryCount((prev) => prev + 1);
       throw error;
     } finally {
       setIsRetrying(false);
@@ -206,12 +207,12 @@ function useRetryWithBackoff() {
 
 export default function NetworkErrorPage({
   error = {
-    message: 'Unable to connect to the server',
-    code: 'NETWORK_ERROR'
+    message: "Unable to connect to the server",
+    code: "NETWORK_ERROR",
   },
   onRetry,
   onGoOffline,
-  showDiagnostics = true
+  showDiagnostics = true,
 }: NetworkErrorProps) {
   const { theme } = useTheme();
   const { isOnline, connectionType } = useNetworkStatus();
@@ -223,28 +224,28 @@ export default function NetworkErrorPage({
         await onRetry();
       });
     } catch (error) {
-      logger.error('Network retry attempt failed', { 
-        error: error instanceof Error ? error.message : String(error), 
-        retryCount: retryCount + 1 
+      logger.error("Network retry attempt failed", {
+        error: error instanceof Error ? error.message : String(error),
+        retryCount: retryCount + 1,
       });
     }
   };
 
   const getErrorTitle = () => {
-    if (!isOnline) return 'No Internet Connection';
-    if (error.timeout) return 'Connection Timeout';
-    if (error.code === 'NETWORK_ERROR') return 'Network Error';
-    return 'Connection Failed';
+    if (!isOnline) return "No Internet Connection";
+    if (error.timeout) return "Connection Timeout";
+    if (error.code === "NETWORK_ERROR") return "Network Error";
+    return "Connection Failed";
   };
 
   const getErrorDescription = () => {
     if (!isOnline) {
-      return 'Your device appears to be offline. Please check your internet connection.';
+      return "Your device appears to be offline. Please check your internet connection.";
     }
     if (error.timeout) {
-      return 'The request took too long to complete. This might be due to a slow connection or server issues.';
+      return "The request took too long to complete. This might be due to a slow connection or server issues.";
     }
-    return error.message || 'Unable to establish a connection to the server.';
+    return error.message || "Unable to establish a connection to the server.";
   };
 
   return (
@@ -255,12 +256,8 @@ export default function NetworkErrorPage({
           <div className="mx-auto w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center">
             <WifiOff className="h-8 w-8 text-destructive" />
           </div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            {getErrorTitle()}
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-md mx-auto">
-            {getErrorDescription()}
-          </p>
+          <h1 className="text-3xl font-bold tracking-tight">{getErrorTitle()}</h1>
+          <p className="text-xl text-muted-foreground max-w-md mx-auto">{getErrorDescription()}</p>
         </div>
 
         {/* Connection Status */}
@@ -269,14 +266,10 @@ export default function NetworkErrorPage({
           <AlertDescription>
             <div className="flex items-center justify-between">
               <span>
-                Status: {isOnline ? 'Online' : 'Offline'}
+                Status: {isOnline ? "Online" : "Offline"}
                 {connectionType && ` (${connectionType.toUpperCase()})`}
               </span>
-              {retryCount > 0 && (
-                <span className="text-sm">
-                  Attempts: {retryCount}
-                </span>
-              )}
+              {retryCount > 0 && <span className="text-sm">Attempts: {retryCount}</span>}
             </div>
           </AlertDescription>
         </Alert>
@@ -296,21 +289,13 @@ export default function NetworkErrorPage({
         <Card>
           <CardContent className="pt-6">
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                onClick={handleRetry}
-                disabled={isRetrying}
-                className="flex-1"
-              >
-                <RefreshIcon className={`h-4 w-4 mr-2 ${isRetrying ? 'animate-spin' : ''}`} />
-                {isRetrying ? 'Retrying...' : 'Retry Connection'}
+              <Button onClick={handleRetry} disabled={isRetrying} className="flex-1">
+                <RefreshIcon className={`h-4 w-4 mr-2 ${isRetrying ? "animate-spin" : ""}`} />
+                {isRetrying ? "Retrying..." : "Retry Connection"}
               </Button>
-              
+
               {onGoOffline && (
-                <Button
-                  onClick={onGoOffline}
-                  variant="outline"
-                  className="flex-1"
-                >
+                <Button onClick={onGoOffline} variant="outline" className="flex-1">
                   Work Offline
                 </Button>
               )}
@@ -320,9 +305,7 @@ export default function NetworkErrorPage({
             {error.url && (
               <div className="mt-4 pt-4 border-t">
                 <details className="text-sm">
-                  <summary className="cursor-pointer font-medium">
-                    Technical Details
-                  </summary>
+                  <summary className="cursor-pointer font-medium">Technical Details</summary>
                   <div className="mt-2 space-y-1 text-muted-foreground">
                     <div>URL: {error.url}</div>
                     {error.method && <div>Method: {error.method}</div>}
@@ -339,9 +322,7 @@ export default function NetworkErrorPage({
 
         {/* Help Text */}
         <div className="text-center space-y-2">
-          <p className="text-sm text-muted-foreground">
-            Still having trouble? Try these steps:
-          </p>
+          <p className="text-sm text-muted-foreground">Still having trouble? Try these steps:</p>
           <div className="text-xs text-muted-foreground space-y-1">
             <div>• Check your internet connection</div>
             <div>• Refresh the page</div>

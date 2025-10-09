@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { X } from "@/lib/icons";
 import { useLayout } from "@/contexts/layout-context";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button/button";
 import { cn } from "@/lib/utils";
 import { sidebarNavigation } from "@/navigation/config";
 import { useTranslations } from "next-intl";

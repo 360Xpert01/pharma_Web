@@ -2,7 +2,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { CloseIcon } from "@/lib/icons";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button/button";
 import { BaseField } from "../base-field";
 import { FormField } from "@/types/form";
 
