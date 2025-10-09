@@ -1,7 +1,7 @@
 "use client";
 import { useTheme } from "next-themes";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button/button";
 import {
   DropdownMenu,
   DropdownMenuContent,

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "@/lib/icons";
 import { useLayout } from "@/contexts/layout-context";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button/button";
 import { cn } from "@/lib/utils";
 import { sidebarNavigation } from "@/navigation/config";
 import { getNavItemTitle, getNavItemBadge, isRouteActive } from "@/lib/navigation-utils";

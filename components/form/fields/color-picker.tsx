@@ -1,5 +1,5 @@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button/button";
 import { HexColorPicker } from "react-colorful";
 
 import { FormField } from "@/types/form";

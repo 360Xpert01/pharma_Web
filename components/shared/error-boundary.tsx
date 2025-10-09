@@ -1,8 +1,8 @@
 "use client";
 import React, { Component, ErrorInfo, ReactNode } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button/button";
+import { Alert, AlertDescription } from "@/components/ui/alert/alert";
 import { AppError, ErrorFactory } from "@/lib/error-factory";
 import { AlertIcon, RefreshIcon, HomeIcon, BugIcon } from "@/lib/icons";
 import { logger } from "@/lib/logger";

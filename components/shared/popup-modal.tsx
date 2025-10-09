@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button/button";
 import { Modal } from "@/components/ui/modal";
 import { AddIcon } from "@/lib/icons";
 import { useState } from "react";

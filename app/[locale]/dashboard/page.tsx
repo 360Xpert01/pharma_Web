@@ -1,7 +1,7 @@
 "use client";
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button/button";
 import { MetricsCards } from "./components/metrics-cards";
 import { InteractiveCharts } from "./components/interactive-charts";
 import { DataLists } from "./components/data-lists";
