@@ -1,12 +1,6 @@
 import createNextIntlPlugin from 'next-intl/plugin';
-import nextra from 'nextra';
-
+ 
 const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
-
-const withNextra = nextra({
-  // Remove theme and themeConfig - these are not valid in Nextra 4.0
-  // The theme is now handled differently
-});
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -21,4 +15,4 @@ const nextConfig = {
   },
 };
 
-export default withNextra(withNextIntl(nextConfig));
+export default withNextIntl(nextConfig);
