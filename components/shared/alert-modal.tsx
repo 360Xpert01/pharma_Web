@@ -1,4 +1,5 @@
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
+import { Modal } from "@/components/ui/modal";
 
 type TAlertModalProps = {
   isOpen: boolean;

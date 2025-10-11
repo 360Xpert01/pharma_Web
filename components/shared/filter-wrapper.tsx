@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "react-router-dom";
 import { useDebounce } from "use-debounce";
 
 type FilterComponentProps<T> = {
@@ -26,8 +26,7 @@ export function FilterWrapper<T>({
   resetPage = true,
   ...props
 }: FilterWrapperProps<T>) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const urlValue = searchParams.get(filterKey);
 
   // Parse initial value from URL or use provided initialValue
@@ -37,7 +36,7 @@ export function FilterWrapper<T>({
 
   const updateSearchParams = useCallback(
     (newValue: T) => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(searchParams);
 
       if (
         newValue === null ||
@@ -55,10 +54,9 @@ export function FilterWrapper<T>({
         params.set("page", "1");
       }
 
-      const newUrl = `${window.location.pathname}?${params.toString()}`;
-      router.push(newUrl, { scroll: false });
+      setSearchParams(params);
     },
-    [filterKey, resetPage, searchParams, router]
+    [filterKey, resetPage, searchParams, setSearchParams]
   );
 
   useEffect(() => {
@@ -70,7 +68,7 @@ export function FilterWrapper<T>({
     if (currentValue !== String(value)) {
       setValue((currentValue as T) || initialValue);
     }
-  }, [filterKey, searchParams, initialValue, value]);
+  }, [filterKey, searchParams, initialValue]);
 
   return (
     <>
