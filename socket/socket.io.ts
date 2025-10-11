@@ -30,12 +30,12 @@ export function getSocketIO(): Socket {
       rememberUpgrade: true,
       closeOnBeforeunload: true,
       autoUnref: false,
-      parser: undefined,
       perMessageDeflate: true,
     });
 
+    // ✅ Corrected order for Pino logging (object first)
     socket.on("connect", () => {
-      logger.info("[Socket.IO] Connected", { id: socket?.id });
+      logger.info({ id: socket?.id }, "[Socket.IO] Connected");
     });
 
     socket.on("connecting", () => {
@@ -43,19 +43,19 @@ export function getSocketIO(): Socket {
     });
 
     socket.on("connect_error", (err) => {
-      logger.error("[Socket.IO] Connection Error", { error: err?.message });
+      logger.error({ error: err?.message }, "[Socket.IO] Connection Error");
     });
 
     socket.on("disconnect", (reason) => {
-      logger.warn("[Socket.IO] Disconnected", { reason });
+      logger.warn({ reason }, "[Socket.IO] Disconnected");
     });
 
     socket.io.on("reconnect_attempt", (attempt) => {
-      logger.info("[Socket.IO] Reconnect Attempt", { attempt });
+      logger.info({ attempt }, "[Socket.IO] Reconnect Attempt");
     });
 
     socket.io.on("reconnect_error", (err) => {
-      logger.error("[Socket.IO] Reconnection Error", { error: err?.message });
+      logger.error({ error: err?.message }, "[Socket.IO] Reconnection Error");
     });
 
     socket.io.on("reconnect_failed", () => {
@@ -63,19 +63,19 @@ export function getSocketIO(): Socket {
     });
 
     socket.io.on("reconnect", (attempt) => {
-      logger.info("[Socket.IO] Successfully Reconnected", { attempt });
+      logger.info({ attempt }, "[Socket.IO] Successfully Reconnected");
     });
 
     socket.io.on("ping", () => {
       logger.debug("[Socket.IO] Ping sent to server");
     });
 
-    socket.io.on("pong", (latency) => {
-      logger.debug("[Socket.IO] Pong received", { latency });
+    socket.io.on("pong", () => {
+      logger.debug("[Socket.IO] Pong received");
     });
 
     socket.onAny((event, ...args) => {
-      logger.debug(`[Socket.IO] Event received: ${event}`, args);
+      logger.debug(`[Socket.IO] Event received: ${event}`, { args });
     });
   }
 

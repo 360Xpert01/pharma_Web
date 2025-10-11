@@ -22,43 +22,6 @@ import { RangeField } from "./fields/range-field";
 import { RepeatableField } from "./fields/repeatable-field";
 import { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
-import currencies from "@/constants/currencies";
-
-// Custom Currency Symbol Field Component
-const CurrencySymbolField: React.FC<{ field: FormField }> = ({ field }) => {
-  const form = useFormContext();
-  const currencyValue = form.watch("currency");
-
-  // Get currency symbol by currency code
-  const getCurrencySymbol = (currencyCode: string): string => {
-    const currency = currencies.find((c) => c.code === currencyCode);
-    return currency ? currency.symbol : "€";
-  };
-
-  // Update currency symbol when currency changes
-  useEffect(() => {
-    const currencySymbol = getCurrencySymbol(currencyValue);
-    form.setValue("currencySymbol", currencySymbol);
-  }, [currencyValue, form]);
-
-  const currencySymbol = getCurrencySymbol(currencyValue);
-
-  return (
-    <div>
-      <label className="text-sm font-medium">{field.label} *</label>
-      <input
-        type="text"
-        value={currencySymbol}
-        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-        disabled
-        readOnly
-      />
-      <p className="mt-1 text-xs text-muted-foreground">
-        Automatically set based on selected currency
-      </p>
-    </div>
-  );
-};
 
 const FieldComponents = {
   // Basic fields
@@ -92,18 +55,22 @@ const FieldComponents = {
 
   // Repeatable fields
   repeatable: RepeatableField,
-
-  // Custom fields for settings
-  "currency-symbol": CurrencySymbolField,
 };
 
 interface BaseFormProps {
-  schema: {
+  // Primary schema object (existing API)
+  schema?: {
     fields: FormField[];
     onSubmit: (data: any) => void;
     defaultValues?: Record<string, any>;
     validationSchema?: any;
   };
+  // Convenience top-level props (shorthand)
+  fields?: FormField[];
+  onSubmit?: (data: any) => void;
+  defaultValues?: Record<string, any>;
+  validationSchema?: any;
+
   submitText?: string;
   className?: string;
   submitButtonProps?: React.ComponentProps<typeof Button>;
@@ -118,6 +85,10 @@ interface BaseFormProps {
 
 export const BaseForm: React.FC<BaseFormProps> = ({
   schema,
+  fields,
+  onSubmit: onSubmitProp,
+  defaultValues,
+  validationSchema,
   submitText = "Submit",
   className = "",
   submitButtonProps = {},
@@ -127,7 +98,23 @@ export const BaseForm: React.FC<BaseFormProps> = ({
   scrollable = false,
   maxHeight = "80vh",
 }) => {
-  const { form, fields, onSubmit, isSubmitting, isLoading } = useBaseForm(schema);
+  // Normalize schema: prefer full schema prop, else build from shorthand props
+  const normalizedSchema = schema
+    ? schema
+    : {
+        fields: fields || [],
+        onSubmit: onSubmitProp || (() => {}),
+        defaultValues: defaultValues || {},
+        validationSchema: validationSchema,
+      };
+
+  const {
+    form,
+    fields: resolvedFields,
+    onSubmit,
+    isSubmitting,
+    isLoading,
+  } = useBaseForm(normalizedSchema);
 
   // Combined loading state
   const isFormLoading = loading || isLoading;
@@ -140,7 +127,7 @@ export const BaseForm: React.FC<BaseFormProps> = ({
         </div>
       ) : (
         <>
-          {fields.map((field) => {
+          {resolvedFields.map((field) => {
             if (field.type === "section") {
               return (
                 <FormWrapper key={field.id} field={field}>
@@ -200,3 +187,5 @@ export const BaseForm: React.FC<BaseFormProps> = ({
     </Form>
   );
 };
+
+export default BaseForm;
