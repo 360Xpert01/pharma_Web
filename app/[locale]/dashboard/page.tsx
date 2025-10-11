@@ -9,7 +9,7 @@ import { SettingsIcon, RefreshIcon, TrendingUpIcon } from "@/lib/icons";
 import { useState } from "react";
 import Heading from "@/components/shared/heading";
 import PageHead from "@/components/shared/page-head";
-import { logger } from "@/lib/logger";
+import { logger } from "@/logger/logger";
 import LoaderOverlay from "@/components/shared/loader-overlay";
 import { ErrorBoundary } from "@/components/shared/error-boundary";
 import { useError, useAsyncError } from "@/contexts/error-context";

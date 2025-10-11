@@ -1,15 +1,33 @@
-export type SocketMode = "socketio" | "websocket";
+// index.ts
+import { socketConfig } from "./config";
+import { getSocketIO, closeSocketIO } from "./socket.io";
+import { getWebSocket, closeWebSocket } from "./websocket";
+import { logger } from "@/logger/logger";
 
-export interface SocketConfig {
-  mode: SocketMode;
-  socketIOUrl: string;
-  webSocketUrl: string;
-  autoConnect: boolean;
+export type UniversalSocket = ReturnType<typeof getSocketIO> | WebSocket | null;
+
+let activeSocket: UniversalSocket = null;
+
+export function initializeSocket(): UniversalSocket {
+  if (socketConfig.mode === "socketio") {
+    logger.info("[Socket Manager] Initializing Socket.IO connection...");
+    activeSocket = getSocketIO();
+  } else if (socketConfig.mode === "websocket") {
+    logger.info("[Socket Manager] Initializing native WebSocket connection...");
+    activeSocket = getWebSocket();
+  } else {
+    logger.error("[Socket Manager] Invalid socket mode");
+  }
+
+  return activeSocket;
 }
 
-export const socketConfig: SocketConfig = {
-  mode: (process.env.NEXT_PUBLIC_SOCKET_MODE as SocketMode) || "socketio",
-  socketIOUrl: process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:4000",
-  webSocketUrl: process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:4000",
-  autoConnect: true,
-};
+export function closeSocketConnection() {
+  if (socketConfig.mode === "socketio") {
+    closeSocketIO();
+  } else {
+    closeWebSocket();
+  }
+  activeSocket = null;
+  logger.info("[Socket Manager] Connection closed");
+}

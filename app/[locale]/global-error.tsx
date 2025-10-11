@@ -6,7 +6,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert/alert";
 import PageHead from "@/components/shared/page-head";
 import { AlertIcon, RefreshIcon, HomeIcon, BugIcon } from "@/lib/icons";
 import { useTranslations } from "next-intl";
-import logger from "@/lib/logger";
+import logger from "@/logger/logger";
 
 interface ErrorPageProps {
   error: Error & { digest?: string };

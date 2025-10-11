@@ -15,7 +15,7 @@ import {
   Router,
   Server,
 } from "@/lib/icons";
-import { logger } from "@/lib/logger";
+import { logger } from "@/logger/logger";
 
 interface NetworkErrorProps {
   error?: {

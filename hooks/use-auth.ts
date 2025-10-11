@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useState, useMemo } from "react";
 import { useAppSelector } from "@/store/hooks";
 import Cookies from "js-cookie";
-import { logger } from "@/lib/logger";
 import type { User } from "@/types/user";
 
 interface UseAuthReturn {

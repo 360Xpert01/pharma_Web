@@ -11,7 +11,7 @@ import { TextareaField } from "./textarea";
 import { CheckboxField } from "./checkbox";
 import { DateField } from "./date-input";
 import { AddIcon, DeleteIcon } from "@/lib/icons";
-import { logger } from "@/lib/logger";
+import { logger } from "@/logger/logger";
 import { DynamicSelectField } from "./dynamic-select";
 import { ToggleField } from "./toggle";
 

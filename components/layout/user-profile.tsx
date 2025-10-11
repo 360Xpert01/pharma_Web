@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { LogoutIcon, UserIcon, SettingsIcon, HelpIcon } from "@/lib/icons";
-import { logger } from "@/lib/logger";
+import { logger } from "@/logger/logger";
 import { useAppDispatch } from "@/store/hooks";
 import { authActions } from "@/store/slices/auth-slice";
 import { clearAuthSession } from "@/lib/auth-flow";

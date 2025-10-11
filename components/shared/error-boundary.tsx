@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button/button";
 import { Alert, AlertDescription } from "@/components/ui/alert/alert";
 import { AppError, ErrorFactory } from "@/lib/error-factory";
 import { AlertIcon, RefreshIcon, HomeIcon, BugIcon } from "@/lib/icons";
-import { logger } from "@/lib/logger";
+import { logger } from "@/logger/logger";
 import { useTranslations } from "next-intl";
 
 interface ErrorBoundaryState {
