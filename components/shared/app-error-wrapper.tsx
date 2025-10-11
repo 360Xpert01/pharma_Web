@@ -5,6 +5,7 @@ import { ErrorBoundary } from "@/components/shared/error-boundary";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { logger } from "@/logger/logger";
 
+
 interface AppErrorWrapperProps {
   children: React.ReactNode;
 }
@@ -19,17 +20,17 @@ export function AppErrorWrapper({ children }: AppErrorWrapperProps) {
   return (
     <ErrorProvider maxErrors={10}>
       <ErrorBoundary
-        showDetails={process.env.NODE_ENV === "development"}
+        showDetails={process.env.NODE_ENV === 'development'}
         onError={(error, errorInfo) => {
           // Global error reporting
-          logger.error("Global error caught by app wrapper", {
-            error: error.message,
-            stack: error.stack,
-            componentStack: errorInfo.componentStack,
+          logger.error('Global error caught by app wrapper', { 
+            error: error.message, 
+            stack: error.stack, 
+            componentStack: errorInfo.componentStack 
           });
-
+          
           // Send to monitoring service in production
-          if (process.env.NODE_ENV === "production") {
+          if (process.env.NODE_ENV === 'production') {
             // Example: sendToErrorService(error, errorInfo);
           }
         }}
