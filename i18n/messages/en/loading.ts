@@ -23,7 +23,7 @@ const loading = {
     ANALYZING: "Analyzing Data...",
     GENERATING: "Generating Report...",
     VALIDATING: "Validating Input...",
-    INITIALIZING: "Initializing Application...",
+    INITIALIZING: "Next Boiler...",
   },
 
   // Common loading text
