@@ -1,3 +1,4 @@
+// lib/socket/socket.io.ts
 import { io, type Socket } from "socket.io-client";
 import { socketConfig } from "./config";
 import { logger } from "@/logger/logger";
@@ -12,13 +13,13 @@ export function getSocketIO(): Socket {
       reconnection: socketConfig.reconnection,
       reconnectionAttempts: socketConfig.reconnectionAttempts,
       reconnectionDelay: socketConfig.reconnectionDelay,
-      reconnectionDelayMax: 5000,
-      randomizationFactor: 0.5,
-      timeout: 20000,
-      pingTimeout: 30000,
-      pingInterval: 25000,
-      transports: ["websocket", "polling"],
-      upgrade: true,
+      reconnectionDelayMax: socketConfig.reconnectionDelayMax,
+      randomizationFactor: socketConfig.randomizationFactor,
+      timeout: socketConfig.timeout,
+      pingTimeout: socketConfig.pingTimeout,
+      pingInterval: socketConfig.pingInterval,
+      transports: socketConfig.transports,
+      upgrade: socketConfig.upgrade,
       auth: {
         token: process.env.NEXT_PUBLIC_SOCKET_TOKEN || "anonymous",
       },
@@ -30,10 +31,10 @@ export function getSocketIO(): Socket {
       rememberUpgrade: true,
       closeOnBeforeunload: true,
       autoUnref: false,
-      perMessageDeflate: true,
+      perMessageDeflate: socketConfig.perMessageDeflate,
     });
 
-    // ✅ Corrected order for Pino logging (object first)
+    // Event listeners with proper logging
     socket.on("connect", () => {
       logger.info({ id: socket?.id }, "[Socket.IO] Connected");
     });
