@@ -1,7 +1,7 @@
 "use client";
 
 import { memo } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button/button";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { UserIcon, UsersIcon } from "@/lib/icons";

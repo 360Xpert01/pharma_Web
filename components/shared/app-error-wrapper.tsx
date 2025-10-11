@@ -1,8 +1,10 @@
 "use client";
-import React from 'react';
-import { ErrorProvider } from '@/contexts/error-context';
-import { ErrorBoundary } from '@/components/shared/error-boundary';
-import { ThemeProvider } from '@/components/providers/theme-provider';
+import React from "react";
+import { ErrorProvider } from "@/contexts/error-context";
+import { ErrorBoundary } from "@/components/shared/error-boundary";
+import { ThemeProvider } from "@/providers/theme-provider";
+import { logger } from "@/logger/logger";
+
 
 interface AppErrorWrapperProps {
   children: React.ReactNode;

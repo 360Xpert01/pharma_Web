@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import { storage } from "@/lib/actions/actions";
+import { useIsMobile as useIsMobileHook } from "@/hooks/use-mobile";
 
 // Layout configuration types
 export interface LayoutConfig {
@@ -165,23 +166,6 @@ type LayoutContextValue = {
 
 const LayoutContext = createContext<LayoutContextValue | undefined>(undefined);
 
-// Hook to detect mobile screen size
-function useIsMobile(breakpoint: number = 768): boolean {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < breakpoint);
-    };
-
-    checkIsMobile();
-    window.addEventListener("resize", checkIsMobile);
-    return () => window.removeEventListener("resize", checkIsMobile);
-  }, [breakpoint]);
-
-  return isMobile;
-}
-
 export function LayoutProvider({ children }: PropsWithChildren) {
   const [config, setConfig] = useState<LayoutConfig>(() => {
     // Load from localStorage if available
@@ -190,7 +174,7 @@ export function LayoutProvider({ children }: PropsWithChildren) {
   });
 
   const [state, setState] = useState<LayoutState>(defaultLayoutState);
-  const isMobile = useIsMobile(config.responsive.breakpoints.md);
+  const isMobile = useIsMobileHook(config.responsive.breakpoints.md);
 
   // Save config to localStorage when it changes
   useEffect(() => {

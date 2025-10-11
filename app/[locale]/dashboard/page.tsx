@@ -1,7 +1,7 @@
 "use client";
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button/button";
 import { MetricsCards } from "./components/metrics-cards";
 import { InteractiveCharts } from "./components/interactive-charts";
 import { DataLists } from "./components/data-lists";
@@ -9,7 +9,7 @@ import { SettingsIcon, RefreshIcon, TrendingUpIcon } from "@/lib/icons";
 import { useState } from "react";
 import Heading from "@/components/shared/heading";
 import PageHead from "@/components/shared/page-head";
-import { logger } from "@/lib/logger";
+import { logger } from "@/logger/logger";
 import LoaderOverlay from "@/components/shared/loader-overlay";
 import { ErrorBoundary } from "@/components/shared/error-boundary";
 import { useError, useAsyncError } from "@/contexts/error-context";

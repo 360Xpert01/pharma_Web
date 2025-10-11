@@ -12,6 +12,8 @@ A production-ready Next.js 15 starter template with advanced dynamic layout syst
 - **State Management**: Redux Toolkit with persistence and React Query integration
 - **Testing Suite**: Unit, integration, and E2E testing setup
 - **Performance Optimized**: Server components, lazy loading, and bundle optimization
+- **Storybook Integration**: Isolated component development with client-side logging via Pino
+- **Local Socket.IO Testing**: Dedicated Express.js test server for real-time feature validation
 
 ## Tech Stack
 
@@ -29,45 +31,21 @@ A production-ready Next.js 15 starter template with advanced dynamic layout syst
   <a href="https://axios-http.com" target="_blank"><img alt="Axios" src="https://img.shields.io/badge/Axios-HTTP%20Client-5A29E4?logo=axios&logoColor=white"></a>
   <a href="https://socket.io" target="_blank"><img alt="Socket.IO" src="https://img.shields.io/badge/Socket.IO-Realtime-010101?logo=socketdotio&logoColor=white"></a>
   <a href="https://sonner.emilkowal.ski" target="_blank"><img alt="Sonner" src="https://img.shields.io/badge/Sonner-Toasts-000000"></a>
+  <a href="https://storybook.js.org" target="_blank"><img alt="Storybook" src="https://img.shields.io/badge/Storybook-7-EBAC2B?logo=storybook&logoColor=black"></a>
+  <a href="https://getpino.io" target="_blank"><img alt="Pino" src="https://img.shields.io/badge/Pino-Logging-5A29E4?logo=node.js&logoColor=white"></a>
 </p>
-
-## What's New in Dynamic Layout Branch
-
-### Dynamic Layout System
-- **Configurable Layouts**: Toggle between landing page and admin shell layouts
-- **Responsive Design**: Mobile-first approach with breakpoint-specific configurations
-- **Layout Context**: Centralized layout state management with TypeScript support
-- **Multiple Variants**: Fixed, drawer, and overlay sidebar variants
-- **Real-time Updates**: Layout changes apply instantly without page refresh
-
-### Advanced Form Builder
-- **20+ Field Types**: Text, email, password, select, multiselect, date, file upload, rich text, and more
-- **Dynamic Validation**: Zod-based schemas with conditional field rendering
-- **Nested Forms**: Section-based form organization with repeatable fields
-- **Type Safety**: End-to-end TypeScript support from schema to submission
-- **Custom Components**: Currency selectors, tag inputs, and dynamic selects
-
-### Real-time Dashboard
-- **Live Metrics**: Real-time data updates with Socket.IO integration
-- **Interactive Charts**: Recharts-powered visualizations with live data
-- **Activity Feeds**: Real-time notifications and activity streams
-- **Performance Monitoring**: Built-in error tracking and performance metrics
-
-### Enhanced Authentication
-- **Complete Auth Flow**: Login, signup, OTP verification, password reset
-- **Role-Based Access**: RBAC system with route protection
-- **Session Management**: Persistent auth state with Redux
-- **Security Headers**: CSP and security middleware integration
 
 ## Core Architecture
 
 ### Dynamic Layout Engine
+
 - **Layout Context**: Centralized configuration for header, sidebar, footer, and content areas
 - **Responsive Breakpoints**: Mobile-first design with customizable breakpoints
 - **Variant System**: Multiple layout variants (fixed, drawer, overlay) with smooth transitions
 - **State Persistence**: Layout preferences saved in localStorage with Redux integration
 
 ### Advanced Form System
+
 - **BaseForm Component**: Universal form component with automatic validation
 - **Field Registry**: 20+ pre-built field components with consistent API
 - **Schema-Driven**: Zod validation schemas with TypeScript inference
@@ -75,148 +53,184 @@ A production-ready Next.js 15 starter template with advanced dynamic layout syst
 - **Nested Structures**: Support for sections and repeatable field groups
 
 ### State Management Architecture
+
 - **Redux Toolkit**: Centralized state with slices for UI, Auth, and App data
 - **Redux Persist**: Automatic state persistence with selective hydration
 - **React Query**: Server state management with caching and synchronization
 - **Context Providers**: Layout and error contexts for component communication
 
 ### Real-time Infrastructure
+
 - **Socket.IO Integration**: Bidirectional real-time communication
 - **WebSocket Support**: Native WebSocket implementation for high-frequency updates
 - **Event Management**: Typed event handlers with automatic cleanup
 - **Connection Management**: Automatic reconnection and error recovery
 
 ### API & Networking
+
 - **Axios Client**: Pre-configured HTTP client with interceptors
 - **Request/Response Middleware**: Authentication, error handling, and logging
 - **Type-Safe Endpoints**: Generated TypeScript interfaces for API responses
 - **Error Normalization**: Consistent error handling across the application
 
-## Project Structure
+### Logging System
 
-```
-├── app/                          # Next.js App Router
-│   ├── layout.tsx               # Root layout with providers
-│   ├── globals.css              # Tailwind v4 theme tokens + animations
-│   ├── page.tsx                 # Landing page
-│   ├── not-found.tsx            # Custom 404 page
-│   ├── global-error.tsx         # Global error boundary
-│   ├── dashboard/               # Admin dashboard section
-│   │   ├── layout.tsx           # Dynamic layout wrapper
-│   │   ├── page.tsx             # Main dashboard with real-time features
-│   │   └── components/          # Dashboard-specific components
-│   │       ├── metrics-cards.tsx
-│   │       ├── interactive-charts.tsx
-│   │       ├── data-lists.tsx
-│   │       └── real-time-provider.tsx
-│   └── auth/                    # Authentication pages
-│       ├── layout.tsx           # 50/50 split auth layout
-│       ├── login/page.tsx       # Login form with validation
-│       ├── signup/page.tsx      # Registration form
-│       ├── otp/page.tsx         # OTP verification
-│       ├── forgot/page.tsx      # Password reset request
-│       └── reset/page.tsx       # Password reset form
-├── components/                   # Reusable components
-│   ├── form/                    # Advanced form system
-│   │   ├── base-form.tsx        # Universal form component
-│   │   ├── base-field.tsx       # Base field wrapper
-│   │   ├── form-wrapper.tsx     # Form section wrapper
-│   │   └── fields/              # Field type implementations
-│   │       ├── input.tsx        # Text input with password toggle
-│   │       ├── select.tsx       # Dropdown select
-│   │       ├── multi-select.tsx # Multi-selection dropdown
-│   │       ├── checkbox.tsx     # Checkbox input
-│   │       ├── date-input.tsx   # Date picker
-│   │       ├── file-upload.tsx  # File upload handler
-│   │       ├── tag-input.tsx    # Tag management
-│   │       ├── dynamic-select.tsx # API-driven select
-│   │       └── repeatable-field.tsx # Dynamic field groups
-│   ├── layout/                  # Layout components
-│   │   ├── dynamic-layout.tsx   # Main layout engine
-│   │   ├── header.tsx           # Responsive header
-│   │   ├── sidebar.tsx          # Collapsible sidebar
-│   │   ├── footer.tsx           # Footer component
-│   │   ├── mobile-menu.tsx      # Mobile navigation
-│   │   ├── theme-toggle.tsx     # Theme switcher
-│   │   └── user-profile.tsx     # User menu dropdown
-│   ├── shared/                  # Shared utility components
-│   │   ├── error-boundary.tsx   # React error boundary
-│   │   ├── loader-overlay.tsx   # Loading states
-│   │   ├── data-table.tsx       # Advanced data table
-│   │   ├── pagination-section.tsx # Table pagination
-│   │   ├── breadcrumbs.tsx      # Navigation breadcrumbs
-│   │   └── page-head.tsx        # SEO meta tags
-│   ├── providers/               # Context providers
-│   │   ├── providers.tsx        # Root provider composition
-│   │   └── theme-provider.tsx   # Theme context
-│   └── ui/                      # shadcn/ui components (50+ components)
-│       ├── form.tsx             # Form primitives
-│       ├── button.tsx           # Button variants
-│       ├── input.tsx            # Input styles
-│       ├── dialog.tsx           # Modal dialogs
-│       ├── table.tsx            # Table components
-│       └── ...                  # Additional UI primitives
-├── contexts/                    # React contexts
-│   ├── layout-context.tsx       # Dynamic layout state
-│   └── error-context.tsx        # Global error handling
-├── hooks/                       # Custom React hooks
-│   ├── use-base-form.tsx        # Form management hook
-│   ├── use-loading-state.tsx    # Loading state management
-│   ├── use-mobile-detection.ts  # Mobile breakpoint detection
-│   └── use-sidebar.tsx          # Sidebar state management
-├── lib/                         # Utility libraries
-│   ├── api/                     # API configuration
-│   ├── actions/                 # Server and client actions
-│   │   └── actions.ts           # Utility functions
-│   ├── utils.ts                 # Common utilities (cn, formatters)
-│   ├── logger.ts                # Structured logging
-│   ├── icons.ts                 # Icon components
-│   └── error-factory.ts         # Error handling utilities
-├── navigation/                  # Navigation configuration
-│   ├── config.ts                # Navigation structure
-│   ├── links.ts                 # Link definitions
-│   └── rbac.ts                  # Role-based access control
-├── socket/                      # Real-time communication
-│   ├── index.ts                 # Socket.IO client
-│   ├── websocket.ts             # WebSocket implementation
-│   └── config.ts                # Socket configuration
-├── store/                       # Redux state management
-│   ├── index.ts                 # Store configuration
-│   ├── hooks.ts                 # Typed Redux hooks
-│   └── slices/                  # Redux slices
-├── types/                       # TypeScript definitions
-│   ├── index.ts                 # Type exports
-│   ├── api.ts                   # API response types
-│   ├── form.ts                  # Form field types
-│   ├── layout.ts                # Layout configuration types
-│   └── user.ts                  # User/auth types
-├── constants/                   # Application constants
-│   ├── dashboard.ts             # Dashboard configuration
-│   ├── keys.ts                  # Storage keys
-│   └── loading.ts               # Loading states
-├── utils/                       # Utility functions
-│   ├── safe-json-parse.ts       # Safe JSON parsing
-│   ├── storage.ts               # LocalStorage utilities
-│   ├── sleep.ts                 # Async utilities
-│   └── try-catch.ts             # Error handling
-├── __tests__/                   # Test suites
-│   ├── unit/                    # Unit tests
-│   ├── integration/             # Integration tests
-│   └── e2e/                     # End-to-end tests
-├── public/                      # Static assets
-└── Configuration files          # Config files (Next.js, TypeScript, etc.)
-```
-
-## Quick Start
+- **Client-Side Logging**: Pino configured exclusively for browser environments (no server-side integration to avoid bundle bloat)
+- **Structured Output**: JSON-formatted logs with timestamps, levels (debug, info, warn, error), and context
+- **Performance Focus**: Lightweight, fast logging without impacting runtime performance
+- **Integration**: Easily extensible for remote logging services like Sentry or LogRocket
 
 ### Prerequisites
+
 - Node.js 18+ and pnpm (recommended) or npm
 - Git for version control
 
+### Installation
+
+1. Clone the repository:
+
+   ```
+   git clone <https://github.com/zahidrahimoon/next-starter.git>
+   cd nextjs-starter
+   ```
+
+2. Install dependencies:
+
+   ```
+   npm install
+   ```
+
+3. Set up environment variables:
+   Copy `.env.example` to `.env.local` and fill in required values (e.g., `NEXT_PUBLIC_API_URL`).
+
+4. Run the development server:
+   ```
+   npm run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000) to view the landing page.
+
+## Development Setup
+
+### Storybook
+
+Storybook is configured for isolated component development and documentation. It includes Pino logging strictly for the client/browser environment to capture component interactions without server-side overhead.
+
+1. Start Storybook:
+   ```
+   npm run storybook
+   ```
+   Open [http://localhost:6006](http://localhost:6006) to browse stories.
+
+### Testing Real-time Features (Socket.IO & WebSocket)
+
+To validate Socket.IO and WebSocket initialization, set up a local Express.js test server. This allows end-to-end testing of real-time events without deploying a full backend.
+
+1. Create a new directory for the test server (e.g., `socket-test-server`):
+
+   ```
+   mkdir socket-test-server
+   cd socket-test-server
+   npm init -y
+   npm install express socket.io
+   ```
+
+2. Create `server.js` with the following code:
+
+   ```javascript
+   // server.js
+   import express from "express";
+   import http from "http";
+   import { Server } from "socket.io";
+
+   const app = express();
+   const server = http.createServer(app);
+
+   // Create Socket.IO server with settings matching client config
+   const io = new Server(server, {
+     cors: {
+       origin: "*", // Allow all origins for production deployment
+       methods: ["GET", "POST"],
+       credentials: true,
+     },
+     transports: ["websocket", "polling"], // Match client transports
+     pingInterval: 25000, // Match client pingInterval
+     pingTimeout: 5000, // Match client pingTimeout
+     // Note: Reconnection options are client-side only
+   });
+
+   // --- SOCKET EVENTS ---
+   io.on("connection", (socket) => {
+     console.log("✅ Client connected:", socket.id);
+
+     // Test ping-pong from server
+     socket.emit("welcome", {
+       message: "Hello from Socket.IO server!",
+       id: socket.id,
+       timestamp: new Date().toISOString(),
+     });
+
+     // Listen for messages (optional)
+     socket.on("message", (data) => {
+       console.log("📩 Message received:", data);
+       // Echo it back for testing
+       socket.emit("message", { echo: data, receivedAt: new Date().toISOString() });
+     });
+
+     // Handle disconnection
+     socket.on("disconnect", (reason) => {
+       console.log("❌ Client disconnected:", socket.id, "Reason:", reason);
+     });
+   });
+
+   // --- EXPRESS TEST ROUTE ---
+   app.get("/", (req, res) => {
+     res.send("Socket.IO Test Server is running ✅");
+   });
+
+   // --- START SERVER ---
+   const PORT = process.env.PORT || 4000;
+   server.listen(PORT, () => {
+     console.log(`🚀 Socket.IO server running on http://localhost:${PORT}`);
+   });
+   ```
+
+3. Add a start script to `package.json`:
+
+   ```json
+   "scripts": {
+     "start": "node server.js"
+   }
+   ```
+
+4. Run the test server:
+
+   ```
+   npm start
+   ```
+
+   - Verify the route: Open [http://localhost:4000](http://localhost:4000) – should display "Socket.IO Test Server is running ✅".
+   - Test Socket.IO: In the Next.js app (running on localhost:3000), navigate to the dashboard. Open browser dev tools (Console/Network tabs).
+     - On connection: Expect a "welcome" event with server message.
+     - Send a test message: Use the dashboard's real-time chat or metrics component to emit a "message" event.
+     - Verify echo: Server should log the message and emit back an echo response.
+     - Check WebSocket: In Network tab, confirm WebSocket upgrade (ws://localhost:4000/socket.io/?...).
+     - Disconnect: Close/reload the tab – server console should log disconnection.
+
+5. Client Configuration Matching:
+   - Update `socket/config.ts` if needed to point to `http://localhost:4000`.
+   - Transports: websocket first, fallback to polling.
+   - Ping settings: Match server (interval: 25s, timeout: 5s) for stable connections.
+
+**Troubleshooting**:
+
+- CORS errors: Ensure `origin: "*"` in server config.
+- Connection fails: Check firewall/proxy; test with `curl http://localhost:4000`.
+- No events: Verify client emits match server listeners (e.g., "message").
+
+For production, replace with a scalable backend (e.g., integrate Socket.IO into your API server).
 
 ## Theming & UI
 
-### Theme System
 - **next-themes** integration with system preference detection
 - **3 Built-in Themes**: Light, Dark, and Ocean (custom palette)
 - **CSS Variables**: Tailwind v4 CSS variables for consistent theming
@@ -227,36 +241,13 @@ A production-ready Next.js 15 starter template with advanced dynamic layout syst
 
 Built on **shadcn/ui** and **Radix UI** primitives for accessibility and customization:
 
-#### Layout & Navigation
-- `accordion`, `breadcrumb`, `navigation-menu`, `menubar`, `tabs`
-- `sheet`, `drawer`, `collapsible`, `resizable`
-
-#### Forms & Inputs
-- `form`, `input`, `textarea`, `select`, `checkbox`, `radio-group`
-- `input-otp`, `switch`, `toggle`, `toggle-group`, `slider`
-- `calendar`, `date-picker`, `command` (combobox)
-
-#### Feedback & Overlays
-- `alert`, `alert-dialog`, `dialog`, `popover`, `tooltip`
-- `toast`/`toaster` (Sonner), `progress`, `skeleton`
-- `hover-card`, `context-menu`
-
-#### Data Display
-- `table`, `card`, `avatar`, `badge`, `separator`
-- `carousel`, `scroll-area`, `aspect-ratio`
-
-#### Interactive
-- `button` (5 variants), `dropdown-menu`, `pagination`
-- Custom components: `data-table`, `file-upload`, `color-picker`
-
 ### Styling Architecture
+
 - **Tailwind CSS 4**: Latest version with improved performance
 - **CSS-in-JS**: No runtime CSS generation, all static
 - **Design System**: Consistent spacing, typography, and color scales
 - **Responsive**: Mobile-first approach with breakpoint utilities
 - **Animations**: Tailwind animations with custom keyframes
-
-##  Advanced Features
 
 ### Dynamic Layout System
 
@@ -268,7 +259,7 @@ const layoutConfig: LayoutConfig = {
   header: {
     enabled: true,
     fixed: false,
-    height: 'md',
+    height: "md",
     showLogo: true,
     showNavigation: true,
     showUserMenu: true,
@@ -276,9 +267,9 @@ const layoutConfig: LayoutConfig = {
   },
   sidebar: {
     enabled: true,
-    position: 'left',
-    variant: 'fixed', // 'drawer' | 'overlay'
-    width: 'md', // 'sm' | 'lg' | 'xl'
+    position: "left",
+    variant: "fixed", // 'drawer' | 'overlay'
+    width: "md", // 'sm' | 'lg' | 'xl'
     collapsible: true,
     defaultCollapsed: false,
     showOnMobile: false,
@@ -288,51 +279,26 @@ const layoutConfig: LayoutConfig = {
 ```
 
 **Key Features:**
+
 - **Responsive Breakpoints**: Different configurations for mobile/desktop
 - **Multiple Variants**: Fixed sidebar, drawer, or overlay modes
 - **State Persistence**: Layout preferences saved automatically
 - **Smooth Transitions**: CSS transitions for all layout changes
 - **Mobile Optimization**: Touch-friendly mobile navigation
 
-### Advanced Form Builder
-
-**Supported Field Types:**
-- **Basic**: text, email, password, number, textarea
-- **Selection**: select, multiselect, radio, checkbox, toggle
-- **Advanced**: date, file, color, range, tags
-- **Dynamic**: dynamicselect (API-driven), repeatable fields
-- **Rich**: rich text editor, currency selector
-
-
 ### Testing Suite
 
 **Complete testing setup:**
+
 - **Unit Tests**: Jest + Testing Library for components
 - **Integration Tests**: API integration testing
 - **E2E Tests**: Authentication and critical user flows
 - **Coverage**: Comprehensive coverage reporting
 
-### Accessibility Features
+Run tests:
 
-- **Keyboard Navigation**: Full keyboard support for all interactive elements
-- **Screen Reader Support**: ARIA labels and semantic HTML
-- **Focus Management**: Proper focus handling in modals and dropdowns
-- **Color Contrast**: WCAG AA compliant color schemes
-- **Responsive Text**: Scalable text sizes for better readability
-
-### Browser Support
-
-- **Modern Browsers**: Chrome 91+, Firefox 90+, Safari 14+, Edge 91+
-- **Mobile**: iOS Safari 14+, Chrome Android 91+
-- **Progressive Enhancement**: Graceful degradation for older browsers
-
-## Additional Resources
-
-### Component Documentation
-Each component includes TypeScript interfaces and JSDoc comments for better developer experience.
-
-### Deployment Guide
-- **Vercel**: Zero-config deployment (recommended)
-- **Docker**: Dockerfile included for containerization
-- **Self-hosted**: Compatible with any Node.js hosting platform
-
+```
+pnpm test
+pnpm test:watch
+pnpm test:coverage
+```

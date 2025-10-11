@@ -1,12 +1,12 @@
 "use client";
 import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert/alert";
 import PageHead from "@/components/shared/page-head";
 import { AlertIcon, RefreshIcon, HomeIcon, BugIcon } from "@/lib/icons";
-import { logger } from "@/lib/logger";
 import { useTranslations } from "next-intl";
+import logger from "@/logger/logger";
 
 interface ErrorPageProps {
   error: Error & { digest?: string };

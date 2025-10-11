@@ -9,7 +9,7 @@ import { NavigationMenu } from "@/components/navigation/navigation-menu";
 import { AuthButtons } from "@/components/auth/auth-buttons";
 import { useLayout } from "@/contexts/layout-context";
 import { useAuth } from "@/hooks/use-auth";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button/button";
 import { cn } from "@/lib/utils";
 import { headerNavigation } from "@/navigation/config";
 import { getNavItemTitle } from "@/lib/navigation-utils";

@@ -2,7 +2,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { ExpandIcon, CollapseIcon } from "@/lib/icons";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { logger } from "@/lib/logger";
+import { logger } from "@/logger/logger";
 
 interface SectionWrapperProps {
   field: {
@@ -41,10 +41,10 @@ export const FormWrapper = ({ field, children }: SectionWrapperProps) => {
     }
 
     const result = classes.join(" ");
-    logger.debug("Form wrapper grid classes calculated", { 
-      classes: result, 
-      fieldId: field.id, 
-      gridConfig: field.grid 
+    logger.debug("Form wrapper grid classes calculated", {
+      classes: result,
+      fieldId: field.id,
+      gridConfig: field.grid,
     });
     return result;
   };

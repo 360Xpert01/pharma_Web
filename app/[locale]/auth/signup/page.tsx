@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button/button";
 import { getFormErrorMessage } from "@/lib/actions/actions";
 import { useAuthLoading } from "@/hooks/use-loading-state";
 import LoaderOverlay from "@/components/shared/loader-overlay";

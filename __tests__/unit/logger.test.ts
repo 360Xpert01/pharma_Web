@@ -1,4 +1,4 @@
-import { logger } from "@/lib/logger";
+import { logger } from "@/logger/logger";
 
 describe("Logger (unit)", () => {
   it("logs debug messages", () => {

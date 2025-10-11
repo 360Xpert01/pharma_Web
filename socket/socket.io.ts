@@ -1,6 +1,7 @@
+// lib/socket/socket.io.ts
 import { io, type Socket } from "socket.io-client";
 import { socketConfig } from "./config";
-import { logger } from "@/lib/logger"; 
+import { logger } from "@/logger/logger";
 
 let socket: Socket | null = null;
 
@@ -9,23 +10,76 @@ export function getSocketIO(): Socket {
     socket = io(socketConfig.socketIOUrl, {
       autoConnect: socketConfig.autoConnect,
       withCredentials: true,
-      reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 1000,
+      reconnection: socketConfig.reconnection,
+      reconnectionAttempts: socketConfig.reconnectionAttempts,
+      reconnectionDelay: socketConfig.reconnectionDelay,
+      reconnectionDelayMax: socketConfig.reconnectionDelayMax,
+      randomizationFactor: socketConfig.randomizationFactor,
+      timeout: socketConfig.timeout,
+      pingTimeout: socketConfig.pingTimeout,
+      pingInterval: socketConfig.pingInterval,
+      transports: socketConfig.transports,
+      upgrade: socketConfig.upgrade,
+      auth: {
+        token: process.env.NEXT_PUBLIC_SOCKET_TOKEN || "anonymous",
+      },
+      extraHeaders: {
+        "X-Client-Version": "1.0.0",
+        "X-Environment": process.env.NODE_ENV || "development",
+      },
+      forceNew: false,
+      rememberUpgrade: true,
+      closeOnBeforeunload: true,
+      autoUnref: false,
+      perMessageDeflate: socketConfig.perMessageDeflate,
     });
 
+    // Event listeners with proper logging
     socket.on("connect", () => {
-      logger.info("[Socket.IO] Connected", { id: socket?.id });
+      logger.info({ id: socket?.id }, "[Socket.IO] Connected");
     });
 
-    socket.on("disconnect", (reason) => {
-      logger.warn("[Socket.IO] Disconnected", { reason });
+    socket.on("connecting", () => {
+      logger.info("[Socket.IO] Connecting...");
     });
 
     socket.on("connect_error", (err) => {
-      logger.error("[Socket.IO] Connection error", { error: err.message });
+      logger.error({ error: err?.message }, "[Socket.IO] Connection Error");
+    });
+
+    socket.on("disconnect", (reason) => {
+      logger.warn({ reason }, "[Socket.IO] Disconnected");
+    });
+
+    socket.io.on("reconnect_attempt", (attempt) => {
+      logger.info({ attempt }, "[Socket.IO] Reconnect Attempt");
+    });
+
+    socket.io.on("reconnect_error", (err) => {
+      logger.error({ error: err?.message }, "[Socket.IO] Reconnection Error");
+    });
+
+    socket.io.on("reconnect_failed", () => {
+      logger.error("[Socket.IO] Reconnection Failed - giving up");
+    });
+
+    socket.io.on("reconnect", (attempt) => {
+      logger.info({ attempt }, "[Socket.IO] Successfully Reconnected");
+    });
+
+    socket.io.on("ping", () => {
+      logger.debug("[Socket.IO] Ping sent to server");
+    });
+
+    socket.io.on("pong", () => {
+      logger.debug("[Socket.IO] Pong received");
+    });
+
+    socket.onAny((event, ...args) => {
+      logger.debug(`[Socket.IO] Event received: ${event}`, { args });
     });
   }
+
   return socket;
 }
 
