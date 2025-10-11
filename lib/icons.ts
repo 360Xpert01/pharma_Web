@@ -226,3 +226,5 @@ export const ICON_CLASSES = {
   interactive: "h-5 w-5 transition-colors duration-200",
   muted: "h-4 w-4 text-muted-foreground",
 } as const;
+
+export { DoubleArrowLeftIcon, DoubleArrowRightIcon } from "@radix-ui/react-icons";
