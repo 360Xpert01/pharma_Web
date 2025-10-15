@@ -1,52 +1,150 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { User } from "@/types/user";
-import type { AuthFlowState, AuthState, AuthFlowStep } from "@/app/[locale]/auth/types";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { axiosInstance } from "@/lib/axios/axios-instance";
+import { setToken, removeToken, getToken } from "@/lib/cookie/cookie";
+
+export interface AuthState {
+  user: {
+    id: string;
+    email: string;
+    name?: string;
+  } | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: string | null;
+}
 
 const initialState: AuthState = {
-  token: null,
   user: null,
-  flow: {
-    step: "idle",
-    canAccessOtp: false,
-    canAccessReset: false,
-  },
+  token: getToken() || null,
+  isAuthenticated: !!getToken(),
+  isLoading: false,
+  error: null,
 };
 
-const slice = createSlice({
+// Async thunks for login and signup
+export const loginUser = createAsyncThunk(
+  "auth/loginUser",
+  async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post("/auth/login", {
+        email,
+        password,
+      });
+      const { token, user } = response.data;
+      setToken(token);
+      return { token, user };
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Login failed");
+    }
+  }
+);
+
+export const signupUser = createAsyncThunk(
+  "auth/signupUser",
+  async (
+    { email, password, name }: { email: string; password: string; name: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axiosInstance.post("/auth/signup", {
+        email,
+        password,
+        name,
+      });
+      const { token, user } = response.data;
+      setToken(token);
+      return { token, user };
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Signup failed");
+    }
+  }
+);
+
+export const googleAuth = createAsyncThunk(
+  "auth/googleAuth",
+  async ({ idToken }: { idToken: string }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post("/auth/google", {
+        idToken,
+      });
+      const { token, user } = response.data;
+      setToken(token);
+      return { token, user };
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Google auth failed");
+    }
+  }
+);
+
+const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setSession(state, action: PayloadAction<{ token: string; user: User }>) {
-      state.token = action.payload.token;
-      state.user = action.payload.user;
-      state.flow = { ...initialState.flow };
-    },
-    clearSession(state) {
-      state.token = null;
+    logout: (state) => {
       state.user = null;
-      state.flow = { ...initialState.flow };
+      state.token = null;
+      state.isAuthenticated = false;
+      state.error = null;
+      removeToken();
     },
-    setFlowStep(
-      state,
-      action: PayloadAction<{ step: AuthFlowStep; email?: string; resetToken?: string }>
-    ) {
-      state.flow.step = action.payload.step;
-      if (action.payload.email) state.flow.email = action.payload.email;
-      if (action.payload.resetToken) state.flow.resetToken = action.payload.resetToken;
+    clearError: (state) => {
+      state.error = null;
+    },
+  },
+  extraReducers: (builder) => {
+    // Login
+    builder
+      .addCase(loginUser.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isAuthenticated = true;
+        state.token = action.payload.token;
+        state.user = action.payload.user;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
 
-      // Set access permissions based on flow step
-      state.flow.canAccessOtp = action.payload.step === "awaiting-otp";
-      state.flow.canAccessReset = action.payload.step === "reset-password";
-    },
-    clearFlow(state) {
-      state.flow = { ...initialState.flow };
-    },
+    // Signup
+    builder
+      .addCase(signupUser.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(signupUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isAuthenticated = true;
+        state.token = action.payload.token;
+        state.user = action.payload.user;
+      })
+      .addCase(signupUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
+
+    // Google Auth
+    builder
+      .addCase(googleAuth.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(googleAuth.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isAuthenticated = true;
+        state.token = action.payload.token;
+        state.user = action.payload.user;
+      })
+      .addCase(googleAuth.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
   },
 });
 
-export const authActions = slice.actions;
-export default slice.reducer;
-
-export const selectIsAuthenticated = (s: { auth: AuthState }) => Boolean(s.auth.token);
-export const selectUser = (s: { auth: AuthState }) => s.auth.user;
-export const selectToken = (s: { auth: AuthState }) => s.auth.token;
+export const { logout, clearError } = authSlice.actions;
+export default authSlice.reducer;

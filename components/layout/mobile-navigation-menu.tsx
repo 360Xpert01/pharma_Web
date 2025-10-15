@@ -12,7 +12,7 @@ import {
 } from "@/lib/navigation-utils";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/hooks/use-auth";
-import { AuthButtons } from "@/components/auth/auth-buttons";
+import { AuthButtons } from "@/components/layout/auth-buttons";
 import { UserProfile } from "./user-profile";
 
 interface MobileNavigationMenuProps {

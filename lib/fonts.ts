@@ -13,12 +13,3 @@ export const urduFont = Noto_Nastaliq_Urdu({
   variable: "--font-urdu",
   display: "swap",
 });
-
-// You can also use Amiri as an alternative Arabic/Urdu font
-// import { Amiri } from "next/font/google";
-// export const urduFont = Amiri({
-//   subsets: ["arabic"],
-//   weight: ["400", "700"],
-//   variable: "--font-urdu",
-//   display: "swap",
-// });

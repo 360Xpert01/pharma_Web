@@ -12,8 +12,6 @@ import LoaderOverlay from "@/components/shared/loader-overlay";
 import { AuthRouteGuard } from "@/components/auth/auth-route-guard";
 import { authAPI } from "@/lib/api/auth";
 import { AuthFlowManager } from "@/lib/auth-flow";
-import { useAppDispatch } from "@/store/hooks";
-import { authActions } from "@/store/slices/auth-slice";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff } from "@/lib/icons";
 import {
@@ -25,7 +23,6 @@ export default function ResetPage() {
   const t = useTranslations("auth.reset");
   const vt = useTranslations("auth.validation");
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const { toast } = useToast();
   const { isLoading, executeWithLoading } = useAuthLoading();
   const [showPassword, setShowPassword] = useState(false);
@@ -66,7 +63,6 @@ export default function ResetPage() {
 
       // Clear flow state and redirect to login
       AuthFlowManager.clearFlow();
-      dispatch(authActions.clearFlow());
 
       toast({
         title: "Password Reset Successfully",

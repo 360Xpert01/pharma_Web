@@ -6,9 +6,6 @@ import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { LogoutIcon, UserIcon, SettingsIcon, HelpIcon } from "@/lib/icons";
 import { logger } from "@/logger/logger";
-import { useAppDispatch } from "@/store/hooks";
-import { authActions } from "@/store/slices/auth-slice";
-import { clearAuthSession } from "@/lib/auth-flow";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button/button";
 import {
@@ -25,33 +22,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 interface UserProfileProps {
   className?: string;
 }
-
-// Cookie-based user data interface for consistency across admin/user contexts
-interface CookieUserData {
-  email: string;
-  name?: string;
-  avatar?: string;
-  id?: string;
-  role?: string;
-}
-
-// Helper function to get user data from cookies (ensures same email as admin)
-const getUserFromCookies = (): CookieUserData | null => {
-  if (typeof window === "undefined") return null;
-
-  const email = Cookies.get("user_email");
-  const isLoggedIn = Cookies.get("user_logged_in");
-
-  if (!email || !isLoggedIn) return null;
-
-  return {
-    email,
-    name: Cookies.get("user_name") || "",
-    avatar: Cookies.get("user_avatar") || "",
-    id: Cookies.get("user_id") || "",
-    role: Cookies.get("user_role") || "user",
-  };
-};
 
 // Helper function to generate user initials
 const getUserInitials = (name?: string, email?: string): string => {
@@ -72,9 +42,7 @@ export function UserProfile({ className }: UserProfileProps) {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const t = useTranslations("layout.profile");
   const router = useRouter();
-  const dispatch = useAppDispatch();
 
-  // Use optimized auth hook instead of duplicating logic
   const { isAuthenticated, user } = useAuth();
 
   // If user is not authenticated, don't render the component
@@ -88,24 +56,15 @@ export function UserProfile({ className }: UserProfileProps) {
     setIsLoggingOut(true);
 
     try {
-      // Clear auth session (existing cookies)
-      clearAuthSession();
-
-      // Clear additional user cookies using js-cookie
+      // Remove auth-related cookies
       Cookies.remove("user_email", { path: "/" });
       Cookies.remove("user_name", { path: "/" });
       Cookies.remove("user_avatar", { path: "/" });
       Cookies.remove("user_id", { path: "/" });
       Cookies.remove("user_role", { path: "/" });
+      Cookies.remove("auth_token", { path: "/" });
 
-      // Clear Redux auth state
-      dispatch(authActions.clearSession());
-
-      // Log the logout action
-      logger.info("User logged out successfully", {
-        userId: user.id,
-        email: user.email,
-      });
+      logger.info("User logged out successfully", { userId: user.id, email: user.email });
 
       // Redirect to login page
       router.push("/auth/login");
@@ -120,17 +79,14 @@ export function UserProfile({ className }: UserProfileProps) {
   };
 
   const handleProfileClick = () => {
-    // Navigate to profile page
     router.push("/dashboard/profile");
   };
 
   const handleSettingsClick = () => {
-    // Navigate to settings page
     router.push("/dashboard/settings");
   };
 
   const handleHelpClick = () => {
-    // Navigate to help page
     router.push("/help");
   };
 
@@ -143,8 +99,13 @@ export function UserProfile({ className }: UserProfileProps) {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-9 w-9 rounded-full hover:bg-accent">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={user.avatar} alt={user.name} />
-                    <AvatarFallback className="text-xs font-medium">{userInitials}</AvatarFallback>
+                    {user.avatar ? (
+                      <AvatarImage src={user.avatar} alt={user.name ?? "User avatar"} />
+                    ) : (
+                      <AvatarFallback className="text-xs font-medium">
+                        {userInitials}
+                      </AvatarFallback>
+                    )}
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>

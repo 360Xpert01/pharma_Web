@@ -5,8 +5,6 @@ import { ThemeToggle } from "./theme-toggle";
 import { UserProfile } from "./user-profile";
 import { MobileNavigationMenu } from "./mobile-navigation-menu";
 import { LanguageSwitcher } from "./language-switcher";
-import { NavigationMenu } from "@/components/navigation/navigation-menu";
-import { AuthButtons } from "@/components/auth/auth-buttons";
 import { useLayout } from "@/contexts/layout-context";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button/button";
@@ -15,6 +13,7 @@ import { headerNavigation } from "@/navigation/config";
 import { getNavItemTitle } from "@/lib/navigation-utils";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { AuthButtons } from "./auth-buttons";
 
 interface HeaderProps {
   className?: string;
