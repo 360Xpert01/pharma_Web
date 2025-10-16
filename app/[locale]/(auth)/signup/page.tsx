@@ -1,131 +1,117 @@
 "use client";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button/button";
-import { getFormErrorMessage } from "@/lib/actions/actions";
-import { useAuthLoading } from "@/hooks/use-loading-state";
-import LoaderOverlay from "@/components/shared/loader-overlay";
-import { Eye, EyeOff } from "@/lib/icons";
+import { useAppDispatch } from "@/store/hooks";
+import { signupUser } from "@/store/slices/auth-slice";
 import { toast } from "sonner";
 import { createSignupSchema, type SignupFormValues } from "@/validations/authValidation";
+import { BaseForm } from "@/components/form/base-form";
+import type { FormField } from "@/types/form";
 
 export default function SignupPage() {
   const t = useTranslations("auth.signup");
   const vt = useTranslations("auth.validation");
   const router = useRouter();
+  const pathname = usePathname() || "/";
+  const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+
+  const getLocaleFromPath = (p: string) => {
+    const m = p.match(/^\/(en|ur)/);
+    return m?.[1] || "en";
+  };
+  const locale = getLocaleFromPath(pathname);
 
   const signupSchema = createSignupSchema(vt);
-  const form = useForm<SignupFormValues>({
-    resolver: zodResolver(signupSchema),
-    defaultValues: { email: "", password: "" },
-  });
+
+  const formFields: FormField[] = [
+    {
+      id: "email",
+      name: "email",
+      label: t("emailLabel"),
+      type: "email",
+      placeholder: t("emailLabel"),
+      required: true,
+      className: "text-sm md:text-base",
+    },
+    {
+      id: "password",
+      name: "password",
+      label: t("passwordLabel"),
+      type: "password",
+      placeholder: t("passwordLabel"),
+      required: true,
+      className: "text-sm md:text-base",
+    },
+  ];
 
   async function onSubmit(values: SignupFormValues) {
     setIsLoading(true);
 
     try {
-      const response = await authAPI.signup(values);
+      // use redux thunk that handles axios + cookie internally
+      await dispatch(signupUser({ email: values.email, password: values.password })).unwrap();
 
-      if (!response.success) {
-        toast.error("Signup Failed", {
-          description: response.error || "Failed to create account. Please try again.",
-        });
-        return;
-      }
-
-      toast.success("Account Created!", {
-        description: "Your account has been created successfully. Please login.",
+      toast.success(t("success") || "Account Created!", {
+        description: t("successDescription") || "Your account has been created successfully.",
       });
 
-      router.push("/auth/login");
-    } catch (error) {
-      toast.error("Signup Failed", {
-        description: "An unexpected error occurred. Please try again.",
+      // redirect to login page after successful signup
+      router.push(`/${locale}/login`);
+    } catch (err: any) {
+      const message = typeof err === "string" ? err : err?.message || "Signup failed";
+      toast.error(t("error") || "Signup Failed", {
+        description: message,
       });
     } finally {
       setIsLoading(false);
     }
   }
+
   return (
     <div className="relative space-y-6">
       <div className="space-y-2">
         <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold">{t("title")}</h1>
+        <p className="text-muted-foreground text-sm md:text-base">{t("subtitle")}</p>
       </div>
-      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)} noValidate>
-        <div className="grid gap-2">
-          <label htmlFor="email" className="text-sm md:text-base font-medium">
-            {t("emailLabel")}
-          </label>
-          <Input
-            id="email"
-            type="email"
-            className="text-sm md:text-base"
-            {...form.register("email")}
-            aria-invalid={!!form.formState.errors.email}
-          />
-          {form.formState.errors.email && (
-            <p className="text-sm text-destructive">
-              {getFormErrorMessage(form.formState.errors.email)}
-            </p>
-          )}
-        </div>
-        <div className="grid gap-2">
-          <label htmlFor="password" className="text-sm md:text-base font-medium">
-            {t("passwordLabel")}
-          </label>
-          <div className="relative">
-            <Input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              className="text-sm md:text-base pr-10"
-              {...form.register("password")}
-              aria-invalid={!!form.formState.errors.password}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-              aria-label={showPassword ? "Hide password" : "Show password"}
-            >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          </div>
-          {form.formState.errors.password && (
-            <p className="text-sm text-destructive">
-              {getFormErrorMessage(form.formState.errors.password)}
-            </p>
-          )}
-        </div>
-        <Button
-          type="submit"
-          className="w-full cursor-pointer text-sm md:text-base font-medium"
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <div className="flex items-center gap-2">
-              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
-              {t("submittingButton")}
-            </div>
-          ) : (
-            t("submitButton")
-          )}
-        </Button>
-      </form>
-      <p className="text-sm md:text-base text-muted-foreground text-center">
-        {t("hasAccountText")}{" "}
-        <a
-          className="underline hover:text-primary cursor-pointer transition-colors font-medium"
-          href="/auth/login"
-        >
-          {t("loginLink")}
-        </a>
-      </p>
+
+      <BaseForm
+        fields={formFields}
+        onSubmit={onSubmit}
+        defaultValues={{ email: "", password: "" }}
+        validationSchema={signupSchema}
+        submitText={t("submitButton")}
+        renderSubmitButton={({ isSubmitting }) => (
+          <button
+            type="submit"
+            className="w-full cursor-pointer text-sm md:text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            disabled={isLoading || isSubmitting}
+          >
+            {isLoading || isSubmitting ? (
+              <div className="flex items-center justify-center gap-2">
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+                {t("submittingButton")}
+              </div>
+            ) : (
+              t("submitButton")
+            )}
+          </button>
+        )}
+      />
+
+      <div className="text-center text-sm md:text-base text-muted-foreground">
+        <p>
+          {t("hasAccountText")}{" "}
+          <Link
+            href={`/${locale}/login`}
+            className="underline hover:text-primary cursor-pointer transition-colors font-medium"
+          >
+            {t("loginLink")}
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
