@@ -10,8 +10,6 @@ import { useAuthLoading } from "@/hooks/use-loading-state";
 import LoaderOverlay from "@/components/shared/loader-overlay";
 import { authAPI } from "@/lib/api/auth";
 import { AuthFlowManager } from "@/lib/auth-flow";
-import { useAppDispatch } from "@/store/hooks";
-import { authActions } from "@/store/slices/auth-slice";
 import { useToast } from "@/hooks/use-toast";
 import {
   createForgotPasswordSchema,
@@ -22,7 +20,6 @@ export default function ForgotPage() {
   const t = useTranslations("auth.forgot");
   const vt = useTranslations("auth.validation");
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const { toast } = useToast();
   const { isLoading, executeWithLoading } = useAuthLoading();
 
@@ -54,14 +51,6 @@ export default function ForgotPage() {
           email: values.email,
           resetToken,
         });
-
-        dispatch(
-          authActions.setFlowStep({
-            step: "reset-password",
-            email: values.email,
-            resetToken,
-          })
-        );
 
         toast({
           title: "Reset Link Sent",

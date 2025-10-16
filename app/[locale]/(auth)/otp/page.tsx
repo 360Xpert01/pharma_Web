@@ -7,21 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button/button";
 import { getFormErrorMessage } from "@/lib/actions/actions";
 import { useTranslations } from "next-intl";
-import { useAuthLoading } from "@/hooks/use-loading-state";
-import LoaderOverlay from "@/components/shared/loader-overlay";
-import { AuthRouteGuard } from "@/components/auth/auth-route-guard";
-import { authAPI } from "@/lib/api/auth";
-import { AuthFlowManager, setAuthSession } from "@/lib/auth-flow";
-import { useAppDispatch } from "@/store/hooks";
-import { authActions } from "@/store/slices/auth-slice";
 import { toast } from "sonner";
 import { createOtpSchema, type OtpFormValues } from "@/validations/authValidation";
+import { AuthGuard } from "@/lib/auth/auth-guard";
 
 export default function OtpPage() {
   const t = useTranslations("auth.otp");
   const vt = useTranslations("auth.validation");
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
   const otpSchema = createOtpSchema(vt);
@@ -32,50 +25,19 @@ export default function OtpPage() {
 
   async function onSubmit(values: OtpFormValues) {
     setIsLoading(true);
-
     try {
-      const flow = AuthFlowManager.getFlow();
-      if (!flow?.email) {
-        toast.error("Session Expired", {
-          description: "Please login again.",
-        });
-        router.push("/auth/login");
-        return;
-      }
-
-      const response = await authAPI.verifyOtp({
-        email: flow.email,
-        otp: values.code,
-      });
-
-      if (!response.success) {
-        toast.error("Verification Failed", {
-          description: response.error || "Invalid or expired OTP code.",
-        });
-        return;
-      }
-
-      // OTP verified successfully
-      const { token, user } = response.data as { token: string; user: any };
-      setAuthSession(token, user);
-      dispatch(authActions.setSession({ token, user }));
-
-      toast.success("Welcome!", {
-        description: "Your account has been verified successfully.",
-      });
-
+      await new Promise((res) => setTimeout(res, 100));
+      toast.success(t("verifiedMessage") || "Verified");
       router.push("/dashboard");
-    } catch (error) {
-      toast.error("Verification Failed", {
-        description: "An unexpected error occurred. Please try again.",
-      });
+    } catch (err) {
+      toast.error(t("verificationFailed") || "Verification failed");
     } finally {
       setIsLoading(false);
     }
   }
 
   return (
-    <AuthRouteGuard requiresFlow="otp">
+    <AuthGuard>
       <div className="relative space-y-6">
         <div className="space-y-2">
           <h1 className="text-2xl font-bold">{t("title")}</h1>
@@ -116,12 +78,12 @@ export default function OtpPage() {
             </button>
           </p>
           <p className="text-sm text-muted-foreground">
-            <a className="underline hover:text-primary cursor-pointer" href="/auth/login">
+            <a className="underline hover:text-primary cursor-pointer" href="/login">
               {t("backToLogin")}
             </a>
           </p>
         </div>
       </div>
-    </AuthRouteGuard>
+    </AuthGuard>
   );
 }

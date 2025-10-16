@@ -24,9 +24,9 @@ componentRegistry.register("dashboard-page", () => import("@/app/[locale]/dashbo
 componentRegistry.register("home-page", () => import("@/app/[locale]/page"));
 
 // Auth pages
-componentRegistry.register("auth-login", () => import("@/app/[locale]/auth/login/page"));
+componentRegistry.register("auth-login", () => import("@/app/[locale]/(auth)/login/page"));
 
-componentRegistry.register("auth-signup", () => import("@/app/[locale]/auth/signup/page"));
+componentRegistry.register("auth-signup", () => import("@/app/[locale]/(auth)/signup/page"));
 
 // Lazy route components
 export const LazyDashboard = createLazyRoute(
@@ -37,7 +37,7 @@ export const LazyDashboard = createLazyRoute(
 export const LazyHome = createLazyRoute(() => import("@/app/[locale]/page"), "Home");
 
 export const LazyAuthLogin = createLazyRoute(
-  () => import("@/app/[locale]/auth/login/page"),
+  () => import("@/app/[locale]/(auth)/login/page"),
   "Login"
 );
 
