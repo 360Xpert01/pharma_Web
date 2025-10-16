@@ -1,104 +1,110 @@
 "use client";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button/button";
-import { getFormErrorMessage } from "@/lib/actions/actions";
-import { useAuthLoading } from "@/hooks/use-loading-state";
-import LoaderOverlay from "@/components/shared/loader-overlay";
-import { authAPI } from "@/lib/api/auth";
-import { AuthFlowManager } from "@/lib/auth-flow";
-import { useToast } from "@/hooks/use-toast";
+import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
+import { useState } from "react";
+import { toast } from "sonner";
 import {
   createForgotPasswordSchema,
   type ForgotPasswordFormValues,
 } from "@/validations/authValidation";
+import { BaseForm } from "@/components/form/base-form";
+import type { FormField } from "@/types/form";
+import { axiosInstance } from "@/lib/axios/axios-instance";
 
 export default function ForgotPage() {
   const t = useTranslations("auth.forgot");
   const vt = useTranslations("auth.validation");
   const router = useRouter();
-  const { toast } = useToast();
-  const { isLoading, executeWithLoading } = useAuthLoading();
+  const pathname = usePathname() || "/";
+  const [isLoading, setIsLoading] = useState(false);
+
+  const getLocaleFromPath = (p: string) => {
+    const m = p.match(/^\/(en|ur)/);
+    return m?.[1] || "en";
+  };
+  const locale = getLocaleFromPath(pathname);
 
   const forgotPasswordSchema = createForgotPasswordSchema(vt);
-  const form = useForm<ForgotPasswordFormValues>({
-    resolver: zodResolver(forgotPasswordSchema),
-    defaultValues: { email: "" },
-  });
+
+  const formFields: FormField[] = [
+    {
+      id: "email",
+      name: "email",
+      label: t("emailLabel"),
+      type: "email",
+      placeholder: t("emailLabel"),
+      required: true,
+      className: "text-sm md:text-base",
+    },
+  ];
 
   async function onSubmit(values: ForgotPasswordFormValues) {
-    await executeWithLoading(async () => {
-      const response = await authAPI.forgotPassword(values.email);
+    setIsLoading(true);
 
-      if (!response.success) {
-        toast({
-          title: "Request Failed",
-          description: response.error || "Failed to send reset email. Please try again.",
-          variant: "destructive",
+    try {
+      const response = await axiosInstance.post("/auth/forgot-password", {
+        email: values.email,
+      });
+
+      if (response.data?.success) {
+        toast.success(t("successMessage") || "Reset link sent", {
+          description:
+            t("successDescription") || "Please check your email for password reset instructions.",
         });
-        return;
+
+        // Optionally redirect to a confirmation page or stay on the same page
+        // router.push(`/${locale}/login`);
       }
-
-      // Set flow state for reset password if reset token is provided
-      const resetData = response.data as any;
-      const resetToken = resetData?.resetToken;
-      if (resetToken) {
-        AuthFlowManager.setFlow({
-          step: "reset-password",
-          email: values.email,
-          resetToken,
-        });
-
-        toast({
-          title: "Reset Link Sent",
-          description: "Please check your email for password reset instructions.",
-        });
-
-        router.push("/auth/reset");
-      } else {
-        toast({
-          title: "Email Sent",
-          description: "If an account with this email exists, you will receive reset instructions.",
-        });
-      }
-    });
+    } catch (err: any) {
+      const message = err?.response?.data?.message || err?.message || "Failed to send reset link";
+      toast.error(t("error") || "Request Failed", {
+        description: message,
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
+
   return (
     <div className="relative space-y-6">
-      <LoaderOverlay isLoading={isLoading} />
       <div className="space-y-2">
-        <h1 className="text-2xl font-bold">{t("title")}</h1>
-        <p className="text-muted-foreground">{t("subtitle")}</p>
+        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold">{t("title")}</h1>
+        <p className="text-muted-foreground text-sm md:text-sm">{t("subtitle")}</p>
       </div>
-      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)} noValidate>
-        <div className="grid gap-2">
-          <label htmlFor="email" className="text-sm font-medium">
-            {t("emailLabel")}
-          </label>
-          <Input
-            id="email"
-            type="email"
-            {...form.register("email")}
-            aria-invalid={!!form.formState.errors.email}
-          />
-          {form.formState.errors.email && (
-            <p className="text-sm text-destructive">
-              {getFormErrorMessage(form.formState.errors.email)}
-            </p>
-          )}
-        </div>
-        <Button type="submit" className="w-full cursor-pointer" disabled={isLoading}>
-          {isLoading ? t("submittingButton") : t("submitButton")}
-        </Button>
-      </form>
-      <p className="text-sm text-muted-foreground text-center">
-        <a className="underline hover:text-primary cursor-pointer" href="/auth/login">
+
+      <BaseForm
+        fields={formFields}
+        onSubmit={onSubmit}
+        defaultValues={{ email: "" }}
+        validationSchema={forgotPasswordSchema}
+        submitText={t("submitButton")}
+        renderSubmitButton={({ isSubmitting }) => (
+          <button
+            type="submit"
+            className="w-full cursor-pointer text-sm md:text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            disabled={isLoading || isSubmitting}
+          >
+            {isLoading || isSubmitting ? (
+              <div className="flex items-center justify-center gap-2">
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+                {t("submittingButton")}
+              </div>
+            ) : (
+              t("submitButton")
+            )}
+          </button>
+        )}
+      />
+
+      <div className="text-center text-sm md:text-base text-muted-foreground">
+        <Link
+          href={`/${locale}/login`}
+          className="underline hover:text-primary cursor-pointer transition-colors"
+        >
           {t("backToLogin")}
-        </a>
-      </p>
+        </Link>
+      </div>
     </div>
   );
 }

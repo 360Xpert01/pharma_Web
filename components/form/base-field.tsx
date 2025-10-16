@@ -84,7 +84,7 @@ export const BaseField: React.FC<BaseFieldProps> = ({ field, renderInput }) => {
               className={field.type === "toggle" || field.type === "checkbox" ? "text-base" : ""}
             >
               {field.label}
-              {field.required && <span className="ml-1 text-destructive">*</span>}
+              {/* {field.required && <span className="text-destructive">*</span>} */}
             </FormLabel>
             <FormControl>
               {renderInput({
