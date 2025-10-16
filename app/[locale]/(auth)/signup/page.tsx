@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button/button";
 import { getFormErrorMessage } from "@/lib/actions/actions";
 import { useAuthLoading } from "@/hooks/use-loading-state";
 import LoaderOverlay from "@/components/shared/loader-overlay";
-import { authAPI } from "@/lib/api/auth";
 import { Eye, EyeOff } from "@/lib/icons";
 import { toast } from "sonner";
 import { createSignupSchema, type SignupFormValues } from "@/validations/authValidation";

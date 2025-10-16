@@ -2,15 +2,13 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button/button";
 import { useAppDispatch } from "@/store/hooks";
-import { authActions } from "@/store/slices/auth-slice";
+import { loginUser } from "@/store/slices/auth-slice";
 import { getFormErrorMessage } from "@/lib/actions/actions";
-import { authAPI } from "@/lib/api/auth";
-import { AuthFlowManager, setAuthSession } from "@/lib/auth-flow";
 import { Eye, EyeOff } from "@/lib/icons";
 import { toast } from "sonner";
 import { createLoginSchema, type LoginFormValues } from "@/validations/authValidation";
@@ -18,8 +16,9 @@ import { createLoginSchema, type LoginFormValues } from "@/validations/authValid
 export default function LoginPage() {
   const t = useTranslations("auth.login");
   const vt = useTranslations("auth.validation");
-  const dispatch = useAppDispatch();
   const router = useRouter();
+  const pathname = usePathname() || "/";
+  const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -29,55 +28,27 @@ export default function LoginPage() {
     defaultValues: { email: "", password: "" },
   });
 
+  const getLocaleFromPath = (p: string) => {
+    const m = p.match(/^\/(en|ur)/);
+    return m?.[1] || "en";
+  };
+  const locale = getLocaleFromPath(pathname);
+
   async function onSubmit(values: LoginFormValues) {
     setIsLoading(true);
 
     try {
-      const response = await authAPI.login(values);
+      // use redux thunk that handles axios + cookie internally
+      await dispatch(loginUser({ email: values.email, password: values.password })).unwrap();
 
-      if (!response.success) {
-        toast.error("Login Failed", {
-          description: response.error || "Please check your credentials and try again.",
-        });
-        return;
-      }
+      toast.success(t("success") || "Logged in");
 
-      // Check if the API response requires OTP verification
-      const loginData = response.data as any;
-      if (loginData?.requiresOtp) {
-        // Set auth flow to awaiting OTP
-        AuthFlowManager.setFlow({
-          step: "awaiting-otp",
-          email: values.email,
-        });
-
-        dispatch(
-          authActions.setFlowStep({
-            step: "awaiting-otp",
-            email: values.email,
-          })
-        );
-
-        toast.success("OTP Sent", {
-          description: "Please check your email for the verification code.",
-        });
-
-        router.push("/auth/otp");
-      } else {
-        // Direct login success
-        const { token, user } = loginData as { token: string; user: any };
-        setAuthSession(token, user);
-        dispatch(authActions.setSession({ token, user }));
-
-        toast.success("Welcome back!", {
-          description: "You have been logged in successfully.",
-        });
-
-        router.push("/dashboard");
-      }
-    } catch (error) {
-      toast.error("Login Failed", {
-        description: "An unexpected error occurred. Please try again.",
+      // go to dashboard after successful login
+      router.push(`/${locale}/dashboard`);
+    } catch (err: any) {
+      const message = typeof err === "string" ? err : err?.message || "Login failed";
+      toast.error(t("error") || "Login failed", {
+        description: message,
       });
     } finally {
       setIsLoading(false);
@@ -138,7 +109,7 @@ export default function LoginPage() {
         <div className="text-right">
           <a
             className="text-sm md:text-base text-muted-foreground underline hover:text-primary cursor-pointer transition-colors"
-            href="/auth/forgot"
+            href={`/${locale}/forgot`}
           >
             {t("forgotLink")}
           </a>
@@ -163,7 +134,7 @@ export default function LoginPage() {
           {t("noAccountText")}{" "}
           <a
             className="underline hover:text-primary cursor-pointer transition-colors font-medium"
-            href="/auth/signup"
+            href={`/${locale}/signup`}
           >
             {t("signupLink")}
           </a>

@@ -10,6 +10,8 @@ const auth = {
     noAccountText: "Don't have an account?",
     signupLink: "Sign up",
     forgotLink: "Forgot your password?",
+    success: "Logged in",
+    error: "Login failed",
   },
 
   // Signup page

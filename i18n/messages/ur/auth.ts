@@ -10,6 +10,8 @@ const auth = {
     noAccountText: "کیا آپ کا اکاؤنٹ نہیں ہے؟",
     signupLink: "اکاؤنٹ بنائیں",
     forgotLink: "کیا آپ پاس ورڈ بھول گئے؟",
+    success: "لاگ ان ہو گیا",
+    error: "لاگ ان ناکام",
   },
 
   // Signup page
