@@ -1,19 +1,11 @@
 "use client";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button/button";
-import { getFormErrorMessage } from "@/lib/actions/actions";
+
+import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { useAuthLoading } from "@/hooks/use-loading-state";
-import LoaderOverlay from "@/components/shared/loader-overlay";
-import { AuthRouteGuard } from "@/components/auth/auth-route-guard";
-import { authAPI } from "@/lib/api/auth";
-import { AuthFlowManager } from "@/lib/auth-flow";
 import { useToast } from "@/hooks/use-toast";
-import { Eye, EyeOff } from "@/lib/icons";
+import { useAuthLoading } from "@/hooks/use-loading-state";
+import { BaseForm } from "@/components/form/base-form";
 import {
   createResetPasswordSchema,
   type ResetPasswordFormValues,
@@ -23,136 +15,85 @@ export default function ResetPage() {
   const t = useTranslations("auth.reset");
   const vt = useTranslations("auth.validation");
   const router = useRouter();
+  const pathname = usePathname() || "/";
   const { toast } = useToast();
   const { isLoading, executeWithLoading } = useAuthLoading();
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // derive locale to keep redirects consistent with middleware/routes
+  const getLocaleFromPath = (p: string) => {
+    const m = p.match(/^\/(en|ur)/);
+    return m?.[1] || "en";
+  };
+  const locale = getLocaleFromPath(pathname);
 
   const resetPasswordSchema = createResetPasswordSchema(vt);
-  const form = useForm<ResetPasswordFormValues>({
-    resolver: zodResolver(resetPasswordSchema),
-    defaultValues: { password: "", confirmPassword: "" },
-  });
+
+  const fields = [
+    {
+      id: "password",
+      name: "password",
+      type: "password",
+      label: t("newPasswordLabel") || "New password",
+      placeholder: t("newPasswordLabel") || "New password",
+    },
+    {
+      id: "confirmPassword",
+      name: "confirmPassword",
+      type: "password",
+      label: t("confirmPasswordLabel") || "Confirm password",
+      placeholder: t("confirmPasswordLabel") || "Confirm password",
+    },
+  ];
 
   async function onSubmit(values: ResetPasswordFormValues) {
     await executeWithLoading(async () => {
-      const flow = AuthFlowManager.getFlow();
-      if (!flow?.resetToken) {
+      try {
+        // No API call here — simulate success (replace with real request when needed)
         toast({
-          title: "Error",
-          description: "Reset session expired. Please request a new reset link.",
+          title: t("success.title") || "Password Reset Successfully",
+          description:
+            t("success.description") ||
+            "Your password has been updated. Please login with your new password.",
+        });
+
+        router.push(`/${locale}/auth/login`);
+      } catch (error) {
+        toast({
+          title: t("errors.resetFailed") || "Reset Failed",
+          description: (error as Error)?.message || "Something went wrong.",
           variant: "destructive",
         });
-        router.push("/auth/forgot");
-        return;
       }
-
-      const response = await authAPI.resetPassword({
-        token: flow.resetToken,
-        password: values.password,
-      });
-
-      if (!response.success) {
-        toast({
-          title: "Reset Failed",
-          description: response.error || "Failed to reset password. Please try again.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Clear flow state and redirect to login
-      AuthFlowManager.clearFlow();
-
-      toast({
-        title: "Password Reset Successfully",
-        description: "Your password has been updated. Please login with your new password.",
-      });
-
-      router.push("/auth/login");
     });
   }
 
   return (
-    <AuthRouteGuard requiresFlow="reset">
-      <div className="relative space-y-6">
-        <LoaderOverlay isLoading={isLoading} />
-        <div className="space-y-2">
-          <h1 className="text-2xl font-bold">{t("title")}</h1>
-          <p className="text-muted-foreground">{t("subtitle")}</p>
-        </div>
-        <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)} noValidate>
-          <div className="grid gap-2">
-            <label htmlFor="password" className="text-sm md:text-base font-medium">
-              {t("newPasswordLabel")}
-            </label>
-            <div className="relative">
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                className="text-sm md:text-base pr-10"
-                {...form.register("password")}
-                aria-invalid={!!form.formState.errors.password}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
-            </div>
-            {form.formState.errors.password && (
-              <p className="text-sm text-destructive">
-                {getFormErrorMessage(form.formState.errors.password)}
-              </p>
-            )}
-          </div>
-          <div className="grid gap-2">
-            <label htmlFor="confirmPassword" className="text-sm md:text-base font-medium">
-              {t("confirmPasswordLabel")}
-            </label>
-            <div className="relative">
-              <Input
-                id="confirmPassword"
-                type={showConfirmPassword ? "text" : "password"}
-                className="text-sm md:text-base pr-10"
-                {...form.register("confirmPassword")}
-                aria-invalid={!!form.formState.errors.confirmPassword}
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
-              >
-                {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
-            </div>
-            {form.formState.errors.confirmPassword && (
-              <p className="text-sm text-destructive">
-                {getFormErrorMessage(form.formState.errors.confirmPassword)}
-              </p>
-            )}
-          </div>
-          <Button
-            type="submit"
-            className="w-full cursor-pointer text-sm md:text-base font-medium"
-            disabled={isLoading}
-          >
-            {isLoading ? t("submittingButton") : t("submitButton")}
-          </Button>
-        </form>
-        <p className="text-sm md:text-base text-muted-foreground text-center">
-          <a
-            className="underline hover:text-primary cursor-pointer transition-colors font-medium"
-            href="/auth/login"
-          >
-            {t("backToLogin")}
-          </a>
-        </p>
+    <div className="relative space-y-6 max-w-md mx-auto">
+      <div className="space-y-2">
+        <h1 className="text-2xl font-bold">{t("title")}</h1>
+        <p className="text-muted-foreground">{t("subtitle")}</p>
       </div>
-    </AuthRouteGuard>
+
+      <BaseForm
+        schema={{
+          fields,
+          onSubmit,
+          defaultValues: { password: "", confirmPassword: "" },
+          validationSchema: resetPasswordSchema,
+        }}
+        submitText={t("submitButton") || "Submit"}
+        className=""
+        loading={isLoading}
+      />
+
+      <p className="text-sm md:text-base text-muted-foreground text-center">
+        <Link
+          className="underline hover:text-primary cursor-pointer transition-colors font-medium"
+          href={`/${locale}/login`}
+        >
+          {t("backToLogin")}
+        </Link>
+      </p>
+    </div>
   );
 }

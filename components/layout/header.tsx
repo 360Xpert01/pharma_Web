@@ -11,9 +11,10 @@ import { Button } from "@/components/ui/button/button";
 import { cn } from "@/lib/utils";
 import { headerNavigation } from "@/navigation/config";
 import { getNavItemTitle } from "@/lib/navigation-utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { AuthButtons } from "./auth-buttons";
+import Cookies from "js-cookie";
 
 interface HeaderProps {
   className?: string;
@@ -26,6 +27,22 @@ export function Header({ className }: HeaderProps) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const t = useTranslations("navigation");
   const tLayout = useTranslations("layout");
+  const [hasCookieUser, setHasCookieUser] = useState<boolean>(
+    () =>
+      typeof window !== "undefined" && (!!Cookies.get("auth_token") || !!Cookies.get("user_email"))
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const check = () =>
+      setHasCookieUser(!!Cookies.get("auth_token") || !!Cookies.get("user_email"));
+    window.addEventListener("storage", check);
+    const interval = setInterval(check, 300);
+    return () => {
+      window.removeEventListener("storage", check);
+      clearInterval(interval);
+    };
+  }, []);
 
   const headerClasses = cn(
     "border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
@@ -38,13 +55,13 @@ export function Header({ className }: HeaderProps) {
     "max-w-4xl mx-auto": config.content.maxWidth === "prose",
   });
 
-  // Memoized auth section for better performance
   const renderAuthSection = () => {
     if (isLoading) {
-      return <div className="ml-1 w-24 h-9 bg-muted animate-pulse rounded-md" />;
+      return <div className="ml-1 w-24 h-9  animate-pulse rounded-md" />;
     }
 
-    return isAuthenticated && config.header.showUserMenu ? (
+    const showUser = (isAuthenticated || hasCookieUser) && config.header.showUserMenu;
+    return showUser ? (
       <UserProfile className="ml-1" />
     ) : (
       <AuthButtons variant="compact" className="ml-1" />
@@ -54,9 +71,7 @@ export function Header({ className }: HeaderProps) {
   return (
     <header className={headerClasses}>
       <div className={containerClasses}>
-        {/* Left section: Mobile nav toggle + Logo + Desktop sidebar toggle */}
         <div className="flex items-center gap-3">
-          {/* Mobile navigation hamburger button */}
           {isMobile && config.header.showNavigation && (
             <Button
               variant="ghost"
@@ -72,8 +87,6 @@ export function Header({ className }: HeaderProps) {
               )}
             </Button>
           )}
-
-          {/* Desktop sidebar toggle */}
           {!isMobile && showSidebar && config.sidebar.collapsible && (
             <Button
               variant="ghost"
@@ -85,8 +98,6 @@ export function Header({ className }: HeaderProps) {
               <MenuIcon className="h-4 w-4" aria-hidden="true" />
             </Button>
           )}
-
-          {/* Logo/Brand */}
           {config.header.showLogo && (
             <Link
               href="/dashboard"
@@ -99,13 +110,10 @@ export function Header({ className }: HeaderProps) {
             </Link>
           )}
         </div>
-
-        {/* Center section: Desktop Navigation */}
         {config.header.showNavigation && config.navigation.style === "horizontal" && (
           <nav className="hidden lg:flex items-center gap-6 text-sm font-medium">
             {headerNavigation.map((item) => {
               const translatedTitle = getNavItemTitle(item, t);
-
               return (
                 <Link
                   key={item.href}
@@ -120,18 +128,12 @@ export function Header({ className }: HeaderProps) {
             })}
           </nav>
         )}
-
-        {/* Right section: Language switcher + Theme toggle + Auth/User profile */}
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
           <ThemeToggle />
-
-          {/* Optimized auth section with loading state */}
           {renderAuthSection()}
         </div>
       </div>
-
-      {/* Mobile Navigation Menu */}
       {isMobile && mobileNavOpen && config.header.showNavigation && (
         <MobileNavigationMenu isOpen={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
       )}
