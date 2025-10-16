@@ -17,12 +17,16 @@ const auth = {
   // Signup page
   signup: {
     title: "Create an account",
+    subtitle: "Sign up to get started",
     emailLabel: "Email",
     passwordLabel: "Password",
     submitButton: "Sign up",
     submittingButton: "Creating account...",
     hasAccountText: "Already have an account?",
     loginLink: "Log in",
+    success: "Account created successfully",
+    successDescription: "Your account has been created. Please log in.",
+    error: "Signup failed",
   },
 
   // Forgot password page
@@ -44,8 +48,15 @@ const auth = {
     submitButton: "Verify",
     submittingButton: "Verifying...",
     resendButton: "Resend code",
+    resendingButton: "Resending...",
     resendText: "Didn't receive the code?",
     backToLogin: "Back to login",
+    verifiedMessage: "Verified successfully",
+    verifiedDescription: "Your code has been verified successfully.",
+    verificationFailed: "Verification failed",
+    resendSuccess: "Code resent",
+    resendSuccessDescription: "A new verification code has been sent to your email.",
+    resendFailed: "Failed to resend code",
   },
 
   // Reset password page
@@ -69,6 +80,9 @@ const auth = {
     passwordMismatch: "Passwords do not match",
     codeRequired: "Verification code is required",
     codeInvalid: "Invalid verification code",
+    firstNameMin: "First name must be at least 2 characters",
+    lastNameMin: "Last name must be at least 2 characters",
+    termsRequired: "You must accept the terms and conditions",
   },
 
   // Common error messages

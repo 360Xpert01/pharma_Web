@@ -1,5 +1,4 @@
 import type { User } from "@/types/user";
-import { z } from "zod";
 
 // Auth Flow States
 export type AuthFlowStep = "idle" | "login" | "awaiting-otp" | "forgot-password" | "reset-password";

@@ -17,12 +17,16 @@ const auth = {
   // Signup page
   signup: {
     title: "اکاؤنٹ بنائیں",
+    subtitle: "شروع کرنے کے لیے سائن اپ کریں",
     emailLabel: "ای میل",
     passwordLabel: "پاس ورڈ",
     submitButton: "اکاؤنٹ بنائیں",
     submittingButton: "اکاؤنٹ بنایا جا رہا ہے...",
     hasAccountText: "کیا آپ کا پہلے سے اکاؤنٹ ہے؟",
     loginLink: "لاگ ان کریں",
+    success: "اکاؤنٹ کامیابی سے بن گیا",
+    successDescription: "آپ کا اکاؤنٹ بن گیا ہے۔ براہ کرم لاگ ان کریں۔",
+    error: "اکاؤنٹ بنانا ناکام",
   },
 
   // Forgot password page
@@ -44,8 +48,15 @@ const auth = {
     submitButton: "تصدیق کریں",
     submittingButton: "تصدیق کی جا رہی ہے...",
     resendButton: "کوڈ دوبارہ بھیجیں",
+    resendingButton: "دوبارہ بھیجا جا رہا ہے...",
     resendText: "کیا آپ کو کوڈ موصول نہیں ہوا؟",
     backToLogin: "واپس لاگ ان پر جائیں",
+    verifiedMessage: "کامیابی سے تصدیق ہو گئی",
+    verifiedDescription: "آپ کا کوڈ کامیابی سے تصدیق ہو گیا ہے۔",
+    verificationFailed: "تصدیق ناکام ہو گئی",
+    resendSuccess: "کوڈ دوبارہ بھیج دیا گیا",
+    resendSuccessDescription: "ایک نیا تصدیقی کوڈ آپ کے ای میل پر بھیج دیا گیا ہے۔",
+    resendFailed: "کوڈ دوبارہ بھیجنے میں ناکامی",
   },
 
   // Reset password page
@@ -68,7 +79,6 @@ const auth = {
     passwordMinLength: "پاس ورڈ کم از کم 6 حروف کا ہونا چاہئے",
     passwordMismatch: "پاس ورڈ میل نہیں کھاتے",
     codeRequired: "تصدیقی کوڈ لازمی ہے",
-    codeInvalid: "غلط تصدیقی کوڈ",
   },
 
   // Common error messages
