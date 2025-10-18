@@ -18,12 +18,18 @@ export const metadata: Metadata = {
 
 type Props = {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+  params: { locale: string };
 };
 
 export default async function RootLayout({ children, params }: Props) {
-  const { locale } = await params;
-  const messages = await getMessages();
+  const { locale } = params;
+  // Load localized messages and fall back to an empty object on error to avoid client chunk failures
+  let messages: any = {};
+  try {
+    messages = await getMessages({ locale });
+  } catch (e) {
+    messages = {};
+  }
 
   const bodyClasses =
     locale === "ur"
