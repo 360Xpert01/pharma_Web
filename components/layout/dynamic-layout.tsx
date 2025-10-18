@@ -5,7 +5,7 @@ import { useLayout } from "@/contexts/layout-context";
 import { Header } from "./header";
 import { Sidebar } from "./sidebar";
 import { Footer } from "./footer";
-import { MobileHamburgerMenu as MobileSidebarOverlay } from "./mobile-sidebar-overlay";
+import MobileHamburgerMenu from "./mobile-hamburger-menu";
 import { cn } from "@/lib/utils";
 
 interface DynamicLayoutProps extends PropsWithChildren {
@@ -13,145 +13,92 @@ interface DynamicLayoutProps extends PropsWithChildren {
 }
 
 export function DynamicLayout({ children, className }: DynamicLayoutProps) {
-  const { config, state, computed, closeMobileMenu } = useLayout();
+  const { config, state, computed, closeMobileMenu, toggleSidebar } = useLayout();
   const {
     showHeader,
     showSidebar,
     showFooter,
-    sidebarWidth,
-    headerHeight,
     contentClasses,
     isMobile,
     isSidebarCollapsed,
+    headerHeight,
   } = computed;
 
-  // Close mobile menu on route change or screen resize
+  // Close mobile menu on route change or when switching to desktop
   useEffect(() => {
-    if (state.mobileMenuOpen && !isMobile) {
-      closeMobileMenu();
-    }
-  }, [isMobile, closeMobileMenu, state.mobileMenuOpen]);
+    if (state.mobileMenuOpen && !isMobile) closeMobileMenu();
+  }, [isMobile, state.mobileMenuOpen, closeMobileMenu]);
 
-  // Calculate sidebar widths for different states
-  const getSidebarWidthPixels = () => {
-    const widthMap = {
-      sm: 192, // w-48
-      md: 256, // w-64
-      lg: 288, // w-72
-      xl: 320, // w-80
-    };
-    return widthMap[config.sidebar.width];
-  };
-
-  const sidebarWidthPx = getSidebarWidthPixels();
   const isDesktopSidebarVisible = showSidebar && !isMobile && config.sidebar.variant === "fixed";
 
-  // Main layout wrapper classes
-  const mainWrapperClasses = cn("min-h-screen bg-background", className);
-
-  // Header classes with proper z-index
-  const headerClasses = cn({
-    "fixed top-0 left-0 right-0 z-50": config.header.fixed,
-    "relative z-10": !config.header.fixed,
-  });
-
-  // Sidebar classes with proper z-index and positioning
-  const sidebarClasses = cn(
-    "transition-all duration-300 ease-in-out border-border/40 bg-background",
-    sidebarWidth,
-    // RTL support - use border-e instead of border-r
-    "border-e",
+  // Grid-based layout wrapper
+  const mainWrapperClasses = cn(
+    "min-h-screen bg-background",
+    "grid",
     {
-      // Desktop fixed sidebar - use start/end instead of left/right
-      "fixed start-0 z-40": isDesktopSidebarVisible && config.sidebar.variant === "fixed",
-      "top-0":
-        isDesktopSidebarVisible && config.sidebar.variant === "fixed" && !config.header.fixed,
-      "top-12":
-        isDesktopSidebarVisible &&
-        config.sidebar.variant === "fixed" &&
-        config.header.fixed &&
-        config.header.height === "sm",
-      "top-16":
-        isDesktopSidebarVisible &&
-        config.sidebar.variant === "fixed" &&
-        config.header.fixed &&
-        config.header.height === "md",
-      "top-20":
-        isDesktopSidebarVisible &&
-        config.sidebar.variant === "fixed" &&
-        config.header.fixed &&
-        config.header.height === "lg",
-      "bottom-0": isDesktopSidebarVisible && config.sidebar.variant === "fixed",
-      // Collapsed state - RTL aware
-      "translate-x-0": !isSidebarCollapsed,
-      "-translate-x-full rtl:translate-x-full": isSidebarCollapsed,
+      "grid-cols-[auto_1fr]": isDesktopSidebarVisible,
+      "grid-cols-1": !isDesktopSidebarVisible,
+    },
+    className
+  );
+
+  const sidebarContainerClasses = cn(
+    "relative transition-all duration-300 ease-in-out border-e border-border/40 bg-background sticky top-0 h-screen overflow-visible",
+    {
+      hidden: !isDesktopSidebarVisible,
+      "w-16": isDesktopSidebarVisible && isSidebarCollapsed,
+      "w-64": isDesktopSidebarVisible && !isSidebarCollapsed && config.sidebar.width === "md",
+      "w-48": isDesktopSidebarVisible && !isSidebarCollapsed && config.sidebar.width === "sm",
+      "w-72": isDesktopSidebarVisible && !isSidebarCollapsed && config.sidebar.width === "lg",
+      "w-80": isDesktopSidebarVisible && !isSidebarCollapsed && config.sidebar.width === "xl",
     }
   );
 
-  // Main content area classes that adjust to sidebar with RTL support
-  const mainContentClasses = cn(
-    "transition-all duration-300 ease-in-out min-h-screen flex flex-col",
+  const rightColumnClasses = cn(
+    "flex flex-col min-h-screen",
+    "transition-all duration-300 ease-in-out",
     {
-      // Adjust margin when desktop sidebar is visible and not collapsed - use margin-start for RTL
-      [`ms-0`]: !isDesktopSidebarVisible || isSidebarCollapsed,
-      [`ms-48`]: isDesktopSidebarVisible && !isSidebarCollapsed && config.sidebar.width === "sm",
-      [`ms-64`]: isDesktopSidebarVisible && !isSidebarCollapsed && config.sidebar.width === "md",
-      [`ms-72`]: isDesktopSidebarVisible && !isSidebarCollapsed && config.sidebar.width === "lg",
-      [`ms-80`]: isDesktopSidebarVisible && !isSidebarCollapsed && config.sidebar.width === "xl",
+      "pt-16": showHeader, // Adjust based on your header height (h-16 = 64px)
     }
   );
 
-  // Content wrapper classes
-  const contentWrapperClasses = cn("flex-1 flex flex-col", {
-    // Add top padding if header is fixed
-    "pt-12": showHeader && config.header.fixed && config.header.height === "sm",
-    "pt-16": showHeader && config.header.fixed && config.header.height === "md",
-    "pt-20": showHeader && config.header.fixed && config.header.height === "lg",
-    // Add bottom padding if footer is fixed
-    "pb-16": showFooter && config.footer.fixed,
+  const headerContainerClasses = cn("transition-all duration-300 ease-in-out", {
+    block: showHeader,
+    hidden: !showHeader,
   });
 
+  const contentWrapperClasses = cn("flex-1 flex flex-col overflow-auto");
   const actualContentClasses = cn(contentClasses, "flex-1");
 
   return (
     <div className={mainWrapperClasses}>
-      {/* Header */}
-      {showHeader && <Header className={headerClasses} />}
-
       {/* Desktop Sidebar */}
       {isDesktopSidebarVisible && (
-        <aside className={sidebarClasses}>
+        <div className={sidebarContainerClasses}>
           <Sidebar />
-        </aside>
+        </div>
       )}
 
-      {/* Main Content Area */}
-      <div className={mainContentClasses}>
+      {/* Right: Header + Content */}
+      <div className={rightColumnClasses}>
+        {showHeader && (
+          <div className={headerContainerClasses}>
+            <Header />
+          </div>
+        )}
+
         <div className={contentWrapperClasses}>
           <main className={actualContentClasses}>{children}</main>
-
-          {/* Footer */}
-          {showFooter && (
-            <Footer
-              className={cn({
-                "fixed bottom-0 left-0 right-0 z-30": config.footer.fixed,
-                relative: !config.footer.fixed,
-              })}
-            />
-          )}
+          {showFooter && <Footer className={cn({ relative: !config.footer.fixed })} />}
         </div>
       </div>
 
-      {/* Mobile Sidebar Overlay */}
-      {isMobile && showSidebar && <MobileSidebarOverlay />}
-
-      {/* Mobile menu backdrop */}
-      {state.mobileMenuOpen && isMobile && (
-        <div
-          className="fixed inset-0 bg-black/50 z-45 md:hidden"
-          onClick={closeMobileMenu}
-          aria-hidden="true"
-        />
+      {/* Mobile: Drawer and Backdrop controlled by layout state */}
+      {isMobile && state.mobileMenuOpen && (
+        <>
+          <MobileHamburgerMenu onClose={closeMobileMenu} />
+          <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={closeMobileMenu} />
+        </>
       )}
     </div>
   );

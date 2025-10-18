@@ -160,6 +160,30 @@
   }
 }
 
+/* Global custom scrollbar styles */
+/* WebKit (Chrome, Edge, Safari) */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: var(--muted);
+}
+*::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 9999px;
+  border: 2px solid var(--muted);
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--ring);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) var(--muted);
+}
+
 /* RTL Support for Urdu Language */
 [dir="rtl"] {
   --tw-rotate: -180deg;
