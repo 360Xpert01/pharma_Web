@@ -69,8 +69,7 @@ const LoaderOverlay: React.FC<LoaderOverlayProps> = ({
 
   if (!isLoading) return null;
 
-  // Use a default theme state until mounted to prevent hydration mismatch
-  const isDark = mounted ? resolvedTheme === "dark" : false;
+  // Loader is always white, no dark/light mode logic
 
   const sizeClasses = {
     sm: "h-8 w-8",
@@ -86,11 +85,15 @@ const LoaderOverlay: React.FC<LoaderOverlayProps> = ({
 
   const SpinnerComponent = SpinnerVariants[variant];
 
+  // Color for spinner and text
+  const loaderColor = "text-white";
+  const textColor = "text-black";
+
   return (
     <div
       className={cn(
         "fixed inset-0 z-[1000] flex items-center justify-center backdrop-blur-sm transition-all duration-300",
-        mounted ? "bg-black/90 dark:bg-black/90" : "bg-black/90"
+        "bg-white/90"
       )}
       role="dialog"
       aria-modal="true"
@@ -98,7 +101,10 @@ const LoaderOverlay: React.FC<LoaderOverlayProps> = ({
     >
       <div className="flex flex-col items-center space-y-6 p-8">
         <div className="relative">
-          <SpinnerComponent size={sizeClasses[size]} isDark={isDark} mounted={mounted} />
+          {/* Pass loaderColor as className override for spinner */}
+          <span className={loaderColor}>
+            <SpinnerComponent size={sizeClasses[size]} isDark={false} mounted={mounted} />
+          </span>
         </div>
 
         <div className="text-center">
@@ -106,17 +112,9 @@ const LoaderOverlay: React.FC<LoaderOverlayProps> = ({
             className={cn(
               "font-bold tracking-wider animate-pulse",
               textSizeClasses[size],
-              mounted ? "text-white dark:text-white" : "text-white"
+              textColor
             )}
-            style={
-              mounted
-                ? {
-                    textShadow: "0 2px 8px rgba(255, 255, 255, 0.3)",
-                  }
-                : {
-                    textShadow: "0 2px 8px rgba(255, 255, 255, 0.3)",
-                  }
-            }
+            style={{ textShadow: "0 2px 8px rgba(255, 255, 255, 0.3)" }}
           >
             {text}
           </h2>
@@ -124,10 +122,7 @@ const LoaderOverlay: React.FC<LoaderOverlayProps> = ({
             {[0, 1, 2].map((i) => (
               <div
                 key={i}
-                className={cn(
-                  "h-1 w-1 rounded-full animate-pulse",
-                  mounted ? "bg-white/60 dark:bg-white/60" : "bg-white/60"
-                )}
+                className={cn("h-1 w-1 rounded-full animate-pulse", "bg-white/60")}
                 style={{ animationDelay: `${i * 0.2}s` }}
               />
             ))}

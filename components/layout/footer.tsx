@@ -1,10 +1,9 @@
 "use client";
 import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { useLayout } from "@/contexts/layout-context";
 import { cn } from "@/lib/utils";
-import { footerNavigation, socialLinks } from "@/navigation/config";
-import { getNavItemTitle } from "@/lib/navigation-utils";
 
 interface FooterProps {
   className?: string;
@@ -13,35 +12,39 @@ interface FooterProps {
 export function Footer({ className }: FooterProps) {
   const { config } = useLayout();
   const footerT = useTranslations("layout.footer");
-  const navT = useTranslations("navigation");
-  const commonT = useTranslations("common");
+  const params = useParams();
+  const isUrdu = params.locale === "ur";
 
   const footerClasses = cn("border-t border-border/40 bg-background", className);
-
   const containerClasses = cn("px-4 lg:px-6 py-6", {
     "max-w-7xl mx-auto": config.content.maxWidth === "container",
     "max-w-4xl mx-auto": config.content.maxWidth === "prose",
   });
 
-  // Render different footer variants
+  // Render footer variants
   const renderFooterContent = () => {
     switch (config.footer.variant) {
       case "minimal":
         return (
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
-            <span className="text-muted-foreground">{footerT("copyright")}</span>
+            <span
+              className={cn("text-muted-foreground w-full text-center block", isUrdu ? "rtl" : "")}
+              style={isUrdu ? { direction: "rtl", textAlign: "center" } : { textAlign: "center" }}
+            >
+              {footerT("copyright")}
+            </span>
             <div className="flex items-center gap-4">
               <Link
                 href="/privacy"
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
-                {navT("footer.privacyPolicy")}
+                {footerT("privacyPolicy")}
               </Link>
               <Link
                 href="/terms"
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
-                {navT("footer.termsOfService")}
+                {footerT("termsOfService")}
               </Link>
             </div>
           </div>
@@ -54,38 +57,28 @@ export function Footer({ className }: FooterProps) {
             <div className="md:col-span-2">
               <h3 className="font-semibold text-lg mb-4">{footerT("companyName")}</h3>
               <p className="text-muted-foreground text-sm mb-4">{footerT("companyDescription")}</p>
-              <div className="flex items-center gap-4">
-                {socialLinks.map((link) => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {getNavItemTitle(link, navT)}
-                  </a>
-                ))}
-              </div>
             </div>
 
             {/* Quick Links */}
             <div>
               <h4 className="font-medium mb-4">{footerT("quickLinksTitle")}</h4>
               <nav className="space-y-2">
-                {footerNavigation.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href as any}
-                    className="block text-muted-foreground hover:text-foreground transition-colors text-sm"
-                  >
-                    {getNavItemTitle(link, navT)}
-                  </Link>
-                ))}
+                <Link
+                  href="/privacy"
+                  className="block text-muted-foreground hover:text-foreground transition-colors text-sm"
+                >
+                  {footerT("privacyPolicy")}
+                </Link>
+                <Link
+                  href="/terms"
+                  className="block text-muted-foreground hover:text-foreground transition-colors text-sm"
+                >
+                  {footerT("termsOfService")}
+                </Link>
               </nav>
             </div>
 
-            {/* Additional Links */}
+            {/* Resources */}
             <div>
               <h4 className="font-medium mb-4">{footerT("resourcesTitle")}</h4>
               <nav className="space-y-2">
@@ -93,26 +86,32 @@ export function Footer({ className }: FooterProps) {
                   href="/docs"
                   className="block text-muted-foreground hover:text-foreground transition-colors text-sm"
                 >
-                  {navT("footer.documentation")}
+                  {footerT("documentation")}
                 </Link>
                 <Link
                   href="/support"
                   className="block text-muted-foreground hover:text-foreground transition-colors text-sm"
                 >
-                  {navT("footer.support")}
+                  {footerT("support")}
                 </Link>
                 <Link
                   href="/changelog"
                   className="block text-muted-foreground hover:text-foreground transition-colors text-sm"
                 >
-                  {navT("footer.changelog")}
+                  {footerT("changelog")}
                 </Link>
               </nav>
             </div>
 
             {/* Copyright */}
             <div className="md:col-span-4 pt-6 border-t border-border/40">
-              <p className="text-muted-foreground text-sm text-center">
+              <p
+                className={cn(
+                  "text-muted-foreground text-sm text-center w-full block",
+                  isUrdu ? "rtl" : ""
+                )}
+                style={isUrdu ? { direction: "rtl", textAlign: "center" } : { textAlign: "center" }}
+              >
                 © {new Date().getFullYear()} {footerT("companyName")}.{" "}
                 {footerT("allRightsReserved")}
               </p>
@@ -125,17 +124,29 @@ export function Footer({ className }: FooterProps) {
         return (
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
             <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-              {footerNavigation.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href as any}
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {getNavItemTitle(link, navT)}
-                </Link>
-              ))}
+              <Link
+                href="/privacy"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {footerT("privacyPolicy")}
+              </Link>
+              <Link
+                href="/terms"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {footerT("termsOfService")}
+              </Link>
+              <Link
+                href="/contact"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {footerT("contact")}
+              </Link>
             </div>
-            <span className="text-muted-foreground">
+            <span
+              className={cn("text-muted-foreground w-full text-center block", isUrdu ? "rtl" : "")}
+              style={isUrdu ? { direction: "rtl", textAlign: "center" } : { textAlign: "center" }}
+            >
               © {new Date().getFullYear()} {footerT("companyName")}
             </span>
           </div>

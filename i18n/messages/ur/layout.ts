@@ -8,9 +8,26 @@ const layout = {
 
   // سائیڈ بار کمپوننٹ
   sidebar: {
-    collapseLabel: "سائیڈ بار سمیٹیں",
-    expandLabel: "سائیڈ بار پھیلائیں",
-    navigationLabel: "اہم نیویگیشن",
+    navigationLabel: "نیکسٹ بوائلر",
+    collapseLabel: "سائڈ بار سمیٹیں",
+    expandLabel: "سائڈ بار پھیلائیں",
+    layoutSettings: "لے آؤٹ سیٹنگز",
+    sidebarVariant: "سائڈ بار کی قسم",
+    sidebarWidth: "سائڈ بار چوڑائی",
+    sidebarWidthValue: "64px",
+    headerTitle: "نیکسٹ بوائلر",
+    headerLogoAlt: "ایپ کا لوگو",
+    footerSettings: "لے آؤٹ سیٹنگز",
+    footerVariant: "ویریئنٹ",
+    footerWidth: "چوڑائی",
+    collapsedFooter: "سائڈ بار سمیٹی گئی ہے",
+    items: [
+      { href: "/", title: "ہوم" },
+      { href: "/dashboard", title: "ڈیش بورڈ" },
+      { href: "/analytics", title: "تجزیہ" },
+      { href: "/settings", title: "سیٹنگز" },
+      { href: "/profile", title: "پروفائل" },
+    ],
   },
 
   // فوٹر کمپوننٹ
@@ -25,6 +42,9 @@ const layout = {
     allRightsReserved: "جملہ حقوق محفوظ ہیں",
     quickLinksTitle: "فوری روابط",
     resourcesTitle: "وسائل",
+    documentation: "دستاویزات",
+    support: "مدد",
+    changelog: "تبدیلیوں کا ریکارڈ",
   },
 
   // تھیم ٹوگل کمپوننٹ

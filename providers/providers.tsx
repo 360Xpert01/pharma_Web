@@ -9,7 +9,6 @@ import { LayoutProvider } from "@/contexts/layout-context";
 import { GlobalLoadingProvider } from "@/contexts/global-loading-context";
 import LoaderOverlay from "@/components/shared/loader-overlay";
 import GlobalLoadingOverlay from "@/components/shared/global-loading-overlay";
-import { AppInitializer } from "./app-initializer";
 import { Toaster } from "@/components/ui/sonner";
 import { ErrorProvider } from "@/contexts/error-context";
 import { ErrorBoundary } from "@/components/shared/error-boundary";
@@ -30,13 +29,11 @@ export default function Providers({ children }: PropsWithChildren) {
               <ErrorProvider maxErrors={10}>
                 <ErrorBoundary showDetails={process.env.NODE_ENV === "development"}>
                   <LayoutProvider>
-                    <AppInitializer>
-                      <Suspense fallback={fallback}>
-                        {children}
-                        <GlobalLoadingOverlay />
-                        <Toaster />
-                      </Suspense>
-                    </AppInitializer>
+                    <Suspense fallback={fallback}>
+                      {children}
+                      <GlobalLoadingOverlay />
+                      <Toaster />
+                    </Suspense>
                   </LayoutProvider>
                 </ErrorBoundary>
               </ErrorProvider>
