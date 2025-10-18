@@ -87,10 +87,10 @@ export function UserProfile({ className }: UserProfileProps) {
       Cookies.remove("user_role", { path: "/" });
       Cookies.remove("auth_token", { path: "/" });
 
-      logger.info("User logged out successfully", {
-        userId: activeUser?.id,
-        email: activeUser?.email,
-      });
+      logger.info(
+        { userId: activeUser?.id, email: activeUser?.email },
+        "User logged out successfully"
+      );
 
       // Clear fallback local user
       setLocalUser(null);
@@ -98,10 +98,10 @@ export function UserProfile({ className }: UserProfileProps) {
       // Redirect to login page
       router.push("/login");
     } catch (error) {
-      logger.error("User logout failed", {
-        error: error instanceof Error ? error.message : String(error),
-        userId: activeUser?.id,
-      });
+      logger.error(
+        { error: error instanceof Error ? error.message : String(error), userId: activeUser?.id },
+        "User logout failed"
+      );
     } finally {
       setIsLoggingOut(false);
     }

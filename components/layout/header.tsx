@@ -7,7 +7,7 @@ import { UserProfile } from "./user-profile";
 import { LanguageSwitcher } from "./language-switcher";
 import { Button } from "@/components/ui/button/button";
 import { cn } from "@/lib/utils";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { AuthButtons } from "./auth-buttons";
 import Cookies from "js-cookie";
@@ -16,12 +16,11 @@ import { useAuth } from "@/hooks/use-auth";
 import MobileHamburgerMenu from "./mobile-hamburger-menu";
 
 export function Header({ className }: { className?: string }) {
-  const { computed, toggleSidebar } = useLayout();
+  const { computed, toggleSidebar, state, toggleMobileMenu, closeMobileMenu } = useLayout();
   const { showSidebar, headerHeight, isMobile } = computed;
   const { isAuthenticated, isLoading } = useAuth();
   const t = useTranslations("layout.header");
 
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [hasCookieUser, setHasCookieUser] = useState<boolean>(
     () =>
       typeof window !== "undefined" && (!!Cookies.get("auth_token") || !!Cookies.get("user_email"))
@@ -40,7 +39,7 @@ export function Header({ className }: { className?: string }) {
   }, []);
 
   const headerClasses = cn(
-    "border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
+    "sticky top-0 z-40 border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
     headerHeight,
     className
   );
@@ -72,11 +71,11 @@ export function Header({ className }: { className?: string }) {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setMobileNavOpen(!mobileNavOpen)}
+              onClick={() => (state.mobileMenuOpen ? closeMobileMenu() : toggleMobileMenu())}
               className="md:hidden h-9 w-9 p-0"
               aria-label={t("toggleMobileNavLabel")}
             >
-              {mobileNavOpen ? (
+              {state.mobileMenuOpen ? (
                 <CloseIcon className="h-5 w-5" aria-hidden="true" />
               ) : (
                 <MenuIcon className="h-5 w-5" aria-hidden="true" />
@@ -99,7 +98,7 @@ export function Header({ className }: { className?: string }) {
           <Link
             href="/dashboard"
             className="flex items-center gap-2 font-semibold text-lg hover:opacity-80 transition-opacity"
-            onClick={() => setMobileNavOpen(false)}
+            onClick={() => closeMobileMenu()}
             aria-label={`${t("logoText")} - Go to Home`}
           >
             <div className="w-8 h-8 rounded-md bg-primary" aria-hidden="true" />
@@ -116,7 +115,7 @@ export function Header({ className }: { className?: string }) {
       </div>
 
       {/* Mobile Navigation Drawer */}
-      {isMobile && mobileNavOpen && <MobileHamburgerMenu onClose={() => setMobileNavOpen(false)} />}
+      {isMobile && state.mobileMenuOpen && <MobileHamburgerMenu onClose={closeMobileMenu} />}
     </header>
   );
 }

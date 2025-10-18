@@ -45,7 +45,7 @@ function DashboardContent() {
       {
         text: "Refreshing Dashboard Data...",
         onSuccess: (result) => {
-          logger.info("Dashboard refresh completed successfully", { result });
+          logger.info({ result }, "Dashboard refresh completed successfully");
         },
         onError: (error) => {
           addError({

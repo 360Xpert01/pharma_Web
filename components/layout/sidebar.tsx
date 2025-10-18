@@ -5,8 +5,8 @@ import { usePathname } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "@/lib/icons";
 import { Button } from "@/components/ui/button/button";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useLayout } from "@/contexts/layout-context";
 
 interface SidebarProps {
   className?: string;
@@ -15,14 +15,16 @@ interface SidebarProps {
 export function Sidebar({ className }: SidebarProps) {
   const t = useTranslations("layout.sidebar");
   const pathname = usePathname();
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const { computed, toggleSidebar } = useLayout();
+  const { isSidebarCollapsed: isCollapsed } = computed;
 
   // Navigation items from i18n (layout.ts)
   const navItems = t.raw("items");
 
   const sidebarClasses = cn(
     "flex flex-col bg-background border-e border-border/40 h-full transition-all duration-300 ease-in-out",
-    isCollapsed ? "w-16" : "w-64",
+    // Width is controlled by the container in DynamicLayout
+    "w-full",
     className
   );
 
@@ -37,7 +39,7 @@ export function Sidebar({ className }: SidebarProps) {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={toggleSidebar}
           className="h-8 w-8 p-0"
           aria-label={t(isCollapsed ? "expandLabel" : "collapseLabel")}
         >
