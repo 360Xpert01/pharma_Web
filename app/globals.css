@@ -156,7 +156,17 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    background: var(--background);
+    color: var(--foreground);
+  }
+
+  html[dir="rtl"] body {
+    font-family:
+      var(--font-urdu), "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Arial Unicode MS",
+      "Tahoma", sans-serif;
+    font-weight: 400;
+    text-align: right;
+    line-height: 1.8;
   }
 }
 

@@ -1,5 +1,6 @@
 "use client";
 import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { useLayout } from "@/contexts/layout-context";
 import { cn } from "@/lib/utils";
@@ -11,6 +12,8 @@ interface FooterProps {
 export function Footer({ className }: FooterProps) {
   const { config } = useLayout();
   const footerT = useTranslations("layout.footer");
+  const params = useParams();
+  const isUrdu = params.locale === "ur";
 
   const footerClasses = cn("border-t border-border/40 bg-background", className);
   const containerClasses = cn("px-4 lg:px-6 py-6", {
@@ -24,7 +27,12 @@ export function Footer({ className }: FooterProps) {
       case "minimal":
         return (
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
-            <span className="text-muted-foreground">{footerT("copyright")}</span>
+            <span
+              className={cn("text-muted-foreground w-full text-center block", isUrdu ? "rtl" : "")}
+              style={isUrdu ? { direction: "rtl", textAlign: "center" } : { textAlign: "center" }}
+            >
+              {footerT("copyright")}
+            </span>
             <div className="flex items-center gap-4">
               <Link
                 href="/privacy"
@@ -97,7 +105,13 @@ export function Footer({ className }: FooterProps) {
 
             {/* Copyright */}
             <div className="md:col-span-4 pt-6 border-t border-border/40">
-              <p className="text-muted-foreground text-sm text-center">
+              <p
+                className={cn(
+                  "text-muted-foreground text-sm text-center w-full block",
+                  isUrdu ? "rtl" : ""
+                )}
+                style={isUrdu ? { direction: "rtl", textAlign: "center" } : { textAlign: "center" }}
+              >
                 © {new Date().getFullYear()} {footerT("companyName")}.{" "}
                 {footerT("allRightsReserved")}
               </p>
@@ -129,7 +143,10 @@ export function Footer({ className }: FooterProps) {
                 {footerT("contact")}
               </Link>
             </div>
-            <span className="text-muted-foreground">
+            <span
+              className={cn("text-muted-foreground w-full text-center block", isUrdu ? "rtl" : "")}
+              style={isUrdu ? { direction: "rtl", textAlign: "center" } : { textAlign: "center" }}
+            >
               © {new Date().getFullYear()} {footerT("companyName")}
             </span>
           </div>

@@ -7,9 +7,13 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
+import { useParams } from "next/navigation";
+
 export function Header() {
   const t = useTranslations("home");
   const [scrolled, setScrolled] = useState(false);
+  const params = typeof window !== "undefined" ? window.location.pathname.split("/")[1] : "en";
+  const isUrdu = params === "ur";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -33,7 +37,9 @@ export function Header() {
           <div className="flex h-16 items-center justify-between">
             {/* Logo / Brand */}
             <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold transition-colors">{t("brand")}</h1>
+              <h1 className={cn("text-2xl font-bold transition-colors", isUrdu ? "mt-6" : "")}>
+                {t("brand")}
+              </h1>
             </div>
 
             {/* Right side controls */}

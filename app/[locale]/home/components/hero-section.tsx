@@ -2,9 +2,6 @@
 import { Button } from "@/components/ui/button/button";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-
-import Image from "next/image";
-
 interface HeroSectionProps {
   isUrdu: boolean;
 }
@@ -13,7 +10,7 @@ export function HeroSection({ isUrdu }: HeroSectionProps) {
   const t = useTranslations("home");
 
   return (
-    <section className="relative flex-1 flex items-center justify-center w-full pt-24 sm:pt-28 pb-24">
+    <section className="relative flex-1 flex items-center justify-center w-full pt-12 sm:pt-16 pb-24 lg:-mt-2">
       {/* Background */}
       <div
         className="absolute inset-0 bg-black"
@@ -39,26 +36,26 @@ export function HeroSection({ isUrdu }: HeroSectionProps) {
 
           {/* Hero Title */}
           <h1
-            className={`text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight ${
-              isUrdu ? "leading-snug md:leading-normal tracking-wide" : ""
-            }`}
+            className={`text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight ${isUrdu ? "leading-snug md:leading-normal tracking-wide font-urdu text-center rtl" : "text-center"}`}
+            style={isUrdu ? { direction: "rtl", textAlign: "center" } : { textAlign: "center" }}
           >
             {t("hero.title")}
           </h1>
 
           {/* Hero Description */}
           <div className="max-w-3xl mx-auto space-y-4">
-            <p className="text-gray-300 text-lg md:text-xl leading-relaxed">
+            <p
+              className={`text-gray-300 text-lg md:text-xl leading-relaxed ${isUrdu ? "font-urdu" : ""}`}
+            >
               {t("hero.description")}
             </p>
-            <p className="text-gray-400 text-base md:text-lg">{t("hero.subtitle")}</p>
           </div>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
             <Button
               size="lg"
-              className="bg-white text-black hover:bg-gray-200 px-8 py-3 text-lg font-semibold"
+              className="bg-white text-black hover:bg-gray-200 px-8 py-3 text-md font-regular"
               asChild
             >
               <Link href="/dashboard" aria-label={t("hero.primaryButtonLabel")}>
@@ -76,7 +73,7 @@ export function HeroSection({ isUrdu }: HeroSectionProps) {
             <Button
               variant="outline"
               size="lg"
-              className="border-gray-600 text-white hover:bg-gray-800 px-8 py-3 text-lg font-semibold bg-transparent"
+              className="border-gray-600 text-white hover:bg-gray-800 hover:text-white px-8 py-3 text-md font-regular bg-transparent"
               asChild
             >
               <a href="#features" aria-label={t("hero.secondaryButtonLabel")}>
@@ -95,37 +92,22 @@ export function HeroSection({ isUrdu }: HeroSectionProps) {
 
           <div className="relative z-10 pb-16">
             <div className="max-w-6xl mx-auto px-6 text-center">
-              <p className="text-gray-400 text-sm mb-8">{t("trusted.title")}</p>
-              <div className="flex justify-center items-center space-x-8 opacity-60">
-                <div className="text-gray-500 font-bold text-lg">PEAOX</div>
-                <div className="text-gray-500 font-bold text-lg">GitHub</div>
-                <div className="text-gray-500 font-bold text-lg">Vercel</div>
-                <div className="text-gray-500 font-bold text-lg">Supabase</div>
+              <p
+                className={`text-gray-400 text-sm mb-8 ${isUrdu ? "font-urdu text-center rtl" : "text-center"}`}
+                style={isUrdu ? { direction: "rtl", textAlign: "center" } : { textAlign: "center" }}
+              >
+                {t("build.title")}
+              </p>
+              <div
+                className={`flex justify-center items-center space-x-8 opacity-60 ${isUrdu ? "font-urdu" : ""}`}
+              >
+                <div className="text-gray-500 font-bold text-lg">{t("build.stack.0.name")}</div>
+                <div className="text-gray-500 font-bold text-lg">{t("build.stack.1.name")}</div>
+                <div className="text-gray-500 font-bold text-lg">{t("build.stack.2.name")}</div>
+                <div className="text-gray-500 font-bold text-lg">{t("build.stack.3.name")}</div>
               </div>
             </div>
           </div>
-
-          {/* Showcase Image
-        <div className="pt-16">
-          <div className="relative max-w-4xl mx-auto">
-            <div className="relative rounded-2xl overflow-hidden border border-gray-700 bg-gray-900/50 backdrop-blur-sm p-8">
-              <div className="aspect-video relative rounded-lg overflow-hidden">
-                <Image
-                  src="/coding-dashboard.jpg"
-                  alt={t("features.overlayImageAlt")}
-                  fill
-                  className="object-cover"
-                  priority
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-              </div>
-              <div className="mt-6 text-center">
-                <h3 className="text-xl font-semibold text-white mb-2">{t("features.showcaseTitle")}</h3>
-                <p className="text-gray-400">{t("features.showcaseDescription")}</p>
-              </div>
-            </div>
-          </div>
-        </div> */}
         </div>
       </div>
     </section>

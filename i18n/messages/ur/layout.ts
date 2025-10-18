@@ -42,6 +42,9 @@ const layout = {
     allRightsReserved: "جملہ حقوق محفوظ ہیں",
     quickLinksTitle: "فوری روابط",
     resourcesTitle: "وسائل",
+    documentation: "دستاویزات",
+    support: "مدد",
+    changelog: "تبدیلیوں کا ریکارڈ",
   },
 
   // تھیم ٹوگل کمپوننٹ

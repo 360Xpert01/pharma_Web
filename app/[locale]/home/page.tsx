@@ -8,6 +8,10 @@ import { DynamicLayout } from "@/components/layout/dynamic-layout";
 import { Header } from "./components/header";
 import { HeroSection } from "./components/hero-section";
 import { PricingSection } from "@/components/shared/pricing-section";
+import { CTASection } from "@/components/shared/cta-section";
+import { SectionBorder } from "@/components/shared/section-border";
+import { FeaturesSection } from "./components/feature-section";
+import { ShowcaseSection } from "./components/show-case";
 
 const LazyDynamicLayout = withLazyLoading(DynamicLayout, {
   fallbackText: "Loading page layout...",
@@ -31,13 +35,24 @@ export default function HomePage() {
 
   return (
     <LazyDynamicLayout>
-      <div className="min-h-screen flex flex-col relative overflow-hidden w-full">
-        {/* Header */}
+      <div
+        className={
+          "min-h-screen flex flex-col relative overflow-hidden w-full bg-white dark:bg-black text-gray-900 dark:text-gray-100 transition-colors duration-300"
+        }
+      >
+        {/* <SectionBorder /> */}
         <Header />
-
-        {/* Hero Section */}
+        <SectionBorder />
         <HeroSection isUrdu={isUrdu} />
+        <SectionBorder />
+        <FeaturesSection />
+        <SectionBorder />
+        <ShowcaseSection />
+        <SectionBorder />
         <PricingSection />
+        {/* <SectionBorder /> */}
+        <CTASection />
+        <SectionBorder />
       </div>
     </LazyDynamicLayout>
   );
