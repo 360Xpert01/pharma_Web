@@ -36,7 +36,7 @@ export function DynamicLayout({ children, className }: DynamicLayoutProps) {
   );
 
   const sidebarContainerClasses = cn(
-    "transition-all duration-300 ease-in-out border-e border-border/40 bg-background",
+    "transition-all duration-300 ease-in-out border-e border-border/40 bg-background sticky top-0 h-screen overflow-hidden",
     {
       hidden: !isDesktopSidebarVisible,
       "w-16": isDesktopSidebarVisible && isSidebarCollapsed,

@@ -83,17 +83,7 @@ export function Header({ className }: { className?: string }) {
             </Button>
           )}
 
-          {!isMobile && showSidebar && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={toggleSidebar}
-              className="hidden md:flex h-9 w-9 p-0"
-              aria-label={t("toggleSidebarLabel")}
-            >
-              <MenuIcon className="h-4 w-4" aria-hidden="true" />
-            </Button>
-          )}
+          {/* Desktop sidebar toggle removed as requested */}
 
           <Link
             href="/dashboard"
