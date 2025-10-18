@@ -129,7 +129,6 @@ export function Header({ className }: { className?: string }) {
               onClick={() => closeMobileMenu()}
               aria-label={`${t("logoText")} - Go to Home`}
             >
-              <div className="w-8 h-8 rounded-md bg-primary" aria-hidden="true" />
               <span className="hidden sm:block">{t("logoText")}</span>
             </Link>
           </div>
