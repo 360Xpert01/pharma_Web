@@ -12,6 +12,7 @@ import {
   TrendingDown,
 } from "lucide-react";
 import { MetricCard } from "./metric-card";
+import { useTranslations } from "next-intl";
 
 interface MetricsSectionProps {
   data?: MetricData;
@@ -19,6 +20,7 @@ interface MetricsSectionProps {
 }
 
 export function MetricsSection({ data, isLoading = false }: MetricsSectionProps) {
+  const t = useTranslations("dashboard");
   // Default mock data if none provided
   const defaultData: MetricData = {
     totalUsers: 12543,
@@ -35,88 +37,88 @@ export function MetricsSection({ data, isLoading = false }: MetricsSectionProps)
 
   const metrics = [
     {
-      title: "Total Users",
+      title: t("metrics.totalUsers"),
       value: metricsData.totalUsers,
       change: 12.5,
       changeType: "increase" as const,
       icon: Users,
       color: "info" as const,
-      description: "Total registered users",
+      description: t("metrics.descriptions.totalUsers"),
     },
     {
-      title: "Active Users",
+      title: t("metrics.activeUsers"),
       value: metricsData.activeSessions,
       change: 8.2,
       changeType: "increase" as const,
       icon: Activity,
       color: "success" as const,
-      description: "Currently active users",
+      description: t("metrics.descriptions.activeUsers"),
     },
     {
-      title: "Revenue",
+      title: t("metrics.revenue"),
       value: metricsData.revenue,
       change: 15.3,
       changeType: "increase" as const,
       icon: DollarSign,
       prefix: "$",
       color: "success" as const,
-      description: "Total revenue generated",
+      description: t("metrics.descriptions.revenue"),
     },
     {
-      title: "Conversion Rate",
+      title: t("metrics.conversionRate"),
       value: metricsData.conversionRate,
       change: -2.1,
       changeType: "decrease" as const,
       icon: Percent,
       suffix: "%",
       color: "warning" as const,
-      description: "Visitor to customer conversion",
+      description: t("metrics.descriptions.conversionRate"),
     },
     {
-      title: "Orders",
+      title: t("metrics.orders"),
       value: metricsData.orders,
       change: 23.1,
       changeType: "increase" as const,
       icon: ShoppingCart,
       color: "info" as const,
-      description: "Total orders placed",
+      description: t("metrics.descriptions.orders"),
     },
     {
-      title: "Growth",
+      title: t("metrics.growth"),
       value: metricsData.growth,
       change: 5.4,
       changeType: "increase" as const,
       icon: TrendingUp,
       suffix: "%",
       color: "success" as const,
-      description: "Monthly growth rate",
+      description: t("metrics.descriptions.growth"),
     },
     {
-      title: "Bounce Rate",
+      title: t("metrics.bounceRate"),
       value: metricsData.bounceRate,
       change: -3.2,
       changeType: "decrease" as const,
       icon: TrendingDown,
       suffix: "%",
       color: "success" as const,
-      description: "Visitor bounce rate",
+      description: t("metrics.descriptions.bounceRate"),
     },
     {
-      title: "Page Views",
+      title: t("metrics.pageViews"),
       value: metricsData.pageViews,
       change: 18.7,
       changeType: "increase" as const,
       icon: Eye,
       color: "info" as const,
-      description: "Total page views",
+      description: t("metrics.descriptions.pageViews"),
     },
   ];
 
   return (
     <section className="space-y-6">
       <div className="mb-8">
-        <h2 className="text-2xl font-bold tracking-tight">Metrics Overview</h2>
-        <p className="text-muted-foreground">Key performance indicators for your dashboard</p>
+        <h2 className="text-2xl font-bold tracking-tight">{t("sections.metrics")}</h2>
+        <p className="text-muted-foreground">{t("sections.metricsDescription")}</p>
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {metrics.map((metric, index) => (
@@ -131,7 +133,7 @@ export function MetricsSection({ data, isLoading = false }: MetricsSectionProps)
             suffix={metric.suffix}
             description={metric.description}
             color={metric.color}
-            fromLastMonthText="from last month"
+            fromLastMonthText={t("metrics.fromLastMonth")}
             isLoading={isLoading}
           />
         ))}
