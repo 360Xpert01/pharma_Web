@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { X } from "@/lib/icons";
+import { X, HomeIcon, SettingsIcon, UserIcon, BarChartIcon } from "@/lib/icons";
 import { Button } from "@/components/ui/button/button";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
@@ -17,7 +17,16 @@ export default function MobileHamburgerMenu({ className, onClose }: MobileHambur
   const t = useTranslations("layout.sidebar");
 
   // Navigation items from i18n (layout.ts)
-  const navItems = t.raw("items");
+  const navItems = t.raw("items") as Array<{ href: string; title: string }>;
+
+  const pickIcon = (title: string) => {
+    const key = title.toLowerCase();
+    if (key.includes("home")) return HomeIcon;
+    if (key.includes("dashboard")) return BarChartIcon;
+    if (key.includes("setting")) return SettingsIcon;
+    if (key.includes("profile") || key.includes("user")) return UserIcon;
+    return HomeIcon;
+  };
 
   return (
     <div
@@ -31,7 +40,7 @@ export default function MobileHamburgerMenu({ className, onClose }: MobileHambur
       <div className="flex items-center justify-between p-4 border-b border-border/40 min-h-[65px]">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-md bg-primary" />
-          <h2 className="font-semibold text-lg">{t("navigationLabel")}</h2>
+          <h2 className="font-semibold text-lg">Next Boiler</h2>
         </div>
 
         <Button
@@ -49,6 +58,7 @@ export default function MobileHamburgerMenu({ className, onClose }: MobileHambur
       <nav className="flex-1 p-2 space-y-1 overflow-y-auto">
         {navItems.map((item: any) => {
           const isActive = pathname === item.href;
+          const Icon = pickIcon(item.title);
 
           return (
             <Link
@@ -66,6 +76,7 @@ export default function MobileHamburgerMenu({ className, onClose }: MobileHambur
                 }
               )}
             >
+              <Icon className="h-4 w-4" />
               <span className="truncate">{item.title}</span>
             </Link>
           );

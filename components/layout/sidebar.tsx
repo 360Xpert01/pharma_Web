@@ -25,22 +25,29 @@ export function Sidebar({ className }: SidebarProps) {
   const { computed, toggleSidebar } = useLayout();
   const { isSidebarCollapsed: isCollapsed } = computed;
 
-  // Navigation items from i18n (layout.ts)
-  const navItems = t.raw("items") as Array<{ href: string; title: string; icon?: string }>;
+  let navItems = t.raw("items");
+  if (!Array.isArray(navItems)) navItems = [];
 
-  // Optional: map titles to icons as a simple heuristic
   const pickIcon = (title: string) => {
     const key = title.toLowerCase();
-    if (key.includes("home")) return HomeIcon;
-    if (key.includes("dashboard")) return BarChartIcon;
-    if (key.includes("setting")) return SettingsIcon;
-    if (key.includes("profile") || key.includes("user")) return UserIcon;
+    if (key.includes("home") || key.includes("ہوم")) return HomeIcon;
+    if (key.includes("dashboard") || key.includes("ڈیش بورڈ")) return BarChartIcon;
+    if (key.includes("setting") || key.includes("سیٹنگز")) return SettingsIcon;
+    if (
+      key.includes("profile") ||
+      key.includes("پروفائل") ||
+      key.includes("user") ||
+      key.includes("صارف")
+    )
+      return UserIcon;
     return HomeIcon;
   };
 
+  // Detect RTL (Urdu) layout
+  const isRTL = typeof document !== "undefined" ? document.dir === "rtl" : false;
+
   const sidebarClasses = cn(
     "flex flex-col bg-background border-e border-border/40 h-full transition-all duration-300 ease-in-out",
-    // Width is controlled by the container in DynamicLayout
     "w-full",
     className
   );
@@ -48,16 +55,32 @@ export function Sidebar({ className }: SidebarProps) {
   return (
     <aside className={sidebarClasses}>
       {/* Sidebar Header */}
-      <div className="flex items-center justify-between p-4 border-b border-border/40 min-h-[65px]">
-        {!isCollapsed && <h2 className="font-semibold text-lg">Next Boiler</h2>}
+      <div
+        className={cn(
+          "relative flex items-center justify-between border-b border-border/40 min-h-[63px]",
+          isRTL ? "p-1" : "p-2"
+        )}
+      >
+        {!isCollapsed && (
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-md bg-primary" />
+            <span className={cn("font-semibold text-md", isRTL ? "mt-1" : "text-left")}>
+              {t("navigationLabel")}
+            </span>
+          </div>
+        )}
 
         {isCollapsed && <div className="w-8 h-8 rounded-md bg-primary mx-auto" />}
 
+        {/* Overlay chevron aligned to Next Boiler header border */}
         <Button
           variant="ghost"
           size="icon"
           onClick={toggleSidebar}
-          className="h-8 w-8 p-0 rounded-full border border-border/60 hover:bg-accent/60"
+          className={cn(
+            "absolute -end-4 -bottom-1/2 -translate-y-1/2 h-9 w-9 p-0 rounded-full",
+            "border border-border/60 bg-background shadow-md ring-1 ring-border/50 hover:bg-accent/60 z-9999"
+          )}
           aria-label={t(isCollapsed ? "expandLabel" : "collapseLabel")}
         >
           {isCollapsed ? (
@@ -79,7 +102,7 @@ export function Sidebar({ className }: SidebarProps) {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center rounded-lg text-sm font-medium transition-all",
+                "flex rounded-lg text-sm font-medium transition-all",
                 "hover:bg-accent hover:text-accent-foreground",
                 "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
                 {
@@ -88,13 +111,18 @@ export function Sidebar({ className }: SidebarProps) {
                   // Collapsed styles
                   "justify-center p-3 w-12 h-12 mx-auto": isCollapsed,
                   // Expanded styles
-                  "justify-start gap-3 px-3 py-2.5": !isCollapsed,
+                  "justify-start gap-3 px-3 py-2.5 items-center": !isCollapsed && !isRTL,
+                  "justify-start gap-2 px-3 py-2.5 items-center": !isCollapsed && isRTL,
                 }
               )}
               title={isCollapsed ? item.title : undefined}
             >
               <Icon className="h-4 w-4" />
-              {!isCollapsed && <span className="truncate">{item.title}</span>}
+              {!isCollapsed && (
+                <span className={cn("whitespace-normal", isRTL ? "text-right w-full" : "truncate")}>
+                  {item.title}
+                </span>
+              )}
             </Link>
           );
         })}

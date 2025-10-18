@@ -32,9 +32,19 @@ const layout = {
   },
 
   sidebar: {
-    navigationLabel: "Main Navigation",
+    navigationLabel: "Next Boiler",
     collapseLabel: "Collapse sidebar",
     expandLabel: "Expand sidebar",
+    layoutSettings: "Layout Settings",
+    sidebarVariant: "Sidebar Variant",
+    sidebarWidth: "Sidebar Width",
+    sidebarWidthValue: "64px",
+    headerTitle: "Next Boiler",
+    headerLogoAlt: "App Logo",
+    footerSettings: "Layout Settings",
+    footerVariant: "Variant",
+    footerWidth: "Width",
+    collapsedFooter: "Sidebar collapsed",
     items: [
       { href: "/", title: "Home" },
       { href: "/dashboard", title: "Dashboard" },
@@ -42,9 +52,6 @@ const layout = {
       { href: "/settings", title: "Settings" },
       { href: "/profile", title: "Profile" },
     ],
-    layoutSettings: "Layout Settings",
-    sidebarVariant: "Variant",
-    sidebarWidth: "Width",
   },
 
   // Footer component

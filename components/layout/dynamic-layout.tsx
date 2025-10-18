@@ -13,9 +13,16 @@ interface DynamicLayoutProps extends PropsWithChildren {
 }
 
 export function DynamicLayout({ children, className }: DynamicLayoutProps) {
-  const { config, state, computed, closeMobileMenu } = useLayout();
-  const { showHeader, showSidebar, showFooter, contentClasses, isMobile, isSidebarCollapsed } =
-    computed;
+  const { config, state, computed, closeMobileMenu, toggleSidebar } = useLayout();
+  const {
+    showHeader,
+    showSidebar,
+    showFooter,
+    contentClasses,
+    isMobile,
+    isSidebarCollapsed,
+    headerHeight,
+  } = computed;
 
   // Close mobile menu on route change or when switching to desktop
   useEffect(() => {
@@ -36,7 +43,7 @@ export function DynamicLayout({ children, className }: DynamicLayoutProps) {
   );
 
   const sidebarContainerClasses = cn(
-    "transition-all duration-300 ease-in-out border-e border-border/40 bg-background sticky top-0 h-screen overflow-hidden",
+    "relative transition-all duration-300 ease-in-out border-e border-border/40 bg-background sticky top-0 h-screen overflow-visible",
     {
       hidden: !isDesktopSidebarVisible,
       "w-16": isDesktopSidebarVisible && isSidebarCollapsed,
@@ -49,7 +56,10 @@ export function DynamicLayout({ children, className }: DynamicLayoutProps) {
 
   const rightColumnClasses = cn(
     "flex flex-col min-h-screen",
-    "transition-all duration-300 ease-in-out"
+    "transition-all duration-300 ease-in-out",
+    {
+      "pt-16": showHeader, // Adjust based on your header height (h-16 = 64px)
+    }
   );
 
   const headerContainerClasses = cn("transition-all duration-300 ease-in-out", {
