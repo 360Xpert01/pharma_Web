@@ -5,7 +5,7 @@ import { useLayout } from "@/contexts/layout-context";
 import { Header } from "./header";
 import { Sidebar } from "./sidebar";
 import { Footer } from "./footer";
-import { MobileHamburgerMenu as MobileSidebarOverlay } from "./mobile-sidebar-overlay";
+import { MobileHamburgerMenu as MobileSidebarOverlay } from "./mobile-hamburger-menu";
 import { cn } from "@/lib/utils";
 
 interface DynamicLayoutProps extends PropsWithChildren {

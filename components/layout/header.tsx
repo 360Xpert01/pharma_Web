@@ -1,32 +1,27 @@
 "use client";
+
 import { Link } from "@/i18n/navigation";
 import { MenuIcon, CloseIcon } from "@/lib/icons";
 import { ThemeToggle } from "./theme-toggle";
 import { UserProfile } from "./user-profile";
-import { MobileNavigationMenu } from "./mobile-navigation-menu";
 import { LanguageSwitcher } from "./language-switcher";
-import { useLayout } from "@/contexts/layout-context";
-import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button/button";
 import { cn } from "@/lib/utils";
-import { headerNavigation } from "@/navigation/config";
-import { getNavItemTitle } from "@/lib/navigation-utils";
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { AuthButtons } from "./auth-buttons";
 import Cookies from "js-cookie";
+import { useLayout } from "@/contexts/layout-context";
+import { useAuth } from "@/hooks/use-auth";
+import MobileHamburgerMenu from "./mobile-hamburger-menu";
 
-interface HeaderProps {
-  className?: string;
-}
-
-export function Header({ className }: HeaderProps) {
-  const { config, state, computed, toggleSidebar } = useLayout();
+export function Header({ className }: { className?: string }) {
+  const { computed, toggleSidebar } = useLayout();
   const { showSidebar, headerHeight, isMobile } = computed;
   const { isAuthenticated, isLoading } = useAuth();
+  const t = useTranslations("layout.header");
+
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const t = useTranslations("navigation");
-  const tLayout = useTranslations("layout");
   const [hasCookieUser, setHasCookieUser] = useState<boolean>(
     () =>
       typeof window !== "undefined" && (!!Cookies.get("auth_token") || !!Cookies.get("user_email"))
@@ -50,17 +45,17 @@ export function Header({ className }: HeaderProps) {
     className
   );
 
-  const containerClasses = cn("h-full px-4 lg:px-6 flex items-center justify-between", {
-    "max-w-7xl mx-auto": config.content.maxWidth === "container",
-    "max-w-4xl mx-auto": config.content.maxWidth === "prose",
-  });
+  const containerClasses = cn(
+    "h-full px-4 lg:px-6 flex items-center justify-between",
+    "max-w-7xl mx-auto"
+  );
 
   const renderAuthSection = () => {
     if (isLoading) {
-      return <div className="ml-1 w-24 h-9  animate-pulse rounded-md" />;
+      return <div className="ml-1 w-24 h-9 animate-pulse rounded-md" />;
     }
 
-    const showUser = (isAuthenticated || hasCookieUser) && config.header.showUserMenu;
+    const showUser = isAuthenticated || hasCookieUser;
     return showUser ? (
       <UserProfile className="ml-1" />
     ) : (
@@ -71,14 +66,15 @@ export function Header({ className }: HeaderProps) {
   return (
     <header className={headerClasses}>
       <div className={containerClasses}>
+        {/* Left Section */}
         <div className="flex items-center gap-3">
-          {isMobile && config.header.showNavigation && (
+          {isMobile && (
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setMobileNavOpen(!mobileNavOpen)}
               className="md:hidden h-9 w-9 p-0"
-              aria-label={tLayout("header.toggleMobileNavLabel")}
+              aria-label={t("toggleMobileNavLabel")}
             >
               {mobileNavOpen ? (
                 <CloseIcon className="h-5 w-5" aria-hidden="true" />
@@ -87,56 +83,40 @@ export function Header({ className }: HeaderProps) {
               )}
             </Button>
           )}
-          {!isMobile && showSidebar && config.sidebar.collapsible && (
+
+          {!isMobile && showSidebar && (
             <Button
               variant="ghost"
               size="sm"
               onClick={toggleSidebar}
               className="hidden md:flex h-9 w-9 p-0"
-              aria-label={tLayout("header.toggleSidebarLabel")}
+              aria-label={t("toggleSidebarLabel")}
             >
               <MenuIcon className="h-4 w-4" aria-hidden="true" />
             </Button>
           )}
-          {config.header.showLogo && (
-            <Link
-              href="/dashboard"
-              className="flex items-center gap-2 font-semibold text-lg hover:opacity-80 transition-opacity"
-              onClick={() => setMobileNavOpen(false)}
-              aria-label={`${tLayout("header.logoText")} - ${t("labels.goToHome")}`}
-            >
-              <div className="w-8 h-8 rounded-md bg-primary" aria-hidden="true" />
-              <span className="hidden sm:block">{tLayout("header.logoText")}</span>
-            </Link>
-          )}
+
+          <Link
+            href="/dashboard"
+            className="flex items-center gap-2 font-semibold text-lg hover:opacity-80 transition-opacity"
+            onClick={() => setMobileNavOpen(false)}
+            aria-label={`${t("logoText")} - Go to Home`}
+          >
+            <div className="w-8 h-8 rounded-md bg-primary" aria-hidden="true" />
+            <span className="hidden sm:block">{t("logoText")}</span>
+          </Link>
         </div>
-        {config.header.showNavigation && config.navigation.style === "horizontal" && (
-          <nav className="hidden lg:flex items-center gap-6 text-sm font-medium">
-            {headerNavigation.map((item) => {
-              const translatedTitle = getNavItemTitle(item, t);
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href as any}
-                  className="text-foreground/80 hover:text-foreground transition-colors px-3 py-2 rounded-md hover:bg-accent"
-                  target={item.external ? "_blank" : undefined}
-                  rel={item.external ? "noopener noreferrer" : undefined}
-                >
-                  {translatedTitle}
-                </Link>
-              );
-            })}
-          </nav>
-        )}
+
+        {/* Right Section */}
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
           <ThemeToggle />
           {renderAuthSection()}
         </div>
       </div>
-      {isMobile && mobileNavOpen && config.header.showNavigation && (
-        <MobileNavigationMenu isOpen={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
-      )}
+
+      {/* Mobile Navigation Drawer */}
+      {isMobile && mobileNavOpen && <MobileHamburgerMenu onClose={() => setMobileNavOpen(false)} />}
     </header>
   );
 }
