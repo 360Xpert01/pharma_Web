@@ -2,6 +2,7 @@
 import { useTranslations } from "next-intl";
 import { ChartDataPoint } from "../../types";
 import Heading from "@/components/shared/heading";
+import { BaseGrid } from "@/components/shared/base-grid";
 import { RevenueChart } from "./RevenueChart";
 import { SalesChart } from "./SalesChart";
 import { TrafficChart } from "./TrafficChart";
@@ -31,24 +32,19 @@ export function ChartsSection({ data, isLoading = false }: ChartsSectionProps) {
       />
 
       <div className="space-y-6">
-        {/* Revenue Trend Chart */}
+        {/* Revenue Trend Chart - Full Width */}
         <RevenueChart data={data?.revenue} isLoading={isLoading} />
 
-        <div className="grid gap-6 md:grid-cols-2">
-          {/* Sales Comparison Chart */}
+        {/* Two Column Charts */}
+        <BaseGrid columns={{ sm: 1, md: 2 }}>
           <SalesChart data={data?.sales} isLoading={isLoading} />
-
-          {/* Traffic Sources Pie Chart */}
           <TrafficChart data={data?.traffic} isLoading={isLoading} />
-        </div>
+        </BaseGrid>
 
-        <div className="grid gap-6 md:grid-cols-2">
-          {/* User Activity Chart */}
+        <BaseGrid columns={{ sm: 1, md: 2 }}>
           <ActivityChart data={data?.activity} isLoading={isLoading} />
-
-          {/* Performance Metrics */}
           <PerformanceChart data={data?.performance} isLoading={isLoading} />
-        </div>
+        </BaseGrid>
       </div>
     </section>
   );

@@ -14,7 +14,6 @@ interface MetricCardProps {
   description?: string;
   color?: "default" | "success" | "warning" | "danger" | "info";
   fromLastMonthText?: string;
-  isLoading?: boolean;
 }
 
 export function MetricCard({
@@ -28,7 +27,6 @@ export function MetricCard({
   description,
   color = "default",
   fromLastMonthText = "from last month",
-  isLoading = false,
 }: MetricCardProps) {
   const formatValue = (val: string | number) => {
     if (typeof val === "number") {
@@ -62,21 +60,6 @@ export function MetricCard({
         return "dark:bg-black/30 dark:border-white/10";
     }
   };
-
-  if (isLoading) {
-    return (
-      <Card className="animate-pulse border-primary/20 dark:bg-black/30 dark:border-white/10">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <div className="h-4 bg-primary/20 dark:bg-white/20 rounded w-20 animate-pulse"></div>
-          <div className="h-4 w-4 bg-primary/20 dark:bg-white/20 rounded animate-pulse"></div>
-        </CardHeader>
-        <CardContent>
-          <div className="h-8 bg-primary/20 dark:bg-white/20 rounded w-24 mb-2 animate-pulse"></div>
-          <div className="h-3 bg-primary/10 dark:bg-white/10 rounded w-32 animate-pulse"></div>
-        </CardContent>
-      </Card>
-    );
-  }
 
   return (
     <Card

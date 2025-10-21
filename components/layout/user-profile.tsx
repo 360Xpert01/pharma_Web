@@ -7,7 +7,7 @@ import Cookies from "js-cookie";
 import { logger } from "@/logger/logger";
 import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button/button";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -118,24 +118,29 @@ export function UserProfile({ className }: UserProfileProps) {
           <Tooltip>
             <TooltipTrigger asChild>
               <DropdownMenuTrigger asChild>
-                <Button
-                  // variant="ghost"
-                  className={cn("relative p-0 rounded-full hover:bg-accent/60", className)}
+                <button
+                  className={cn(
+                    "relative rounded-full transition-all duration-200 ease-in-out",
+                    "hover:ring-2 hover:ring-primary/20 hover:ring-offset-2 hover:ring-offset-background",
+                    "focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 focus:ring-offset-background",
+                    "active:scale-95",
+                    className
+                  )}
                   aria-label={t("clickForOptions")}
                 >
-                  <Avatar className="h-8 w-8">
-                    {activeUser?.avatar ? (
+                  <Avatar className="h-9 w-9 border-2 border-border/50 shadow-sm">
+                    {activeUser?.avatar && (
                       <AvatarImage
                         src={activeUser.avatar}
                         alt={activeUser.name ?? activeUser.email ?? "User avatar"}
+                        className="object-cover"
                       />
-                    ) : (
-                      <AvatarFallback className="text-xs font-medium">
-                        {userInitials}
-                      </AvatarFallback>
                     )}
+                    <AvatarFallback className="text-sm font-semibold bg-gradient-to-br from-slate-700 to-slate-600 text-white dark:from-slate-600 dark:to-slate-500 border-0">
+                      {userInitials}
+                    </AvatarFallback>
                   </Avatar>
-                </Button>
+                </button>
               </DropdownMenuTrigger>
             </TooltipTrigger>
 
@@ -147,40 +152,67 @@ export function UserProfile({ className }: UserProfileProps) {
           </Tooltip>
         </TooltipProvider>
 
-        <DropdownMenuContent className="w-56" align="end" forceMount>
-          <DropdownMenuLabel className="font-normal">
-            <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">{activeUser?.name}</p>
-              <p className="text-xs leading-none text-muted-foreground">{activeUser?.email}</p>
+        <DropdownMenuContent className="w-64 p-2" align="end" forceMount>
+          <DropdownMenuLabel className="font-normal p-3 pb-2">
+            <div className="flex items-center space-x-3">
+              <Avatar className="h-10 w-10 border border-border/50">
+                {activeUser?.avatar && (
+                  <AvatarImage
+                    src={activeUser.avatar}
+                    alt={activeUser.name ?? activeUser.email ?? "User avatar"}
+                    className="object-cover"
+                  />
+                )}
+                <AvatarFallback className="text-sm font-semibold bg-gradient-to-br from-slate-700 to-slate-600 text-white dark:from-slate-600 dark:to-slate-500">
+                  {userInitials}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col space-y-1 flex-1 min-w-0">
+                <p className="text-sm font-medium leading-none truncate">
+                  {activeUser?.name || "User"}
+                </p>
+                <p className="text-xs leading-none text-muted-foreground truncate">
+                  {activeUser?.email}
+                </p>
+              </div>
             </div>
           </DropdownMenuLabel>
 
           <DropdownMenuSeparator />
 
-          <DropdownMenuItem onClick={handleProfileClick} className="cursor-pointer">
-            <UserIcon className="mr-2 h-4 w-4" />
-            <span>{t("profile")}</span>
+          <DropdownMenuItem
+            onClick={handleProfileClick}
+            className="cursor-pointer rounded-md mx-1 py-2.5 px-3 transition-colors hover:bg-accent/50"
+          >
+            <UserIcon className="mr-3 h-4 w-4 text-muted-foreground" />
+            <span className="font-medium">{t("profile")}</span>
           </DropdownMenuItem>
 
-          <DropdownMenuItem onClick={handleSettingsClick} className="cursor-pointer">
-            <SettingsIcon className="mr-2 h-4 w-4" />
-            <span>{t("settings")}</span>
+          <DropdownMenuItem
+            onClick={handleSettingsClick}
+            className="cursor-pointer rounded-md mx-1 py-2.5 px-3 transition-colors hover:bg-accent/50"
+          >
+            <SettingsIcon className="mr-3 h-4 w-4 text-muted-foreground" />
+            <span className="font-medium">{t("settings")}</span>
           </DropdownMenuItem>
 
-          <DropdownMenuItem onClick={handleHelpClick} className="cursor-pointer">
-            <HelpIcon className="mr-2 h-4 w-4" />
-            <span>{t("help")}</span>
+          <DropdownMenuItem
+            onClick={handleHelpClick}
+            className="cursor-pointer rounded-md mx-1 py-2.5 px-3 transition-colors hover:bg-accent/50"
+          >
+            <HelpIcon className="mr-3 h-4 w-4 text-muted-foreground" />
+            <span className="font-medium">{t("help")}</span>
           </DropdownMenuItem>
 
-          <DropdownMenuSeparator />
+          <DropdownMenuSeparator className="my-2" />
 
           <DropdownMenuItem
             onClick={handleLogout}
             disabled={isLoggingOut}
-            className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-900/20"
+            className="cursor-pointer rounded-md mx-1 py-2.5 px-3 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 focus:text-red-700 focus:bg-red-50 dark:focus:bg-red-900/20 transition-colors"
           >
-            <LogoutIcon className="mr-2 h-4 w-4" />
-            <span>{isLoggingOut ? t("loggingOut") : t("logout")}</span>
+            <LogoutIcon className="mr-3 h-4 w-4" />
+            <span className="font-medium">{isLoggingOut ? t("loggingOut") : t("logout")}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

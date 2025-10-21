@@ -29,8 +29,12 @@ export function HeroSection({ isUrdu }: HeroSectionProps) {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 text-center space-y-8">
           {/* Waitlist Badge */}
           <div className="inline-block">
-            <div className="bg-gray-800/80 backdrop-blur-sm border border-gray-700 rounded-full px-6 py-2">
-              <span className="text-gray-300 text-sm">{t("hero.waitlistBadge")}</span>
+            <div className="bg-gray-800/80 backdrop-blur-sm border border-gray-700 rounded-full px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 transition-all duration-200 hover:bg-gray-700/80 hover:border-gray-600">
+              <span
+                className={`text-gray-300 text-xs sm:text-sm font-medium ${isUrdu ? "font-urdu" : ""}`}
+              >
+                {t("hero.waitlistBadge")}
+              </span>
             </div>
           </div>
 
@@ -90,21 +94,30 @@ export function HeroSection({ isUrdu }: HeroSectionProps) {
             </Button>
           </div>
 
-          <div className="relative z-10 pb-16">
-            <div className="max-w-6xl mx-auto px-6 text-center">
+          {/* Build Stack Section */}
+          <div className="relative z-10 pt-12 pb-16">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
               <p
-                className={`text-gray-400 text-sm mb-8 ${isUrdu ? "font-urdu text-center rtl" : "text-center"}`}
+                className={`text-gray-400 text-xs sm:text-sm mb-6 sm:mb-8 ${isUrdu ? "font-urdu text-center rtl" : "text-center"}`}
                 style={isUrdu ? { direction: "rtl", textAlign: "center" } : { textAlign: "center" }}
               >
                 {t("build.title")}
               </p>
               <div
-                className={`flex justify-center items-center space-x-8 opacity-60 ${isUrdu ? "font-urdu" : ""}`}
+                className={`flex flex-wrap justify-center items-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 opacity-60 ${isUrdu ? "font-urdu" : ""}`}
               >
-                <div className="text-gray-500 font-bold text-lg">{t("build.stack.0.name")}</div>
-                <div className="text-gray-500 font-bold text-lg">{t("build.stack.1.name")}</div>
-                <div className="text-gray-500 font-bold text-lg">{t("build.stack.2.name")}</div>
-                <div className="text-gray-500 font-bold text-lg">{t("build.stack.3.name")}</div>
+                <div className="text-gray-500 font-bold text-sm sm:text-base md:text-lg whitespace-nowrap">
+                  {t("build.stack.0.name")}
+                </div>
+                <div className="text-gray-500 font-bold text-sm sm:text-base md:text-lg whitespace-nowrap">
+                  {t("build.stack.1.name")}
+                </div>
+                <div className="text-gray-500 font-bold text-sm sm:text-base md:text-lg whitespace-nowrap">
+                  {t("build.stack.2.name")}
+                </div>
+                <div className="text-gray-500 font-bold text-sm sm:text-base md:text-lg whitespace-nowrap">
+                  {t("build.stack.3.name")}
+                </div>
               </div>
             </div>
           </div>
