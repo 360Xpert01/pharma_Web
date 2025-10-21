@@ -4,9 +4,9 @@ import { type PropsWithChildren, useEffect } from "react";
 import { useLayout } from "@/contexts/layout-context";
 import { Header } from "./header";
 import { Sidebar } from "./sidebar";
-import { Footer } from "./footer";
 import MobileHamburgerMenu from "./mobile-hamburger-menu";
 import { cn } from "@/lib/utils";
+import { Footer } from "./footer/index";
 
 interface DynamicLayoutProps extends PropsWithChildren {
   className?: string;

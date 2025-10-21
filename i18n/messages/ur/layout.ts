@@ -32,19 +32,59 @@ const layout = {
 
   // فوٹر کمپوننٹ
   footer: {
-    copyright: "© 2024 ڈیش بورڈ۔ جملہ حقوق محفوظ ہیں۔",
-    privacyPolicy: "پرائیویسی پالیسی",
+    copyright: "© تمام حقوق محفوظ ہیں۔",
+    privacyPolicy: "رازداری کی پالیسی",
     termsOfService: "سروس کی شرائط",
-    contact: "رابطہ",
-    companyName: "نیکسٹ اسٹارٹر",
+    contact: "رابطہ کریں",
+
+    companyName: "نیکسٹ بوائلر",
     companyDescription:
-      "ایک جدید Next.js اسٹارٹر ٹیمپلیٹ جس میں TypeScript، Tailwind CSS اور مزید شامل ہیں۔",
-    allRightsReserved: "جملہ حقوق محفوظ ہیں",
-    quickLinksTitle: "فوری روابط",
+      "ہم ایک جدید SaaS پلیٹ فارم ہیں جو کاروباروں کو بہتر، تیز اور ہوشیار طریقے سے کام کرنے میں مدد فراہم کرتا ہے۔",
+
+    allRightsReserved: "تمام حقوق محفوظ ہیں۔",
+    quickLinksTitle: "اہم روابط",
     resourcesTitle: "وسائل",
+    servicesTitle: "ہماری خدمات",
+    companyTitle: "کمپنی",
+
+    aboutUsTitle: "ہمارے بارے میں",
     documentation: "دستاویزات",
-    support: "مدد",
-    changelog: "تبدیلیوں کا ریکارڈ",
+    support: "مدد اور سپورٹ",
+    changelog: "تبدیلیوں کی تفصیلات",
+
+    githubLabel: "گِٹ ہب",
+    githubAriaLabel: "ہمارا گِٹ ہب پروفائل دیکھیں",
+    linkedinLabel: "لنکڈ اِن",
+    linkedinAriaLabel: "ہمارا لنکڈ اِن پروفائل دیکھیں",
+    instagramLabel: "انسٹاگرام",
+    instagramAriaLabel: "ہمارا انسٹاگرام پروفائل دیکھیں",
+    twitterLabel: "ٹویٹر",
+    twitterAriaLabel: "ہمارا ٹویٹر پروفائل دیکھیں",
+
+    stayConnectedTitle: "جڑے رہیں",
+
+    webDesign: "ویب ڈیزائن",
+    uiUxDesign: "UI/UX ڈیزائن",
+    webDevelopment: "ویب ڈیولپمنٹ",
+    seo: "SEO خدمات",
+
+    aboutUs: "ہمارے بارے میں",
+    careers: "ملازمتیں",
+    portfolio: "پورٹ فولیو",
+    blog: "بلاگ",
+
+    address: "اپنا کاروباری پتہ یہاں درج کریں",
+    phone: "فون نمبر",
+    email: "ای میل",
+
+    newsletterTitle: "ای میل سبسکرپشن",
+    newsletterPlaceholder: "اپنا ای میل درج کریں...",
+    subscribeButton: "سبسکرائب کریں",
+
+    home: "ہوم",
+    about: "ہمارے بارے میں",
+    services: "خدمات",
+    contactUs: "رابطہ کریں",
   },
 
   // تھیم ٹوگل کمپوننٹ

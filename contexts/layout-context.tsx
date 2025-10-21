@@ -40,7 +40,7 @@ export interface LayoutConfig {
   footer: {
     enabled: boolean;
     fixed: boolean;
-    variant: "simple" | "detailed" | "minimal";
+    variant: "simple" | "detailed" | "minimal" | "social" | "centered" | "compact";
     showOnMobile: boolean;
   };
 
