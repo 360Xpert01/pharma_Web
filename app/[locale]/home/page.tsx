@@ -29,7 +29,7 @@ export default function HomePage() {
     applyPreset("minimal");
     updateConfig({
       content: { maxWidth: "full", padding: "none", centered: false },
-      footer: { enabled: true, fixed: false, variant: "detailed", showOnMobile: true },
+      footer: { enabled: true, fixed: false, variant: "simple", showOnMobile: true },
     });
   }, [applyPreset, updateConfig]);
 

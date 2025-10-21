@@ -56,19 +56,59 @@ const layout = {
 
   // Footer component
   footer: {
-    copyright: "© 2024 Dashboard. All rights reserved.",
+    copyright: "All rights reserved.",
     privacyPolicy: "Privacy Policy",
     termsOfService: "Terms of Service",
     contact: "Contact",
-    companyName: "Next Starter",
+
+    companyName: "Next Boiler",
     companyDescription:
-      "A modern Next.js starter template with TypeScript, Tailwind CSS, and more.",
-    allRightsReserved: "All rights reserved",
+      "We are a modern SaaS platform empowering businesses to work smarter, faster, and better with technology.",
+
+    allRightsReserved: "All rights reserved.",
     quickLinksTitle: "Quick Links",
     resourcesTitle: "Resources",
+    servicesTitle: "Services",
+    companyTitle: "Company",
+
+    aboutUsTitle: "About Us",
     documentation: "Documentation",
     support: "Support",
     changelog: "Changelog",
+
+    githubLabel: "GitHub",
+    githubAriaLabel: "Visit our GitHub profile",
+    linkedinLabel: "LinkedIn",
+    linkedinAriaLabel: "Visit our LinkedIn profile",
+    instagramLabel: "Instagram",
+    instagramAriaLabel: "Visit our Instagram profile",
+    twitterLabel: "Twitter",
+    twitterAriaLabel: "Visit our Twitter profile",
+
+    stayConnectedTitle: "Stay Connected",
+
+    webDesign: "Web Design",
+    uiUxDesign: "UI/UX Design",
+    webDevelopment: "Web Development",
+    seo: "SEO Services",
+
+    aboutUs: "About Us",
+    careers: "Careers",
+    portfolio: "Portfolio",
+    blog: "Blog",
+
+    address: "Enter your business address here",
+    phone: "Phone number",
+    email: "Email address",
+
+    newsletterTitle: "Email Subscription",
+    newsletterPlaceholder: "Enter your email...",
+    subscribeButton: "Subscribe",
+
+    home: "Home",
+    about: "About",
+    services: "Services",
+    contactUs: "Contact",
   },
 
   // Theme toggle component
