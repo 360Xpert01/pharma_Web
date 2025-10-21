@@ -12,7 +12,9 @@ import {
   TrendingDown,
 } from "lucide-react";
 import { MetricCard } from "./metric-card";
+import { BaseGrid } from "@/components/shared/base-grid";
 import { useTranslations } from "next-intl";
+import { MetricCardSkeleton } from "../loading/dashboard-loading";
 
 interface MetricsSectionProps {
   data?: MetricData;
@@ -120,24 +122,25 @@ export function MetricsSection({ data, isLoading = false }: MetricsSectionProps)
         <h2 className="text-2xl font-bold tracking-tight">{t("sections.metrics")}</h2>
         <p className="text-muted-foreground">{t("sections.metricsDescription")}</p>
       </div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {metrics.map((metric, index) => (
-          <MetricCard
-            key={index}
-            title={metric.title}
-            value={metric.value}
-            change={metric.change}
-            changeType={metric.changeType}
-            icon={metric.icon}
-            prefix={metric.prefix}
-            suffix={metric.suffix}
-            description={metric.description}
-            color={metric.color}
-            fromLastMonthText={t("metrics.fromLastMonth")}
-            isLoading={isLoading}
-          />
-        ))}
-      </div>
+      <BaseGrid columns={{ sm: 1, md: 2, lg: 4 }}>
+        {isLoading
+          ? Array.from({ length: 8 }).map((_, index) => <MetricCardSkeleton key={index} />)
+          : metrics.map((metric, index) => (
+              <MetricCard
+                key={index}
+                title={metric.title}
+                value={metric.value}
+                change={metric.change}
+                changeType={metric.changeType}
+                icon={metric.icon}
+                prefix={metric.prefix}
+                suffix={metric.suffix}
+                description={metric.description}
+                color={metric.color}
+                fromLastMonthText={t("metrics.fromLastMonth")}
+              />
+            ))}
+      </BaseGrid>
     </section>
   );
 }

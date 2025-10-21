@@ -1,6 +1,8 @@
 "use client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useTranslations } from "next-intl";
+import { BaseGrid } from "@/components/shared/base-grid";
+import { MetricCardSkeleton } from "../loading/dashboard-loading";
 
 interface PerformanceStatsProps {
   data?: {
@@ -27,52 +29,58 @@ export function PerformanceStats({ data, isLoading = false }: PerformanceStatsPr
   if (isLoading) {
     return (
       <section>
-        <Card className="animate-pulse border-primary/20">
-          <CardHeader>
-            <div className="h-6 bg-primary/20 rounded w-32 animate-pulse"></div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4 md:grid-cols-4">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="text-center space-y-2">
-                  <div className="h-8 bg-primary/20 rounded w-16 mx-auto animate-pulse"></div>
-                  <div className="h-4 bg-primary/10 rounded w-20 mx-auto animate-pulse"></div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        <div className="mb-6">
+          <div className="h-6 bg-primary/20 rounded w-32 animate-pulse mb-2"></div>
+        </div>
+        <BaseGrid columns={{ sm: 1, md: 2, lg: 4 }}>
+          {Array.from({ length: 4 }).map((_, i) => (
+            <MetricCardSkeleton key={i} />
+          ))}
+        </BaseGrid>
       </section>
     );
   }
 
+  const performanceStats = [
+    {
+      value: performanceData.uptime,
+      label: t("performance.uptime"),
+      color: "text-blue-600",
+    },
+    {
+      value: performanceData.avgResponse,
+      label: t("performance.avgResponse"),
+      color: "text-green-600",
+    },
+    {
+      value: performanceData.apiCalls,
+      label: t("performance.apiCalls"),
+      color: "text-purple-600",
+    },
+    {
+      value: performanceData.dataTransfer,
+      label: t("performance.dataTransfer"),
+      color: "text-orange-600",
+    },
+  ];
+
   return (
     <section>
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("performance.title")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-4">
-            <div className="text-center">
-              <p className="text-2xl font-bold text-blue-600">{performanceData.uptime}</p>
-              <p className="text-sm text-muted-foreground">{t("performance.uptime")}</p>
-            </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold text-green-600">{performanceData.avgResponse}</p>
-              <p className="text-sm text-muted-foreground">{t("performance.avgResponse")}</p>
-            </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold text-purple-600">{performanceData.apiCalls}</p>
-              <p className="text-sm text-muted-foreground">{t("performance.apiCalls")}</p>
-            </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold text-orange-600">{performanceData.dataTransfer}</p>
-              <p className="text-sm text-muted-foreground">{t("performance.dataTransfer")}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold">{t("performance.title")}</h2>
+      </div>
+      <BaseGrid columns={{ sm: 1, md: 2, lg: 4 }}>
+        {performanceStats.map((stat, index) => (
+          <Card key={index}>
+            <CardContent className="p-6">
+              <div className="text-center">
+                <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
+                <p className="text-sm text-muted-foreground">{stat.label}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </BaseGrid>
     </section>
   );
 }
