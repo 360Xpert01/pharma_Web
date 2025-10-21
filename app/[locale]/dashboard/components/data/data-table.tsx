@@ -31,6 +31,7 @@ import {
   DownIcon,
 } from "@/lib/icons";
 import { DataTableProps, SortDirection, FilterOption } from "../../types";
+import { DataTableSkeleton } from "../loading/dashboard-loading";
 
 export function DataTable<T extends Record<string, any>>({
   title,
@@ -127,32 +128,8 @@ export function DataTable<T extends Record<string, any>>({
   };
 
   if (isLoading) {
-    return (
-      <Card className="animate-pulse border-primary/20">
-        <CardHeader>
-          <div className="h-6 bg-primary/20 rounded w-32 animate-pulse"></div>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex gap-4">
-              <div className="h-10 bg-primary/10 rounded flex-1 animate-pulse"></div>
-              <div className="h-10 bg-primary/20 rounded w-24 animate-pulse"></div>
-            </div>
-            <div className="space-y-2">
-              {Array.from({ length: 5 }).map((_, j) => (
-                <div key={j} className="h-12 bg-primary/5 rounded animate-pulse" />
-              ))}
-            </div>
-            <div className="text-center py-4">
-              <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-              <p className="text-sm text-muted-foreground">{t("table.loading")}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
+    return <DataTableSkeleton />;
   }
-
   return (
     <Card>
       <CardHeader>
