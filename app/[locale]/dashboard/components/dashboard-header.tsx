@@ -16,7 +16,7 @@ export function DashboardHeader({
 }: DashboardHeaderProps) {
   const t = useTranslations("dashboard");
   return (
-    <div className="flex items-start gap-6">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
       {/* Heading */}
       <div className="flex-1">
         <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
@@ -24,7 +24,7 @@ export function DashboardHeader({
       </div>
 
       {/* Action Buttons */}
-      <div className="flex items-center gap-3 flex-shrink-0">
+      <div className="flex items-center justify-center gap-3 sm:justify-start sm:flex-shrink-0">
         <Button
           variant="outline"
           size="sm"
