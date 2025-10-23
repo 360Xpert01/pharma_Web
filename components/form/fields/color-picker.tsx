@@ -2,7 +2,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Button } from "@/components/ui/button/button";
 import { HexColorPicker } from "react-colorful";
 
-import { FormField } from "@/types/form";
+import { FormField } from "@/types";
 import { BaseField } from "../base-field";
 export const ColorField = ({ field }: { field: FormField }) => {
   return (

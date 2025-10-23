@@ -1,9 +1,9 @@
 "use client";
 import { Button } from "@/components/ui/button/button";
-import { Modal } from "@/components/ui/modal";
 import { AddIcon } from "@/lib/icons";
 import { useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
+import { Modal, ModalContent } from "../ui/modal";
 
 type TPopupModalProps = {
   onConfirm?: () => void;
@@ -37,14 +37,12 @@ export default function PopupModal({
         <span className="hidden sm:inline">{buttonText}</span>
         <span className="sm:hidden">Add</span>
       </Button>
-      <Modal
-        isOpen={isOpen}
-        onClose={onClose}
-        className="mx-auto w-full max-w-4xl !bg-background !p-0"
-      >
-        <ScrollArea className="max-h-[85vh]">
-          <div className="p-4 sm:p-6">{renderModal(onClose)}</div>
-        </ScrollArea>
+      <Modal open={isOpen} onOpenChange={setIsOpen}>
+        <ModalContent className="mx-auto w-full max-w-4xl !bg-background !p-0">
+          <ScrollArea className="max-h-[85vh]">
+            <div className="p-4 sm:p-6">{renderModal(onClose)}</div>
+          </ScrollArea>
+        </ModalContent>
       </Modal>
     </>
   );

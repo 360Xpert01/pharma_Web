@@ -7,7 +7,7 @@ import { signupUser } from "@/store/slices/auth-slice";
 import { toast } from "sonner";
 import { createSignupSchema, type SignupFormValues } from "@/validations/authValidation";
 import { BaseForm } from "@/components/form/base-form";
-import type { FormField } from "@/types/form";
+import type { FormField } from "@/types";
 import { useAppDispatch } from "@/store";
 
 export default function SignupPage() {
@@ -45,14 +45,49 @@ export default function SignupPage() {
       required: true,
       className: "text-sm md:text-base",
     },
+    {
+      id: "firstName",
+      name: "firstName",
+      label: t("firstNameLabel") || "First Name",
+      type: "text",
+      placeholder: t("firstNameLabel") || "First Name",
+      required: true,
+      className: "text-sm md:text-base",
+    },
+    {
+      id: "lastName",
+      name: "lastName",
+      label: t("lastNameLabel") || "Last Name",
+      type: "text",
+      placeholder: t("lastNameLabel") || "Last Name",
+      required: true,
+      className: "text-sm md:text-base",
+    },
+    {
+      id: "acceptTerms",
+      name: "acceptTerms",
+      label: t("acceptTermsLabel") || "I accept the terms and conditions",
+      type: "checkbox",
+      required: true,
+      className: "text-sm md:text-base",
+    },
   ];
 
   async function onSubmit(values: SignupFormValues) {
     setIsLoading(true);
 
     try {
+      // Combine first and last name for the name field expected by the Redux action
+      const fullName = `${values.firstName} ${values.lastName}`.trim();
+
       // use redux thunk that handles axios + cookie internally
-      await dispatch(signupUser({ email: values.email, password: values.password })).unwrap();
+      await dispatch(
+        signupUser({
+          email: values.email,
+          password: values.password,
+          name: fullName,
+        })
+      ).unwrap();
 
       toast.success(t("success") || "Account Created!", {
         description: t("successDescription") || "Your account has been created successfully.",
@@ -80,7 +115,13 @@ export default function SignupPage() {
       <BaseForm
         fields={formFields}
         onSubmit={onSubmit}
-        defaultValues={{ email: "", password: "" }}
+        defaultValues={{
+          email: "",
+          password: "",
+          firstName: "",
+          lastName: "",
+          acceptTerms: false,
+        }}
         validationSchema={signupSchema}
         submitText={t("submitButton")}
         renderSubmitButton={({ isSubmitting }) => (

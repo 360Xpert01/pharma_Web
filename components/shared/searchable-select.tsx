@@ -32,6 +32,7 @@ type Props<T extends FieldValues> = {
 // Wrapper component to handle conditional useController
 const SearchableSelectWithController = <T extends FieldValues>({
   placeholder,
+  label,
   name,
   control,
   isString = true,
@@ -55,6 +56,7 @@ const SearchableSelectWithController = <T extends FieldValues>({
   return (
     <SearchableSelectBase
       placeholder={placeholder}
+      label={label}
       isString={isString}
       className={className}
       values={values}
@@ -74,6 +76,7 @@ const SearchableSelectWithController = <T extends FieldValues>({
 // Base component without controller
 const SearchableSelectBase = ({
   placeholder,
+  label,
   isString = true,
   className,
   values = [],
@@ -151,7 +154,7 @@ const SearchableSelectBase = ({
           <span className="truncate pr-12 text-gray-700 dark:text-gray-300">{displayText}</span>
           <div className="absolute right-2 flex items-center gap-1">
             {allowClear && value && (
-              <X
+              <CloseIcon
                 size={14}
                 className="cursor-pointer text-gray-400 transition-colors hover:text-red-500"
                 onClick={handleClear}

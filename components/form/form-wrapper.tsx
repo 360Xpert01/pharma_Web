@@ -2,20 +2,10 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { ExpandIcon, CollapseIcon } from "@/lib/icons";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { logger } from "@/logger/logger";
+import { FormField } from "@/types";
 
 interface SectionWrapperProps {
-  field: {
-    id: string;
-    label: string;
-    description?: string;
-    defaultOpen?: boolean;
-    collapsible?: boolean;
-    grid?: {
-      columns?: number | { sm?: number; md?: number; lg?: number };
-      gap?: string | number;
-    };
-  };
+  field: FormField;
   children: React.ReactNode;
 }
 
@@ -41,11 +31,6 @@ export const FormWrapper = ({ field, children }: SectionWrapperProps) => {
     }
 
     const result = classes.join(" ");
-    logger.debug("Form wrapper grid classes calculated", {
-      classes: result,
-      fieldId: field.id,
-      gridConfig: field.grid,
-    });
     return result;
   };
 

@@ -1,12 +1,13 @@
 "use client";
 
-import { type PropsWithChildren, useEffect } from "react";
+import { type PropsWithChildren, useEffect, useMemo } from "react";
 import { useLayout } from "@/contexts/layout-context";
 import { Header } from "./header";
 import { Sidebar } from "./sidebar";
 import MobileHamburgerMenu from "./mobile-hamburger-menu";
 import { cn } from "@/lib/utils";
 import { Footer } from "./footer/index";
+import { getSidebarContainerClasses } from "@/lib/layout-utils";
 
 interface DynamicLayoutProps extends PropsWithChildren {
   className?: string;
@@ -31,28 +32,26 @@ export function DynamicLayout({ children, className }: DynamicLayoutProps) {
 
   const isDesktopSidebarVisible = showSidebar && !isMobile && config.sidebar.variant === "fixed";
 
-  // Grid-based layout wrapper
-  const mainWrapperClasses = cn(
-    "min-h-screen bg-background",
-    "grid",
-    {
-      "grid-cols-[auto_1fr]": isDesktopSidebarVisible,
-      "grid-cols-1": !isDesktopSidebarVisible,
-    },
-    className
-  );
+  // Memoize layout classes for performance
+  const layoutClasses = useMemo(() => {
+    const mainWrapperClasses = cn(
+      "min-h-screen bg-background",
+      "grid",
+      {
+        "grid-cols-[auto_1fr]": isDesktopSidebarVisible,
+        "grid-cols-1": !isDesktopSidebarVisible,
+      },
+      className
+    );
 
-  const sidebarContainerClasses = cn(
-    "relative transition-all duration-300 ease-in-out border-e border-border/40 bg-background sticky top-0 h-screen overflow-visible",
-    {
-      hidden: !isDesktopSidebarVisible,
-      "w-16": isDesktopSidebarVisible && isSidebarCollapsed,
-      "w-64": isDesktopSidebarVisible && !isSidebarCollapsed && config.sidebar.width === "md",
-      "w-48": isDesktopSidebarVisible && !isSidebarCollapsed && config.sidebar.width === "sm",
-      "w-72": isDesktopSidebarVisible && !isSidebarCollapsed && config.sidebar.width === "lg",
-      "w-80": isDesktopSidebarVisible && !isSidebarCollapsed && config.sidebar.width === "xl",
-    }
-  );
+    const sidebarContainerClasses = getSidebarContainerClasses(
+      isDesktopSidebarVisible,
+      isSidebarCollapsed,
+      config.sidebar.width
+    );
+
+    return { mainWrapperClasses, sidebarContainerClasses };
+  }, [isDesktopSidebarVisible, isSidebarCollapsed, config.sidebar.width, className]);
 
   const rightColumnClasses = cn(
     "flex flex-col min-h-screen",
@@ -71,10 +70,10 @@ export function DynamicLayout({ children, className }: DynamicLayoutProps) {
   const actualContentClasses = cn(contentClasses, "flex-1");
 
   return (
-    <div className={mainWrapperClasses}>
+    <div className={layoutClasses.mainWrapperClasses}>
       {/* Desktop Sidebar */}
       {isDesktopSidebarVisible && (
-        <div className={sidebarContainerClasses}>
+        <div className={layoutClasses.sidebarContainerClasses}>
           <Sidebar />
         </div>
       )}

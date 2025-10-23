@@ -1,6 +1,6 @@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { FormField } from "@/types/form";
+import { FormField } from "@/types";
 import { BaseField } from "../base-field";
 
 export const RadioGroupField = ({ field }: { field: FormField }) => {

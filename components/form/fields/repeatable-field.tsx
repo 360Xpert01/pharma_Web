@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FormField as ShadFormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { FormField } from "@/types/form";
+import { FormField } from "@/types";
 import { useFormContext } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { InputField } from "./input";
@@ -16,7 +16,7 @@ import { DynamicSelectField } from "./dynamic-select";
 import { ToggleField } from "./toggle";
 
 interface RepeatableFieldProps {
-  field: FormField & { type: "repeatable" };
+  field: FormField;
 }
 
 export const RepeatableField = ({ field }: RepeatableFieldProps) => {
@@ -43,11 +43,6 @@ export const RepeatableField = ({ field }: RepeatableFieldProps) => {
     }
 
     const result = classes.join(" ");
-    logger.debug("Repeatable field grid classes calculated", {
-      classes: result,
-      fieldName: field.name,
-      gridConfig: field.grid,
-    });
     return result;
   };
 
@@ -73,7 +68,7 @@ export const RepeatableField = ({ field }: RepeatableFieldProps) => {
     const currentValue = form.getValues(field.name) || [];
     if (field.maxItems && currentValue.length >= field.maxItems) return;
 
-    const newItem = field.fields.reduce(
+    const newItem = (field.fields || []).reduce(
       (acc, f) => {
         // For select fields, default to '' (string)
         if (f.type === "select") {
@@ -100,7 +95,7 @@ export const RepeatableField = ({ field }: RepeatableFieldProps) => {
     const currentValue = form.getValues(field.name) || [];
     if (field.minItems && currentValue.length <= field.minItems) return;
 
-    const newValue = currentValue.filter((_, i) => i !== index);
+    const newValue = currentValue.filter((_: any, i: number) => i !== index);
     form.setValue(field.name, newValue, {
       shouldValidate: true,
       shouldDirty: true,
@@ -178,7 +173,7 @@ export const RepeatableField = ({ field }: RepeatableFieldProps) => {
                   </CardHeader>
                   <CardContent className="w-full">
                     <div className={cn(getGridClasses(), "w-full")}>
-                      {field.fields.map((subField) => {
+                      {(field.fields || []).map((subField) => {
                         const FieldComponent = getFieldComponent(subField.type);
                         if (!FieldComponent) return null;
                         // Always disable area field
@@ -221,9 +216,11 @@ export const RepeatableField = ({ field }: RepeatableFieldProps) => {
                             />
                             {/* Only show error for this row if touched or submitted and error exists */}
                             {showError(index) &&
-                              form.formState.errors?.[field.name]?.[index]?.[subField.name] && (
-                                <FormMessage name={`${field.name}.${index}.${subField.name}`} />
-                              )}
+                              form.formState.errors?.[field.name] &&
+                              Array.isArray(form.formState.errors[field.name]) &&
+                              (form.formState.errors[field.name] as unknown as any[])?.[index]?.[
+                                subField.name
+                              ] && <FormMessage />}
                           </div>
                         );
                       })}

@@ -1,5 +1,5 @@
 import { Switch } from "@/components/ui/switch";
-import { FormField } from "@/types/form";
+import { FormField } from "@/types";
 import { BaseField } from "../base-field";
 
 export const ToggleField = ({ field }: { field: FormField }) => {

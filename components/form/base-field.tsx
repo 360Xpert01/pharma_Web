@@ -1,4 +1,4 @@
-import { FormField } from "@/types/form";
+import { FormField } from "@/types";
 import {
   FormControl,
   FormDescription,
@@ -23,7 +23,7 @@ export const BaseField: React.FC<BaseFieldProps> = ({ field, renderInput }) => {
   const getSpanClasses = (span: number | { sm?: number; md?: number; lg?: number } | undefined) => {
     if (!span) return "";
 
-    const spanMap = {
+    const spanMap: Record<number, string> = {
       1: "col-span-1",
       2: "col-span-2",
       3: "col-span-3",
@@ -48,11 +48,14 @@ export const BaseField: React.FC<BaseFieldProps> = ({ field, renderInput }) => {
     if (span.lg) classes.push(`lg:${spanMap[span.lg]}`);
 
     const result = classes.join(" ");
-    logger.debug("Base field span classes calculated", {
-      classes: result,
-      fieldName: field.name,
-      spanConfig: field.span,
-    });
+    logger.debug(
+      {
+        classes: result,
+        fieldName: field.name,
+        spanConfig: field.span,
+      },
+      "Base field span classes calculated"
+    );
     return result;
   };
 
