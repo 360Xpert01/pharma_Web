@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { X, HomeIcon, SettingsIcon, UserIcon, BarChartIcon } from "@/lib/icons";
+import { CloseIcon, HomeIcon, SettingsIcon, UserIcon, BarChartIcon } from "@/lib/icons";
 import { Button } from "@/components/ui/button/button";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
@@ -50,7 +50,7 @@ export default function MobileHamburgerMenu({ className, onClose }: MobileHambur
           className="h-8 w-8 p-0"
           aria-label={t("collapseLabel")}
         >
-          <X className="h-5 w-5" />
+          <CloseIcon className="h-5 w-5" />
         </Button>
       </div>
 

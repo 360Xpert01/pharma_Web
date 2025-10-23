@@ -16,7 +16,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DoubleArrowLeftIcon, DoubleArrowRightIcon } from "@radix-ui/react-icons";
 import {
   ColumnDef,
   flexRender,
@@ -25,9 +24,9 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ChevronLeftIcon, ChevronRightIcon } from "@/lib/icons";
+import { ChevronLeftIcon, ChevronRightIcon, ChevronsLeft, ChevronsRight } from "@/lib/icons";
 import React from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useRouter } from "next/navigation";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -44,7 +43,8 @@ export default function DataTable<TData, TValue>({
   pageSizeOptions = [10, 20, 30, 40, 50],
   emptyMessage = "No results.",
 }: DataTableProps<TData, TValue>) {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   // Search params
   const page = searchParams?.get("page") ?? "1";
   const pageAsNumber = Number(page);
@@ -61,13 +61,11 @@ export default function DataTable<TData, TValue>({
 
   React.useEffect(() => {
     // Update the URL with the new page number and limit
-    setSearchParams({
-      ...Object.fromEntries(searchParams), // Spread the existing search params
-      page: (pageIndex + 1).toString(), // Update the page number (assuming pageIndex is 0-based)
-      limit: pageSize.toString(), // Update the limit
-    });
-    // if search is there setting filter value
-  }, [pageIndex, pageSize, searchParams, setSearchParams]);
+    const params = new URLSearchParams(searchParams);
+    params.set("page", (pageIndex + 1).toString());
+    params.set("limit", pageSize.toString());
+    router.push(`?${params.toString()}`);
+  }, [pageIndex, pageSize, searchParams, router]);
 
   const table = useReactTable({
     data,
@@ -167,7 +165,7 @@ export default function DataTable<TData, TValue>({
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
             >
-              <DoubleArrowLeftIcon className="h-4 w-4" aria-hidden="true" />
+              <ChevronsLeft className="h-4 w-4" aria-hidden="true" />
             </Button>
             <Button
               aria-label="Go to previous page"
@@ -194,7 +192,7 @@ export default function DataTable<TData, TValue>({
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
             >
-              <DoubleArrowRightIcon className="h-4 w-4" aria-hidden="true" />
+              <ChevronsRight className="h-4 w-4" aria-hidden="true" />
             </Button>
           </div>
         </div>

@@ -1,6 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { Modal } from "@/components/ui/modal";
-
+import { Button } from "../ui/button/button";
+import { Modal, ModalContent, ModalHeader, ModalTitle, ModalDescription } from "../ui/modal";
 
 type TAlertModalProps = {
   isOpen: boolean;
@@ -10,6 +9,7 @@ type TAlertModalProps = {
   title?: string;
   description?: string;
 };
+
 export const AlertModal = ({
   isOpen,
   onClose,
@@ -19,15 +19,21 @@ export const AlertModal = ({
   description = "Are you sure you want to continue?",
 }: TAlertModalProps) => {
   return (
-    <Modal title={title} description={description} isOpen={isOpen} onClose={onClose}>
-      <div className="flex w-full items-center justify-end space-x-2 pt-6">
-        <Button disabled={loading} variant="outline" onClick={onClose}>
-          Cancel
-        </Button>
-        <Button disabled={loading} variant="destructive" onClick={onConfirm}>
-          Continue
-        </Button>
-      </div>
+    <Modal open={isOpen} onOpenChange={onClose}>
+      <ModalContent>
+        <ModalHeader>
+          <ModalTitle>{title}</ModalTitle>
+          <ModalDescription>{description}</ModalDescription>
+        </ModalHeader>
+        <div className="flex w-full items-center justify-end space-x-2 pt-6">
+          <Button disabled={loading} variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button disabled={loading} variant="destructive" onClick={onConfirm}>
+            Continue
+          </Button>
+        </div>
+      </ModalContent>
     </Modal>
   );
 };

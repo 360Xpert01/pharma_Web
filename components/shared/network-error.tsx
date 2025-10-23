@@ -224,10 +224,13 @@ export default function NetworkErrorPage({
         await onRetry();
       });
     } catch (error) {
-      logger.error("Network retry attempt failed", {
-        error: error instanceof Error ? error.message : String(error),
-        retryCount: retryCount + 1,
-      });
+      logger.error(
+        {
+          error: error instanceof Error ? error.message : String(error),
+          retryCount: retryCount + 1,
+        },
+        "Network retry attempt failed"
+      );
     }
   };
 

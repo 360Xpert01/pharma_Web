@@ -6,7 +6,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert/alert";
 import PageHead from "@/components/shared/page-head";
 import { AlertIcon, RefreshIcon, HomeIcon, BugIcon } from "@/lib/icons";
 import { useTranslations } from "next-intl";
-import logger from "@/logger/logger";
+import { logger } from "@/logger/logger";
 
 interface ErrorPageProps {
   error: Error & { digest?: string };
@@ -19,11 +19,14 @@ export default function GlobalError({ error, reset }: ErrorPageProps) {
 
   useEffect(() => {
     // Log the error to an error reporting service
-    logger.error("Global application error occurred", {
-      message: error.message,
-      stack: error.stack,
-      digest: error.digest,
-    });
+    logger.error(
+      {
+        message: error.message,
+        stack: error.stack,
+        digest: error.digest,
+      },
+      "Global application error occurred"
+    );
   }, [error]);
 
   return (

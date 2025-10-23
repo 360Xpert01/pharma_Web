@@ -54,7 +54,7 @@ export function useAuth(): UseAuthReturn {
           id: userId,
           email: userEmail,
           name: Cookies.get(COOKIE_KEYS.USER_NAME) || "",
-          avatar: Cookies.get(COOKIE_KEYS.USER_AVATAR) || "",
+          avatar: Cookies.get(COOKIE_KEYS.USER_AVATAR),
           role: userRole === "admin" || userRole === "user" ? userRole : "user",
         };
         setCookieUser(userData);

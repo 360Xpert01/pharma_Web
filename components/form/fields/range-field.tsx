@@ -1,5 +1,5 @@
 import { Slider } from "@/components/ui/slider";
-import { FormField } from "@/types/form";
+import { FormField } from "@/types";
 import { BaseField } from "../base-field";
 
 export const RangeField = ({ field }: { field: FormField }) => {

@@ -38,8 +38,22 @@ export default function SocketDashboardPage() {
       details,
     };
     setLogs((prev) => [entry, ...prev.slice(0, 99)]); // Limit to 100 logs
-    if (logger[level as keyof typeof logger]) {
-      logger[level as keyof typeof logger]({ ...details }, message);
+    // Log to console with proper typing
+    switch (level) {
+      case "error":
+        logger.error({ ...details }, message);
+        break;
+      case "warn":
+        logger.warn({ ...details }, message);
+        break;
+      case "info":
+        logger.info({ ...details }, message);
+        break;
+      case "debug":
+        logger.debug({ ...details }, message);
+        break;
+      default:
+        logger.info({ ...details }, message);
     }
   }, []);
 

@@ -1,5 +1,5 @@
 import { Textarea } from "@/components/ui/textarea";
-import { FormField } from "@/types/form";
+import { FormField } from "@/types";
 import { BaseField } from "../base-field";
 
 export const TextareaField = ({ field }: { field: FormField }) => {

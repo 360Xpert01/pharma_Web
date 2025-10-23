@@ -57,11 +57,14 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     }
 
     // Log error for debugging
-    logger.error("Error caught by React error boundary", {
-      error: error.message,
-      stack: error.stack,
-      componentStack: errorInfo.componentStack,
-    });
+    logger.error(
+      {
+        error: error.message,
+        stack: error.stack,
+        componentStack: errorInfo.componentStack,
+      },
+      "Error caught by React error boundary"
+    );
 
     // Report to error monitoring service (if configured)
     this.reportError(appError, errorInfo);

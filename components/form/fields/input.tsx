@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { BaseField } from "../base-field";
-import { FormField } from "@/types/form";
+import { FormField } from "@/types";
 import { Eye, EyeOff } from "@/lib/icons";
 
 export const InputField = ({ field }: { field: FormField }) => {

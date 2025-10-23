@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { X } from "@/lib/icons";
 import { useState, KeyboardEvent } from "react";
 import { BaseField } from "../base-field";
-import { FormField } from "@/types/form";
+import { FormField } from "@/types";
 
 export const TagsInputField = ({ field }: { field: FormField }) => {
   const [inputValue, setInputValue] = useState("");

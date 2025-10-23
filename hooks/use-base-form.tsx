@@ -2,14 +2,44 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { FormField } from "@/types/form";
+import { FormField } from "@/types";
 import { useState } from "react";
 import React from "react";
+
+// Helper function to evaluate field condition
+function evaluateCondition(
+  condition: FormField["condition"],
+  values: Record<string, any>
+): boolean {
+  if (!condition) return true;
+
+  const fieldValue = values[condition.field];
+  const { value: conditionValue, operator = "equals" } = condition;
+
+  switch (operator) {
+    case "equals":
+      return fieldValue === conditionValue;
+    case "not_equals":
+      return fieldValue !== conditionValue;
+    case "contains":
+      return Array.isArray(fieldValue)
+        ? fieldValue.includes(conditionValue)
+        : typeof fieldValue === "string"
+          ? fieldValue.includes(conditionValue)
+          : false;
+    case "greater_than":
+      return Number(fieldValue) > Number(conditionValue);
+    case "less_than":
+      return Number(fieldValue) < Number(conditionValue);
+    default:
+      return true;
+  }
+}
 
 // Helper function to filter fields based on 'condition' property
 function filterFieldsByCondition(fields: FormField[], values: Record<string, any>): FormField[] {
   return fields
-    .filter((field) => !field.condition || field.condition(values))
+    .filter((field) => evaluateCondition(field.condition, values))
     .map((field) => {
       if (field.type === "section" && field.fields) {
         return {
