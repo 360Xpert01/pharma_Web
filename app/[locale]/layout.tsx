@@ -22,7 +22,7 @@ type Props = {
 };
 
 export default async function RootLayout({ children, params }: Props) {
-  const { locale } = params;
+  const { locale } = await params;
   // Load localized messages and fall back to an empty object on error to avoid client chunk failures
   let messages: any = {};
   try {
