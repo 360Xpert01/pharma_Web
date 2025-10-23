@@ -26,22 +26,22 @@ export function getWebSocket(): WebSocket | null {
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        logger.debug("[WebSocket] Message received", { data });
+        logger.debug({ data }, "[WebSocket] Message received");
         // Emit events similar to Socket.IO for compatibility
         window.dispatchEvent(new CustomEvent("ws:message", { detail: data }));
       } catch (err) {
-        logger.debug("[WebSocket] Raw message received", { data: event.data });
+        logger.debug({ data: event.data }, "[WebSocket] Raw message received");
       }
     };
 
     ws.onclose = (event) => {
-      logger.warn("[WebSocket] Disconnected", { code: event.code, reason: event.reason });
+      logger.warn({ code: event.code, reason: event.reason }, "[WebSocket] Disconnected");
       reconnectAttempts++;
       scheduleReconnect();
     };
 
     ws.onerror = (err) => {
-      logger.error("[WebSocket] Error occurred", { error: err });
+      logger.error({ error: err }, "[WebSocket] Error occurred");
       ws?.close();
     };
   }
@@ -60,7 +60,7 @@ function scheduleReconnect() {
   );
 
   reconnectTimer = setTimeout(() => {
-    logger.info("[WebSocket] Attempting reconnect...", { attempt: reconnectAttempts + 1 });
+    logger.info({ attempt: reconnectAttempts + 1 }, "[WebSocket] Attempting reconnect...");
     ws = null;
     getWebSocket();
   }, delay);

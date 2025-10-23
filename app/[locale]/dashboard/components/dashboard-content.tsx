@@ -5,7 +5,7 @@ import { DashboardProps } from "../types";
 import { ChartsSection } from "./charts/ChartsSection";
 import { DashboardHeader } from "./dashboard-header";
 import { DataSection } from "./data/data-section";
-import { MetricsSection } from "./metrics/metrcis-section";
+import { MetricsSection } from "./metrics/metrics-section";
 import { PerformanceStats } from "./performance/performance-stats";
 
 export function DashboardContent({ isLoading: externalLoading = false, data }: DashboardProps) {

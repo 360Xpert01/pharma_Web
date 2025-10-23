@@ -14,6 +14,7 @@ import Cookies from "js-cookie";
 import { useLayout } from "@/contexts/layout-context";
 import { useAuth } from "@/hooks/use-auth";
 import MobileHamburgerMenu from "./mobile-hamburger-menu";
+import { calculateSidebarWidth, getHeaderPositionStyles } from "@/lib/layout-utils";
 
 export function Header({ className }: { className?: string }) {
   const { computed, toggleSidebar, state, toggleMobileMenu, closeMobileMenu, config } = useLayout();
@@ -38,30 +39,8 @@ export function Header({ className }: { className?: string }) {
     };
   }, []);
 
-  // Calculate sidebar width for header offset
-  let sidebarWidth = 0;
-  if (showSidebar && !isMobile && config.sidebar.variant === "fixed") {
-    if (isSidebarCollapsed) {
-      sidebarWidth = 64; // collapsed width (w-16)
-    } else {
-      switch (config.sidebar.width) {
-        case "sm":
-          sidebarWidth = 192; // w-48
-          break;
-        case "md":
-          sidebarWidth = 256; // w-64
-          break;
-        case "lg":
-          sidebarWidth = 288; // w-72
-          break;
-        case "xl":
-          sidebarWidth = 320; // w-80
-          break;
-        default:
-          sidebarWidth = 256; // default to md
-      }
-    }
-  }
+  // Calculate sidebar width for header offset using utility
+  const sidebarWidth = calculateSidebarWidth(config, isSidebarCollapsed, isMobile);
 
   // Detect RTL layout
   const isRTL = typeof document !== "undefined" ? document.dir === "rtl" : false;
@@ -73,13 +52,8 @@ export function Header({ className }: { className?: string }) {
     className
   );
 
-  // Inline style for left/right/width offset
-  const headerStyle =
-    showSidebar && !isMobile && config.sidebar.variant === "fixed"
-      ? isRTL
-        ? { right: `${sidebarWidth}px`, left: 0, width: `calc(100% - ${sidebarWidth}px)` }
-        : { left: `${sidebarWidth}px`, right: 0, width: `calc(100% - ${sidebarWidth}px)` }
-      : { left: 0, right: 0, width: "100%" };
+  // Inline style for left/right/width offset using utility
+  const headerStyle = getHeaderPositionStyles(sidebarWidth, isRTL);
 
   const containerClasses = cn(
     "h-full grid grid-cols-[clamp(8px,2vw,16px)_1fr_clamp(8px,2vw,16px)] items-center"

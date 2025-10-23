@@ -11,7 +11,7 @@ import {
   TrendingUp,
   TrendingDown,
 } from "lucide-react";
-import { MetricCard } from "./metric-card";
+import { MetricCard } from "./metrics-card";
 import { BaseGrid } from "@/components/shared/base-grid";
 import { useTranslations } from "next-intl";
 import { MetricCardSkeleton } from "../loading/dashboard-loading";

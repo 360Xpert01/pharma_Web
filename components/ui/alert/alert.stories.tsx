@@ -18,7 +18,16 @@ import {
   WifiOff,
 } from "lucide-react";
 
-const meta: Meta<typeof Alert> = {
+// Define custom story args type
+interface AlertStoryArgs {
+  variant?: "default" | "destructive";
+  title?: string;
+  description?: string;
+  showIcon?: boolean;
+  className?: string;
+}
+
+const meta: Meta<AlertStoryArgs> = {
   title: "Components/UI/Alert",
   component: Alert,
   tags: ["autodocs"],
@@ -44,7 +53,7 @@ const meta: Meta<typeof Alert> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof Alert & { title: string; description: string; showIcon: boolean }>;
+type Story = StoryObj<AlertStoryArgs>;
 
 export const Default: Story = {
   args: {

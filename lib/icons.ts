@@ -9,6 +9,7 @@ import {
   Menu,
   X,
   ChevronsLeft,
+  ChevronsRight,
   ChevronDown,
   ChevronRight,
   ChevronLeft,
@@ -192,6 +193,7 @@ export const PercentIcon = Percent;
 export const PaletteIcon = Palette;
 export const VisibilityIcon = Eye;
 export const SidebarCollapseIcon = ChevronsLeft;
+export { ChevronsRight };
 export const ExpandIcon = ChevronDown;
 export const CollapseIcon = ChevronRight;
 export const NavigateLeftIcon = ChevronLeft;

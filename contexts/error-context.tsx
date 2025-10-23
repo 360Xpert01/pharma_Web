@@ -45,11 +45,14 @@ export function ErrorProvider({ children, maxErrors = 5 }: ErrorProviderProps) {
       });
 
       // Log error for debugging
-      logger.error("Error added to application context", {
-        type: appError.type,
-        message: appError.message,
-        code: appError.code,
-      });
+      logger.error(
+        {
+          type: appError.type,
+          message: appError.message,
+          code: appError.code,
+        },
+        "Error added to application context"
+      );
     },
     [maxErrors]
   );

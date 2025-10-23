@@ -6,7 +6,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { BaseField } from "../base-field";
-import { FormField } from "@/types/form";
+import { FormField } from "@/types";
 
 export const SelectField = ({ field }: { field: FormField }) => {
   return (
@@ -17,15 +17,14 @@ export const SelectField = ({ field }: { field: FormField }) => {
         const stringValue = value?.toString() || "";
 
         const handleValueChange = (newValue: string) => {
-          // Convert back to number if the field validation expects a number or a union/transform
-          if (
-            field.validation &&
-            (field.validation._def?.typeName === "ZodNumber" ||
-              field.validation._def?.typeName === "ZodUnion" ||
-              field.validation._def?.typeName === "ZodEffects")
-          ) {
-            const numValue = newValue ? Number(newValue) : undefined;
-            onChange(numValue);
+          // Check if we need to convert to number based on field type or options
+          const shouldConvertToNumber = field.options?.some(
+            (option) => typeof option.value === "number"
+          );
+
+          if (shouldConvertToNumber && newValue !== "") {
+            const numValue = Number(newValue);
+            onChange(isNaN(numValue) ? newValue : numValue);
           } else {
             onChange(newValue);
           }
@@ -38,7 +37,7 @@ export const SelectField = ({ field }: { field: FormField }) => {
             </SelectTrigger>
             <SelectContent>
               {field.options?.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
+                <SelectItem key={option.value} value={String(option.value)}>
                   {option.label}
                 </SelectItem>
               ))}

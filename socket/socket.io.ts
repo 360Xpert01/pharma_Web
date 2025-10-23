@@ -16,8 +16,9 @@ export function getSocketIO(): Socket {
       reconnectionDelayMax: socketConfig.reconnectionDelayMax,
       randomizationFactor: socketConfig.randomizationFactor,
       timeout: socketConfig.timeout,
-      pingTimeout: socketConfig.pingTimeout,
-      pingInterval: socketConfig.pingInterval,
+      // pingTimeout and pingInterval are server-side configurations
+      // pingTimeout: socketConfig.pingTimeout,
+      // pingInterval: socketConfig.pingInterval,
       transports: socketConfig.transports,
       upgrade: socketConfig.upgrade,
       auth: {
@@ -31,7 +32,8 @@ export function getSocketIO(): Socket {
       rememberUpgrade: true,
       closeOnBeforeunload: true,
       autoUnref: false,
-      perMessageDeflate: socketConfig.perMessageDeflate,
+      // perMessageDeflate is for WebSocket, not Socket.IO
+      // perMessageDeflate: socketConfig.perMessageDeflate,
     });
 
     // Event listeners with proper logging
@@ -71,12 +73,13 @@ export function getSocketIO(): Socket {
       logger.debug("[Socket.IO] Ping sent to server");
     });
 
-    socket.io.on("pong", () => {
-      logger.debug("[Socket.IO] Pong received");
-    });
+    // Note: pong event is not available in socket.io client
+    // socket.io.on("pong", () => {
+    //   logger.debug("[Socket.IO] Pong received");
+    // });
 
     socket.onAny((event, ...args) => {
-      logger.debug(`[Socket.IO] Event received: ${event}`, { args });
+      logger.debug({ event, args }, `[Socket.IO] Event received: ${event}`);
     });
   }
 

@@ -1,7 +1,7 @@
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { FormField } from "@/types/form";
+import { FormField } from "@/types";
 import { useBaseForm } from "@/hooks/use-base-form";
 import { InputField } from "./fields/input";
 import { SelectField } from "./fields/select";
@@ -23,7 +23,7 @@ import { RepeatableField } from "./fields/repeatable-field";
 import { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 
-const FieldComponents = {
+const FieldComponents: Record<string, React.ComponentType<{ field: FormField }>> = {
   // Basic fields
   text: InputField,
   email: InputField,
@@ -131,7 +131,7 @@ export const BaseForm: React.FC<BaseFormProps> = ({
             if (field.type === "section") {
               return (
                 <FormWrapper key={field.id} field={field}>
-                  {field.fields?.map((nestedField) => {
+                  {field.fields?.map((nestedField: FormField) => {
                     const FieldComponent =
                       FieldComponents[nestedField.type] || FieldComponents.text;
                     return <FieldComponent key={nestedField.id} field={nestedField} />;

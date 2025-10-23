@@ -6,72 +6,22 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { storage } from "@/lib/actions/actions";
 import { useIsMobile as useIsMobileHook } from "@/hooks/use-mobile";
-
-// Layout configuration types
-export interface LayoutConfig {
-  // Header configuration
-  header: {
-    enabled: boolean;
-    fixed: boolean;
-    height: "sm" | "md" | "lg";
-    showLogo: boolean;
-    showNavigation: boolean;
-    showUserMenu: boolean;
-    collapsible: boolean;
-  };
-
-  // Sidebar configuration
-  sidebar: {
-    enabled: boolean;
-    position: "left" | "right";
-    variant: "fixed" | "drawer" | "overlay";
-    width: "sm" | "md" | "lg" | "xl";
-    collapsible: boolean;
-    defaultCollapsed: boolean;
-    showOnMobile: boolean;
-    mobileBreakpoint: "sm" | "md" | "lg" | "xl";
-  };
-
-  // Footer configuration
-  footer: {
-    enabled: boolean;
-    fixed: boolean;
-    variant: "simple" | "detailed" | "minimal" | "social" | "centered" | "compact";
-    showOnMobile: boolean;
-  };
-
-  // Content area configuration
-  content: {
-    maxWidth: "full" | "container" | "prose";
-    padding: "none" | "sm" | "md" | "lg";
-    centered: boolean;
-  };
-
-  // Navigation configuration
-  navigation: {
-    style: "horizontal" | "vertical" | "tabs" | "breadcrumb";
-    showBreadcrumbs: boolean;
-    mobileMenuType: "drawer" | "dropdown" | "fullscreen";
-  };
-
-  // Theme and responsive settings
-  responsive: {
-    mobileFirst: boolean;
-    breakpoints: {
-      sm: number;
-      md: number;
-      lg: number;
-      xl: number;
-    };
-  };
-}
+import type {
+  LayoutConfiguration,
+  LayoutRuntimeState,
+  LayoutPreset,
+  LayoutComputedValues,
+} from "@/types/layout";
+import { LAYOUT_PRESETS } from "@/types/layout";
+import { calculateLayoutValues, createLayoutMemoKey } from "@/lib/layout-utils";
 
 // Default configuration
-const defaultLayoutConfig: LayoutConfig = {
+const defaultLayoutConfig: LayoutConfiguration = {
   header: {
     enabled: true,
     fixed: false,
@@ -118,41 +68,31 @@ const defaultLayoutConfig: LayoutConfig = {
   },
 };
 
-// Layout state for runtime toggles
-interface LayoutState {
-  sidebarOpen: boolean;
-  mobileMenuOpen: boolean;
-  isLoading: boolean;
-}
-
-const defaultLayoutState: LayoutState = {
+// Default layout state
+const defaultLayoutState: LayoutRuntimeState = {
   sidebarOpen: false,
   mobileMenuOpen: false,
   isLoading: false,
 };
 
+// Extended computed values interface to include additional properties
+interface ExtendedLayoutComputedValues extends LayoutComputedValues {
+  isSidebarCollapsed: boolean;
+  effectiveSidebarWidth: number;
+}
+
 type LayoutContextValue = {
   // Configuration
-  config: LayoutConfig;
-  updateConfig: (updates: Partial<LayoutConfig>) => void;
+  config: LayoutConfiguration;
+  updateConfig: (updates: Partial<LayoutConfiguration>) => void;
   resetConfig: () => void;
 
   // Runtime state
-  state: LayoutState;
-  updateState: (updates: Partial<LayoutState>) => void;
+  state: LayoutRuntimeState;
+  updateState: (updates: Partial<LayoutRuntimeState>) => void;
 
   // Computed values
-  computed: {
-    showHeader: boolean;
-    showSidebar: boolean;
-    showFooter: boolean;
-    sidebarWidth: string;
-    headerHeight: string;
-    contentClasses: string;
-    isMobile: boolean;
-    isSidebarCollapsed: boolean;
-    effectiveSidebarWidth: number;
-  };
+  computed: ExtendedLayoutComputedValues;
 
   // Actions
   toggleSidebar: () => void;
@@ -161,33 +101,33 @@ type LayoutContextValue = {
   setHeader: (enabled: boolean) => void;
 
   // Presets
-  applyPreset: (preset: "website" | "dashboard" | "portal" | "blog" | "minimal") => void;
+  applyPreset: (preset: LayoutPreset) => void;
 };
 
 const LayoutContext = createContext<LayoutContextValue | undefined>(undefined);
 
 export function LayoutProvider({ children }: PropsWithChildren) {
-  const [config, setConfig] = useState<LayoutConfig>(() => {
+  const [config, setConfig] = useState<LayoutConfiguration>(() => {
     // Load from localStorage if available
     const saved = storage.getJson("layout-config", defaultLayoutConfig);
     return { ...defaultLayoutConfig, ...saved };
   });
 
-  const [state, setState] = useState<LayoutState>(defaultLayoutState);
-  const isMobile = useIsMobileHook(config.responsive.breakpoints.md);
+  const [state, setState] = useState<LayoutRuntimeState>(defaultLayoutState);
+  const isMobile = useIsMobileHook();
 
   // Save config to localStorage when it changes
   useEffect(() => {
     storage.setJson("layout-config", config);
   }, [config]);
 
-  const updateConfig = useCallback((updates: Partial<LayoutConfig>) => {
+  const updateConfig = useCallback((updates: Partial<LayoutConfiguration>) => {
     setConfig((prev) => {
       const newConfig = { ...prev };
 
       // Deep merge for nested objects
       Object.keys(updates).forEach((key) => {
-        const updateKey = key as keyof LayoutConfig;
+        const updateKey = key as keyof LayoutConfiguration;
         if (typeof updates[updateKey] === "object" && updates[updateKey] !== null) {
           newConfig[updateKey] = { ...prev[updateKey], ...updates[updateKey] } as any;
         } else {
@@ -204,7 +144,7 @@ export function LayoutProvider({ children }: PropsWithChildren) {
     storage.remove("layout-config");
   }, []);
 
-  const updateState = useCallback((updates: Partial<LayoutState>) => {
+  const updateState = useCallback((updates: Partial<LayoutRuntimeState>) => {
     setState((prev) => ({ ...prev, ...updates }));
   }, []);
 
@@ -224,245 +164,36 @@ export function LayoutProvider({ children }: PropsWithChildren) {
     setConfig((prev) => ({ ...prev, header: { ...prev.header, enabled } }));
   }, []);
 
-  // Computed values
+  // Memoization for expensive layout calculations
+  const memoKeyRef = useRef<string>("");
+  const computedRef = useRef<ExtendedLayoutComputedValues | null>(null);
+
+  // Computed values with optimized memoization
   const computed = useMemo(() => {
-    const showHeader = config.header.enabled;
-    const showSidebar = config.sidebar.enabled && (!isMobile || config.sidebar.showOnMobile);
-    const showFooter = config.footer.enabled && (!isMobile || config.footer.showOnMobile);
+    const newMemoKey = createLayoutMemoKey(config, state, isMobile);
 
-    // Dynamic width classes
-    const sidebarWidthMap = {
-      sm: "w-48",
-      md: "w-64",
-      lg: "w-72",
-      xl: "w-80",
-    };
+    // Return cached result if inputs haven't changed
+    if (memoKeyRef.current === newMemoKey && computedRef.current) {
+      return computedRef.current;
+    }
 
-    const headerHeightMap = {
-      sm: "h-12",
-      md: "h-16",
-      lg: "h-20",
-    };
+    // Calculate new values
+    const newComputed = calculateLayoutValues(config, state, isMobile);
 
-    const sidebarWidth = sidebarWidthMap[config.sidebar.width];
-    const headerHeight = headerHeightMap[config.header.height];
+    // Cache the result
+    memoKeyRef.current = newMemoKey;
+    computedRef.current = newComputed;
 
-    // Content classes based on configuration
-    const contentClasses = [
-      // Max width
-      config.content.maxWidth === "container"
-        ? "max-w-7xl"
-        : config.content.maxWidth === "prose"
-          ? "max-w-4xl"
-          : "w-full",
+    return newComputed;
+  }, [config, state, isMobile]);
 
-      // Padding
-      config.content.padding === "none"
-        ? ""
-        : config.content.padding === "sm"
-          ? "p-2"
-          : config.content.padding === "md"
-            ? "p-4 md:p-6"
-            : "p-6 md:p-8",
-
-      // Centering
-      config.content.centered ? "mx-auto" : "",
-    ]
-      .filter(Boolean)
-      .join(" ");
-
-    // Additional computed values for layout
-    const isSidebarCollapsed = state.sidebarOpen && config.sidebar.collapsible;
-    const effectiveSidebarWidth = isSidebarCollapsed
-      ? 64 // 4rem for collapsed sidebar
-      : config.sidebar.width === "sm"
-        ? 192
-        : config.sidebar.width === "md"
-          ? 256
-          : config.sidebar.width === "lg"
-            ? 288
-            : 320;
-
-    return {
-      showHeader,
-      showSidebar,
-      showFooter,
-      sidebarWidth,
-      headerHeight,
-      contentClasses,
-      isMobile,
-      isSidebarCollapsed,
-      effectiveSidebarWidth,
-    };
-  }, [config, isMobile, state.sidebarOpen]);
-
-  // Layout presets
+  // Layout presets using centralized configuration
   const applyPreset = useCallback(
-    (preset: "website" | "dashboard" | "portal" | "blog" | "minimal") => {
-      const presets: Record<string, Partial<LayoutConfig>> = {
-        website: {
-          header: {
-            enabled: true,
-            fixed: false,
-            height: "md",
-            showLogo: true,
-            showNavigation: true,
-            showUserMenu: true,
-            collapsible: true,
-          },
-          sidebar: {
-            enabled: false,
-            position: "left",
-            variant: "fixed",
-            width: "md",
-            collapsible: true,
-            defaultCollapsed: false,
-            showOnMobile: false,
-            mobileBreakpoint: "md",
-          },
-          footer: {
-            enabled: true,
-            fixed: false,
-            variant: "detailed",
-            showOnMobile: true,
-          },
-          content: {
-            maxWidth: "container",
-            padding: "md",
-            centered: true,
-          },
-        },
-        dashboard: {
-          header: {
-            enabled: true,
-            fixed: true,
-            height: "md",
-            showLogo: true,
-            showNavigation: true,
-            showUserMenu: true,
-            collapsible: true,
-          },
-          sidebar: {
-            enabled: true,
-            position: "left",
-            variant: "fixed",
-            width: "md",
-            collapsible: true,
-            defaultCollapsed: false,
-            showOnMobile: false,
-            mobileBreakpoint: "md",
-          },
-          footer: {
-            enabled: false,
-            fixed: false,
-            variant: "simple",
-            showOnMobile: false,
-          },
-          content: {
-            maxWidth: "full",
-            padding: "md",
-            centered: false,
-          },
-        },
-        portal: {
-          header: {
-            enabled: true,
-            fixed: true,
-            height: "lg",
-            showLogo: true,
-            showNavigation: true,
-            showUserMenu: true,
-            collapsible: true,
-          },
-          sidebar: {
-            enabled: true,
-            position: "left",
-            variant: "drawer",
-            width: "lg",
-            collapsible: true,
-            defaultCollapsed: false,
-            showOnMobile: true,
-            mobileBreakpoint: "md",
-          },
-          footer: {
-            enabled: true,
-            fixed: false,
-            variant: "minimal",
-            showOnMobile: true,
-          },
-          content: {
-            maxWidth: "full",
-            padding: "lg",
-            centered: false,
-          },
-        },
-        blog: {
-          header: {
-            enabled: true,
-            fixed: false,
-            height: "md",
-            showLogo: true,
-            showNavigation: false,
-            showUserMenu: false,
-            collapsible: true,
-          },
-          sidebar: {
-            enabled: false,
-            position: "left",
-            variant: "fixed",
-            width: "md",
-            collapsible: true,
-            defaultCollapsed: false,
-            showOnMobile: false,
-            mobileBreakpoint: "md",
-          },
-          footer: {
-            enabled: true,
-            fixed: false,
-            variant: "simple",
-            showOnMobile: true,
-          },
-          content: {
-            maxWidth: "prose",
-            padding: "lg",
-            centered: true,
-          },
-        },
-        minimal: {
-          header: {
-            enabled: false,
-            fixed: false,
-            height: "md",
-            showLogo: false,
-            showNavigation: false,
-            showUserMenu: false,
-            collapsible: false,
-          },
-          sidebar: {
-            enabled: false,
-            position: "left",
-            variant: "fixed",
-            width: "md",
-            collapsible: false,
-            defaultCollapsed: false,
-            showOnMobile: false,
-            mobileBreakpoint: "md",
-          },
-          footer: {
-            enabled: false,
-            fixed: false,
-            variant: "simple",
-            showOnMobile: false,
-          },
-          content: {
-            maxWidth: "full",
-            padding: "md",
-            centered: true,
-          },
-        },
-      };
-
-      updateConfig(presets[preset]);
+    (preset: LayoutPreset) => {
+      const presetConfig = LAYOUT_PRESETS[preset];
+      if (presetConfig) {
+        updateConfig(presetConfig);
+      }
     },
     [updateConfig]
   );

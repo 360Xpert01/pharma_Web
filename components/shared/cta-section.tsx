@@ -1,7 +1,6 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { ArrowRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button/button";
 import { CTASvg } from "@/components/svgs/cta-svg";
