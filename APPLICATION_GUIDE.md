@@ -7,6 +7,7 @@
 - [Development Workflow](#development-workflow)
 - [Known Issues & Roadmap](#known-issues--roadmap)
 - [Contributing Guidelines](#contributing-guidelines)
+- [Documentation](#documentation)
 
 ## Architecture
 
@@ -14,36 +15,42 @@
 
 #### 1. Dynamic Layout System
 
-The application features a sophisticated layout engine that adapts to different use cases:
+The application features a sophisticated layout engine that adapts to different use cases.
 
-**Layout Presets:**
+> **📖 Complete Documentation**: [Layout System Guide](./docs/LAYOUT_SYSTEM.md)
 
-- `website` - Marketing/landing pages
-- `dashboard` - Admin/analytics interface
-- `portal` - User portal with sidebar
-- `blog` - Content-focused layout
-- `minimal` - Clean, distraction-free
+**Quick Overview:**
 
-**Configuration:**
+- **5 Layout Presets**: website, dashboard, portal, blog, minimal
+- **Dynamic Configuration**: Real-time layout changes without page reloads
+- **Responsive Design**: Mobile-first with configurable breakpoints
+- **Internationalization**: Full RTL/LTR support
+- **State Persistence**: Layout preferences saved in localStorage
+
+**Basic Usage:**
 
 ```typescript
-interface LayoutConfiguration {
-  header: HeaderConfig;
-  sidebar: SidebarConfig;
-  footer: FooterConfig;
-  content: ContentConfig;
-  navigation: LayoutNavigationConfig;
-  responsive: ResponsiveConfig;
+import { useLayout } from '@/contexts/layout-context';
+
+function MyComponent() {
+  const { applyPreset, updateConfig, computed } = useLayout();
+
+  // Apply a preset
+  applyPreset('dashboard');
+
+  // Customize configuration
+  updateConfig({
+    sidebar: { width: 'lg', collapsible: true }
+  });
+
+  // Use computed values
+  return (
+    <div className={computed.contentClasses}>
+      {computed.showSidebar && <Sidebar />}
+    </div>
+  );
 }
 ```
-
-**Key Features:**
-
-- Responsive breakpoints with mobile-first design
-- Collapsible sidebar with state persistence
-- Multiple sidebar variants (fixed, drawer, overlay)
-- RTL/LTR support for internationalization
-- Smooth animations and transitions
 
 #### 2. Authentication System
 
@@ -338,6 +345,23 @@ describe("Authentication API", () => {
 - Screenshots for UI changes
 - Maintainer review
 - Prompt feedback response
+
+## Documentation
+
+### System Documentation
+
+- **[Layout System Guide](./docs/LAYOUT_SYSTEM.md)** - Comprehensive guide to the dynamic layout system
+  - Configuration options and presets
+  - API reference and usage examples
+  - Internationalization and RTL support
+  - Best practices and troubleshooting
+
+### Additional Resources
+
+- **Component Library**: Storybook documentation (coming soon)
+- **API Documentation**: OpenAPI specification (coming soon)
+- **Testing Guide**: Testing patterns and utilities (coming soon)
+- **Deployment Guide**: Production deployment instructions (coming soon)
 
 ---
 
