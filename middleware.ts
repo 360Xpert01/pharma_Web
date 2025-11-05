@@ -6,7 +6,7 @@ const intlMiddleware = createMiddleware(routing);
 
 export default function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-  const locale = getLocaleFromPath(pathname);
+  // const locale = getLocaleFromPath(pathname);
 
   // Read auth flow (server-side cookie). Keep safe JSON parse.
   const authFlowData = request.cookies.get("auth_flow");
@@ -17,41 +17,21 @@ export default function middleware(request: NextRequest) {
     authFlow = null;
   }
 
-  // Protect OTP page - only accessible after login attempt
-  if (pathname.match(/^\/(en|ur)?\/\(auth\)\/otp$/)) {
-    if (!authFlow || authFlow.step !== "awaiting-otp") {
-      return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
-    }
-  }
-
-  // Protect reset password page - only accessible with valid reset token
-  if (pathname.match(/^\/(en|ur)?\/\(auth\)\/reset$/)) {
-    if (!authFlow || authFlow.step !== "reset-password" || !authFlow.resetToken) {
-      return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
-    }
-  }
-
-  // Dashboard protection - use the same token key your client sets ("auth_token")
-  const authToken = request.cookies.get("auth_token");
-  if (pathname.match(/^\/(en|ur)?\/dashboard/)) {
-    if (!authToken) {
-      return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
-    }
-  }
-
-  // Default root -> locale redirect
+  // Redirect root path to dashboard
   if (pathname === "/") {
     const url = request.nextUrl.clone();
-    url.pathname = `/${routing.defaultLocale}`;
+    url.pathname = `/dashboard`;
+    return NextResponse.redirect(url);
+  }
+
+  // Redirect root with locale to dashboard
+  if (pathname === `/`) {
+    const url = request.nextUrl.clone();
+    url.pathname = `/dashboard`;
     return NextResponse.redirect(url);
   }
 
   return intlMiddleware(request);
-}
-
-function getLocaleFromPath(pathname: string): string {
-  const match = pathname.match(/^\/(en|ur)/);
-  return match?.[1] || routing.defaultLocale;
 }
 
 export const config = {

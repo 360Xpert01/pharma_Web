@@ -21,7 +21,7 @@ export default function FileUpload({ onChange, value }: TFileUploadProps) {
   const onUpdateFile = async (newFiles: File[]) => {
     await executeWithLoading(async () => {
       // Simulate upload processing time
-      const { sleep } = await import('@/lib/actions/actions');
+      const { sleep } = await import("@/lib/actions/actions");
       await sleep(1000);
       onChange(newFiles);
     });
@@ -29,7 +29,7 @@ export default function FileUpload({ onChange, value }: TFileUploadProps) {
   return (
     <div className="flex items-center justify-center">
       <div className="relative h-36 w-36 overflow-hidden rounded-full bg-gray-200 shadow-2xl">
-        <LoaderOverlay isLoading={isLoading} />
+        {/* <LoaderOverlay isLoading={isLoading} /> */}
         <div {...getRootProps({ className: "dropzone cursor-pointer" })}>
           <input {...getInputProps()} disabled={isLoading} />
           {value && !!value.length ? (
@@ -40,7 +40,7 @@ export default function FileUpload({ onChange, value }: TFileUploadProps) {
 
           <p className="absolute -bottom-5 left-1/2 flex w-full -translate-x-1/2 -translate-y-1/2 transform flex-col items-center justify-center bg-gray-300 bg-opacity-50 py-1 text-xs font-normal text-muted-foreground">
             <CameraUploadIcon className="h-4 w-4 text-muted-foreground" />
-            {isLoading ? 'Uploading...' : 'Add Image'}
+            {isLoading ? "Uploading..." : "Add Image"}
           </p>
         </div>
       </div>

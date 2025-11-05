@@ -1,123 +1,312 @@
 "use client";
 
-import { Link } from "@/i18n/navigation";
-import { MenuIcon, CloseIcon } from "@/lib/icons";
-import { ThemeToggle } from "./theme-toggle";
-import { UserProfile } from "./user-profile";
-import { LanguageSwitcher } from "./language-switcher";
-import { Button } from "@/components/ui/button/button";
-import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
-import { AuthButtons } from "./auth-buttons";
-import Cookies from "js-cookie";
-import { useLayout } from "@/contexts/layout-context";
-import { useAuth } from "@/hooks/use-auth";
-import MobileHamburgerMenu from "./mobile-hamburger-menu";
-import { calculateSidebarWidth, getHeaderPositionStyles } from "@/lib/layout-utils";
+import { useState, useRef, useEffect } from "react";
+import { ChevronDown, Search, Bell, User, ChevronRight } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
-export function Header({ className }: { className?: string }) {
-  const { computed, toggleSidebar, state, toggleMobileMenu, closeMobileMenu, config } = useLayout();
-  const { showSidebar, headerHeight, isMobile, isSidebarCollapsed } = computed;
-  const { isAuthenticated, isLoading } = useAuth();
-  const t = useTranslations("layout.header");
+interface DropdownItem {
+  label: string;
+  href?: string;
+  items?: DropdownItem[];
+}
 
-  const [hasCookieUser, setHasCookieUser] = useState<boolean>(
-    () =>
-      typeof window !== "undefined" && (!!Cookies.get("auth_token") || !!Cookies.get("user_email"))
-  );
+interface NavItem {
+  label: string;
+  href?: string;
+  items?: DropdownItem[];
+}
+
+const Navbar = () => {
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
+  const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+
+  const navItems: NavItem[] = [
+    {
+      label: "Dashboard",
+      href: "/",
+    },
+    {
+      label: "People & Teams",
+      items: [
+        { label: "Employees (Rep, Manager, Admin)", href: "/dashboard/Employees-Management" },
+        { label: "Campaigns/Teams", href: "/dashboard/giveaway-Managenment" },
+        { label: "Attendance & Tracking", href: "/dashboard/product-Management" },
+        { label: "Leave Management", href: "/people-teams/leaves" },
+        { label: "Expense Requests", href: "/people-teams/expenses" },
+      ],
+    },
+    {
+      label: "Accounts",
+      items: [
+        { label: "Doctors / HCP Directory", href: "/dashboard/account-Management" },
+        { label: "Pharmacies & Chemists", href: "/dashboard/account-Pharmacies" },
+        { label: "Hospitals / Institutions", href: "/dashboard/account-Hospitals" },
+        { label: "Key Accounts (KAM)", href: "/dashboard/account-Management" },
+      ],
+    },
+    {
+      label: "Products",
+      items: [
+        { label: "Products", href: "/" },
+        {
+          label: "Promotional Materials",
+          items: [
+            { label: "Samples & Promotional", href: "/dashboard/sample-Management" },
+            { label: "Gifts / Merchandise", href: "/dashboard/giveaway-Management" },
+          ],
+        },
+      ],
+    },
+    {
+      label: "DCR",
+      items: [
+        { label: "Daily Call Reports", href: "/dcr/daily" },
+        { label: "Sample Distribution", href: "/dcr/samples" },
+        { label: "Order Capture Log", href: "/dcr/orders" },
+      ],
+    },
+    {
+      label: "Field Ops",
+      items: [
+        {
+          label: "Planning",
+          href: "/field-ops/planning",
+          items: [
+            { label: "Monthly Work plans", href: "/dashboard/plan-Management" },
+            { label: "Revenue Targets & Achievement", href: "/dashboard/giveaway-Management" },
+          ],
+        },
+        { label: "Execution", href: "/field-ops/execution" },
+        { label: "Admin", href: "/field-ops/admin" },
+      ],
+    },
+    {
+      label: "Analytics",
+      items: [
+        { label: "Performance", href: "/analytics/performance" },
+        { label: "Activity Insights", href: "/analytics/activity" },
+        { label: "BI Dashboards", href: "/analytics/bi" },
+      ],
+    },
+    {
+      label: "Compliance",
+      items: [
+        { label: "Monitoring", href: "/compliance/monitoring" },
+        { label: "Logs", href: "/compliance/logs" },
+        { label: "Governance", href: "/compliance/governance" },
+      ],
+    },
+    {
+      label: "Integrations",
+      items: [
+        { label: "Import / Export (CSV)", href: "/integrations/csv" },
+        { label: "CRM API Management", href: "/integrations/api" },
+        { label: "Integration / CSV Import", href: "/integrations/import" },
+        { label: "BI / Reporting Tools", href: "/integrations/bi" },
+      ],
+    },
+    {
+      label: "Support",
+      items: [
+        { label: "Help Center / Knowledge Base", href: "/support/help" },
+        { label: "Training Resources", href: "/support/training" },
+        { label: "Submit a Ticket", href: "/support/ticket" },
+        { label: "Business Rules", href: "/support/rules" },
+      ],
+    },
+    {
+      label: "Control Center",
+      items: [
+        { label: "Organization", href: "/control-center/org" },
+        { label: "Access & Security", href: "/control-center/security" },
+        { label: "Product Setup", href: "/control-center/products" },
+      ],
+    },
+    {
+      label: "AI & Insights",
+      items: [
+        { label: "Predictive Analytics", href: "/ai/predictive" },
+        { label: "ML & AI Sentiment", href: "/ai/sentiment" },
+        { label: "Recommendations", href: "/ai/recommendations" },
+        { label: "AI-Generated Summaries", href: "/ai/summaries" },
+      ],
+    },
+  ];
+
+  const [query, setQuery] = useState("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setQuery(value);
+  };
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const check = () =>
-      setHasCookieUser(!!Cookies.get("auth_token") || !!Cookies.get("user_email"));
-    window.addEventListener("storage", check);
-    const interval = setInterval(check, 300);
-    return () => {
-      window.removeEventListener("storage", check);
-      clearInterval(interval);
+    const handleClickOutside = (event: MouseEvent) => {
+      const clickedOutside = Object.values(dropdownRefs.current).every(
+        (ref) => ref && !ref.contains(event.target as Node)
+      );
+      if (clickedOutside) {
+        setOpenDropdown(null);
+        setActiveSubmenu(null);
+      }
     };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Calculate sidebar width for header offset using utility
-  const sidebarWidth = calculateSidebarWidth(config, isSidebarCollapsed, isMobile);
+  // FIXED: Proper toggle - click again to close
+  const toggleDropdown = (label: string) => {
+    setOpenDropdown((prev) => (prev === label ? null : label));
+    setActiveSubmenu(null); // Reset submenu on toggle
+  };
 
-  // Detect RTL layout
-  const isRTL = typeof document !== "undefined" ? document.dir === "rtl" : false;
+  const handleSubmenuEnter = (label: string) => {
+    setActiveSubmenu(label);
+  };
 
-  // This ensures it stays at top and adjusts width/left/right based on sidebar state and direction
-  const headerClasses = cn(
-    "fixed top-0 z-40 border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
-    headerHeight,
-    className
-  );
+  const handleSubmenuLeave = () => {
+    setActiveSubmenu(null);
+  };
 
-  // Inline style for left/right/width offset using utility
-  const headerStyle = getHeaderPositionStyles(sidebarWidth, isRTL);
+  // Recursive render with hover + click support
+  const renderDropdownItems = (items: DropdownItem[]) => {
+    return items.map((item) => (
+      <div
+        key={item.label}
+        className="relative group stickey w-[]"
+        onMouseEnter={() => item.items && handleSubmenuEnter(item.label)}
+        onMouseLeave={handleSubmenuLeave}
+      >
+        {item.href ? (
+          <Link
+            href={item.href}
+            onClick={() => setOpenDropdown(null)} // Close on link click
+            className="flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+          >
+            {item.label}
+          </Link>
+        ) : (
+          <button
+            onClick={() => {
+              if (item.items) {
+                // If has submenu, don't close main dropdown
+                handleSubmenuEnter(item.label);
+              } else {
+                setOpenDropdown(null); // Close if no submenu
+              }
+            }}
+            className="flex items-center justify-between w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+          >
+            {item.label}
+            {item.items && <ChevronRight className="w-4 h-4" />}
+          </button>
+        )}
 
-  const containerClasses = cn(
-    "h-full grid grid-cols-[clamp(8px,2vw,16px)_1fr_clamp(8px,2vw,16px)] items-center"
-  );
-
-  const renderAuthSection = () => {
-    if (isLoading) {
-      return <div className="ml-1 w-24 h-9 animate-pulse rounded-md" />;
-    }
-
-    const showUser = isAuthenticated || hasCookieUser;
-    return showUser ? (
-      <UserProfile className="ml-1" />
-    ) : (
-      <AuthButtons variant="compact" className="ml-1" />
-    );
+        {/* Nested submenu - opens on hover */}
+        {item.items && activeSubmenu === item.label && (
+          <div className="absolute left-full top-0 mt-0 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+            {renderDropdownItems(item.items)}
+          </div>
+        )}
+      </div>
+    ));
   };
 
   return (
-    <header className={headerClasses} style={headerStyle}>
-      <div className={containerClasses}>
-        {/* Middle content column with built-in side gutters (no margin/padding) */}
-        <div className="col-start-2 col-end-3 flex items-center justify-between">
-          {/* Left Section */}
-          <div className="flex items-center gap-3">
-            {isMobile && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => (state.mobileMenuOpen ? closeMobileMenu() : toggleMobileMenu())}
-                className="md:hidden h-9 w-9 p-0"
-                aria-label={t("toggleMobileNavLabel")}
-              >
-                {state.mobileMenuOpen ? (
-                  <CloseIcon className="h-5 w-5" aria-hidden="true" />
-                ) : (
-                  <MenuIcon className="h-5 w-5" aria-hidden="true" />
-                )}
-              </Button>
-            )}
-
-            {/* Desktop sidebar toggle removed as requested */}
-
-            <Link
-              href="/dashboard"
-              className="flex items-center gap-2 font-semibold text-lg hover:opacity-80 transition-opacity"
-              onClick={() => closeMobileMenu()}
-              aria-label={`${t("logoText")} - Go to Home`}
-            >
-              <span className="hidden sm:block">{t("logoText")}</span>
-            </Link>
+    <nav className="bg-white border-b border-gray-200">
+      <div className="mx-auto px-6">
+        <div className="flex items-center justify-between h-14">
+          <div className="flex items-center gap-8">
+            <div>
+              <Image
+                src="/Vector.svg"
+                alt="Ceturvi Logo"
+                width={150}
+                height={50}
+                className="object-contain"
+              />
+            </div>
           </div>
 
-          {/* Right Section */}
-          <div className="flex items-center gap-2">
-            <LanguageSwitcher />
-            <ThemeToggle />
-            {renderAuthSection()}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 bg-white rounded-full px-4 py-2.5 w-full max-w-md border border-gray-300 hover:border-gray-400 transition-colors">
+              <Search className="h-5 w-5 text-gray-600 flex-shrink-0" />
+              <input
+                type="text"
+                placeholder="Search here..."
+                value={query}
+                onChange={handleChange}
+                className="border-0 bg-transparent text-gray-900 focus:outline-none text-sm w-full"
+              />
+            </div>
+
+            <button className="relative p-2 text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">
+              <Bell className="w-5 h-5" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full"></span>
+            </button>
+
+            <div className="flex items-center gap-2 p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
+              <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                <User className="w-5 h-5 text-gray-600" />
+              </div>
+              <div>
+                <div className="text-sm font-medium">Nirma Amir</div>
+                <div className="text-xs text-gray-500">namraamir@ceturo.com</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+      <hr className="border-gray-200" />
 
-      {/* Mobile Navigation Drawer */}
-      {isMobile && state.mobileMenuOpen && <MobileHamburgerMenu onClose={closeMobileMenu} />}
-    </header>
+      <div className="flex items-center w-full justify-around bg-white shadow-md">
+        {navItems.map((item) => (
+          <div
+            key={item.label}
+            className="relative"
+            ref={(el) => (dropdownRefs.current[item.label] = el)}
+          >
+            {item.items ? (
+              <>
+                <button
+                  onClick={() => toggleDropdown(item.label)}
+                  className="flex items-center gap-1 px-4 py-3 text-sm font-medium text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all duration-200"
+                >
+                  {item.label}
+                  <ChevronDown
+                    className={`w-4 h-4 transition-transform duration-200 ${
+                      openDropdown === item.label ? "rotate-180 text-purple-600" : ""
+                    }`}
+                  />
+                </button>
+
+                {openDropdown === item.label && (
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-100 py-3 z-50">
+                    <div className="px-4 pb-2">
+                      <h3 className="text-xs font-semibold text-purple-600 uppercase tracking-wider">
+                        {item.label}
+                      </h3>
+                    </div>
+                    {renderDropdownItems(item.items)}
+                  </div>
+                )}
+              </>
+            ) : (
+              <Link
+                href={item.href || "#"}
+                className="px-4 py-3 text-sm font-medium text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all"
+              >
+                {item.label}
+              </Link>
+            )}
+          </div>
+        ))}
+      </div>
+    </nav>
   );
-}
+};
+
+export default Navbar;

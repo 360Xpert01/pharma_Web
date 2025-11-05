@@ -76,52 +76,14 @@ export function MetricsSection({ data, isLoading = false }: MetricsSectionProps)
       color: "warning" as const,
       description: t("metrics.descriptions.conversionRate"),
     },
-    {
-      title: t("metrics.orders"),
-      value: metricsData.orders,
-      change: 23.1,
-      changeType: "increase" as const,
-      icon: ShoppingCart,
-      color: "info" as const,
-      description: t("metrics.descriptions.orders"),
-    },
-    {
-      title: t("metrics.growth"),
-      value: metricsData.growth,
-      change: 5.4,
-      changeType: "increase" as const,
-      icon: TrendingUp,
-      suffix: "%",
-      color: "success" as const,
-      description: t("metrics.descriptions.growth"),
-    },
-    {
-      title: t("metrics.bounceRate"),
-      value: metricsData.bounceRate,
-      change: -3.2,
-      changeType: "decrease" as const,
-      icon: TrendingDown,
-      suffix: "%",
-      color: "success" as const,
-      description: t("metrics.descriptions.bounceRate"),
-    },
-    {
-      title: t("metrics.pageViews"),
-      value: metricsData.pageViews,
-      change: 18.7,
-      changeType: "increase" as const,
-      icon: Eye,
-      color: "info" as const,
-      description: t("metrics.descriptions.pageViews"),
-    },
   ];
 
   return (
     <section className="space-y-6">
-      <div className="mb-8">
+      {/* <div className="mb-8">
         <h2 className="text-2xl font-bold tracking-tight">{t("sections.metrics")}</h2>
         <p className="text-muted-foreground">{t("sections.metricsDescription")}</p>
-      </div>
+      </div> */}
       <BaseGrid columns={{ sm: 1, md: 2, lg: 4 }}>
         {isLoading
           ? Array.from({ length: 8 }).map((_, index) => <MetricCardSkeleton key={index} />)

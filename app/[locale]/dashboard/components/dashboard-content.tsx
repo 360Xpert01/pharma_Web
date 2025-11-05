@@ -7,8 +7,20 @@ import { DashboardHeader } from "./dashboard-header";
 import { DataSection } from "./data/data-section";
 import { MetricsSection } from "./metrics/metrics-section";
 import { PerformanceStats } from "./performance/performance-stats";
+import SalesDashboard from "./charts/SalesDashboard";
 
-export function DashboardContent({ isLoading: externalLoading = false, data }: DashboardProps) {
+export function DashboardContent({
+  isLoading: externalLoading = false,
+  data,
+  sample,
+  descrip,
+  table,
+  hideHeader,
+  hideMetrics,
+  hideData,
+  btnTrue,
+  btnAdd,
+}: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
 
   const combinedLoading = externalLoading || isLoading;
@@ -19,19 +31,25 @@ export function DashboardContent({ isLoading: externalLoading = false, data }: D
   };
 
   return (
-    <div className="space-y-10 p-6">
+    <div className="space-y-10 p-6 bg-white">
       {/* Dashboard Header with Actions */}
       <DashboardHeader
         onRefresh={handleRefresh}
         onSettings={handleSettings}
         isLoading={combinedLoading}
+        title={sample}
+        description={descrip}
+        btnAdd={btnAdd}
+        btnTrue={btnTrue}
       />
 
       {/* Metrics Cards Section */}
-      <MetricsSection data={data?.metrics} isLoading={combinedLoading} />
+      {!hideMetrics && <MetricsSection data={data?.metrics} isLoading={combinedLoading} />}
+
+      <SalesDashboard />
 
       {/* Charts Section */}
-      <ChartsSection isLoading={combinedLoading} />
+      {/* <ChartsSection isLoading={combinedLoading} /> */}
 
       {/* Data Tables Section */}
       <DataSection
@@ -41,10 +59,12 @@ export function DashboardContent({ isLoading: externalLoading = false, data }: D
           orders: data?.orders,
         }}
         isLoading={combinedLoading}
+        table={table}
+        description={descrip}
       />
 
       {/* Quick Stats Footer */}
-      <PerformanceStats isLoading={combinedLoading} />
+      {/* <PerformanceStats isLoading={combinedLoading} /> */}
     </div>
   );
 }

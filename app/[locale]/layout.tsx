@@ -12,8 +12,8 @@ import { Suspense } from "react";
 import "../globals.css";
 
 export const metadata: Metadata = {
-  title: "NextJS Boilerplate",
-  description: "Created By Muhammad Zahid",
+  title: "NextJs",
+  description: "",
 };
 
 type Props = {
@@ -31,22 +31,17 @@ export default async function RootLayout({ children, params }: Props) {
     messages = {};
   }
 
-  const bodyClasses =
-    locale === "ur"
-      ? `font-urdu ${urduFont.variable} ${GeistSans.variable} ${GeistMono.variable} antialiased`
-      : `font-sans ${GeistSans.variable} ${GeistMono.variable} ${urduFont.variable} antialiased`;
-
   return (
-    <html lang={locale} suppressHydrationWarning dir={locale === "ur" ? "rtl" : "ltr"}>
-      <body className={bodyClasses}>
+    <html lang={locale} suppressHydrationWarning>
+      <body>
         <NextIntlClientProvider messages={messages}>
-          <Suspense
+          {/* <Suspense
             fallback={<LoaderOverlay isLoading text="Next Boiler..." variant="default" size="lg" />}
-          >
-            <Providers>{children}</Providers>
-          </Suspense>
+          > */}
+          <Providers>{children}</Providers>
+          {/* </Suspense> */}
         </NextIntlClientProvider>
-        <Analytics />
+        {/* <Analytics /> */}
       </body>
     </html>
   );

@@ -28,6 +28,7 @@ import {
   MoreIcon,
   SortIcon,
   UpIcon,
+  UploadIcon,
   DownIcon,
 } from "@/lib/icons";
 import { DataTableProps, SortDirection, FilterOption } from "../../types";
@@ -35,6 +36,7 @@ import { DataTableSkeleton } from "../loading/dashboard-loading";
 
 export function DataTable<T extends Record<string, any>>({
   title,
+  description,
   data,
   columns,
   icon: Icon,
@@ -133,73 +135,78 @@ export function DataTable<T extends Record<string, any>>({
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {Icon && <Icon className="h-5 w-5" />}
-            <CardTitle>{title}</CardTitle>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm">
-              <DownloadIcon className="h-4 w-4 mr-2" />
-              {t("actions.export")}
-            </Button>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-4 mt-4">
-          {searchKey && (
-            <div className="relative flex-1 max-w-sm">
-              <SearchInputIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder={t("placeholders.search")}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-2xl font-bold">
+              <CardTitle>{title}</CardTitle>
             </div>
-          )}
 
-          {filterOptions && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+            <div className="flex items-center gap-4 ">
+              {searchKey && (
+                <div className="relative bg-white flex-1 max-w-sm">
+                  <SearchInputIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input
+                    placeholder={t("placeholders.search")}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              )}
+
+              {filterOptions && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      <FilterIcon className="h-6 w-4 " />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>Filter by {filterOptions.key as string}</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => setFilterValue(null)}>All</DropdownMenuItem>
+                    {filterOptions.options.map((option) => (
+                      <DropdownMenuItem
+                        key={option.value}
+                        onClick={() => setFilterValue(option.value)}
+                      >
+                        {option.label}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+              <div>
                 <Button variant="outline" size="sm">
-                  <FilterIcon className="h-4 w-4 mr-2" />
-                  {t("actions.filter")}
+                  <UploadIcon className="h-4 w-4 mr-2" />
+                  {t("actions.export")}
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuLabel>Filter by {filterOptions.key as string}</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => setFilterValue(null)}>All</DropdownMenuItem>
-                {filterOptions.options.map((option) => (
-                  <DropdownMenuItem key={option.value} onClick={() => setFilterValue(option.value)}>
-                    {option.label}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
+              </div>
+            </div>
+          </div>
+
+          {/* Add description here */}
+          {description && <p className="text-sm text-gray-600">{description}</p>}
         </div>
       </CardHeader>
-
       <CardContent>
-        <div className="rounded-md border">
+        <div className="rounded-md shadow-md ">
           <Table>
             <TableHeader>
               <TableRow>
-                {columns.map((column) => (
+                {/* {columns.map((column) => (
                   <TableHead
                     key={String(column.key)}
                     className={column.sortable ? "cursor-pointer select-none" : ""}
                     onClick={column.sortable ? () => handleSort(column.key) : undefined}
                   >
-                    <div className="flex items-center gap-2">
+                    <div className="flex text-black items-center gap-2">
                       {column.label}
                       {column.sortable && getSortIcon(column.key)}
                     </div>
                   </TableHead>
-                ))}
-                <TableHead>{t("table.headers.actions")}</TableHead>
+                ))} */}
+                {/* <TableHead>{t("table.headers.actions")}</TableHead> */}
               </TableRow>
             </TableHeader>
             <TableBody>

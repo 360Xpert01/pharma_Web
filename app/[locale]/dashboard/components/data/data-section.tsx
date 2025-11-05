@@ -13,9 +13,11 @@ interface DataSectionProps {
     orders?: Order[];
   };
   isLoading?: boolean;
+  table: string;
+  description: string;
 }
 
-export function DataSection({ data, isLoading = false }: DataSectionProps) {
+export function DataSection({ data, isLoading = false, table, description }: DataSectionProps) {
   const t = useTranslations("dashboard");
   const tShared = useTranslations("shared");
 
@@ -71,47 +73,92 @@ export function DataSection({ data, isLoading = false }: DataSectionProps) {
   const defaultProducts: Product[] = [
     {
       id: "1",
-      name: t("sampleData.products.product1.name"),
-      price: 299.99,
-      quantity: 25,
-      total: 7499.75,
+      name: t("sampleData.products.laptop.name"),
+      price: 999.99,
+      quantity: 10,
+      total: 9999.9,
       date: "2024-09-27",
       status: "completed",
     },
     {
       id: "2",
-      name: t("sampleData.products.product2.name"),
-      price: 24.99,
-      quantity: 150,
-      total: 3748.5,
+      name: t("sampleData.products.smartphone.name"),
+      price: 699.99,
+      quantity: 25,
+      total: 17499.75,
       date: "2024-09-26",
       status: "processing",
     },
     {
       id: "3",
-      name: t("sampleData.products.product3.name"),
-      price: 79.99,
-      quantity: 45,
-      total: 3599.55,
+      name: t("sampleData.products.headphones.name"),
+      price: 149.99,
+      quantity: 50,
+      total: 7499.5,
       date: "2024-09-25",
       status: "completed",
     },
     {
       id: "4",
-      name: t("sampleData.products.product4.name"),
-      price: 12.99,
-      quantity: 200,
-      total: 2598.0,
+      name: t("sampleData.products.tablet.name"),
+      price: 449.99,
+      quantity: 15,
+      total: 6749.85,
       date: "2024-09-24",
       status: "cancelled",
     },
     {
       id: "5",
-      name: t("sampleData.products.product5.name"),
-      price: 49.99,
-      quantity: 80,
-      total: 3999.2,
+      name: t("sampleData.products.smartwatch.name"),
+      price: 199.99,
+      quantity: 40,
+      total: 7999.6,
       date: "2024-09-23",
+      status: "processing",
+    },
+    {
+      id: "6",
+      name: t("sampleData.products.camera.name"),
+      price: 799.99,
+      quantity: 8,
+      total: 6399.92,
+      date: "2024-09-22",
+      status: "completed",
+    },
+    {
+      id: "7",
+      name: t("sampleData.products.speaker.name"),
+      price: 79.99,
+      quantity: 100,
+      total: 7999.0,
+      date: "2024-09-21",
+      status: "processing",
+    },
+    {
+      id: "8",
+      name: t("sampleData.products.keyboard.name"),
+      price: 129.99,
+      quantity: 35,
+      total: 4549.65,
+      date: "2024-09-20",
+      status: "completed",
+    },
+    {
+      id: "9",
+      name: t("sampleData.products.monitor.name"),
+      price: 299.99,
+      quantity: 20,
+      total: 5999.8,
+      date: "2024-09-19",
+      status: "cancelled",
+    },
+    {
+      id: "10",
+      name: t("sampleData.products.mouse.name"),
+      price: 49.99,
+      quantity: 75,
+      total: 3749.25,
+      date: "2024-09-18",
       status: "processing",
     },
   ];
@@ -240,32 +287,16 @@ export function DataSection({ data, isLoading = false }: DataSectionProps) {
 
   return (
     <section className="space-y-6">
-      <Heading
+      {/* <Heading
         title={t("sections.dataLists")}
         description={t("sections.dataListsDescription")}
         className="mb-8"
-      />
+      /> */}
 
       <div className="space-y-8">
         <DataTable
-          title={t("sections.userManagement")}
-          data={users}
-          columns={userColumns}
-          icon={UsersIcon}
-          searchKey="name"
-          filterOptions={{
-            key: "status",
-            options: [
-              { label: t("status.active"), value: "active" },
-              { label: t("status.inactive"), value: "inactive" },
-              { label: t("status.pending"), value: "pending" },
-            ],
-          }}
-          isLoading={isLoading}
-        />
-
-        <DataTable
-          title={t("sections.topProducts")}
+          title={table || "All plans"}
+          description={description || "Unlock the potential of your candidates"}
           data={products}
           columns={productColumns}
           icon={BagIcon}
@@ -275,24 +306,6 @@ export function DataSection({ data, isLoading = false }: DataSectionProps) {
             options: [
               { label: t("status.completed"), value: "completed" },
               { label: t("status.processing"), value: "processing" },
-              { label: t("status.cancelled"), value: "cancelled" },
-            ],
-          }}
-          isLoading={isLoading}
-        />
-
-        <DataTable
-          title={t("sections.recentOrders")}
-          data={orders}
-          columns={orderColumns}
-          icon={UserCheckIcon}
-          searchKey="customer"
-          filterOptions={{
-            key: "status",
-            options: [
-              { label: t("status.completed"), value: "completed" },
-              { label: t("status.processing"), value: "processing" },
-              { label: t("status.pending"), value: "pending" },
               { label: t("status.cancelled"), value: "cancelled" },
             ],
           }}

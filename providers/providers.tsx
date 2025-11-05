@@ -15,21 +15,25 @@ import { ErrorBoundary } from "@/components/shared/error-boundary";
 
 export default function Providers({ children }: PropsWithChildren) {
   const [queryClient] = useState(() => new QueryClient());
-  const fallback = useMemo(
-    () => <LoaderOverlay isLoading={true} text="Next Boilerplate" variant="default" size="md" />,
-    []
-  );
+  // const fallback = useMemo(
+  //   () => <LoaderOverlay isLoading={true} text="Next Boilerplate" variant="default" size="md" />,
+  //   []
+  // );
 
   return (
     <ReduxProvider store={store}>
-      <PersistGate loading={fallback} persistor={persistor}>
+      <PersistGate persistor={persistor}>
+        {" "}
+        {/* loading={fallback} */}
         <QueryClientProvider client={queryClient}>
           <ThemeProvider themes={["light", "dark", "ocean"]}>
             <GlobalLoadingProvider>
               <ErrorProvider maxErrors={10}>
                 <ErrorBoundary showDetails={process.env.NODE_ENV === "development"}>
                   <LayoutProvider>
-                    <Suspense fallback={fallback}>
+                    <Suspense>
+                      {" "}
+                      {/* fallback={fallback} */}
                       {children}
                       <GlobalLoadingOverlay />
                       <Toaster />

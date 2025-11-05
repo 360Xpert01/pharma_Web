@@ -1,31 +1,42 @@
 "use client";
 import { Button } from "@/components/ui/button/button";
-import { RefreshCw, Settings } from "lucide-react";
+import { RefreshCw, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 interface DashboardHeaderProps {
   onRefresh?: () => void;
   onSettings?: () => void;
   isLoading?: boolean;
+  title?: string;
+  description?: string;
+  btnTrue?: boolean;
+  btnAdd?: string;
 }
 
 export function DashboardHeader({
   onRefresh,
   onSettings,
   isLoading = false,
+  title,
+  description,
+  btnAdd,
+  btnTrue,
 }: DashboardHeaderProps) {
   const t = useTranslations("dashboard");
+  const heading = title;
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
+    <div className="flex text-black flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
       {/* Heading */}
       <div className="flex-1">
-        <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
-        <p className="text-muted-foreground">{t("description")}</p>
+        <h1 className="text-3xl font-bold tracking-tight">{heading || "plans Management"}</h1>
+        <p className="text-muted-foreground">
+          {description || "Unlock the potential of your candidates"}
+        </p>
       </div>
 
       {/* Action Buttons */}
       <div className="flex items-center justify-center gap-3 sm:justify-start sm:flex-shrink-0">
-        <Button
+        {/* <Button
           variant="outline"
           size="sm"
           onClick={onRefresh}
@@ -35,18 +46,19 @@ export function DashboardHeader({
         >
           <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
           {isLoading ? t("loading.refreshing") : t("actions.refresh")}
-        </Button>
-
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onSettings}
-          title={t("tooltips.settings")}
-          aria-label={t("tooltips.settings")}
-        >
-          <Settings className="h-4 w-4 mr-2" />
-          {t("actions.settings")}
-        </Button>
+        </Button> */}
+        {!btnTrue && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onSettings}
+            title={t("tooltips.settings")}
+            aria-label={t("tooltips.settings")}
+          >
+            <Plus className="h-4 w-4 mr-1" />
+            {btnAdd || "add"}
+          </Button>
+        )}
       </div>
     </div>
   );

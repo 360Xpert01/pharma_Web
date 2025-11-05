@@ -35,6 +35,7 @@ import {
   Search,
   SearchIcon,
   Filter,
+  ListFilter,
   Download,
   Upload,
   RefreshCw,
@@ -144,6 +145,7 @@ export {
   Server,
   CheckCircle,
   XCircle,
+  ListFilter,
   type LucideIcon,
   type LucideProps,
 };
@@ -157,7 +159,7 @@ export const AddIcon = Plus;
 export const DeleteIcon = Trash2;
 export const EditIcon = Edit;
 export const SearchInputIcon = Search;
-export const FilterIcon = Filter;
+export const FilterIcon = ListFilter;
 export const DownloadIcon = Download;
 export const UploadIcon = Upload;
 export const RefreshIcon = RefreshCw;

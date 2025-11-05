@@ -2,7 +2,7 @@
 
 import { type PropsWithChildren, useEffect, useMemo } from "react";
 import { useLayout } from "@/contexts/layout-context";
-import { Header } from "./header";
+import Header from "./header";
 import { Sidebar } from "./sidebar";
 import MobileHamburgerMenu from "./mobile-hamburger-menu";
 import { cn } from "@/lib/utils";
@@ -35,7 +35,7 @@ export function DynamicLayout({ children, className }: DynamicLayoutProps) {
   // Memoize layout classes for performance
   const layoutClasses = useMemo(() => {
     const mainWrapperClasses = cn(
-      "min-h-screen bg-background",
+      "min-h-screen ",
       "grid",
       {
         "grid-cols-[auto_1fr]": isDesktopSidebarVisible,
@@ -54,14 +54,14 @@ export function DynamicLayout({ children, className }: DynamicLayoutProps) {
   }, [isDesktopSidebarVisible, isSidebarCollapsed, config.sidebar.width, className]);
 
   const rightColumnClasses = cn(
-    "flex flex-col min-h-screen",
+    "flex w-full flex-col min-h-screen",
     "transition-all duration-300 ease-in-out",
     {
       "pt-16": showHeader, // Adjust based on your header height (h-16 = 64px)
     }
   );
 
-  const headerContainerClasses = cn("transition-all duration-300 ease-in-out", {
+  const headerContainerClasses = cn("transition-all w-full duration-300 ease-in-out", {
     block: showHeader,
     hidden: !showHeader,
   });
@@ -70,25 +70,15 @@ export function DynamicLayout({ children, className }: DynamicLayoutProps) {
   const actualContentClasses = cn(contentClasses, "flex-1");
 
   return (
-    <div className={layoutClasses.mainWrapperClasses}>
+    <div className="">
       {/* Desktop Sidebar */}
-      {isDesktopSidebarVisible && (
-        <div className={layoutClasses.sidebarContainerClasses}>
-          <Sidebar />
-        </div>
-      )}
 
       {/* Right: Header + Content */}
-      <div className={rightColumnClasses}>
-        {showHeader && (
-          <div className={headerContainerClasses}>
-            <Header />
-          </div>
-        )}
-
+      <Header />
+      <div>
         <div className={contentWrapperClasses}>
           <main className={actualContentClasses}>{children}</main>
-          {showFooter && <Footer className={cn({ relative: !config.footer.fixed })} />}
+          {/* {showFooter && <Footer className={cn({ relative: !config.footer.fixed })} />} */}
         </div>
       </div>
 

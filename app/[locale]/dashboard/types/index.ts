@@ -78,6 +78,7 @@ export interface DataTableProps<T> {
     options: FilterOption[];
   };
   isLoading?: boolean;
+  description: string;
 }
 
 export interface DashboardProps {
@@ -88,4 +89,12 @@ export interface DashboardProps {
     products?: Product[];
     orders?: Order[];
   };
+  sample: string;
+  descrip: string;
+  table: string;
+  hideHeader?: boolean;
+  hideMetrics?: boolean;
+  hideData?: boolean;
+  btnAdd?: string;
+  btnTrue?: boolean;
 }

@@ -6,7 +6,7 @@ import { BaseGrid } from "@/components/shared/base-grid";
 
 export default function AuthLayout({ children }: PropsWithChildren) {
   const { setHeader } = useLayout();
-  useEffect(() => setHeader(false), [setHeader]);
+  // useEffect(() => setHeader(false), [setHeader]);
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
