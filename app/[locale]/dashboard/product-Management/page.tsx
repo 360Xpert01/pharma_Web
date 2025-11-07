@@ -11,6 +11,7 @@ export default function DashboardPage() {
         hideHeader={true}
         hideMetrics={true}
         hideData={false}
+        btnAdd={"Add New Product"}
       />
     </div>
   );

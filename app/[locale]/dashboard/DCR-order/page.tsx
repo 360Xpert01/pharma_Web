@@ -8,6 +8,7 @@ export default function DashboardPage() {
         sample={"Order Capture"}
         descrip={"Unlock the potential of your candidates"}
         table={"Total Order"}
+        btnTrue={true}
       />
     </div>
   );

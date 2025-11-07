@@ -8,6 +8,7 @@ export default function DashboardPage() {
         sample={"Account Management"}
         descrip={"Welcome to Ceutro, It's looking like a slow day"}
         table={"All Hospitals / Institutions"}
+        btnAdd={"Add Hospitals"}
       />
     </div>
   );

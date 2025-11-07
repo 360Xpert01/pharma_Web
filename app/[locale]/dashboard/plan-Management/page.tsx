@@ -7,7 +7,7 @@ export default function DashboardPage() {
       <DashboardContent
         sample={"plans Management"}
         descrip={"Unlock the potential of your candidates"}
-        table={"All Giveaway"}
+        table={"All Plans"}
         btnTrue={true}
       />
     </div>

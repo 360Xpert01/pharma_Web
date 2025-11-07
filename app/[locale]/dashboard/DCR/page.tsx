@@ -8,6 +8,7 @@ export default function DashboardPage() {
         sample={"Daily Call Reports"}
         descrip={"Unlock the potential of your candidates"}
         table={"Calls Report"}
+        btnTrue={true}
       />
     </div>
   );
