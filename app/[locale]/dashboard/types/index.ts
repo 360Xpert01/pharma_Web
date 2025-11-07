@@ -97,4 +97,5 @@ export interface DashboardProps {
   hideData?: boolean;
   btnAdd?: string;
   btnTrue?: boolean;
+  proBar?: boolean;
 }
