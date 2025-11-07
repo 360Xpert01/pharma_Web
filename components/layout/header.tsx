@@ -31,7 +31,7 @@ const Navbar = () => {
       label: "People & Teams",
       items: [
         { label: "Employees (Rep, Manager, Admin)", href: "/dashboard/Employees-Management" },
-        { label: "Campaigns/Teams", href: "/dashboard/giveaway-Management" },
+        { label: "Campaigns/Teams", href: "/dashboard/campaign-Management" },
         { label: "Attendance & Tracking", href: "/dashboard/product-Management" },
         { label: "Leave Management", href: "/dashboard" },
         { label: "Expense Requests", href: "/dashboard/request-View" },
@@ -49,7 +49,7 @@ const Navbar = () => {
     {
       label: "Products",
       items: [
-        { label: "Products", href: "/" },
+        { label: "Products", href: "/dashboard/product-Management" },
         {
           label: "Promotional Materials",
           items: [
@@ -100,17 +100,51 @@ const Navbar = () => {
     {
       label: "Analytics",
       items: [
-        { label: "Performance", href: "/analytics/performance" },
-        { label: "Activity Insights", href: "/analytics/activity" },
+        {
+          label: "Performance",
+          items: [
+            { label: "Field Force Performance", href: "/dashboard" },
+            { label: "Product vs Region Analysis", href: "/dashboard" },
+            { label: "Achievement vs Target", href: "/dashboard" },
+          ],
+        },
+        {
+          label: "Advanced Insights",
+          items: [
+            { label: "Sales vs Visit Correlation", href: "/dashboard" },
+            { label: "Doctor Engagement Trends", href: "/dashboard" },
+            { label: "Expense Analysis", href: "/dashboard" },
+          ],
+        },
         { label: "BI Dashboards", href: "/analytics/bi" },
       ],
     },
     {
       label: "Compliance",
       items: [
-        { label: "Monitoring", href: "/compliance/monitoring" },
-        { label: "Logs", href: "/compliance/logs" },
-        { label: "Governance", href: "/compliance/governance" },
+        {
+          label: "Monitoring",
+          items: [
+            { label: "Geo & Time Verification", href: "/dashboard" },
+            { label: "Flagged Activities", href: "/dashboard" },
+            { label: "Suspected Fake Calls", href: "/dashboard" },
+          ],
+        },
+        {
+          label: "Logs",
+          items: [
+            { label: "Audit Trails (User Actions)", href: "/dashboard" },
+            { label: "Device & Version History", href: "/dashboard" },
+          ],
+        },
+        {
+          label: "Governance",
+          items: [
+            { label: "Policy Violations", href: "/dashboard" },
+            { label: "Data Integrity Report", href: "/dashboard" },
+            { label: "Compliance Scorecard", href: "/dashboard" },
+          ],
+        },
       ],
     },
     {
@@ -155,6 +189,7 @@ const Navbar = () => {
           items: [
             { label: "Division / Business Lines", href: "/dashboard" },
             { label: "Therapeutic Categories", href: "/dashboard" },
+            { label: "Sample / Gift Type", href: "/dashboard" },
           ],
         },
         {
@@ -162,7 +197,6 @@ const Navbar = () => {
           items: [
             { label: "Doctor Segments(A/B/C)", href: "/dashboard" },
             { label: "Visit Frequency Rules", href: "/dashboard" },
-            { label: "Visit Frequency Rules", href: "/dashboard" }, // यह duplicate है
             { label: "Expense Policies", href: "/dashboard" },
             { label: "Notification Templates", href: "/dashboard" },
           ],
@@ -217,49 +251,49 @@ const Navbar = () => {
   };
 
   // Recursive render with hover + click support
-  const renderDropdownItems = (items: DropdownItem[]) => {
+  const renderDropdownItems = (items: DropdownItem[], isSubmenu = false) => {
     return items.map((item) => (
       <div
         key={item.label}
-        className="relative group stickey w-[]"
-        onMouseEnter={() => item.items && handleSubmenuEnter(item.label)}
-        onMouseLeave={handleSubmenuLeave}
+        className="relative group"
+        onMouseEnter={() => item.items && setActiveSubmenu(item.label)}
+        onMouseLeave={() => item.items && setActiveSubmenu(null)}
       >
         {item.href ? (
           <Link
             href={item.href}
-            onClick={() => setOpenDropdown(null)} // Close on link click
-            className="flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+            onClick={() => !isSubmenu && setOpenDropdown(null)}
+            className="flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-all rounded-lg mx-2 group-hover:translate-x-1 transition-transform"
           >
-            {item.label}
+            <span>{item.label}</span>
+            {item.items && <ChevronRight className="w-4 h-4" />}
           </Link>
         ) : (
-          <button
-            onClick={() => {
-              if (item.items) {
-                // If has submenu, don't close main dropdown
-                handleSubmenuEnter(item.label);
-              } else {
-                setOpenDropdown(null); // Close if no submenu
-              }
-            }}
-            className="flex items-center justify-between w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
-          >
-            {item.label}
+          <div className="flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-all rounded-lg mx-2 cursor-default">
+            <span>{item.label}</span>
             {item.items && <ChevronRight className="w-4 h-4" />}
-          </button>
+          </div>
         )}
 
-        {/* Nested submenu - opens on hover */}
+        {/* Submenu */}
         {item.items && activeSubmenu === item.label && (
-          <div className="absolute left-full top-0 mt-0 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-            {renderDropdownItems(item.items)}
+          <div
+            className="absolute left-full top-0  bg-white rounded-xl shadow-2xl border border-gray-100 py-2 z-50 "
+            style={{ top: "-8px" }}
+            onMouseEnter={() => setActiveSubmenu(item.label)}
+            onMouseLeave={() => setActiveSubmenu(null)}
+          >
+            <div className="px-2 pb-2">
+              <h4 className="text-xs font-semibold text-purple-600 uppercase tracking-wider">
+                {item.label}
+              </h4>
+            </div>
+            {renderDropdownItems(item.items, true)}
           </div>
         )}
       </div>
     ));
   };
-
   return (
     <nav className="bg-white border-b border-gray-200">
       <div className="mx-auto px-6">
