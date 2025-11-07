@@ -8,6 +8,7 @@ import { DataSection } from "./data/data-section";
 import { MetricsSection } from "./metrics/metrics-section";
 import { PerformanceStats } from "./performance/performance-stats";
 import SalesDashboard from "./charts/SalesDashboard";
+import SalesDashboard1 from "./SalesDashboard1";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -20,6 +21,7 @@ export function DashboardContent({
   hideData,
   btnTrue,
   btnAdd,
+  proBar,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
 
@@ -46,7 +48,7 @@ export function DashboardContent({
       {/* Metrics Cards Section */}
       {!hideMetrics && <MetricsSection data={data?.metrics} isLoading={combinedLoading} />}
 
-      <SalesDashboard />
+      {proBar && <SalesDashboard1 />}
 
       {/* Charts Section */}
       {/* <ChartsSection isLoading={combinedLoading} /> */}

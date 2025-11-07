@@ -31,10 +31,10 @@ const Navbar = () => {
       label: "People & Teams",
       items: [
         { label: "Employees (Rep, Manager, Admin)", href: "/dashboard/Employees-Management" },
-        { label: "Campaigns/Teams", href: "/dashboard/giveaway-Managenment" },
+        { label: "Campaigns/Teams", href: "/dashboard/giveaway-Management" },
         { label: "Attendance & Tracking", href: "/dashboard/product-Management" },
-        { label: "Leave Management", href: "/people-teams/leaves" },
-        { label: "Expense Requests", href: "/people-teams/expenses" },
+        { label: "Leave Management", href: "/dashboard" },
+        { label: "Expense Requests", href: "/dashboard/request-View" },
       ],
     },
     {
@@ -62,9 +62,9 @@ const Navbar = () => {
     {
       label: "DCR",
       items: [
-        { label: "Daily Call Reports", href: "/dcr/daily" },
-        { label: "Sample Distribution", href: "/dcr/samples" },
-        { label: "Order Capture Log", href: "/dcr/orders" },
+        { label: "Daily Call Reports", href: "/dashboard/DCR" },
+        { label: "Sample Distribution", href: "/" },
+        { label: "Order Capture Log", href: "/dashboard/DCR-order" },
       ],
     },
     {
@@ -72,14 +72,29 @@ const Navbar = () => {
       items: [
         {
           label: "Planning",
-          href: "/field-ops/planning",
+
           items: [
             { label: "Monthly Work plans", href: "/dashboard/plan-Management" },
             { label: "Revenue Targets & Achievement", href: "/dashboard/giveaway-Management" },
           ],
         },
-        { label: "Execution", href: "/field-ops/execution" },
-        { label: "Admin", href: "/field-ops/admin" },
+        {
+          label: "Execution",
+          items: [
+            { label: "Live GPS Tracking", href: "/dashboard/plan-Management" },
+            { label: "Attendance", href: "/dashboard/giveaway-Management" },
+            { label: "Travel & Mileage", href: "/dashboard/giveaway-Management" },
+          ],
+        },
+        {
+          label: "Admin",
+          items: [
+            { label: "Leave Requests", href: "/dashboard/plan-Management" },
+            { label: "Expense Claims", href: "/dashboard/expense-claims" },
+            { label: "Audit & Geo Verification", href: "/dashboard/giveaway-Management" },
+            { label: "Requests", href: "/dashboard/request-View" },
+          ],
+        },
       ],
     },
     {
@@ -103,7 +118,7 @@ const Navbar = () => {
       items: [
         { label: "Import / Export (CSV)", href: "/integrations/csv" },
         { label: "CRM API Management", href: "/integrations/api" },
-        { label: "Integration / CSV Import", href: "/integrations/import" },
+        { label: "Integration / CSV Import Logs", href: "/integrations/import" },
         { label: "BI / Reporting Tools", href: "/integrations/bi" },
       ],
     },
@@ -113,22 +128,52 @@ const Navbar = () => {
         { label: "Help Center / Knowledge Base", href: "/support/help" },
         { label: "Training Resources", href: "/support/training" },
         { label: "Submit a Ticket", href: "/support/ticket" },
-        { label: "Business Rules", href: "/support/rules" },
       ],
     },
     {
       label: "Control Center",
       items: [
-        { label: "Organization", href: "/control-center/org" },
-        { label: "Access & Security", href: "/control-center/security" },
-        { label: "Product Setup", href: "/control-center/products" },
+        {
+          label: "Organization",
+          items: [
+            { label: "Company Profile", href: "/dashboard" },
+            { label: "Branches / Divisions", href: "/dashboard" },
+            { label: "Organization Hierarchy", href: "/dashboard" },
+            { label: "Channels", href: "/dashboard" },
+            { label: "Call Points", href: "/dashboard" },
+          ],
+        },
+        {
+          label: "Access & Security",
+          items: [
+            { label: "User Access Control", href: "/dashboard" },
+            { label: "Roles & Permissions", href: "/dashboard" },
+          ],
+        },
+        {
+          label: "Product Setup",
+          items: [
+            { label: "Division / Business Lines", href: "/dashboard" },
+            { label: "Therapeutic Categories", href: "/dashboard" },
+          ],
+        },
+        {
+          label: "Business Rules",
+          items: [
+            { label: "Doctor Segments(A/B/C)", href: "/dashboard" },
+            { label: "Visit Frequency Rules", href: "/dashboard" },
+            { label: "Visit Frequency Rules", href: "/dashboard" }, // यह duplicate है
+            { label: "Expense Policies", href: "/dashboard" },
+            { label: "Notification Templates", href: "/dashboard" },
+          ],
+        },
       ],
     },
     {
       label: "AI & Insights",
       items: [
         { label: "Predictive Analytics", href: "/ai/predictive" },
-        { label: "ML & AI Sentiment", href: "/ai/sentiment" },
+        { label: "NLP Sentiment", href: "/ai/sentiment" },
         { label: "Recommendations", href: "/ai/recommendations" },
         { label: "AI-Generated Summaries", href: "/ai/summaries" },
       ],

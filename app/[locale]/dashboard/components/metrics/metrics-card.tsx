@@ -62,21 +62,21 @@ export function MetricCard({
   };
 
   return (
-    <Card className={cn("transition-all hover:shadow-md dark:hover:shadow-lg ", getCardColor())}>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground dark:text-gray-300">
-          {title}
-        </CardTitle>
-        {Icon && <Icon className="h-4 w-4 text-muted-foreground dark:text-gray-400" />}
+    <Card
+      className={cn("transition-all text-black border hover:shadow-lg shadow  ", getCardColor())}
+    >
+      <CardHeader className="flex text-black flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium text-black  ">{title}</CardTitle>
+        {Icon && <Icon className="h-4 w-4 " />}
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold dark:text-white">
-          {prefix}
+        <div className="text-2xl text-black font-bold ">
+          {/* {prefix} */}
           {formatValue(value)}
-          {suffix}
+          {/* {suffix} */}
         </div>
         {change !== undefined && (
-          <p className={cn("text-xs flex items-center mt-1", getChangeColor())}>
+          <p className={cn("text-xs flex text-black items-center mt-1", getChangeColor())}>
             {changeType === "increase" ? (
               <TrendingUp className="h-3 w-3 mr-1" />
             ) : changeType === "decrease" ? (
@@ -85,9 +85,9 @@ export function MetricCard({
             {Math.abs(change)}% {fromLastMonthText}
           </p>
         )}
-        {description && (
-          <p className="text-xs text-muted-foreground dark:text-gray-400 mt-1">{description}</p>
-        )}
+        {/* {description && (
+          <p className="text-xs text-black mt-1">{description}</p>
+        )} */}
       </CardContent>
     </Card>
   );

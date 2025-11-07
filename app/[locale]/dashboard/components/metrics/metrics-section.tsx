@@ -25,10 +25,10 @@ export function MetricsSection({ data, isLoading = false }: MetricsSectionProps)
   const t = useTranslations("dashboard");
   // Default mock data if none provided
   const defaultData: MetricData = {
-    totalUsers: 12543,
-    activeSessions: 2341,
-    revenue: 45230.5,
-    conversionRate: 3.2,
+    totalUsers: 430,
+    activeSessions: 15,
+    revenue: 1325,
+    conversionRate: 100,
     orders: 1832,
     growth: 12.5,
     bounceRate: 34.2,
@@ -79,7 +79,7 @@ export function MetricsSection({ data, isLoading = false }: MetricsSectionProps)
   ];
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-6 text-black">
       {/* <div className="mb-8">
         <h2 className="text-2xl font-bold tracking-tight">{t("sections.metrics")}</h2>
         <p className="text-muted-foreground">{t("sections.metricsDescription")}</p>

@@ -5,14 +5,9 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-white">
       <DashboardContent
-        sample={"Employees Management"}
+        sample={"Order Capture"}
         descrip={"Unlock the potential of your candidates"}
-        table={"All Pharmacies & chemists"}
-        btnAdd={"Add New Employee"}
-        hideData={false}
-        hideHeader={true}
-        hideMetrics={true}
-        proBar={true}
+        table={"Total Order"}
       />
     </div>
   );
