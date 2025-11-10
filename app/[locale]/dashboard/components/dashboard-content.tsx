@@ -9,6 +9,7 @@ import { MetricsSection } from "./metrics/metrics-section";
 import { PerformanceStats } from "./performance/performance-stats";
 import SalesDashboard from "./charts/SalesDashboard";
 import SalesDashboard1 from "./SalesDashboard1";
+import { useRouter } from "next/navigation";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -22,14 +23,18 @@ export function DashboardContent({
   btnTrue,
   btnAdd,
   proBar,
+  settingsRoute,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
-
+  const router = useRouter();
   const combinedLoading = externalLoading || isLoading;
 
   const handleSettings = () => {
-    // Handle settings action
-    console.log("Settings clicked");
+    if (settingsRoute) {
+      router.push(settingsRoute);
+    } else {
+      console.log("Settings route not provided");
+    }
   };
 
   return (
