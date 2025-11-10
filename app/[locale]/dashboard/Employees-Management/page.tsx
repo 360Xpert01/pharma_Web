@@ -13,6 +13,7 @@ export default function DashboardPage() {
         hideHeader={true}
         hideMetrics={true}
         proBar={true}
+        settingsRoute={"/dashboard/addEmployees"}
       />
     </div>
   );

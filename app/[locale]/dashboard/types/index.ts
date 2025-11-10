@@ -98,4 +98,5 @@ export interface DashboardProps {
   btnAdd?: string;
   btnTrue?: boolean;
   proBar?: boolean;
+  settingsRoute?: string;
 }
