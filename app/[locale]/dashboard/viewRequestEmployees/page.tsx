@@ -5,18 +5,16 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-white">
       <DashboardContent
-        sample={"Employees Management"}
+        sample={"Employees View Requests"}
         descrip={"Unlock the potential of your candidates"}
-        table={"All Pharmacies & chemists"}
-        btnAdd={"Add New Employee"}
+        table={""}
         hideData={false}
         hideHeader={true}
         hideMetrics={true}
-        proBar={true}
-        settingsRoute={"/dashboard/addEmployees"}
+        btnTrue={true}
+        proBar={false}
         settingsRouteRequest={"/dashboard/viewRequestEmployees"}
-        btntextReq={"view Requests"}
-        btnReqquest={false}
+        btnApprovel={true}
       />
     </div>
   );
