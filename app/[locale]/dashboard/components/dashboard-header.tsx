@@ -11,6 +11,9 @@ interface DashboardHeaderProps {
   description?: string;
   btnTrue?: boolean;
   btnAdd?: string;
+  btntextReq?: string;
+  btnReqquest?: string;
+  onSettingView?: () => void;
 }
 
 export function DashboardHeader({
@@ -21,6 +24,9 @@ export function DashboardHeader({
   description,
   btnAdd,
   btnTrue,
+  btntextReq,
+  btnReqquest,
+  onSettingView,
 }: DashboardHeaderProps) {
   const t = useTranslations("dashboard");
   const heading = title;
@@ -57,6 +63,19 @@ export function DashboardHeader({
           >
             <Plus className="h-4 w-4 mr-1" />
             {btnAdd || "add"}
+          </Button>
+        )}
+
+        {!btnReqquest && !btnTrue && btntextReq && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onSettingView}
+            title={t("tooltips.settings")}
+            aria-label={t("tooltips.settings")}
+          >
+            {/* <Plus className="h-4 w-4 mr-1" /> */}
+            {btntextReq || "add"}
           </Button>
         )}
       </div>

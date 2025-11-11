@@ -10,6 +10,7 @@ import { PerformanceStats } from "./performance/performance-stats";
 import SalesDashboard from "./charts/SalesDashboard";
 import SalesDashboard1 from "./SalesDashboard1";
 import { useRouter } from "next/navigation";
+import ExpenseRequestItem from "@/components/ExpenseRequestItem";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -24,14 +25,32 @@ export function DashboardContent({
   btnAdd,
   proBar,
   settingsRoute,
+  btntextReq,
+  btnReqquest,
+  btnApprovel,
+  settingsRouteRequest,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
   const combinedLoading = externalLoading || isLoading;
-
+  const requests = [
+    { title: "Client1", amount: 520 },
+    { title: "Client2", amount: 520 },
+    { title: "Client3", amount: 520 },
+    { title: "Client4", amount: 520 },
+    { title: "Client5", amount: 520 },
+  ];
   const handleSettings = () => {
     if (settingsRoute) {
       router.push(settingsRoute);
+    } else {
+      console.log("Settings route not provided");
+    }
+  };
+
+  const handleSettingView = () => {
+    if (settingsRouteRequest) {
+      router.push(settingsRouteRequest);
     } else {
       console.log("Settings route not provided");
     }
@@ -48,6 +67,9 @@ export function DashboardContent({
         description={descrip}
         btnAdd={btnAdd}
         btnTrue={btnTrue}
+        btntextReq={btntextReq}
+        btnReqquest={btnReqquest}
+        onSettingView={handleSettingView}
       />
 
       {/* Metrics Cards Section */}
@@ -59,16 +81,31 @@ export function DashboardContent({
       {/* <ChartsSection isLoading={combinedLoading} /> */}
 
       {/* Data Tables Section */}
-      <DataSection
-        data={{
-          users: data?.users,
-          products: data?.products,
-          orders: data?.orders,
-        }}
-        isLoading={combinedLoading}
-        table={table}
-        description={descrip}
-      />
+      {table && !hideData && (
+        <DataSection
+          data={{
+            users: data?.users,
+            products: data?.products,
+            orders: data?.orders,
+          }}
+          isLoading={combinedLoading}
+          table={table}
+          description={descrip}
+        />
+      )}
+
+      {btnApprovel && (
+        <div className=" mx-auto  space-y-2">
+          {requests.map((req, i) => (
+            <ExpenseRequestItem
+              key={i}
+              title={req.title}
+              onApprove={() => alert(`Approved: ${req.title}`)}
+              onReject={() => alert(`Rejected: ${req.title}`)}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Quick Stats Footer */}
       {/* <PerformanceStats isLoading={combinedLoading} /> */}
