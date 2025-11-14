@@ -263,14 +263,28 @@ const Navbar = () => {
         {item.href ? (
           <Link
             href={item.href}
-            onClick={() => !isSubmenu && setOpenDropdown(null)}
-            className="flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-all rounded-lg mx-2 group-hover:translate-x-1 transition-transform"
+            onClick={(e) => {
+              // Close the main dropdown on any submenu item click
+              setOpenDropdown(null);
+              setActiveSubmenu(null);
+              if (!isSubmenu) {
+                // Optional: Only close if it's not a submenu (prevents double close)
+              }
+            }}
+            className="flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-700 transition-all rounded-lg mx-2 group-hover:translate-x-1 transition-transform"
           >
             <span>{item.label}</span>
             {item.items && <ChevronRight className="w-4 h-4" />}
           </Link>
         ) : (
-          <div className="flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-all rounded-lg mx-2 cursor-default">
+          <div
+            onClick={() => {
+              // Even if no href, clicking on parent should close
+              setOpenDropdown(null);
+              setActiveSubmenu(null);
+            }}
+            className="flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-700 transition-all rounded-lg mx-2 cursor-pointer"
+          >
             <span>{item.label}</span>
             {item.items && <ChevronRight className="w-4 h-4" />}
           </div>
@@ -279,16 +293,13 @@ const Navbar = () => {
         {/* Submenu */}
         {item.items && activeSubmenu === item.label && (
           <div
-            className="absolute left-full top-0  bg-white rounded-xl shadow-2xl border border-gray-100 py-2 z-50 "
+            className="absolute left-full top-0 bg-white rounded-xl shadow-2xl border border-gray-100 py-2 z-50"
             style={{ top: "-8px" }}
             onMouseEnter={() => setActiveSubmenu(item.label)}
             onMouseLeave={() => setActiveSubmenu(null)}
+            // Click inside submenu should NOT close (so user can navigate)
+            onClick={(e) => e.stopPropagation()}
           >
-            <div className="px-2 pb-2">
-              <h4 className="text-xs font-semibold text-purple-600 uppercase tracking-wider">
-                {item.label}
-              </h4>
-            </div>
             {renderDropdownItems(item.items, true)}
           </div>
         )}
@@ -296,7 +307,7 @@ const Navbar = () => {
     ));
   };
   return (
-    <nav className="bg-white border-b border-gray-200">
+    <nav className="bg-white border-b fixed top-0 left-0 right-0 z-50 border-gray-200">
       <div className="mx-auto px-6">
         <div className="flex items-center justify-between h-14">
           <div className="flex items-center gap-8">
@@ -324,8 +335,8 @@ const Navbar = () => {
             </div>
 
             <button className="relative p-2 text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full"></span>
+              <Bell className="w-5 h-5 text-blue-600" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-black rounded-full"></span>
             </button>
 
             <div className="flex items-center gap-2 p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
@@ -353,12 +364,12 @@ const Navbar = () => {
               <>
                 <button
                   onClick={() => toggleDropdown(item.label)}
-                  className="flex items-center gap-1 px-4 py-3 text-sm font-medium text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all duration-200"
+                  className="flex items-center gap-1 px-4 py-3 text-sm font-medium text-gray-700 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition-all duration-200"
                 >
                   {item.label}
                   <ChevronDown
                     className={`w-4 h-4 transition-transform duration-200 ${
-                      openDropdown === item.label ? "rotate-180 text-purple-600" : ""
+                      openDropdown === item.label ? "rotate-180 text-gray-600" : ""
                     }`}
                   />
                 </button>
@@ -366,7 +377,7 @@ const Navbar = () => {
                 {openDropdown === item.label && (
                   <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-100 py-3 z-50">
                     <div className="px-4 pb-2">
-                      <h3 className="text-xs font-semibold text-purple-600 uppercase tracking-wider">
+                      <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         {item.label}
                       </h3>
                     </div>
@@ -377,7 +388,7 @@ const Navbar = () => {
             ) : (
               <Link
                 href={item.href || "#"}
-                className="px-4 py-3 text-sm font-medium text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all"
+                className="px-4 py-3 text-sm font-medium text-gray-700 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition-all"
               >
                 {item.label}
               </Link>

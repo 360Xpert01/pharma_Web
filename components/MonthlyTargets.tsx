@@ -3,7 +3,7 @@ import { monthlyTargets, monthlyData } from "../app/data/mockData";
 
 export default function MonthlyTargets() {
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6">
+    <div className="bg-white w-[33%]  rounded-xl shadow-sm p-3">
       <h2 className="text-lg font-semibold mb-4">Monthly Targets</h2>
       <div className="flex justify-around mb-6">
         <div className="text-center">
