@@ -3,7 +3,7 @@ import { brandData } from "../app/data/mockData";
 
 export default function ByBrands() {
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6">
+    <div className="bg-white w-[33%] rounded-xl shadow-sm p-4">
       <h2 className="text-lg font-semibold mb-4">By Brands</h2>
       <ResponsiveContainer width="100%" height={220}>
         <PieChart>
@@ -23,12 +23,12 @@ export default function ByBrands() {
           <Tooltip />
         </PieChart>
       </ResponsiveContainer>
-      <div className="flex justify-center gap-4 mt-4 flex-wrap">
+      <div className="flex justify-center gap-2 mt-4 flex-wrap">
         {brandData.map((b) => (
           <button
             key={b.name}
             style={{ backgroundColor: b.color }}
-            className="text-white px-4 py-2 rounded"
+            className="text-white text-sm p-3 rounded"
           >
             {b.name}
           </button>

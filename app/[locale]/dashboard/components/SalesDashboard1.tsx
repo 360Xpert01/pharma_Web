@@ -7,16 +7,18 @@ import SaleAndCalls from "../../../../components/SaleAndCalls";
 
 export default function SalesDashboard() {
   return (
-    <div className=" bg-gray-50 text-black p-6">
-      <div className="">
-        <Header />
+    <div className=" text-black p-1">
+      <div className="w-full bg-gray-50 p-2 rounded-xl ">
+        {/* <Header /> */}
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 ">
-          <MonthlyTargets />
-          <MostSoldProducts />
-          <ByBrands />
+        <div className="flex justify-between gap-2">
+          <div className="w-[70%] flex justify-between">
+            <MonthlyTargets />
+            <MostSoldProducts />
+            <ByBrands />
+          </div>
 
-          <div className="">
+          <div className="w-[30%]">
             <MonthlyAttendance />
             <SaleAndCalls />
           </div>

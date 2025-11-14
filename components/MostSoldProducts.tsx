@@ -4,7 +4,7 @@ export default function MostSoldProducts() {
   const maxValue = Math.max(...mostSold.map((i) => i.value));
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6">
+    <div className="bg-white w-[33%]  rounded-xl shadow-sm p-3">
       <h2 className="text-lg font-semibold mb-4">Most Sold Products</h2>
       <div className="space-y-5">
         {mostSold.map((p) => {

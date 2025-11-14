@@ -11,6 +11,7 @@ import SalesDashboard from "./charts/SalesDashboard";
 import SalesDashboard1 from "./SalesDashboard1";
 import { useRouter } from "next/navigation";
 import ExpenseRequestItem from "@/components/ExpenseRequestItem";
+import SalesTeamTable from "./data/EmploySection";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -57,7 +58,7 @@ export function DashboardContent({
   };
 
   return (
-    <div className="space-y-10 p-6 bg-white">
+    <div className="space-y-8 p-3 mt-26 bg-gray-50">
       {/* Dashboard Header with Actions */}
       <DashboardHeader
         onRefresh={handleRefresh}
@@ -72,43 +73,47 @@ export function DashboardContent({
         onSettingView={handleSettingView}
       />
 
-      {/* Metrics Cards Section */}
-      {!hideMetrics && <MetricsSection data={data?.metrics} isLoading={combinedLoading} />}
+      <div className="bg-white space-y-10 rounded-md p-3">
+        {/* Metrics Cards Section */}
+        {!hideMetrics && <MetricsSection data={data?.metrics} isLoading={combinedLoading} />}
 
-      {proBar && <SalesDashboard1 />}
+        {/* {proBar && <SalesDashboard1 />} */}
 
-      {/* Charts Section */}
-      {/* <ChartsSection isLoading={combinedLoading} /> */}
+        {/* Charts Section */}
+        {/* <ChartsSection isLoading={combinedLoading} /> */}
 
-      {/* Data Tables Section */}
-      {table && !hideData && (
-        <DataSection
-          data={{
-            users: data?.users,
-            products: data?.products,
-            orders: data?.orders,
-          }}
-          isLoading={combinedLoading}
-          table={table}
-          description={descrip}
-        />
-      )}
+        {/* Data Tables Section */}
+        {table && !hideData && !proBar && (
+          <DataSection
+            data={{
+              users: data?.users,
+              products: data?.products,
+              orders: data?.orders,
+            }}
+            isLoading={combinedLoading}
+            table={table}
+            description={descrip}
+          />
+        )}
 
-      {btnApprovel && (
-        <div className=" mx-auto  space-y-2">
-          {requests.map((req, i) => (
-            <ExpenseRequestItem
-              key={i}
-              title={req.title}
-              onApprove={() => alert(`Approved: ${req.title}`)}
-              onReject={() => alert(`Rejected: ${req.title}`)}
-            />
-          ))}
-        </div>
-      )}
+        {proBar && <SalesTeamTable />}
 
-      {/* Quick Stats Footer */}
-      {/* <PerformanceStats isLoading={combinedLoading} /> */}
+        {btnApprovel && (
+          <div className=" mx-auto  space-y-2">
+            {requests.map((req, i) => (
+              <ExpenseRequestItem
+                key={i}
+                title={req.title}
+                onApprove={() => alert(`Approved: ${req.title}`)}
+                onReject={() => alert(`Rejected: ${req.title}`)}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Quick Stats Footer */}
+        {/* <PerformanceStats isLoading={combinedLoading} /> */}
+      </div>
     </div>
   );
 }
