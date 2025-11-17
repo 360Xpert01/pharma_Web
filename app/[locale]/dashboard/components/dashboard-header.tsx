@@ -12,7 +12,7 @@ interface DashboardHeaderProps {
   btnTrue?: boolean;
   btnAdd?: string;
   btntextReq?: string;
-  btnReqquest?: string;
+  btnReqquest?: boolean;
   onSettingView?: () => void;
 }
 

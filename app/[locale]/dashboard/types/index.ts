@@ -103,4 +103,5 @@ export interface DashboardProps {
   btnReqquest?: boolean;
   settingsRouteRequest?: string;
   btnApprovel?: boolean;
+  campTabel?: boolean;
 }

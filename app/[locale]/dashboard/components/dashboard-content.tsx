@@ -12,6 +12,10 @@ import SalesDashboard1 from "./SalesDashboard1";
 import { useRouter } from "next/navigation";
 import ExpenseRequestItem from "@/components/ExpenseRequestItem";
 import SalesTeamTable from "./data/EmploySection";
+import { User } from "lucide-react";
+import SalesPersonCard from "@/components/UserDetailTtle";
+import CampaignsTable from "@/components/CampainTable";
+import TableHeader from "@/components/TableHeader";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -30,6 +34,7 @@ export function DashboardContent({
   btnReqquest,
   btnApprovel,
   settingsRouteRequest,
+  campTabel,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -72,6 +77,13 @@ export function DashboardContent({
         btnReqquest={btnReqquest}
         onSettingView={handleSettingView}
       />
+
+      {campTabel && (
+        <div className=" rounded-md p-3 shadow-xl inset-shadow-2xs ">
+          <TableHeader />
+          <CampaignsTable />
+        </div>
+      )}
 
       <div className="bg-white space-y-10 rounded-md p-3">
         {/* Metrics Cards Section */}

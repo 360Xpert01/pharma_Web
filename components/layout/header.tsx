@@ -313,7 +313,7 @@ const Navbar = () => {
           <div className="flex items-center gap-8">
             <div>
               <Image
-                src="/Vector.svg"
+                src="/loginPic.svg"
                 alt="Ceturvi Logo"
                 width={150}
                 height={50}
@@ -324,7 +324,7 @@ const Navbar = () => {
 
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-3 bg-white rounded-full px-4 py-2.5 w-full max-w-md border border-gray-300 hover:border-gray-400 transition-colors">
-              <Search className="h-5 w-5 text-gray-600 flex-shrink-0" />
+              <Search className="h-5 w-5 text-blue-600 flex-shrink-0" />
               <input
                 type="text"
                 placeholder="Search here..."
@@ -335,13 +335,31 @@ const Navbar = () => {
             </div>
 
             <button className="relative p-2 text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">
-              <Bell className="w-5 h-5 text-blue-600" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-black rounded-full"></span>
+              {/* <Bell className="w-5 h-5 text-blue-600" /> */}
+              <div>
+                <Image
+                  src="/notification.svg"
+                  alt="Ceturvi Logo"
+                  width={60}
+                  height={60}
+                  className="object-contain"
+                />
+              </div>
+              <span className="absolute top-1.5 right-2 w-4 h-4 bg-black text-white text-xs rounded-full">
+                9
+              </span>
             </button>
 
             <div className="flex items-center gap-2 p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
               <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                <User className="w-5 h-5 text-gray-600" />
+                {/* <User className="w-5 h-5 text-gray-600" /> */}
+                <Image
+                  src="/girlPic.svg"
+                  alt="Ceturvi Logo"
+                  width={60}
+                  height={60}
+                  className="object-contain"
+                />
               </div>
               <div>
                 <div className="text-sm font-medium">Nirma Amir</div>
@@ -353,7 +371,7 @@ const Navbar = () => {
       </div>
       <hr className="border-gray-200" />
 
-      <div className="flex items-center w-full justify-around bg-white shadow-md">
+      <div className="flex items-center w-full text-gray-500 justify-around bg-white shadow-md">
         {navItems.map((item) => (
           <div
             key={item.label}
@@ -364,7 +382,7 @@ const Navbar = () => {
               <>
                 <button
                   onClick={() => toggleDropdown(item.label)}
-                  className="flex items-center gap-1 px-4 py-3 text-sm font-medium text-gray-700 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition-all duration-200"
+                  className="flex items-center gap-1 px-4 py-3 text-sm font-medium text-gray-450  hover:bg-gray-50 rounded-lg transition-all duration-200"
                 >
                   {item.label}
                   <ChevronDown
