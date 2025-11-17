@@ -3,7 +3,7 @@ import { DashboardContent } from "../components/dashboard-content";
 
 export default function DashboardPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="bg-white">
       <DashboardContent
         sample={"Campaign Management"}
         descrip={"Welcome to Ceutro, It's looking like a slow day"}
@@ -11,7 +11,9 @@ export default function DashboardPage() {
         btnAdd={"Add New Role"}
         hideHeader={true}
         hideMetrics={true}
-        hideData={false}
+        proBar={false}
+        hideData={true}
+        campTabel={true}
       />
     </div>
   );
