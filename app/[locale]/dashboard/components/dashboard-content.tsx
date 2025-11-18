@@ -35,6 +35,8 @@ export function DashboardContent({
   btnApprovel,
   settingsRouteRequest,
   campTabel,
+  campHeading,
+  filterT,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -80,7 +82,7 @@ export function DashboardContent({
 
       {campTabel && (
         <div className=" rounded-md p-3 shadow-xl inset-shadow-2xs ">
-          <TableHeader />
+          <TableHeader campHeading={campHeading} filterT={filterT} />
           <CampaignsTable />
         </div>
       )}
@@ -88,11 +90,6 @@ export function DashboardContent({
       <div className="bg-white space-y-10 rounded-md p-3">
         {/* Metrics Cards Section */}
         {!hideMetrics && <MetricsSection data={data?.metrics} isLoading={combinedLoading} />}
-
-        {/* {proBar && <SalesDashboard1 />} */}
-
-        {/* Charts Section */}
-        {/* <ChartsSection isLoading={combinedLoading} /> */}
 
         {/* Data Tables Section */}
         {table && !hideData && !proBar && (

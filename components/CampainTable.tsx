@@ -109,10 +109,14 @@ export default function CampaignsTable() {
             {/* Left Side */}
             <div className="flex-1 items-center justify-center rounded-md p-2 border border-gray-200   grid grid-cols-12 gap-2 text-sm">
               {/* Condition */}
-              <div className="col-span-2 font-medium text-gray-900">{campaign.condition}</div>
+              <div className="col-span-2 font-medium font-sans text-gray-900">
+                {campaign.condition}
+              </div>
 
               {/* Channel */}
-              <div className="col-span-2 text-gray-600">{campaign.channel}</div>
+              <div className="col-span-2 font-medium font-sans text-gray-900">
+                {campaign.channel}
+              </div>
 
               {/* Brand */}
               <div className="col-span-2 font-medium text-gray-900">{campaign.brand}</div>
@@ -124,7 +128,7 @@ export default function CampaignsTable() {
                   {campaign.products.map((product, idx) => (
                     <span
                       key={idx}
-                      className="px-2.5 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium"
+                      className=" py-1 text-gray-400 rounded-full text-xs font-medium"
                     >
                       {product}
                     </span>
@@ -152,7 +156,7 @@ export default function CampaignsTable() {
                     </div>
                   ))}
                   {campaign.assignedUsers.length > 5 && (
-                    <div className="w-9 h-9 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-xs font-medium text-gray-600 ring-2 ring-gray-100">
+                    <div className="w-9 h-9 rounded-full  border-2 border-white flex items-center justify-center text-xs font-medium text-gray-600 ring-2 ring-gray-100">
                       +{campaign.assignedUsers.length - 5}
                     </div>
                   )}
@@ -160,9 +164,9 @@ export default function CampaignsTable() {
 
                 {/* Status Badge */}
                 <span
-                  className={`px-6 py-3 rounded-full text-sm font-medium ${
+                  className={`px-7 py-1 rounded-full text-sm font-medium ${
                     campaign.status === "Active"
-                      ? "bg-green-100 text-green-800"
+                      ? "bg-green-100 text-green-600"
                       : "bg-gray-100 text-gray-600"
                   }`}
                 >

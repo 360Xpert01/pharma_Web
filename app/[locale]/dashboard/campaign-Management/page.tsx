@@ -14,6 +14,8 @@ export default function DashboardPage() {
         proBar={false}
         hideData={true}
         campTabel={true}
+        campHeading={"All Campaign"}
+        filterT={false}
       />
     </div>
   );
