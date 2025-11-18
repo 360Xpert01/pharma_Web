@@ -34,7 +34,9 @@ export function DashboardHeader({
     <div className="flex text-black flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
       {/* Heading */}
       <div className="flex-1">
-        <h1 className="text-3xl font-bold tracking-tight">{heading || "plans Management"}</h1>
+        <h1 className="text-3xl font-bold font-sans tracking-tight">
+          {heading || "plans Management"}
+        </h1>
         <p className="text-muted-foreground">
           {description || "Unlock the potential of your candidates"}
         </p>
@@ -54,16 +56,15 @@ export function DashboardHeader({
           {isLoading ? t("loading.refreshing") : t("actions.refresh")}
         </Button> */}
         {!btnTrue && (
-          <Button
-            variant="outline"
-            size="sm"
+          <button
+            className="p-3 bg-blue-500 hover:bg-blue-600 text-sm text-white rounded-full flex items-center"
             onClick={onSettings}
             title={t("tooltips.settings")}
             aria-label={t("tooltips.settings")}
           >
             <Plus className="h-4 w-4 mr-1" />
             {btnAdd || "add"}
-          </Button>
+          </button>
         )}
 
         {!btnReqquest && !btnTrue && btntextReq && (

@@ -18,8 +18,11 @@ interface NavItem {
 }
 
 const Navbar = () => {
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null); // for hover
+  const [clickedItem, setClickedItem] = useState<string | null>(null); // for click (mobile)
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
+
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   const navItems: NavItem[] = [
@@ -215,43 +218,52 @@ const Navbar = () => {
     },
   ];
 
-  const [query, setQuery] = useState("");
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setQuery(value);
+  // Open on hover (desktop)
+  const handleMouseEnter = (label: string) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setHoveredItem(label);
+    setClickedItem(null); // hover overrides click
   };
 
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setHoveredItem(null);
+    }, 150); // small delay so user can move to dropdown
+  };
+
+  // Click support for mobile/touch
+  const toggleClick = (label: string) => {
+    setClickedItem((prev) => (prev === label ? null : label));
+    setHoveredItem(null); // click overrides hover
+  };
+
+  // Determine which one is active
+  const activeDropdown = hoveredItem || clickedItem;
+
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const clickedOutside = Object.values(dropdownRefs.current).every(
-        (ref) => ref && !ref.contains(event.target as Node)
-      );
-      if (clickedOutside) {
-        setOpenDropdown(null);
-        setActiveSubmenu(null);
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
+  // Close on outside click (only for clicked state - mobile)
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (clickedItem) {
+        const clickedOutside = Object.values(dropdownRefs.current).every(
+          (ref) => ref && !ref.contains(e.target as Node)
+        );
+        if (clickedOutside) {
+          setClickedItem(null);
+          setActiveSubmenu(null);
+        }
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, [clickedItem]);
 
-  // FIXED: Proper toggle - click again to close
-  const toggleDropdown = (label: string) => {
-    setOpenDropdown((prev) => (prev === label ? null : label));
-    setActiveSubmenu(null); // Reset submenu on toggle
-  };
-
-  const handleSubmenuEnter = (label: string) => {
-    setActiveSubmenu(label);
-  };
-
-  const handleSubmenuLeave = () => {
-    setActiveSubmenu(null);
-  };
-
-  // Recursive render with hover + click support
   const renderDropdownItems = (items: DropdownItem[], isSubmenu = false) => {
     return items.map((item) => (
       <div
@@ -263,42 +275,52 @@ const Navbar = () => {
         {item.href ? (
           <Link
             href={item.href}
-            onClick={(e) => {
-              // Close the main dropdown on any submenu item click
-              setOpenDropdown(null);
+            onClick={() => {
+              setHoveredItem(null);
+              setClickedItem(null);
               setActiveSubmenu(null);
-              if (!isSubmenu) {
-                // Optional: Only close if it's not a submenu (prevents double close)
-              }
             }}
-            className="flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-700 transition-all rounded-lg mx-2 group-hover:translate-x-1 transition-transform"
+            className="flex items-center  transition-all duration-200  justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 border-b border-gray-100"
           >
             <span>{item.label}</span>
-            {item.items && <ChevronRight className="w-4 h-4" />}
+            {item.items && (
+              <Image
+                src="/arrow-down.png"
+                alt="Ceturvi Logo"
+                width={20}
+                height={20}
+                // className="object-contain"
+                className={`w-4 h-4 object-contai transition-transform duration-200 ${
+                  activeDropdown === item.label ? "rotate-100" : ""
+                }`}
+              />
+            )}
           </Link>
         ) : (
-          <div
-            onClick={() => {
-              // Even if no href, clicking on parent should close
-              setOpenDropdown(null);
-              setActiveSubmenu(null);
-            }}
-            className="flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-700 transition-all rounded-lg mx-2 cursor-pointer"
-          >
+          <div className="flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 border-b border-gray-100 cursor-default">
             <span>{item.label}</span>
-            {item.items && <ChevronRight className="w-4 h-4" />}
+            {item.items && (
+              <Image
+                src="/arrow-down.png"
+                alt="Ceturvi Logo"
+                width={20}
+                height={20}
+                // className="object-contain"
+                className={`w-4 h-4 object-contai transition-transform duration-200 ${
+                  activeDropdown === item.label ? "rotate-100" : ""
+                }`}
+              />
+            )}
           </div>
         )}
 
-        {/* Submenu */}
+        {/* Flyout Submenu */}
         {item.items && activeSubmenu === item.label && (
           <div
-            className="absolute left-full top-0 bg-white rounded-xl shadow-2xl border border-gray-100 py-2 z-50"
-            style={{ top: "-8px" }}
+            className="absolute left-60 top-0 mt-2 bg-white  w-64 z-50"
+            style={{ top: -8 }}
             onMouseEnter={() => setActiveSubmenu(item.label)}
             onMouseLeave={() => setActiveSubmenu(null)}
-            // Click inside submenu should NOT close (so user can navigate)
-            onClick={(e) => e.stopPropagation()}
           >
             {renderDropdownItems(item.items, true)}
           </div>
@@ -306,8 +328,16 @@ const Navbar = () => {
       </div>
     ));
   };
+
+  const [query, setQuery] = useState("");
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setQuery(value);
+  };
+
   return (
     <nav className="bg-white border-b fixed top-0 left-0 right-0 z-50 border-gray-200">
+      {/* Your top bar code remains same */}
       <div className="mx-auto px-6">
         <div className="flex items-center justify-between h-14">
           <div className="flex items-center gap-8">
@@ -371,45 +401,60 @@ const Navbar = () => {
       </div>
       <hr className="border-gray-200" />
 
-      <div className="flex items-center w-full text-gray-500 justify-around bg-white shadow-md">
+      <div className="flex items-center justify-around bg-white text-gray-700">
         {navItems.map((item) => (
           <div
             key={item.label}
             className="relative"
             ref={(el) => (dropdownRefs.current[item.label] = el)}
+            onMouseEnter={() => item.items && handleMouseEnter(item.label)}
+            onMouseLeave={item.items ? handleMouseLeave : undefined}
           >
             {item.items ? (
-              <>
-                <button
-                  onClick={() => toggleDropdown(item.label)}
-                  className="flex items-center gap-1 px-4 py-3 text-sm font-medium text-gray-450  hover:bg-gray-50 rounded-lg transition-all duration-200"
-                >
-                  {item.label}
-                  <ChevronDown
-                    className={`w-4 h-4 transition-transform duration-200 ${
-                      openDropdown === item.label ? "rotate-180 text-gray-600" : ""
-                    }`}
-                  />
-                </button>
-
-                {openDropdown === item.label && (
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-100 py-3 z-50">
-                    <div className="px-4 pb-2">
-                      <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        {item.label}
-                      </h3>
-                    </div>
-                    {renderDropdownItems(item.items)}
-                  </div>
-                )}
-              </>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  item.items && toggleClick(item.label);
+                }}
+                className={`flex items-center gap-1 px-2 py-3 text-sm font-medium transition-all duration-200 hover:bg-gray-50 ${
+                  activeDropdown === item.label ? "text-blue-600" : "text-gray-600"
+                }`}
+              >
+                {item.label}
+                <Image
+                  src="/arrow-down.png"
+                  alt="Ceturvi Logo"
+                  width={20}
+                  height={20}
+                  // className="object-contain"
+                  className={`w-4 h-4 object-contai transition-transform duration-200 ${
+                    activeDropdown === item.label ? "rotate-180" : ""
+                  }`}
+                />
+                {/* <ChevronDown
+                  className={`w-4 h-4 transition-transform duration-200 ${
+                    activeDropdown === item.label ? "rotate-180" : ""
+                  }`}
+                /> */}
+              </button>
             ) : (
               <Link
                 href={item.href || "#"}
-                className="px-4 py-3 text-sm font-medium text-gray-700 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition-all"
+                className="px-4 py-3 text-sm font-medium hover:text-blue-600 hover:bg-gray-50 transition-all"
               >
                 {item.label}
               </Link>
+            )}
+
+            {/* Mega Menu Dropdown */}
+            {item.items && activeDropdown === item.label && (
+              <div
+                className="absolute top-full left-1/2 -translate-x-1/2 mt-1  w-60 bg-white py-3 z-50"
+                onMouseEnter={() => hoveredItem && handleMouseEnter(item.label)}
+                onMouseLeave={handleMouseLeave}
+              >
+                <div className="mt-1 ">{renderDropdownItems(item.items)}</div>
+              </div>
             )}
           </div>
         ))}

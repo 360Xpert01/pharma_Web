@@ -2,8 +2,12 @@
 
 import React, { useState } from "react";
 import { Search, ListFilter, Upload, ChevronDown, X } from "lucide-react";
+interface UsersHeaderProps {
+  campHeading?: string;
+  filterT?: boolean;
+}
 
-export default function UsersHeader() {
+export default function UsersHeader({ campHeading, filterT }: UsersHeaderProps) {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   return (
@@ -11,7 +15,7 @@ export default function UsersHeader() {
       <div className="px-8 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
         {/* Left: Title + Description */}
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">All Users</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{campHeading || "All Users"}</h1>
           <p className="text-sm text-gray-500 mt-1">Unlock the potential of your candidates</p>
         </div>
 
@@ -19,91 +23,96 @@ export default function UsersHeader() {
         <div className="flex items-center gap-3 flex-wrap">
           {/* Search Bar */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-900 pointer-events-none" />
             <input
               type="text"
               placeholder="Search users..."
-              className="pl-10 pr-4 py-2.5 w-full sm:w-64 bg-gray-100 text-gray-700 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200"
+              className="pl-10 pr-4 py-2.5 w-full sm:w-64 bg-gray-200 text-gray-900 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200"
             />
           </div>
 
-          {/* Filter Button + Dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className="flex items-center justify-center p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors shadow-sm"
-              aria-label="Filter"
-            >
-              <ListFilter className="w-4 h-4" />
-            </button>
+          <div className="border h-8 border-gray-300"></div>
 
-            {/* Filter Dropdown */}
-            {isFilterOpen && (
-              <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-200 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
-                <div className="p-5 space-y-5">
-                  {/* Header */}
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-gray-900">Filter by</h3>
-                    <button
-                      onClick={() => setIsFilterOpen(false)}
-                      className="text-gray-400 hover:text-gray-600 transition"
-                    >
-                      <X className="w-5 h-5" />
-                    </button>
-                  </div>
+          {filterT && (
+            <div className="relative">
+              <button
+                onClick={() => setIsFilterOpen(!isFilterOpen)}
+                className="flex items-center justify-center p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors shadow-sm"
+                aria-label="Filter"
+              >
+                <ListFilter className="w-4 h-4" />
+              </button>
 
-                  {/* Role Filter */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Role</label>
-                    <select className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                      <option>All Roles</option>
-                      <option>Admin</option>
-                      <option>Manager</option>
-                      <option>Sales Rep</option>
-                      <option>Doctor</option>
-                      <option>Pharmacist</option>
-                    </select>
-                  </div>
+              {/* Filter Dropdown */}
+              {isFilterOpen && (
+                <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-200 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="p-5 space-y-5">
+                    {/* Header */}
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-semibold text-gray-900">Filter by</h3>
+                      <button
+                        onClick={() => setIsFilterOpen(false)}
+                        className="text-gray-400 hover:text-gray-600 transition"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
 
-                  {/* Status Filter */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Status</label>
-                    <select className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                      <option>All Status</option>
-                      <option>Active</option>
-                      <option>Inactive</option>
-                      <option>Pending</option>
-                      <option>Suspended</option>
-                    </select>
-                  </div>
+                    {/* Role Filter */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">Role</label>
+                      <select className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                        <option>All Roles</option>
+                        <option>Admin</option>
+                        <option>Manager</option>
+                        <option>Sales Rep</option>
+                        <option>Doctor</option>
+                        <option>Pharmacist</option>
+                      </select>
+                    </div>
 
-                  {/* Date Range */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                      Date Range
-                    </label>
-                    <select className="w-full px-3 py-2.5 border border-gray-300 Rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                      <option>Last 30 Days</option>
-                      <option>Last 7 Days</option>
-                      <option>This Month</option>
-                      <option>Last Month</option>
-                      <option>Custom Range</option>
-                    </select>
-                  </div>
+                    {/* Status Filter */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                        Status
+                      </label>
+                      <select className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                        <option>All Status</option>
+                        <option>Active</option>
+                        <option>Inactive</option>
+                        <option>Pending</option>
+                        <option>Suspended</option>
+                      </select>
+                    </div>
 
-                  {/* Action Buttons */}
-                  <div className="flex gap-3 pt-3">
-                    <button className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition">
-                      Clear All
-                    </button>
-                    <button className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition shadow-sm">
-                      Apply Filters
-                    </button>
+                    {/* Date Range */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                        Date Range
+                      </label>
+                      <select className="w-full px-3 py-2.5 border border-gray-300 Rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                        <option>Last 30 Days</option>
+                        <option>Last 7 Days</option>
+                        <option>This Month</option>
+                        <option>Last Month</option>
+                        <option>Custom Range</option>
+                      </select>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-3 pt-3">
+                      <button className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition">
+                        Clear All
+                      </button>
+                      <button className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition shadow-sm">
+                        Apply Filters
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
 
           {/* Export Button */}
           <button className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-full text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm">
