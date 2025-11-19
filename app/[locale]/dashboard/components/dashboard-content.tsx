@@ -65,7 +65,7 @@ export function DashboardContent({
   };
 
   return (
-    <div className="space-y-8 p-3 mt-26 bg-gray-50">
+    <div className="space-y-10 p-3 px-7 mt-26 bg-gray-50">
       {/* Dashboard Header with Actions */}
       <DashboardHeader
         onRefresh={handleRefresh}
