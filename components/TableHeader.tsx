@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Search, ListFilter, Upload, ChevronDown, X } from "lucide-react";
+import Image from "next/image";
 interface UsersHeaderProps {
   campHeading?: string;
   filterT?: boolean;
@@ -15,7 +16,7 @@ export default function UsersHeader({ campHeading, filterT }: UsersHeaderProps) 
       <div className="px-8 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
         {/* Left: Title + Description */}
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{campHeading || "All Users"}</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{campHeading || "All Users"}</h1>
           <p className="text-sm text-gray-500 mt-1">Unlock the potential of your candidates</p>
         </div>
 
@@ -115,11 +116,24 @@ export default function UsersHeader({ campHeading, filterT }: UsersHeaderProps) 
           )}
 
           {/* Export Button */}
-          <button className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-full text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm">
-            <Upload className="w-4 h-4" />
-            <span>Export List</span>
-            <ChevronDown className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-2 border border-blue-500  text-white rounded-full text-sm font-medium  transition-colors shadow-sm">
+            <div className="flex items-center  gap-2 bg-blue-500 px-3 py-3 overflow-hidden rounded-tl-full rounded-bl-full ">
+              <Upload className="w-4 h-4" />
+              <span>Export List</span>
+            </div>
+
+            {/* <div className="border-l border-gray-400"></div> */}
+            <div className="  mr-3 ">
+              <Image
+                src="/arrow-down-blue.svg"
+                alt="Ceturvi Logo"
+                width={25}
+                height={25}
+                // className="object-contain"
+                className={"w-5 h-5 object-contain cursor-pointer"}
+              />
+            </div>
+          </div>
         </div>
       </div>
 

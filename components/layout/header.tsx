@@ -297,7 +297,7 @@ const Navbar = () => {
             )}
           </Link>
         ) : (
-          <div className="flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 border-b border-gray-100 cursor-default">
+          <div className="flex items-center cursor-pointer justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 border-b border-gray-100 ">
             <span>{item.label}</span>
             {item.items && (
               <Image
@@ -306,8 +306,8 @@ const Navbar = () => {
                 width={20}
                 height={20}
                 // className="object-contain"
-                className={`w-4 h-4 object-contai transition-transform duration-200 ${
-                  activeDropdown === item.label ? "rotate-100" : ""
+                className={`w-4 h-4 object-contain cursor-pointer transition-transform duration-200 ${
+                  activeSubmenu === item.label ? "rotate-90" : ""
                 }`}
               />
             )}
@@ -317,7 +317,7 @@ const Navbar = () => {
         {/* Flyout Submenu */}
         {item.items && activeSubmenu === item.label && (
           <div
-            className="absolute left-60 top-0 mt-2 bg-white  w-64 z-50"
+            className="absolute cursor-pointer left-60 top-0 mt-2 bg-white  w-58 z-50"
             style={{ top: -8 }}
             onMouseEnter={() => setActiveSubmenu(item.label)}
             onMouseLeave={() => setActiveSubmenu(null)}
@@ -401,7 +401,7 @@ const Navbar = () => {
       </div>
       <hr className="border-gray-200" />
 
-      <div className="flex items-center justify-around bg-white text-gray-700">
+      <div className="flex items-center  justify-around bg-white text-gray-700">
         {navItems.map((item) => (
           <div
             key={item.label}
@@ -416,7 +416,7 @@ const Navbar = () => {
                   e.stopPropagation();
                   item.items && toggleClick(item.label);
                 }}
-                className={`flex items-center gap-1 px-2 py-3 text-sm font-medium transition-all duration-200 hover:bg-gray-50 ${
+                className={`flex items-center gap-1 cursor-pointer px-2 py-3 text-sm font-medium transition-all duration-200 hover:bg-gray-50 ${
                   activeDropdown === item.label ? "text-blue-600" : "text-gray-600"
                 }`}
               >
