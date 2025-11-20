@@ -3,13 +3,13 @@ import { DashboardContent } from "../components/dashboard-content";
 
 export default function DashboardPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className=" bg-white">
       <DashboardContent
         sample={"Account Management"}
         descrip={"Welcome to Ceutro, It's looking like a slow day"}
-        table={"All Pharmacies & chemists"}
-        btnAdd={"Add Pharmacy"}
-        campHeading={"All Pharmacies & chemists"}
+        table={"All Hospitals / Institutions"}
+        btnAdd={"Key Account Manager"}
+        campHeading={"Key Account Manager"}
         filterT={true}
         doctorTable={true}
         hideMetrics={false}

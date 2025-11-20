@@ -106,4 +106,6 @@ export interface DashboardProps {
   campTabel?: boolean;
   campHeading?: string;
   filterT?: boolean;
+  dataCard?: DataCard;
+  doctorTable?: boolean;
 }

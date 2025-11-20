@@ -1,108 +1,84 @@
-"use client";
-
-import { MetricData } from "../../types";
-import {
-  Users,
-  DollarSign,
-  ShoppingCart,
-  Activity,
-  Eye,
-  Percent,
-  TrendingUp,
-  TrendingDown,
-} from "lucide-react";
-import { MetricCard } from "./metrics-card";
-import { BaseGrid } from "@/components/shared/base-grid";
-import { useTranslations } from "next-intl";
-import { MetricCardSkeleton } from "../loading/dashboard-loading";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { TrendingUp } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface MetricsSectionProps {
-  data?: MetricData;
-  isLoading?: boolean;
+  title: string;
+  value: string | number;
+  valueLabel: string;
+  subtitle: string;
+  detailLabel?: string;
+  detailValue?: string | number;
+  progress: number;
+  colorVariant?: "1" | "2" | "3" | "4";
+  className?: string;
 }
 
-export function MetricsSection({ data, isLoading = false }: MetricsSectionProps) {
-  const t = useTranslations("dashboard");
-  // Default mock data if none provided
-  const defaultData: MetricData = {
-    totalUsers: 430,
-    activeSessions: 15,
-    revenue: 1325,
-    conversionRate: 100,
-    orders: 1832,
-    growth: 12.5,
-    bounceRate: 34.2,
-    pageViews: 98765,
-  };
+const colorClasses = {
+  "1": "bg-chart-1",
+  "2": "bg-chart-2",
+  "3": "bg-chart-3",
+  "4": "bg-chart-4",
+};
 
-  const metricsData = data || defaultData;
+const valueColorClasses = {
+  "1": "text-chart-1",
+  "2": "text-chart-2",
+  "3": "text-chart-3",
+  "4": "text-chart-4",
+};
 
-  const metrics = [
-    {
-      title: t("metrics.totalUsers"),
-      value: metricsData.totalUsers,
-      change: 12.5,
-      changeType: "increase" as const,
-      icon: Users,
-      color: "info" as const,
-      description: t("metrics.descriptions.totalUsers"),
-    },
-    {
-      title: t("metrics.activeUsers"),
-      value: metricsData.activeSessions,
-      change: 8.2,
-      changeType: "increase" as const,
-      icon: Activity,
-      color: "success" as const,
-      description: t("metrics.descriptions.activeUsers"),
-    },
-    {
-      title: t("metrics.revenue"),
-      value: metricsData.revenue,
-      change: 15.3,
-      changeType: "increase" as const,
-      icon: DollarSign,
-      prefix: "$",
-      color: "success" as const,
-      description: t("metrics.descriptions.revenue"),
-    },
-    {
-      title: t("metrics.conversionRate"),
-      value: metricsData.conversionRate,
-      change: -2.1,
-      changeType: "decrease" as const,
-      icon: Percent,
-      suffix: "%",
-      color: "warning" as const,
-      description: t("metrics.descriptions.conversionRate"),
-    },
-  ];
-
+export function MetricsSection({
+  title,
+  value,
+  valueLabel,
+  subtitle,
+  detailLabel,
+  detailValue,
+  progress,
+  colorVariant = "1",
+  className,
+}: MetricsSectionProps) {
   return (
-    <section className="space-y-6 text-black">
-      {/* <div className="mb-8">
-        <h2 className="text-2xl font-bold tracking-tight">{t("sections.metrics")}</h2>
-        <p className="text-muted-foreground">{t("sections.metricsDescription")}</p>
-      </div> */}
-      <BaseGrid columns={{ sm: 1, md: 2, lg: 4 }}>
-        {isLoading
-          ? Array.from({ length: 8 }).map((_, index) => <MetricCardSkeleton key={index} />)
-          : metrics.map((metric, index) => (
-              <MetricCard
-                key={index}
-                title={metric.title}
-                value={metric.value}
-                change={metric.change}
-                changeType={metric.changeType}
-                icon={metric.icon}
-                prefix={metric.prefix}
-                suffix={metric.suffix}
-                description={metric.description}
-                color={metric.color}
-                fromLastMonthText={t("metrics.fromLastMonth")}
-              />
-            ))}
-      </BaseGrid>
-    </section>
+    <Card className={cn("shadow-[0px_5px_15px_rgba(0,0,0,0.35)]", className)}>
+      <CardHeader className="">
+        <h3 className="text-2xl font-bold text-black">{title}</h3>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <div className="flex items-baseline gap-2">
+          <span className={cn("text-4xl font-semibold", valueColorClasses[colorVariant])}>
+            {value}
+          </span>
+          <span className="text-lg text-muted-foreground">{valueLabel}</span>
+        </div>
+
+        <div className="flex items-center justify-between text-sm text-muted-foreground">
+          <span>{subtitle}</span>
+          <div className="flex items-center gap-5">
+            <span>{detailValue}</span>
+            <TrendingUp className={cn("h-6 w-6", valueColorClasses[colorVariant])} />
+          </div>
+        </div>
+
+        {detailLabel && detailValue && (
+          <div className="flex items-center text-black justify-between text-sm">
+            <span className="text-muted-foreground">{detailLabel}</span>
+            <span className="font-medium">{detailValue}</span>
+          </div>
+        )}
+
+        <div className="relative">
+          <Progress value={progress} className="h-3 bg-gray-200" />
+          <div
+            className={cn(
+              "absolute inset-0 h-3 rounded-full transition-all",
+              colorClasses[colorVariant]
+            )}
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </CardContent>
+    </Card>
   );
 }
