@@ -46,7 +46,7 @@ const Navbar = () => {
         { label: "Doctors / HCP Directory", href: "/dashboard/account-Management" },
         { label: "Pharmacies & Chemists", href: "/dashboard/account-Pharmacies" },
         { label: "Hospitals / Institutions", href: "/dashboard/account-Hospitals" },
-        { label: "Key Accounts (KAM)", href: "/dashboard/account-Management" },
+        { label: "Key Accounts (KAM)", href: "/dashboard/keyAccounts(KAM)" },
       ],
     },
     {

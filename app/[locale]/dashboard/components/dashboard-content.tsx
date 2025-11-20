@@ -16,6 +16,7 @@ import { User } from "lucide-react";
 import SalesPersonCard from "@/components/UserDetailTtle";
 import CampaignsTable from "@/components/CampainTable";
 import TableHeader from "@/components/TableHeader";
+import DoctorsTable from "@/components/DoctorTable";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -37,10 +38,13 @@ export function DashboardContent({
   campTabel,
   campHeading,
   filterT,
+  dataCard,
+  doctorTable,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
   const combinedLoading = externalLoading || isLoading;
+  const topHcps = dataCard?.topHcps || [];
   const requests = [
     { title: "Client1", amount: 520 },
     { title: "Client2", amount: 520 },
@@ -80,19 +84,45 @@ export function DashboardContent({
         onSettingView={handleSettingView}
       />
 
-      {campTabel && (
-        <div className=" rounded-md p-3 shadow-xl inset-shadow-2xs ">
-          <TableHeader campHeading={campHeading} filterT={filterT} />
-          <CampaignsTable />
-        </div>
-      )}
-
-      <div className="bg-white space-y-10 rounded-md p-3">
+      <div className="space-y-10 ">
         {/* Metrics Cards Section */}
-        {!hideMetrics && <MetricsSection data={data?.metrics} isLoading={combinedLoading} />}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {!hideMetrics &&
+            (topHcps?.length > 0 ? (
+              topHcps.map((hcp, index) => (
+                <MetricsSection
+                  key={index}
+                  title={hcp.title}
+                  value={hcp.value}
+                  valueLabel={hcp.valueLabel}
+                  subtitle={hcp.subtitle}
+                  detailLabel={hcp.detailLabel || ""}
+                  detailValue={hcp.detailValue}
+                  progress={hcp.progress}
+                  colorVariant={hcp.colorVariant}
+                />
+              ))
+            ) : (
+              <div>No data available</div>
+            ))}
+        </div>
+
+        {campTabel && (
+          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+            <TableHeader campHeading={campHeading} filterT={filterT} />
+            <CampaignsTable />
+          </div>
+        )}
+
+        {doctorTable && (
+          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+            <TableHeader campHeading={campHeading} filterT={filterT} />
+            <DoctorsTable />
+          </div>
+        )}
 
         {/* Data Tables Section */}
-        {table && !hideData && !proBar && (
+        {/* {table && !hideData && !proBar && (
           <DataSection
             data={{
               users: data?.users,
@@ -103,7 +133,7 @@ export function DashboardContent({
             table={table}
             description={descrip}
           />
-        )}
+        )} */}
 
         {proBar && <SalesTeamTable />}
 

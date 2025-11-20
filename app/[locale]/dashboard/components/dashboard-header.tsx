@@ -68,16 +68,15 @@ export function DashboardHeader({
         )}
 
         {!btnReqquest && !btnTrue && btntextReq && (
-          <Button
-            variant="outline"
-            size="sm"
+          <button
+            className="p-3 bg-blue-500 hover:bg-blue-600 text-sm text-white rounded-full flex items-center"
             onClick={onSettingView}
             title={t("tooltips.settings")}
             aria-label={t("tooltips.settings")}
           >
             {/* <Plus className="h-4 w-4 mr-1" /> */}
             {btntextReq || "add"}
-          </Button>
+          </button>
         )}
       </div>
     </div>

@@ -32,13 +32,11 @@ export default function UsersHeader({ campHeading, filterT }: UsersHeaderProps) 
             />
           </div>
 
-          <div className="border h-8 border-gray-300"></div>
-
           {filterT && (
             <div className="relative">
               <button
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className="flex items-center justify-center p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors shadow-sm"
+                className="flex items-center justify-center p-3.5 bg-blue-500 text-white rounded-full hover:bg-blue-700 transition-colors shadow-sm"
                 aria-label="Filter"
               >
                 <ListFilter className="w-4 h-4" />
@@ -114,6 +112,8 @@ export default function UsersHeader({ campHeading, filterT }: UsersHeaderProps) 
               )}
             </div>
           )}
+
+          <div className="border h-9 border-gray-300"></div>
 
           {/* Export Button */}
           <div className="flex items-center gap-2 border border-blue-500  text-white rounded-full text-sm font-medium  transition-colors shadow-sm">
