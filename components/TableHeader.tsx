@@ -13,7 +13,7 @@ export default function UsersHeader({ campHeading, filterT }: UsersHeaderProps) 
 
   return (
     <div className="">
-      <div className="px-8 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+      <div className="px-4 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
         {/* Left: Title + Description */}
         <div>
           <h1 className="text-3xl font-bold text-gray-900">{campHeading || "All Users"}</h1>

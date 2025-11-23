@@ -108,4 +108,6 @@ export interface DashboardProps {
   filterT?: boolean;
   dataCard?: DataCard;
   doctorTable?: boolean;
+  prodTabel?: boolean;
+  sampleTable?: boolean;
 }
