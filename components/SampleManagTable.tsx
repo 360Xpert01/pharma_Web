@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Mail, Phone, MapPin, Eye, MoreVertical, ChevronRight } from "lucide-react";
 
 interface Doctor {
@@ -15,7 +15,7 @@ interface Doctor {
 
 const doctorsData: Doctor[] = [
   {
-    id: "1",
+    id: "dfa23423sdf",
     name: "Dr. Sarah Ali",
     specialty: "Cardiologist",
     email: "sarah@gmail.com",
@@ -24,7 +24,7 @@ const doctorsData: Doctor[] = [
     status: "Active",
   },
   {
-    id: "2",
+    id: "dfa23423sas",
     name: "Dr. Sarah Ali",
     specialty: "Cardiologist",
     email: "sarah@gmail.com",
@@ -33,7 +33,7 @@ const doctorsData: Doctor[] = [
     status: "Active",
   },
   {
-    id: "3",
+    id: "dfa2342sdf",
     name: "Dr. Sarah Ali",
     specialty: "Cardiologist",
     email: "sarah@gmail.com",
@@ -42,7 +42,7 @@ const doctorsData: Doctor[] = [
     status: "Active",
   },
   {
-    id: "4",
+    id: "dfa23423ewr",
     name: "Dr. Sarah Ali",
     specialty: "Cardiologist",
     email: "sarah@gmail.com",
@@ -51,7 +51,7 @@ const doctorsData: Doctor[] = [
     status: "Active",
   },
   {
-    id: "5",
+    id: "dfa23423s1d",
     name: "Dr. Sarah Ali",
     specialty: "Cardiologist",
     email: "sarah@gmail.com",
@@ -60,7 +60,7 @@ const doctorsData: Doctor[] = [
     status: "Active",
   },
   {
-    id: "6",
+    id: "dfa2342123s",
     name: "Dr. Sarah Ali",
     specialty: "Cardiologist",
     email: "sarah@gmail.com",
@@ -69,8 +69,8 @@ const doctorsData: Doctor[] = [
     status: "Inactive",
   },
   {
-    id: "7",
-    name: "Dr. Sarah Ali",
+    id: "dfa23423sre",
+    name: "",
     specialty: "Cardiologist",
     email: "sarah@gmail.com",
     phone: "+932143235236",
@@ -80,6 +80,7 @@ const doctorsData: Doctor[] = [
 ];
 
 export default function DoctorsTable() {
+  const [openId, setOpenId] = useState<string | null>(null);
   return (
     <div className="w-full  overflow-hidden">
       {doctorsData.map((doctor, index) => (
@@ -124,10 +125,33 @@ export default function DoctorsTable() {
 
             {/* View Details + More */}
             <div className="col-span-1 flex items-center justify-end gap-2">
-              <button className="text-gray-400 text-sm   flex items-center gap-1 whitespace-nowrap">
-                View Details
-              </button>
-              <ChevronRight className="w-6 h-6 text-blue-400" />
+              <div className="relative">
+                <button
+                  onClick={() => setOpenId(openId === doctor.id ? null : doctor.id)}
+                  className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition"
+                >
+                  <MoreVertical className="w-5 h-5" />
+                </button>
+
+                {openId === doctor.id && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setOpenId(null)} />
+                    <div className="absolute right-0 top-10 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                      <div className="py-1">
+                        <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                          Edit
+                        </button>
+                        <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                          Duplicate
+                        </button>
+                        <button className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>

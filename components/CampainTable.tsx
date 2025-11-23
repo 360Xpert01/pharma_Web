@@ -59,7 +59,7 @@ const campaignsData: Campaign[] = [
     id: "5",
     condition: "Cholesterol",
     channel: "GT’s",
-    productTitle: "",
+    productTitle: "Cetirizine",
     brand: "CardioCare",
     products: ["Simvastatin", "Rosuvastatin", "Ezetimibe"],
     assignedUsers: ["/u17.jpg", "/u18.jpg", "/u19.jpg"],
@@ -107,7 +107,7 @@ export default function CampaignsTable() {
         {campaignsData.map((campaign) => (
           <div
             key={campaign.id}
-            className="px-8 py-1 hover:bg-gray-50 transition-colors duration-200 flex items-center justify-between relative"
+            className="px-3 py-1 hover:bg-gray-50 transition-colors duration-200 flex items-center justify-between relative"
           >
             {/* Left Side - Tumhara original grid */}
             <div className="flex-1 items-center justify-center rounded-md p-2 border border-gray-200 grid grid-cols-12 gap-2 text-sm">
@@ -126,7 +126,7 @@ export default function CampaignsTable() {
 
               {/* Products */}
               <div className="col-span-4 font-semibold text-black">
-                <p className="font-bold mb-1">{campaign.productTitle}</p>
+                <p className="font-bold mb-0">{campaign.productTitle}</p>
                 <div className="flex flex-wrap gap-2">
                   {campaign.products.map((product, idx) => (
                     <span key={idx} className="py-1 text-gray-400 rounded-full text-sm font-normal">
@@ -164,7 +164,7 @@ export default function CampaignsTable() {
 
                 {/* Status Badge */}
                 <span
-                  className={`px-7 py-1 rounded-full text-sm font-medium ${
+                  className={`px-9 py-1 rounded-full text-sm font-medium ${
                     campaign.status === "Active"
                       ? "bg-green-100 text-green-600"
                       : "bg-gray-100 text-gray-600"

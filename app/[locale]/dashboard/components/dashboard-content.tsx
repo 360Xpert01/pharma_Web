@@ -17,6 +17,8 @@ import SalesPersonCard from "@/components/UserDetailTtle";
 import CampaignsTable from "@/components/CampainTable";
 import TableHeader from "@/components/TableHeader";
 import DoctorsTable from "@/components/DoctorTable";
+import ProductTableM from "@/components/ProductTableM";
+import SampleManagTable from "@/components/SampleManagTable";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -40,6 +42,8 @@ export function DashboardContent({
   filterT,
   dataCard,
   doctorTable,
+  prodTabel,
+  sampleTable,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -114,10 +118,25 @@ export function DashboardContent({
           </div>
         )}
 
+        {prodTabel && (
+          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+            <TableHeader campHeading={campHeading} filterT={filterT} />
+            <ProductTableM />
+          </div>
+        )}
+
         {doctorTable && (
           <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <DoctorsTable />
+          </div>
+        )}
+
+        {sampleTable && (
+          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+            <TableHeader campHeading={campHeading} filterT={filterT} />
+            {/* <DoctorsTable /> */}
+            <SampleManagTable />
           </div>
         )}
 
