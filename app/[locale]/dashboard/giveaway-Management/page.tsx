@@ -17,7 +17,7 @@ export default function DashboardPage() {
         campHeading={"All Giveaway"}
         btnAdd={"Add New Giveaway"}
         filterT={true}
-        sampleTable={true}
+        giveawayTable={true}
         hideMetrics={false}
         dataCard={{
           topHcps: [

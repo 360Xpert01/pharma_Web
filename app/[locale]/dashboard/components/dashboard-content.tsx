@@ -19,6 +19,7 @@ import TableHeader from "@/components/TableHeader";
 import DoctorsTable from "@/components/DoctorTable";
 import ProductTableM from "@/components/ProductTableM";
 import SampleManagTable from "@/components/SampleManagTable";
+import GiveawayTable from "@/components/giveawayTable";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -44,6 +45,7 @@ export function DashboardContent({
   doctorTable,
   prodTabel,
   sampleTable,
+  giveawayTable,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -135,8 +137,14 @@ export function DashboardContent({
         {sampleTable && (
           <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
             <TableHeader campHeading={campHeading} filterT={filterT} />
-            {/* <DoctorsTable /> */}
             <SampleManagTable />
+          </div>
+        )}
+
+        {giveawayTable && (
+          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+            <TableHeader campHeading={campHeading} filterT={filterT} />
+            <GiveawayTable />
           </div>
         )}
 

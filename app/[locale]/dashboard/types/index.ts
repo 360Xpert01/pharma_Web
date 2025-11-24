@@ -110,4 +110,5 @@ export interface DashboardProps {
   doctorTable?: boolean;
   prodTabel?: boolean;
   sampleTable?: boolean;
+  giveawayTable?: boolean;
 }
