@@ -10,6 +10,10 @@ interface UsersHeaderProps {
 
 export default function UsersHeader({ campHeading, filterT }: UsersHeaderProps) {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [openId, setOpenId] = useState<boolean>(false);
+  const exportBtn = () => {
+    console.log("export btn clicked");
+  };
 
   return (
     <div className="">
@@ -36,7 +40,7 @@ export default function UsersHeader({ campHeading, filterT }: UsersHeaderProps) 
             <div className="relative">
               <button
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className="flex items-center justify-center p-3.5 bg-blue-500 text-white rounded-full hover:bg-blue-700 transition-colors shadow-sm"
+                className="flex items-center justify-center p-3.5 bg-blue-500 text-white rounded-full cursor-pointer transition-colors shadow-sm"
                 aria-label="Filter"
               >
                 <ListFilter className="w-4 h-4" />
@@ -44,7 +48,7 @@ export default function UsersHeader({ campHeading, filterT }: UsersHeaderProps) 
 
               {/* Filter Dropdown */}
               {isFilterOpen && (
-                <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-200 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute cursor-pointer right-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-200 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="p-5 space-y-5">
                     {/* Header */}
                     <div className="flex items-center justify-between">
@@ -116,8 +120,11 @@ export default function UsersHeader({ campHeading, filterT }: UsersHeaderProps) 
           <div className="border h-9 border-gray-300"></div>
 
           {/* Export Button */}
-          <div className="flex items-center gap-2 border border-blue-500  text-white rounded-full text-sm font-medium  transition-colors shadow-sm">
-            <div className="flex items-center  gap-2 bg-blue-500 px-3 py-3 overflow-hidden rounded-tl-full rounded-bl-full ">
+          <div
+            onClick={() => setOpenId(!openId)}
+            className="flex items-center cursor-pointer relative gap-2 border border-blue-500  text-white rounded-full text-sm font-medium  transition-colors shadow-sm"
+          >
+            <div className="flex relative items-center  gap-2 bg-blue-500 px-3 py-3 overflow-hidden rounded-tl-full rounded-bl-full ">
               <Upload className="w-4 h-4" />
               <span>Export List</span>
             </div>
@@ -130,19 +137,34 @@ export default function UsersHeader({ campHeading, filterT }: UsersHeaderProps) 
                 width={25}
                 height={25}
                 // className="object-contain"
-                className={"w-5 h-5 object-contain cursor-pointer"}
+                className={"w-5 h-5 object-contain "}
               />
             </div>
+            {openId && (
+              <>
+                {/* Backdrop */}
+                <div className="fixed inset-0 z-40" onClick={() => setOpenId(false)} />
+
+                {/* Dropdown Menu */}
+                <div className="absolute right-0 top-14 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-200 z-50 overflow-hidden">
+                  <div className="py-2">
+                    <button className="w-full text-left  px-5 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3 transition">
+                      <span>Export Format (.xls)</span>
+                    </button>
+                    <button className="w-full text-left px-5 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-3 transition">
+                      <span>Import Data (.xls)</span>
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
 
       {/* Optional: Overlay when filter is open */}
       {isFilterOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black bg-opacity-10"
-          onClick={() => setIsFilterOpen(false)}
-        />
+        <div className="fixed inset-0 z-40  bg-opacity-10" onClick={() => setIsFilterOpen(false)} />
       )}
     </div>
   );

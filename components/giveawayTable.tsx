@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { MoreVertical } from "lucide-react";
 
-interface SampleItem {
+interface GiveawayItem {
   id: string;
   date: string;
   productName: string;
@@ -13,12 +13,12 @@ interface SampleItem {
   status: "In Stock" | "Out of Stock" | "Low Stock";
 }
 
-const sampleData: SampleItem[] = [
+const giveawayData: GiveawayItem[] = [
   {
     id: "GWAWYD23456789",
     date: "2025-10-15",
-    productName: "Amoxicillin",
-    category: "Capsule 500Mg",
+    productName: "Eco-Friendly Tote Bag",
+    category: "Sustainable Shopping",
     sold: 120,
     remaining: 30,
     status: "In Stock",
@@ -26,8 +26,8 @@ const sampleData: SampleItem[] = [
   {
     id: "GWAWYD34567890",
     date: "2025-11-05",
-    productName: "Ibuprefen",
-    category: "Capsule 500Mg",
+    productName: "Bluetooth Speaker",
+    category: "Tech Gadget Gift",
     sold: 0,
     remaining: 15,
     status: "Out of Stock",
@@ -35,8 +35,8 @@ const sampleData: SampleItem[] = [
   {
     id: "GWAWYD45678901",
     date: "2025-12-01",
-    productName: "Brufen 120ML",
-    category: "Capsule 500Mg",
+    productName: "Custom Water Bottle",
+    category: "Health Awareness Gift",
     sold: 12,
     remaining: 20,
     status: "Low Stock",
@@ -44,8 +44,8 @@ const sampleData: SampleItem[] = [
   {
     id: "GWAWYD56789012",
     date: "2025-12-15",
-    productName: "Loratadine",
-    category: "Capsule 500Mg",
+    productName: "Personalized Mug",
+    category: "Corporate Branding",
     sold: 350,
     remaining: 28,
     status: "In Stock",
@@ -53,8 +53,8 @@ const sampleData: SampleItem[] = [
   {
     id: "GWAWYD67890123",
     date: "2026-01-10",
-    productName: "Portable",
-    category: "Tablet 10Mg",
+    productName: "Portable Phone Charger",
+    category: "On-the-Go Gadget",
     sold: 20,
     remaining: 18,
     status: "In Stock",
@@ -62,8 +62,8 @@ const sampleData: SampleItem[] = [
   {
     id: "GWAWYD78901234",
     date: "2026-02-05",
-    productName: "Travert",
-    category: "Tablet 500Mg",
+    productName: "Travel Organizer Kit",
+    category: "Traveler's Essential",
     sold: 150,
     remaining: 22,
     status: "In Stock",
@@ -71,20 +71,20 @@ const sampleData: SampleItem[] = [
   {
     id: "GWAWYD89012345",
     date: "2026-03-01",
-    productName: "Cetirizine",
-    category: "Tablet 250Mg",
+    productName: "Smartwatch",
+    category: "Fitness Tracking",
     sold: 50,
     remaining: 25,
     status: "In Stock",
   },
 ];
 
-export default function SampleManagTable() {
+export default function GiveawayTable() {
   const [openId, setOpenId] = useState<string | null>(null);
 
   return (
     <div className="w-full overflow-hidden">
-      {sampleData.map((item) => (
+      {giveawayData.map((item) => (
         <div
           key={item.id}
           className="px-3 py-1 hover:bg-gray-50 transition-colors  flex items-center"
@@ -93,7 +93,7 @@ export default function SampleManagTable() {
             {/* Perfectly Equal Columns using flex */}
             <div className="flex items-center text-sm font-medium">
               {/* Giveaway ID */}
-              <div className="w-60 flex-shrink-0 font-bold text-gray-600 font-mono">{item.id}</div>
+              <div className="w-48 flex-shrink-0 font-bold text-gray-600 font-mono">{item.id}</div>
 
               {/* Date */}
               <div className="flex-1 min-w-40 font-medium text-gray-400">{item.date}</div>
