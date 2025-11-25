@@ -20,7 +20,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "NextJs Dashboard",
+  title: "Ceturo",
   description: "Premium Pharma CRM Dashboard",
 };
 
