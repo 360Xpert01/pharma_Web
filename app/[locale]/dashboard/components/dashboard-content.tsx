@@ -22,6 +22,7 @@ import SampleManagTable from "@/components/SampleManagTable";
 import GiveawayTable from "@/components/giveawayTable";
 import OrderCapTable from "@/components/OrderCapTable";
 import DcrTable from "@/components/DrcTable";
+import PlansTableManag from "@/components/PlansTableManag";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -50,6 +51,7 @@ export function DashboardContent({
   giveawayTable,
   OrderCap,
   DCRTable,
+  PlanTable,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -163,6 +165,13 @@ export function DashboardContent({
           <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <DcrTable />
+          </div>
+        )}
+
+        {PlanTable && (
+          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+            <TableHeader campHeading={campHeading} filterT={filterT} />
+            <PlansTableManag />
           </div>
         )}
 

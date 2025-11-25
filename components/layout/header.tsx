@@ -75,10 +75,9 @@ const Navbar = () => {
       items: [
         {
           label: "Planning",
-          href: "/dashboard/plan-Management",
 
           items: [
-            { label: "Monthly Work plans", href: "/dashboard/plan-Request" },
+            { label: "Monthly Work plans", href: "/dashboard/plan-Management" },
             { label: "Revenue Targets & Achievement", href: "/dashboard/giveaway-Management" },
           ],
         },
