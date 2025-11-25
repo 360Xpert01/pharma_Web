@@ -113,4 +113,5 @@ export interface DashboardProps {
   giveawayTable?: boolean;
   OrderCap?: boolean;
   DCRTable?: boolean;
+  PlanTable?: boolean;
 }
