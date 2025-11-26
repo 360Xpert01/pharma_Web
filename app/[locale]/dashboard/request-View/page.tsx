@@ -3,15 +3,19 @@ import { DashboardContent } from "../components/dashboard-content";
 
 export default function DashboardPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className=" bg-white">
       <DashboardContent
         sample={"Request View"}
         descrip={"Unlock the potential of your candidates"}
-        table={"All Request"}
+        table={"All Requests"}
+        btnTrue={true}
         hideHeader={true}
         hideMetrics={true}
-        hideData={false}
-        btnTrue={true}
+        proBar={false}
+        hideData={true}
+        ReqTabel={true}
+        campHeading={"All Requests"}
+        filterT={false}
       />
     </div>
   );

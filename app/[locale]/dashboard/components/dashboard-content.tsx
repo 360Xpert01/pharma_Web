@@ -23,6 +23,8 @@ import GiveawayTable from "@/components/giveawayTable";
 import OrderCapTable from "@/components/OrderCapTable";
 import DcrTable from "@/components/DrcTable";
 import PlansTableManag from "@/components/PlansTableManag";
+import ExpanseTable from "@/components/ExpanseTable";
+import RequestViewTable from "@/components/RequestViewTable";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -52,6 +54,8 @@ export function DashboardContent({
   OrderCap,
   DCRTable,
   PlanTable,
+  ExpansTable,
+  ReqTabel,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -81,7 +85,8 @@ export function DashboardContent({
   };
 
   return (
-    <div className="space-y-10 p-3 px-7 mt-26 bg-gray-50">
+    <div className="space-y-1 px-7 mt-26 bg-gray-50">
+      {/* space-y-10 p-3 */}
       {/* Dashboard Header with Actions */}
       <DashboardHeader
         onRefresh={handleRefresh}
@@ -98,7 +103,7 @@ export function DashboardContent({
 
       <div className="space-y-10 ">
         {/* Metrics Cards Section */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid mt-6 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {!hideMetrics &&
             (topHcps?.length > 0 ? (
               topHcps.map((hcp, index) => (
@@ -172,6 +177,20 @@ export function DashboardContent({
           <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <PlansTableManag />
+          </div>
+        )}
+
+        {ExpansTable && (
+          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+            <TableHeader campHeading={campHeading} filterT={filterT} />
+            <ExpanseTable />
+          </div>
+        )}
+
+        {ReqTabel && (
+          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+            <TableHeader campHeading={campHeading} filterT={filterT} />
+            <RequestViewTable />
           </div>
         )}
 
