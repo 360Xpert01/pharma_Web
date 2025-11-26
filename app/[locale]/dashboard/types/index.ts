@@ -114,4 +114,6 @@ export interface DashboardProps {
   OrderCap?: boolean;
   DCRTable?: boolean;
   PlanTable?: boolean;
+  ExpansTable?: boolean;
+  ReqTabel?: boolean;
 }
