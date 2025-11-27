@@ -112,14 +112,12 @@ export default function CampaignsTable() {
             {/* Left Side - Tumhara original grid */}
             <div className="flex-1 items-center justify-center rounded-md p-2 border border-gray-200 grid grid-cols-12 gap-2 text-sm">
               {/* Condition */}
-              <div className="col-span-2 font-semibold font-sans text-font-semibold">
+              <div className="col-span-2 font-semibold  text-font-semibold">
                 {campaign.condition}
               </div>
 
               {/* Channel */}
-              <div className="col-span-2 font-semibold font-sans text-black">
-                {campaign.channel}
-              </div>
+              <div className="col-span-2 font-semibold text-black">{campaign.channel}</div>
 
               {/* Brand */}
               <div className="col-span-2 font-semibold text-black">{campaign.brand}</div>
