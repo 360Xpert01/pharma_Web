@@ -174,8 +174,8 @@ const Navbar = () => {
           label: "Organization",
           items: [
             { label: "Company Profile", href: "/dashboard" },
-            { label: "Branches / Divisions", href: "/dashboard" },
-            { label: "Organization Hierarchy", href: "/dashboard" },
+            { label: "Branches / Divisions", href: "/dashboard/bricks-hierarchy" },
+            { label: "Organization Hierarchy", href: "/dashboard/role-hierarchy" },
             { label: "Channels", href: "/dashboard/Channals" },
             { label: "Call Points", href: "/dashboard" },
           ],
