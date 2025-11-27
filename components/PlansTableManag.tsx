@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 interface CampaignItem {
   id: string;
@@ -130,12 +131,15 @@ export default function CampaignApprovalTable() {
               </div>
 
               {/* View Details */}
-              <div className="w-40 flex justify-end items-center gap-2">
+              <Link
+                href={`/dashboard/plan-Request`}
+                className="w-40 flex justify-end items-center gap-2"
+              >
                 <span className="text-blue-600 font-medium cursor-pointer hover:text-gray-700">
                   View Details
                 </span>
                 <ChevronRight className="w-5 h-8 text-blue-600" />
-              </div>
+              </Link>
             </div>
           </div>
         </div>
