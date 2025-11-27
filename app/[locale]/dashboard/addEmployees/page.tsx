@@ -58,7 +58,7 @@ export default function AddEmployeeForm() {
 
   return (
     <>
-      <div className=" mx-auto text-black p-6 bg-gray-50 min-h-screen font-sans">
+      <div className=" mx-auto text-black p-6 bg-gray-50 min-h-screen ">
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="px-8 py-6 border-b border-gray-200">
             <h2 className="text-2xl font-bold text-gray-900">Add Employees</h2>
