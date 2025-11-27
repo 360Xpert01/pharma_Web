@@ -134,7 +134,7 @@ export default function BookingTable() {
     <div className="w-full overflow-hidden">
       {bookingData.map((item) => (
         <div key={item.id} className="px-4 py-1 hover:bg-gray-50 transition-colors ">
-          <div className="w-full bg-white rounded-xl p-2 border border-gray-200 shadow-sm">
+          <div className="w-full bg-white rounded-xl p-2 border border-gray-200 ">
             {/* Pure Flex with Equal Spacing */}
             <div className="flex items-center gap-6 w-full text-sm">
               {/* Avatar + Name + Position */}

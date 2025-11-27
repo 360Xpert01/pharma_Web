@@ -13,6 +13,7 @@ export default function DashboardPage() {
         filterT={true}
         doctorTable={true}
         hideMetrics={false}
+        hideHeader={true}
         dataCard={{
           topHcps: [
             {
