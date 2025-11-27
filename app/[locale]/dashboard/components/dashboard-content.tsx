@@ -25,6 +25,8 @@ import DcrTable from "@/components/DrcTable";
 import PlansTableManag from "@/components/PlansTableManag";
 import ExpanseTable from "@/components/ExpanseTable";
 import RequestViewTable from "@/components/RequestViewTable";
+import Channals from "@/components/Channals";
+import AllChannalB from "@/components/AllChannalB";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -56,6 +58,7 @@ export function DashboardContent({
   PlanTable,
   ExpansTable,
   ReqTabel,
+  channalD,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -88,6 +91,7 @@ export function DashboardContent({
     <div className="space-y-1 px-7 mt-26 bg-gray-50">
       {/* space-y-10 p-3 */}
       {/* Dashboard Header with Actions */}
+
       <DashboardHeader
         onRefresh={handleRefresh}
         onSettings={handleSettings}
@@ -123,6 +127,16 @@ export function DashboardContent({
               <div>No data available</div>
             ))}
         </div>
+
+        {channalD && (
+          <div>
+            <Channals />
+            <div className=" rounded-md p-3 mt-10 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+              <TableHeader campHeading={campHeading} filterT={filterT} />
+              <AllChannalB />
+            </div>
+          </div>
+        )}
 
         {campTabel && (
           <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">

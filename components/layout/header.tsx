@@ -176,7 +176,7 @@ const Navbar = () => {
             { label: "Company Profile", href: "/dashboard" },
             { label: "Branches / Divisions", href: "/dashboard" },
             { label: "Organization Hierarchy", href: "/dashboard" },
-            { label: "Channels", href: "/dashboard" },
+            { label: "Channels", href: "/dashboard/Channals" },
             { label: "Call Points", href: "/dashboard" },
           ],
         },
@@ -279,7 +279,7 @@ const Navbar = () => {
               setClickedItem(null);
               setActiveSubmenu(null);
             }}
-            className="flex items-center  transition-all duration-200  justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 border-b border-gray-100"
+            className="flex items-center  transition-all duration-200  justify-between px-4 py-2.5 text-sm text-gray-700  border-b border-gray-100"
           >
             <span>{item.label}</span>
             {item.items && (
@@ -296,7 +296,7 @@ const Navbar = () => {
             )}
           </Link>
         ) : (
-          <div className="flex items-center cursor-pointer justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 border-b border-gray-100 ">
+          <div className="flex items-center cursor-pointer justify-between px-4 py-2.5 text-sm text-gray-700  border-b border-gray-100 ">
             <span>{item.label}</span>
             {item.items && (
               <Image

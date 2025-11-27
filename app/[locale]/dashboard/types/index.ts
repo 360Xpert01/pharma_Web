@@ -106,7 +106,15 @@ export interface DashboardProps {
   campTabel?: boolean;
   campHeading?: string;
   filterT?: boolean;
-  dataCard?: DataCard;
+  dataCard?: {
+    title: string;
+    value: number;
+    valueLabel: string;
+    subtitle: string;
+    detailValue: string;
+    progress: number;
+    colorVariant: "1" | "2" | "3" | "4";
+  };
   doctorTable?: boolean;
   prodTabel?: boolean;
   sampleTable?: boolean;
@@ -116,4 +124,5 @@ export interface DashboardProps {
   PlanTable?: boolean;
   ExpansTable?: boolean;
   ReqTabel?: boolean;
+  channalD?: boolean;
 }
