@@ -27,6 +27,10 @@ import ExpanseTable from "@/components/ExpanseTable";
 import RequestViewTable from "@/components/RequestViewTable";
 import Channals from "@/components/Channals";
 import AllChannalB from "@/components/AllChannalB";
+import AddSampleForm from "@/components/AddSampleForm";
+import AddGiveawayForm from "@/components/AddGiveawayForm";
+import AddProductForm from "@/components/AddProductForm";
+import AddDoctorForm from "@/components/AddDoctorForm";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -59,6 +63,10 @@ export function DashboardContent({
   ExpansTable,
   ReqTabel,
   channalD,
+  sampleForm,
+  GivawayForm,
+  productForm,
+  doctorForm,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -152,10 +160,22 @@ export function DashboardContent({
           </div>
         )}
 
+        {productForm && (
+          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+            <AddProductForm />
+          </div>
+        )}
+
         {doctorTable && (
           <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <DoctorsTable />
+          </div>
+        )}
+
+        {doctorForm && (
+          <div className=" rounded-md  shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+            <AddDoctorForm />
           </div>
         )}
 
@@ -166,10 +186,22 @@ export function DashboardContent({
           </div>
         )}
 
+        {sampleForm && (
+          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+            <AddSampleForm />
+          </div>
+        )}
+
         {giveawayTable && (
           <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <GiveawayTable />
+          </div>
+        )}
+
+        {GivawayForm && (
+          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+            <AddGiveawayForm />
           </div>
         )}
 

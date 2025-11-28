@@ -13,6 +13,7 @@ export default function DashboardPage() {
         filterT={true}
         sampleTable={true}
         hideMetrics={false}
+        settingsRoute={"/dashboard/Sample-Form"}
         dataCard={{
           topHcps: [
             {

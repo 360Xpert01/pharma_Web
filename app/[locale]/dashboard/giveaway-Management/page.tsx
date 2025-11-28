@@ -19,6 +19,7 @@ export default function DashboardPage() {
         filterT={true}
         giveawayTable={true}
         hideMetrics={false}
+        settingsRoute={"/dashboard/Giveaway-Form"}
         dataCard={{
           topHcps: [
             {
