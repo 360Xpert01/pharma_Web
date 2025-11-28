@@ -91,7 +91,7 @@ export interface DashboardProps {
   };
   sample: string;
   descrip: string;
-  table: string;
+  table?: string;
   hideHeader?: boolean;
   hideMetrics?: boolean;
   hideData?: boolean;
@@ -125,4 +125,8 @@ export interface DashboardProps {
   ExpansTable?: boolean;
   ReqTabel?: boolean;
   channalD?: boolean;
+  sampleForm?: boolean;
+  GivawayForm?: boolean;
+  productForm?: boolean;
+  doctorForm?: boolean;
 }

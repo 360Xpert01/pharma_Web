@@ -14,6 +14,7 @@ export default function DashboardPage() {
         doctorTable={true}
         hideMetrics={false}
         hideHeader={true}
+        settingsRoute={"/dashboard/doctor-form"}
         dataCard={{
           topHcps: [
             {
