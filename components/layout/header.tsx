@@ -342,7 +342,7 @@ const Navbar = () => {
           <div className="flex items-center gap-8">
             <div>
               <Image
-                src="/loginPic.svg"
+                src="/pulsByCeturo.svg"
                 alt="Ceturvi Logo"
                 width={150}
                 height={50}

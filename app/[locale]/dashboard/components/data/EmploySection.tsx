@@ -135,10 +135,10 @@ export default function SalesTeamTable() {
                 {/* Main Clickable Row */}
                 <div
                   onClick={() => toggleRow(member.id)}
-                  className="px-3 py-3 flex justify-between items-center gap-6 hover:bg-gray-50 transition-all duration-200 cursor-pointer border border-gray-200 mx-4 my-3 rounded-2xl"
+                  className="px-3 py-3 w-[98%] flex justify-start items-center gap-6 hover:bg-gray-50 transition-all duration-200 cursor-pointer border border-gray-200 mx-4 my-3 rounded-2xl"
                 >
                   {/* Avatar + Name */}
-                  <div className="flex items-center gap-4 flex-shrink-0 w-64">
+                  <div className="flex w-[15%] items-center gap-4 flex-shrink-0 w-64">
                     <div className="relative">
                       <Image
                         src="/girlPic.svg"
@@ -155,10 +155,10 @@ export default function SalesTeamTable() {
                   </div>
 
                   {/* Email */}
-                  <div className="flex text-sm text-gray-600">{member.email}</div>
+                  <div className="w-[15%] text-start text-sm text-gray-600">{member.email}</div>
 
                   {/* Calls/Month */}
-                  <div className="flex items-center  text-center">
+                  <div className=" w-[12%] flex flex-start items-center  text-center">
                     <span className="font-bold text-gray-900">
                       {member.calls.toLocaleString()} Calls
                     </span>
@@ -166,27 +166,27 @@ export default function SalesTeamTable() {
                   </div>
 
                   {/* Campaign */}
-                  <div className="w-32 text-center text-sm font-bold text-gray-900">
+                  <div className="w-[12%] text-start text-sm font-bold text-gray-900">
                     {member.campaign}
                   </div>
 
                   {/* Role */}
-                  <div className="w-32 text-center text-sm font-bold text-gray-900">
+                  <div className="w-[12%] text-start text-sm font-bold text-gray-900">
                     {member.role}
                   </div>
 
                   {/* Score */}
-                  <div className="w-24 text-center">
+                  <div className="w-[10%] text-start">
                     <span className="text-sm font-semibold text-gray-900">{member.score}</span>
                   </div>
 
                   {/* Revenue */}
-                  <div className="w-28 text-center">
+                  <div className="w-[5%] text-start">
                     <span className="text-sm font-semibold text-gray-900">{member.revenue}</span>
                   </div>
 
                   {/* View Details */}
-                  <div className="w-40 text-right">
+                  <div className="w-[10%] text-right">
                     <button className="flex items-center gap-1 text-gray-500  text-sm transition-colors ml-auto">
                       View Details
                       <ChevronRight className="w-6 text-blue-600 h-7" />
