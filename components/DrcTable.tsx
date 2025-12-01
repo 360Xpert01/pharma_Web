@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 
 const tableData = [
   {
@@ -97,70 +97,71 @@ const tableData = [
 const DEFAULT_AVATAR = "/girlPic.svg";
 
 export default function DcrTable() {
-  const [openId, setOpenId] = useState(null);
-
   return (
-    <div className="w-full bg-gray-50">
-      <div className="space-y-1 p-4">
-        {tableData.map((row, idx) => (
+    <div className="w-full bg-gray-50 p-4">
+      <div className="space-y-3">
+        {tableData.map((row) => (
           <div
             key={row.id}
-            className={`
-              bg-white 
-              rounded-xl 
-              border 
-              border-gray-200  
-              duration-200
-              
-            `}
+            className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
           >
-            <div className="p-2">
-              <div className="flex items-center justify-between text-sm">
-                {/* Employee 1 */}
-                <div className="flex items-center gap-3 flex-1">
+            <div className="px-6 py-5">
+              {/* 12-column grid */}
+              <div className="w-[100%] flex justify-between items-center text-sm">
+                {/* Employee 1 – Left aligned */}
+                <div className="w-[17%] flex  items-center gap-3">
                   <img
                     src={DEFAULT_AVATAR}
                     alt={row.employee1.name}
-                    className="w-11 h-11 rounded-full object-cover border-2 border-white shadow"
+                    className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md flex-shrink-0"
                   />
                   <div>
-                    <div className="font-bold text-gray-900">{row.employee1.name}</div>
-                    <div className="text-xs text-gray-500">{row.employee1.role}</div>
+                    <p className="font-bold text-gray-900">{row.employee1.name}</p>
+                    <p className="text-xs text-gray-500">{row.employee1.role}</p>
                   </div>
                 </div>
 
-                {/* Employee 2 */}
-                <div className="flex items-center gap-3 flex-1">
+                {/* Employee 2 – Left aligned */}
+                <div className="w-[17%] flex items-center gap-3">
                   <img
                     src={DEFAULT_AVATAR}
                     alt={row.employee2.name}
-                    className="w-11 h-11 rounded-full object-cover border-2 border-white "
+                    className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md flex-shrink-0"
                   />
                   <div>
-                    <div className="font-bold text-gray-900">{row.employee2.name}</div>
-                    <div className="text-xs text-gray-500">{row.employee2.role}</div>
+                    <p className="font-bold text-gray-900">{row.employee2.name}</p>
+                    <p className="text-xs text-gray-500">{row.employee2.role}</p>
                   </div>
                 </div>
 
-                {/* Specialty */}
-                <div className="flex-1 text-center font-semibold text-gray-800">
-                  {row.specialty}
+                {/* Specialty – Left aligned */}
+                <div className="w-[10%]">
+                  <p className="font-semibold text-gray-800">{row.specialty}</p>
                 </div>
 
-                {/* Area */}
-                <div className="flex-1 font-semibold text-center text-gray-700">{row.area}</div>
+                {/* Area – Left aligned */}
+                <div className="w-[13%]">
+                  <p className="font-semibold text-gray-700">{row.area}</p>
+                </div>
 
-                {/* Doctor */}
-                <div className="flex-1 text-center font-semibold text-gray-900">{row.doctor}</div>
+                {/* Doctor – Left aligned */}
+                <div className="w-[15%]">
+                  <p className="font-bold text-gray-900">{row.doctor}</p>
+                </div>
 
-                {/* Medicine */}
-                <div className="flex-1 text-center font-semibold text-gray-900">{row.medicine}</div>
+                {/* Medicine – Left aligned */}
+                <div className="w-[10%]">
+                  <p className="font-bold text-gray-900">{row.medicine}</p>
+                </div>
 
-                {/* Strengths */}
-                <div className="flex gap-3 justify-center">
-                  {row.strengths.map((strength, i) => (
-                    <span key={i} className=" text-gray-400 rounded-full text-xs font-medium">
-                      {strength}
+                {/* Strengths – Chips start from left */}
+                <div className="w-[20%] flex flex-wrap gap-2">
+                  {row.strengths.map((s, i) => (
+                    <span
+                      key={i}
+                      className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium whitespace-nowrap"
+                    >
+                      {s}
                     </span>
                   ))}
                 </div>
