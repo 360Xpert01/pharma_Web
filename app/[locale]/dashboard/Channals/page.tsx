@@ -13,6 +13,7 @@ export default function DashboardPage() {
         filterT={true}
         hideMetrics={true}
         channalD={true}
+        channalTrue={true}
       />
     </div>
   );

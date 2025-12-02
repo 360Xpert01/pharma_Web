@@ -129,4 +129,5 @@ export interface DashboardProps {
   GivawayForm?: boolean;
   productForm?: boolean;
   doctorForm?: boolean;
+  channalTrue?: boolean;
 }
