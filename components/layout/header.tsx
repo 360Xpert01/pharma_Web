@@ -415,7 +415,7 @@ const Navbar = () => {
                   e.stopPropagation();
                   item.items && toggleClick(item.label);
                 }}
-                className={`flex items-center gap-1 cursor-pointer px-2 py-3 text-sm font-medium transition-all duration-200 hover:bg-gray-50 ${
+                className={`flex items-center  gap-1 cursor-pointer px-2 py-3 text-sm font-medium transition-all duration-200 hover:bg-gray-50 ${
                   activeDropdown === item.label ? "text-blue-600" : "text-gray-600"
                 }`}
               >
@@ -448,7 +448,7 @@ const Navbar = () => {
             {/* Mega Menu Dropdown */}
             {item.items && activeDropdown === item.label && (
               <div
-                className="absolute top-full left-1/2 -translate-x-1/2 mt-1  w-60 bg-white py-3 z-50"
+                className="absolute shadow-[0px_5px_10px_rgba(0,0,0,0.20)]  top-full left-1/2 -translate-x-1/2 mt-1  w-60 bg-white py-3 z-50"
                 onMouseEnter={() => hoveredItem && handleMouseEnter(item.label)}
                 onMouseLeave={handleMouseLeave}
               >

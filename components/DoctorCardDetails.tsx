@@ -3,7 +3,7 @@ import { Progress } from "@/components/ui/progress";
 import { TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface MetricsSectionProps {
+interface DoctorCardDetailsProps {
   title: string;
   value: string | number;
   valueLabel: string;
@@ -29,7 +29,7 @@ const valueColorClasses = {
   "4": "text-chart-4",
 };
 
-export function MetricsSection({
+export function DoctorCardDetails({
   title,
   value,
   valueLabel,
@@ -39,7 +39,7 @@ export function MetricsSection({
   progress,
   colorVariant = "1",
   className,
-}: MetricsSectionProps) {
+}: DoctorCardDetailsProps) {
   return (
     <Card className={cn("shadow-[0px_5px_10px_rgba(0,0,0,0.20)]", className)}>
       <CardHeader className="">

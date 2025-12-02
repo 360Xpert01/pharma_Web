@@ -116,7 +116,7 @@ export default function SalesTeamTable() {
 
   return (
     <div className="mx-auto bg-gray-50 min-h-screen">
-      <div className="bg-white rounded-xl shadow-[0px_5px_15px_rgba(0,0,0,0.35)] overflow-hidden">
+      <div className="bg-white rounded-xl shadow-[0px_5px_10px_rgba(0,0,0,0.20)] overflow-hidden">
         <div className="overflow-x-auto">
           {/* Header */}
 

@@ -67,6 +67,7 @@ export function DashboardContent({
   GivawayForm,
   productForm,
   doctorForm,
+  channalTrue,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -100,18 +101,20 @@ export function DashboardContent({
       {/* space-y-10 p-3 */}
       {/* Dashboard Header with Actions */}
 
-      <DashboardHeader
-        onRefresh={handleRefresh}
-        onSettings={handleSettings}
-        isLoading={combinedLoading}
-        title={sample}
-        description={descrip}
-        btnAdd={btnAdd}
-        btnTrue={btnTrue}
-        btntextReq={btntextReq}
-        btnReqquest={btnReqquest}
-        onSettingView={handleSettingView}
-      />
+      {!channalTrue && (
+        <DashboardHeader
+          onRefresh={handleRefresh}
+          onSettings={handleSettings}
+          isLoading={combinedLoading}
+          title={sample}
+          description={descrip}
+          btnAdd={btnAdd}
+          btnTrue={btnTrue}
+          btntextReq={btntextReq}
+          btnReqquest={btnReqquest}
+          onSettingView={handleSettingView}
+        />
+      )}
 
       <div className="space-y-10 ">
         {/* Metrics Cards Section */}
@@ -139,7 +142,7 @@ export function DashboardContent({
         {channalD && (
           <div>
             <Channals />
-            <div className=" rounded-md p-3 mt-10 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+            <div className=" shadow-[0px_5px_10px_rgba(0,0,0,0.20)] rounded-md p-3 mt-10  ">
               <TableHeader campHeading={campHeading} filterT={filterT} />
               <AllChannalB />
             </div>
@@ -147,94 +150,94 @@ export function DashboardContent({
         )}
 
         {campTabel && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] ">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <CampaignsTable />
           </div>
         )}
 
         {prodTabel && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] ">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <ProductTableM />
           </div>
         )}
 
         {productForm && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] ">
             <AddProductForm />
           </div>
         )}
 
         {doctorTable && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] ">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <DoctorsTable />
           </div>
         )}
 
         {doctorForm && (
-          <div className=" rounded-md  shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+          <div className=" rounded-md  shadow-[0px_5px_10px_rgba(0,0,0,0.20)] ">
             <AddDoctorForm />
           </div>
         )}
 
         {sampleTable && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] ">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <SampleManagTable />
           </div>
         )}
 
         {sampleForm && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] ">
             <AddSampleForm />
           </div>
         )}
 
         {giveawayTable && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] ">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <GiveawayTable />
           </div>
         )}
 
         {GivawayForm && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] ">
             <AddGiveawayForm />
           </div>
         )}
 
         {OrderCap && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] ">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <OrderCapTable />
           </div>
         )}
 
         {DCRTable && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] ">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <DcrTable />
           </div>
         )}
 
         {PlanTable && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] ">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <PlansTableManag />
           </div>
         )}
 
         {ExpansTable && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] ">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <ExpanseTable />
           </div>
         )}
 
         {ReqTabel && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_15px_rgba(0,0,0,0.35)] ">
+          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] ">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <RequestViewTable />
           </div>
