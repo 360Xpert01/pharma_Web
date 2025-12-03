@@ -17,6 +17,7 @@ import SalesDashboard1 from "../SalesDashboard1";
 import Image from "next/image";
 import { Ta } from "zod/v4/locales";
 import TableHeader from "@/components/TableHeader";
+import Link from "next/link";
 
 interface TeamMember {
   id: string;
@@ -186,12 +187,12 @@ export default function SalesTeamTable() {
                   </div>
 
                   {/* View Details */}
-                  <div className="w-[10%] text-right">
+                  <Link href={`/dashboard/Employee-Profile`} className="w-[10%] text-right">
                     <button className="flex items-center gap-1 text-gray-500  text-sm transition-colors ml-auto">
                       View Details
                       <ChevronRight className="w-6 text-blue-600 h-7" />
                     </button>
-                  </div>
+                  </Link>
                 </div>
 
                 {/* Expanded Row */}

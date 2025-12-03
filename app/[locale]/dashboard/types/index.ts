@@ -130,4 +130,17 @@ export interface DashboardProps {
   productForm?: boolean;
   doctorForm?: boolean;
   channalTrue?: boolean;
+  employeeProfileBtn?: boolean;
+  candidate?: {
+    name: string;
+    email: string;
+    phone: string;
+    reportingManager: string;
+    campaign: string;
+    requestedMonth: string;
+    channel: string;
+    status: string;
+    totalCalls: string;
+  };
+  AddemployeeBtn?: boolean;
 }

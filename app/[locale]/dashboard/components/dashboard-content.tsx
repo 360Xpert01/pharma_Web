@@ -31,6 +31,11 @@ import AddSampleForm from "@/components/AddSampleForm";
 import AddGiveawayForm from "@/components/AddGiveawayForm";
 import AddProductForm from "@/components/AddProductForm";
 import AddDoctorForm from "@/components/AddDoctorForm";
+import UserProfile from "@/components/UserProfile";
+import MonthlyTargets from "@/components/TargetEmployees";
+import EmployeeGraphRed from "@/components/EmployeeGraphRed";
+import EmployeeSaleCall from "@/components/EmployeeSaleCall";
+import AddEmployeeForm from "@/components/AddEmployee";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -68,6 +73,9 @@ export function DashboardContent({
   productForm,
   doctorForm,
   channalTrue,
+  employeeProfileBtn,
+  candidate,
+  AddemployeeBtn,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -243,21 +251,26 @@ export function DashboardContent({
           </div>
         )}
 
-        {/* Data Tables Section */}
-        {/* {table && !hideData && !proBar && (
-          <DataSection
-            data={{
-              users: data?.users,
-              products: data?.products,
-              orders: data?.orders,
-            }}
-            isLoading={combinedLoading}
-            table={table}
-            description={descrip}
-          />
-        )} */}
-
         {proBar && <SalesTeamTable />}
+
+        {employeeProfileBtn && (
+          <div className="space-y-6">
+            <UserProfile candidate={candidate} />
+            <div className=" flex justify-between gap-6 w-[100%]">
+              <div className="w-[60%]">
+                <MonthlyTargets currentMonth={75.08} lastMonth={45.27} date="September, 27 2025" />
+              </div>
+              <div className="w-[40%]">
+                <EmployeeGraphRed />
+              </div>
+            </div>
+            <div className="">
+              <EmployeeSaleCall />
+            </div>
+          </div>
+        )}
+
+        {AddemployeeBtn && <AddEmployeeForm />}
 
         {btnApprovel && (
           <div className=" mx-auto  space-y-2">
