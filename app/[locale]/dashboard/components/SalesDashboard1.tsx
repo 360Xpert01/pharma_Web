@@ -15,7 +15,9 @@ export default function SalesDashboard() {
           <div className="w-[70%] flex justify-between">
             <MonthlyTargets />
             <MostSoldProducts />
-            <ByBrands />
+            <div className="w-[33%]">
+              <ByBrands height={260} />
+            </div>
           </div>
 
           <div className="w-[30%]">

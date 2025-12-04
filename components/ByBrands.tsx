@@ -1,19 +1,21 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { brandData } from "../app/data/mockData";
-
-export default function ByBrands() {
+interface ByBrandsProps {
+  height?: number | string;
+}
+export default function ByBrands({ height }: ByBrandsProps) {
   return (
-    <div className="bg-white w-[33%] rounded-xl shadow-sm p-4">
+    <div className="bg-white  rounded-xl shadow-sm p-4">
       <h2 className="text-lg font-semibold mb-4">By Brands</h2>
-      <ResponsiveContainer width="100%" height={220}>
+      <ResponsiveContainer width="100%" height={height}>
         <PieChart>
           <Pie
             data={brandData}
             cx="50%"
             cy="50%"
-            innerRadius={45}
-            outerRadius={70}
-            paddingAngle={5}
+            innerRadius={40}
+            outerRadius={90}
+            paddingAngle={9}
             dataKey="value"
           >
             {brandData.map((entry, i) => (
