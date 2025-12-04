@@ -36,6 +36,14 @@ import MonthlyTargets from "@/components/TargetEmployees";
 import EmployeeGraphRed from "@/components/EmployeeGraphRed";
 import EmployeeSaleCall from "@/components/EmployeeSaleCall";
 import AddEmployeeForm from "@/components/AddEmployee";
+import WeeklyAttendance from "@/components/WeeklyAttendance";
+import MonthlyAttendance from "@/components/MonthlyAttendance";
+import WeekelyExpenses from "@/components/WeeklyExpenses";
+import ExpansesListApprove from "@/components/ExpansesListApprove";
+import ByBrands from "@/components/ByBrands";
+import CountryMap from "@/components/CountryMap";
+import MostSoldProducts from "@/components/MostSoldProducts";
+import TodaysAppointments from "@/components/TodayAppoinment";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -264,8 +272,32 @@ export function DashboardContent({
                 <EmployeeGraphRed />
               </div>
             </div>
-            <div className="">
-              <EmployeeSaleCall />
+            <div className="w-[100%] flex justify-between ">
+              <div className="w-[59%]">
+                <EmployeeSaleCall />
+                <WeekelyExpenses />
+                <ExpansesListApprove />
+              </div>
+              <div className="w-[39%] space-y-3 mt-3">
+                <MonthlyAttendance />
+                <WeeklyAttendance />
+              </div>
+            </div>
+            <div className="flex w-[100%] justify-between ">
+              <div className="w-[30%] h-[100%]">
+                <ByBrands height={395} />
+              </div>
+              <div className="w-[69%] ">
+                <CountryMap />
+              </div>
+            </div>
+            <div className="flex w-[100%] justify-between">
+              <div className="w-[69%]">
+                <TodaysAppointments />
+              </div>
+              <div className="w-[30%]">
+                <MostSoldProducts weight={100} />
+              </div>
             </div>
           </div>
         )}

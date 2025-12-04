@@ -6,18 +6,18 @@ export default function SalesAndCallsCard() {
   return (
     <div className="w-full ">
       {/* Header */}
-      <div className="flex items-center justify-between p-6 pb-4">
-        <h2 className="text-2xl font-bold text-gray-900">Sale & Calls</h2>
-        <div className="flex items-center gap-2 text-sm font-medium text-blue-600 bg-blue-50 px-4 py-2 rounded-full hover:bg-blue-100 transition-colors cursor-pointer">
-          <ChevronLeft className="w-4 h-4" />
+      <div className="flex  justify-between p-3 pb-4">
+        <h2 className="text-3xl font-semibold text-gray-500">Sale & Calls</h2>
+        <div className="flex items-center gap-2 text-sm font-medium text-blue-600 bg-white px-4 py-2 rounded-md  transition-colors cursor-pointer">
+          <ChevronLeft className="w-4 h-4 text-gray-400 " />
           <span>September, 27 2025</span>
-          <ChevronRight className="w-4 h-4" />
+          <ChevronRight className="w-4 h-4 text-gray-400" />
         </div>
       </div>
 
-      <div className="flex justify-between gap-6 px-6 pb-6 w-[100%]">
+      <div className="flex justify-between gap-6  pb-6 w-[100%]">
         {/* Today Sales */}
-        <div className="p-8 border w-[49%] border-gray-100 rounded-lg shadow-sm">
+        <div className="p-8 border bg-white w-[49%] border-gray-100 rounded-lg shadow-sm">
           <h3 className="text-3xl font-semibold text-gray-900 mb-6">Today sales</h3>
 
           <div className="flex items-baseline gap-3 mb-8">
@@ -57,7 +57,7 @@ export default function SalesAndCallsCard() {
         </div>
 
         {/* Total Calls */}
-        <div className="p-8 border w-[49%] border-gray-100 rounded-lg shadow-md">
+        <div className="p-8 border bg-white w-[49%] border-gray-100 rounded-lg shadow-md">
           <h3 className="text-3xl font-semibold text-gray-900 mb-6">Total Calls</h3>
 
           <div className="space-y-5">
@@ -68,7 +68,7 @@ export default function SalesAndCallsCard() {
 
             <div className="flex items-center gap-3">
               <span className="text-5xl font-bold text-red-500">05</span>
-              <span className="text-lg text-red-500 font-medium">Call Missed</span>
+              <span className="text-lg text-gray-500 ">Call Missed</span>
             </div>
           </div>
         </div>
