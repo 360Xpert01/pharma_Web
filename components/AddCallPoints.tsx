@@ -9,9 +9,9 @@ export default function AddCallPointForm() {
   const [longitude, setLongitude] = useState("");
 
   return (
-    <div className="w-full mt-22">
+    <div className="w-full ">
       <div className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
-        <div className="p-10 space-y-10">
+        <div className="p-5 space-y-10">
           {/* Header */}
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Add Call Point</h1>
@@ -61,7 +61,7 @@ export default function AddCallPointForm() {
               />
             </div>
             <div className="flex">
-              <button className="px-8 py-1 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition shadow-lg flex items-center gap-3">
+              <button className="px-4 py-1 bg-blue-600 text-white font-semibold rounded-full">
                 Add Call Point
               </button>
             </div>

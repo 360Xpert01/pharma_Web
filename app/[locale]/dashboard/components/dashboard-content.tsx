@@ -45,6 +45,8 @@ import CountryMap from "@/components/CountryMap";
 import MostSoldProducts from "@/components/MostSoldProducts";
 import TodaysAppointments from "@/components/TodayAppoinment";
 import UserRoles from "@/components/UserRoles";
+import AddCallPoints from "@/components/AddCallPoints";
+import CallPointTable from "@/components/CallPointTable";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -86,6 +88,7 @@ export function DashboardContent({
   candidate,
   AddemployeeBtn,
   UserRoleTable,
+  AddCallPointTrue,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -312,6 +315,13 @@ export function DashboardContent({
         )}
 
         {AddemployeeBtn && <AddEmployeeForm />}
+
+        {AddCallPointTrue && (
+          <div>
+            <AddCallPoints />
+            <CallPointTable />
+          </div>
+        )}
 
         {btnApprovel && (
           <div className=" mx-auto  space-y-2">
