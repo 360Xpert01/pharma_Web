@@ -177,14 +177,14 @@ const Navbar = () => {
             { label: "Branches / Divisions", href: "/dashboard/bricks-hierarchy" },
             { label: "Organization Hierarchy", href: "/dashboard/role-hierarchy" },
             { label: "Channels", href: "/dashboard/Channals" },
-            { label: "Call Points", href: "/dashboard" },
+            { label: "Call Points", href: "/dashboard/Add-Call-points" },
           ],
         },
         {
           label: "Access & Security",
           items: [
             { label: "User Access Control", href: "/dashboard" },
-            { label: "Roles & Permissions", href: "/dashboard" },
+            { label: "Roles & Permissions", href: "/dashboard/User-Role" },
           ],
         },
         {

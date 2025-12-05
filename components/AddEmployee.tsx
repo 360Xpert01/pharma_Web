@@ -335,6 +335,20 @@ export default function AddEmployeeForm() {
                     </label>
                   </div>
                 </div>
+                <div className="flex items-center gap-3  -mt-2">
+                  <input
+                    type="checkbox"
+                    id="active-employee"
+                    className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300 cursor-pointer"
+                    defaultChecked
+                  />
+                  <label
+                    htmlFor="active-employee"
+                    className="text-sm font-medium text-gray-700 cursor-pointer select-none"
+                  >
+                    Mark as Active Employee
+                  </label>
+                </div>
               </div>
             </div>
 
