@@ -1,9 +1,16 @@
-import AddCallPoints from "@/components/AddCallPoints";
+"use client";
+import { DashboardContent } from "../components/dashboard-content";
 
-export default function AddCallPoint() {
+export default function DashboardPage() {
   return (
-    <>
-      <AddCallPoints />
-    </>
+    <div className=" bg-white">
+      <DashboardContent
+        sample={"Daily Call Reports"}
+        descrip={"Welcome to Ceutro, It's looking like a slow day"}
+        hideMetrics={true}
+        AddCallPointTrue={true}
+        channalTrue={true}
+      />
+    </div>
   );
 }
