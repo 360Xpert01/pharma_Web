@@ -44,6 +44,7 @@ import ByBrands from "@/components/ByBrands";
 import CountryMap from "@/components/CountryMap";
 import MostSoldProducts from "@/components/MostSoldProducts";
 import TodaysAppointments from "@/components/TodayAppoinment";
+import UserRoles from "@/components/UserRoles";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -84,6 +85,7 @@ export function DashboardContent({
   employeeProfileBtn,
   candidate,
   AddemployeeBtn,
+  UserRoleTable,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -235,6 +237,13 @@ export function DashboardContent({
           <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] ">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <DcrTable />
+          </div>
+        )}
+
+        {UserRoleTable && (
+          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] ">
+            <TableHeader campHeading={campHeading} filterT={filterT} />
+            <UserRoles />
           </div>
         )}
 

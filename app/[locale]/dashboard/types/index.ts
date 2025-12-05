@@ -143,4 +143,5 @@ export interface DashboardProps {
     totalCalls: string;
   };
   AddemployeeBtn?: boolean;
+  UserRoleTable?: boolean;
 }
