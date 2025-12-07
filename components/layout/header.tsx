@@ -34,7 +34,7 @@ const Navbar = () => {
       label: "People & Teams",
       items: [
         { label: "Employees (Rep, Manager, Admin)", href: "/dashboard/Employees-Management" },
-        { label: "Campaigns/Teams", href: "/dashboard/campaign-Management" },
+        { label: "Teams", href: "/dashboard/campaign-Management" },
         { label: "Attendance & Tracking", href: "/dashboard/product-Management" },
         { label: "Leave Management", href: "/dashboard" },
         { label: "Expense Requests", href: "/dashboard/request-View" },

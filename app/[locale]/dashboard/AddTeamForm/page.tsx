@@ -5,18 +5,16 @@ export default function DashboardPage() {
   return (
     <div className="bg-white">
       <DashboardContent
-        sample={"Team Management"}
+        sample={"Add New Team "}
         descrip={"Welcome to Ceutro, It's looking like a slow day"}
-        table={"All Team"}
-        btnAdd={"Add New Team"}
+        btnTrue={true}
         hideHeader={true}
         hideMetrics={true}
         proBar={false}
         hideData={true}
-        campTabel={true}
+        teamFormTabel={true}
         campHeading={"All Team"}
         filterT={false}
-        settingsRoute={"/dashboard/AddTeamForm"}
       />
     </div>
   );
