@@ -2,61 +2,79 @@
 
 import React, { useState } from "react";
 import { MoreVertical } from "lucide-react";
+import Image from "next/image";
 
-interface MedicineRow {
+interface Medicine {
   id: string;
-  medicineName: string;
-  product: {
-    name: string;
-    quantity: number;
-  };
+  code: string; // ← Naya field (e.g. MED-001)
+  sapId: string; // ← Pehle wala SAPLID
+  name: string;
+  category: string;
+  skuCount: number;
+  image: string;
+  formula: string;
 }
 
-const medicineData: MedicineRow[] = [
+const medicinesData: Medicine[] = [
   {
-    id: "SAPLID12345678",
-    medicineName: "Amoxicillin",
-    product: { name: "Capsule 500Mg", quantity: 1 },
+    id: "1",
+    code: "MED-001",
+    sapId: "SAPLID12345678",
+    name: "Amoxicillin",
+    category: "Antibiotic",
+    skuCount: 12,
+    image: "/medicine.jpg",
+    formula: "C₁₆H₁₉N₃O₅S",
   },
   {
-    id: "SAPLID45678901",
-    medicineName: "Ibuprofen",
-    product: { name: "Capsule 500Mg", quantity: 4 },
+    id: "2",
+    code: "MED-002",
+    sapId: "SAPLID45678901",
+    name: "Ibuprofen",
+    category: "Pain Relief",
+    skuCount: 8,
+    image: "/medicine.jpg",
+    formula: "C₁₃H₁₈O₂",
   },
   {
-    id: "SAPLID12354798",
-    medicineName: "Brufen 120Ml",
-    product: { name: "Capsule 500Mg", quantity: 3 },
+    id: "3",
+    code: "MED-003",
+    sapId: "SAPLID12354798",
+    name: "Brufen 120Ml",
+    category: "Syrup",
+    skuCount: 15,
+    image: "/medicine.jpg",
+    formula: "C₁₃H₁₈O₂",
   },
   {
-    id: "SAPLID13574246",
-    medicineName: "Loratadine",
-    product: { name: "Capsule 500Mg", quantity: 5 },
+    id: "4",
+    code: "MED-004",
+    sapId: "SAPLID13574246",
+    name: "Loratadine",
+    category: "Antihistamine",
+    skuCount: 20,
+    image: "/medicine.jpg",
+    formula: "C₂₂H₂₃ClN₂O₂",
   },
   {
-    id: "SAPLID13529246",
-    medicineName: "Loratadine",
-    product: { name: "Capsule 500Mg", quantity: 5 },
+    id: "5",
+    code: "MED-005",
+    sapId: "SAPLID98765432",
+    name: "Paracetamol",
+    category: "Analgesic",
+    skuCount: 35,
+    image: "/medicine.jpg",
+    formula: "C₈H₉NO₂",
   },
   {
-    id: "SAPLID13575246",
-    medicineName: "Loratadine",
-    product: { name: "Capsule 500Mg", quantity: 5 },
-  },
-  {
-    id: "SAPLID98765432",
-    medicineName: "Paracetamol",
-    product: { name: "Capsule 500Mg", quantity: 2 },
-  },
-  {
-    id: "SAPLID24681357",
-    medicineName: "Metformin",
-    product: { name: "Capsule 500Mg", quantity: 1 },
-  },
-  {
-    id: "SAPLID87654321",
-    medicineName: "Cetirizine",
-    product: { name: "Capsule 500Mg", quantity: 2 },
+    id: "6",
+    code: "MED-006",
+    sapId: "SAPLID24681357",
+    name: "Metformin",
+    category: "Diabetes",
+    skuCount: 18,
+    image: "/medicine.jpg",
+    formula: "C₄H₁₁N₅",
   },
 ];
 
@@ -64,69 +82,91 @@ export default function MedicineTable() {
   const [openId, setOpenId] = useState<string | null>(null);
 
   return (
-    <div className="w-full">
-      {medicineData.map((item) => (
-        <div key={item.id} className=" hover:bg-gray-50 transition-colors duration-200">
-          <div className="flex items-center justify-between px-4 py-1">
-            {/* Left Content */}
-            <div className="flex-1 border border-gray-200 p-2 px-5 rounded-lg flex flex-col sm:flex-row sm:items-center ">
-              {/* SAP ID */}
-              <div className="w-full sm:w-[15%]">
-                <span className="font-mono text-sm font-bold text-gray-900">{item.id}</span>
-              </div>
+    <div className="">
+      <div className="">
+        <div className="space-y-3">
+          {medicinesData.map((med) => (
+            <div key={med.id} className="rounded-2xl shadow-sm border border-gray-200">
+              <div className="grid grid-cols-12 gap-4 px-8 py-3 items-center">
+                {/* New Code Field */}
 
-              {/* Medicine Name */}
-              <div className="w-full sm:w-[15%]">
-                <span className="font-semibold text-gray-900">{item.medicineName}</span>
-              </div>
+                <div className="col-span-1">
+                  <span className="font-mono text-sm text-gray-600">{med.code}</span>
+                </div>
 
-              {/* Products Area - 5 Fixed Columns */}
-              <div className="w-full sm:w-[70%]">
-                <div className="grid grid-cols-5 gap-4">
-                  {Array.from({ length: 5 }, (_, idx) => (
-                    <div key={idx} className="flex justify-center">
-                      {idx < item.product.quantity && (
-                        <span className="px-4 py-1.5  text-gray-400 rounded-full text-sm font-medium whitespace-nowrap">
-                          {item.product.name}
-                        </span>
-                      )}
-                    </div>
-                  ))}
+                {/* SAP ID */}
+                <div className="col-span-2">
+                  <span className="font-mono text-sm text-gray-600">{med.sapId}</span>
+                </div>
+
+                {/* Name */}
+                <div className="col-span-2">
+                  <span className="font-semibold text-gray-900">{med.name}</span>
+                </div>
+
+                {/* Category */}
+                <div className="col-span-2">
+                  <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+                    {med.category}
+                  </span>
+                </div>
+
+                {/* SKU Count */}
+                <div className="col-span-1 text-center">
+                  <span className="text-lg font-bold text-gray-900">{med.skuCount}</span>
+                </div>
+
+                {/* Image */}
+                <div className="col-span-1 flex justify-center">
+                  <div className="w-12 h-12 rounded-xl overflow-hidden ring-2 ring-gray-200">
+                    <Image
+                      src={med.image}
+                      alt={med.name}
+                      width={48}
+                      height={48}
+                      className="object-cover"
+                    />
+                  </div>
+                </div>
+
+                {/* Formula */}
+                <div className="col-span-2">
+                  <span className="font-mono text-sm text-gray-700">{med.formula}</span>
+                </div>
+
+                {/* Actions */}
+                <div className="col-span-1 relative text-right">
+                  <button
+                    onClick={() => setOpenId(openId === med.id ? null : med.id)}
+                    className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition"
+                  >
+                    <MoreVertical className="w-5 h-5" />
+                  </button>
+
+                  {openId === med.id && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setOpenId(null)} />
+                      <div className="absolute right-0 top-10 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                        <div className="py-1">
+                          <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            Edit Medicine
+                          </button>
+                          <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            View Details
+                          </button>
+                          <button className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
-              <div className="relative">
-                <button
-                  onClick={() => setOpenId(openId === item.id ? null : item.id)}
-                  className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition"
-                >
-                  <MoreVertical className="w-5 h-5" />
-                </button>
-
-                {openId === item.id && (
-                  <>
-                    <div className="fixed inset-0 z-40" onClick={() => setOpenId(null)} />
-                    <div className="absolute right-0 top-10 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-                      <div className="py-1">
-                        <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                          Edit
-                        </button>
-                        <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                          Duplicate
-                        </button>
-                        <button className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
             </div>
-
-            {/* More Button */}
-          </div>
+          ))}
         </div>
-      ))}
+      </div>
     </div>
   );
 }

@@ -47,6 +47,7 @@ import TodaysAppointments from "@/components/TodayAppoinment";
 import UserRoles from "@/components/UserRoles";
 import AddCallPoints from "@/components/AddCallPoints";
 import CallPointTable from "@/components/CallPointTable";
+import AddNewTeamForm from "@/components/AddNewTeamForm";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -89,6 +90,7 @@ export function DashboardContent({
   AddemployeeBtn,
   UserRoleTable,
   AddCallPointTrue,
+  teamFormTabel,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -335,6 +337,8 @@ export function DashboardContent({
             ))}
           </div>
         )}
+
+        {teamFormTabel && <AddNewTeamForm />}
 
         {/* Quick Stats Footer */}
         {/* <PerformanceStats isLoading={combinedLoading} /> */}
