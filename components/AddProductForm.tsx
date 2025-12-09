@@ -133,22 +133,11 @@ export default function AddProductForm() {
                     Prescription Required
                   </label>
                   <div className="flex items-center gap-4">
-                    <button
-                      onClick={() => setIsPrescription(true)}
-                      className={`px-6 py-3 rounded-xl font-medium transition ${
-                        isPrescription ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
-                      }`}
-                    >
-                      Yes
-                    </button>
-                    <button
-                      onClick={() => setIsPrescription(false)}
-                      className={`px-6 py-3 rounded-xl font-medium transition ${
-                        !isPrescription ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
-                      }`}
-                    >
-                      No
-                    </button>
+                    <input
+                      type="text"
+                      placeholder=" Prescription Required"
+                      className="w-full px-3 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-mono"
+                    />
                   </div>
                 </div>
 
