@@ -146,4 +146,7 @@ export interface DashboardProps {
   UserRoleTable?: boolean;
   AddCallPointTrue?: boolean;
   teamFormTabel?: boolean;
+  setTargetlist?: boolean;
+  ActiveOn?: boolean;
+  UpdateEmp?: boolean;
 }

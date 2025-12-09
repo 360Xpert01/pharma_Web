@@ -48,6 +48,8 @@ import UserRoles from "@/components/UserRoles";
 import AddCallPoints from "@/components/AddCallPoints";
 import CallPointTable from "@/components/CallPointTable";
 import AddNewTeamForm from "@/components/AddNewTeamForm";
+import SetTargetPage from "@/components/SetTargetPage";
+import UpdateEmployees from "@/components/UpdateEmployee";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -91,6 +93,9 @@ export function DashboardContent({
   UserRoleTable,
   AddCallPointTrue,
   teamFormTabel,
+  setTargetlist,
+  ActiveOn,
+  UpdateEmp,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -198,6 +203,7 @@ export function DashboardContent({
             <DoctorsTable />
           </div>
         )}
+        {setTargetlist && <SetTargetPage />}
 
         {doctorForm && (
           <div className=" rounded-md  shadow-[0px_5px_10px_rgba(0,0,0,0.20)] ">
@@ -316,7 +322,8 @@ export function DashboardContent({
           </div>
         )}
 
-        {AddemployeeBtn && <AddEmployeeForm />}
+        {AddemployeeBtn && <AddEmployeeForm ActiveOn={ActiveOn} />}
+        {UpdateEmp && <UpdateEmployees />}
 
         {AddCallPointTrue && (
           <div>

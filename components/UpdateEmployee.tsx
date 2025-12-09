@@ -60,6 +60,29 @@ export default function AddEmployeeForm({ ActiveOn }: AddEmployeeFormProps) {
                 )}
               </div>
             </div>
+
+            {/* Active Toggle */}
+
+            <div className="flex items-center justify-center gap-4">
+              <span className="text-sm font-medium text-gray-700">Status</span>
+              <button
+                onClick={() => setIsActive(!isActive)}
+                className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
+                  isActive ? "bg-blue-600" : "bg-gray-300"
+                }`}
+              >
+                <span
+                  className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform ${
+                    isActive ? "translate-x-7" : "translate-x-1"
+                  }`}
+                />
+              </button>
+              <span
+                className={`text-sm font-medium ${isActive ? "text-blue-600" : "text-gray-500"}`}
+              >
+                {isActive ? "Active" : "Inactive"}
+              </span>
+            </div>
           </div>
 
           {/* Right Side: Form Fields */}
@@ -189,8 +212,7 @@ export default function AddEmployeeForm({ ActiveOn }: AddEmployeeFormProps) {
                 Discard
               </button>
               <button className="px-10 py-4 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition flex items-center gap-3 shadow-lg">
-                <Plus className="w-5 h-5" />
-                Add Employee
+                Update Employee
               </button>
             </div>
           </div>
