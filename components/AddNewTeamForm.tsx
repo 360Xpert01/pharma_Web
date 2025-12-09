@@ -60,6 +60,7 @@ export default function CreateTeamForm() {
   const [searchQueryPeople, setSearchQueryPeople] = useState("");
   const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
   const [assignedReps, setAssignedReps] = useState<Rep[]>([]);
+  const [pulseGenerated, setPulseGenerated] = useState<Rep[]>([]);
 
   const filteredProducts = products.filter(
     (p) =>
@@ -100,13 +101,6 @@ export default function CreateTeamForm() {
         {/* Team Info */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Team Code */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Team Code</label>
-            <div className="px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl font-mono text-gray-900">
-              TEAM-X9K2P7M
-            </div>
-          </div>
-
           {/* Team Name */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -117,6 +111,26 @@ export default function CreateTeamForm() {
               value={teamName}
               onChange={(e) => setTeamName(e.target.value)}
               placeholder="e.g. Karachi North Team"
+              className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Team Code</label>
+            <div className="px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl font-mono text-gray-900">
+              TEAM-X9K2P7M
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Pulse Generated Code
+              <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={pulseGenerated}
+              onChange={(e) => setPulseGenerated(e.target.value)}
+              placeholder="Pulse Generated Code"
               className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
             />
           </div>
