@@ -23,13 +23,9 @@ interface TeamMember {
   id: string;
   name: string;
   email: string;
-  calls: number;
-  campaign: string;
+  phone: string;
   role: string;
-  score: number;
-  revenue: string;
-  avatarColor: string;
-  roleBy: string;
+  supervisor: string;
 }
 
 const teamMembers: TeamMember[] = [
@@ -37,73 +33,49 @@ const teamMembers: TeamMember[] = [
     id: "1",
     name: "Mushtaque Ahmed",
     email: "m.mushtaque15@gmail.com",
-    calls: 3211,
-    campaign: "Diabetics",
+    phone: "+92 321 9876543",
     role: "Doctor",
-    score: 75.08,
-    revenue: "445.5K",
-    avatarColor: "from-blue-500 to-blue-600",
-    roleBy: " Sales Manager",
+    supervisor: "Sara Ali",
   },
   {
     id: "2",
     name: "Mohammad Amir",
     email: "m.amir2002@gmail.com",
-    calls: 625,
-    campaign: "Diabetics",
+    phone: "+92 300 1234567",
     role: "Doctor",
-    score: 75.08,
-    revenue: "445.5K",
-    avatarColor: "from-green-500 to-green-600",
-    roleBy: " Sales Manager",
+    supervisor: "Sara Ali",
   },
   {
     id: "3",
     name: "Rabie Khan",
     email: "rabie212@gmail.com",
-    calls: 121,
-    campaign: "Diabetics",
+    phone: "+92 333 5556677",
     role: "Doctor",
-    score: 75.08,
-    revenue: "445.5K",
-    avatarColor: "from-purple-500 to-purple-600",
-    roleBy: "Senior Sales Manager",
+    supervisor: "Usman Malik",
   },
   {
     id: "4",
-    name: "Mohammad Amir",
-    email: "m.amir2002@gmail.com",
-    calls: 121,
-    campaign: "Diabetics",
-    role: "Doctor",
-    score: 75.08,
-    revenue: "445.5K",
-    avatarColor: "from-orange-500 to-orange-600",
-    roleBy: " Sales Representative",
+    name: "Sara Ali",
+    email: "sara.ali@example.com",
+    phone: "+92 345 6789012",
+    role: "Sales Manager",
+    supervisor: "CEO",
   },
   {
     id: "5",
-    name: "Sara Ali",
-    email: "sara.ali@example.com",
-    calls: 300,
-    campaign: "Diabetics",
-    role: "Nurse",
-    score: 80.25,
-    revenue: "500.0K",
-    avatarColor: "from-pink-500 to-pink-600",
-    roleBy: "Sales Coordinator",
+    name: "Omar Farooq",
+    email: "omar@example.com",
+    phone: "+92 322 1112233",
+    role: "Pharmacist",
+    supervisor: "Sara Ali",
   },
   {
     id: "6",
-    name: "Omar Farooq",
-    email: "omar@example.com",
-    calls: 450,
-    campaign: "Diabetics",
-    role: "Pharmacist",
-    score: 78.4,
-    revenue: "460.0K",
-    avatarColor: "from-indigo-500 to-indigo-600",
-    roleBy: " Sales Executive",
+    name: "Ayesha Siddiqui",
+    email: "ayesha.s@example.com",
+    phone: "+92 334 9988776",
+    role: "Nurse",
+    supervisor: "Dr. Rabie Khan",
   },
 ];
 
@@ -151,39 +123,26 @@ export default function SalesTeamTable() {
                     </div>
                     <div>
                       <p className="font-bold text-gray-900">{member.name}</p>
-                      <span className="text-xs text-gray-500 font-medium">{member.roleBy}</span>
+                      {/* <span className="text-xs text-gray-500 font-medium">{member.roleBy}</span> */}
                     </div>
                   </div>
 
                   {/* Email */}
-                  <div className="w-[15%] text-start text-sm text-gray-600">{member.email}</div>
+                  <div className="w-[20%] text-start text-sm text-gray-600">{member.email}</div>
 
                   {/* Calls/Month */}
-                  <div className=" w-[12%] flex flex-start items-center  text-center">
-                    <span className="font-bold text-gray-900">
-                      {member.calls.toLocaleString()} Calls
-                    </span>
-                    <span className="block text-xs text-gray-500">/Month</span>
+                  <div className=" w-[20%] flex flex-start items-center  text-center">
+                    <span className="font-Semibold text-gray-900">{member.phone}</span>
                   </div>
 
                   {/* Campaign */}
-                  <div className="w-[12%] text-start text-sm font-bold text-gray-900">
-                    {member.campaign}
-                  </div>
-
-                  {/* Role */}
-                  <div className="w-[12%] text-start text-sm font-bold text-gray-900">
+                  <div className="w-[20%] text-start text-sm font-bold text-gray-900">
                     {member.role}
                   </div>
 
-                  {/* Score */}
-                  <div className="w-[10%] text-start">
-                    <span className="text-sm font-semibold text-gray-900">{member.score}</span>
-                  </div>
-
-                  {/* Revenue */}
-                  <div className="w-[5%] text-start">
-                    <span className="text-sm font-semibold text-gray-900">{member.revenue}</span>
+                  {/* Role */}
+                  <div className="w-[20%] text-start text-sm font-bold text-gray-900">
+                    {member.supervisor}
                   </div>
 
                   {/* View Details */}
