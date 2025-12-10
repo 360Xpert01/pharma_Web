@@ -50,6 +50,7 @@ import CallPointTable from "@/components/CallPointTable";
 import AddNewTeamForm from "@/components/AddNewTeamForm";
 import SetTargetPage from "@/components/SetTargetPage";
 import UpdateEmployees from "@/components/UpdateEmployee";
+import DeviceList from "@/components/DeviceList";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -317,6 +318,7 @@ export function DashboardContent({
               </div>
               <div className="w-[30%]">
                 <MostSoldProducts weight={100} />
+                <DeviceList />
               </div>
             </div>
           </div>
