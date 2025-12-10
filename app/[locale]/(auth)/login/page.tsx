@@ -3,6 +3,7 @@
 import React, { useState, useRef } from "react";
 import { Send, RotateCw } from "lucide-react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function LoginScreen() {
   const [phoneOrEmail, setPhoneOrEmail] = useState("");
@@ -12,7 +13,11 @@ export default function LoginScreen() {
   const [countdown, setCountdown] = useState(0);
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
   const router = useRouter();
+  const [emailError, setEmailError] = useState("");
 
+  const isValidEmail = (email: string) => {
+    return email.includes("@") && email.includes(".") && email.length > 5;
+  };
   const handleSendOTP = () => {
     if (!phoneOrEmail.trim()) return;
 
@@ -21,6 +26,7 @@ export default function LoginScreen() {
       setIsOtpSent(true);
       setIsLoading(false);
       setCountdown(30);
+      toast.success("OTP sent successfully!");
 
       const timer = setInterval(() => {
         setCountdown((prev) => {
@@ -38,26 +44,46 @@ export default function LoginScreen() {
     setCountdown(30);
     setOtp(["", "", "", ""]);
     otpRefs.current[0]?.focus();
-    alert("OTP Resent!");
+    toast.success("OTP Resent!");
   };
 
   const handleVerifyOTP = () => {
     const enteredOtp = otp.join("");
+
     if (enteredOtp.length !== 4) {
-      alert("Please enter 4-digit OTP");
+      toast.error("Please enter 4-digit OTP");
       return;
     }
-    router.push("/dashboard");
+
+    if (enteredOtp === "7866") {
+      // Success: Save login data in localStorage
+      const loginData = {
+        email: phoneOrEmail.trim(),
+        otp: enteredOtp,
+        isLoggedIn: true,
+        loginTime: new Date().toISOString(),
+      };
+
+      localStorage.setItem("userSession", JSON.stringify(loginData));
+      // Optional: Cookies mein bhi daal do (extra safety)
+      document.cookie = `userSession=${JSON.stringify(loginData)}; path=/; max-age=86400`; // 24 hours
+
+      toast.success("Login Successful! Welcome back 🎉");
+
+      // Redirect to dashboard
+      router.push("/dashboard");
+    } else {
+      toast.error("Invalid OTP. Please try again.");
+      alert("Invalid OTP. Please try again.");
+    }
   };
 
+  // Baki functions same
   const handleOtpChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return;
-
     const newOtp = [...otp];
     newOtp[index] = value.slice(-1);
     setOtp(newOtp);
-
-    // Auto focus next input
     if (value && index < 3) {
       otpRefs.current[index + 1]?.focus();
     }
@@ -72,7 +98,7 @@ export default function LoginScreen() {
   return (
     <div className="">
       <div className="w-full ">
-        <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden">
           <div className="p-10 space-y-8">
             {/* Title */}
             <div className="text-center">
@@ -80,28 +106,37 @@ export default function LoginScreen() {
               <p className="text-gray-500 mt-2">Login with your email</p>
             </div>
 
-            {/* Form */}
             <div className="space-y-6">
-              {/* Phone/Email Input */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Enter your Email
                 </label>
                 <input
-                  type="text"
+                  type="email" // ← type="text" se "email" kar diya (extra safety)
                   value={phoneOrEmail}
-                  onChange={(e) => setPhoneOrEmail(e.target.value)}
+                  onChange={(e) => {
+                    setPhoneOrEmail(e.target.value);
+                    setEmailError(""); // clear error on typing
+                  }}
+                  onBlur={() => {
+                    if (phoneOrEmail && !phoneOrEmail.includes("@")) {
+                      setEmailError("Email must contain @ symbol");
+                      toast.error("Please enter a valid email with @");
+                    }
+                  }}
                   placeholder=" user@example.com"
-                  className="w-full px-5 py-4 border border-gray-300 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-lg"
+                  className={`w-full px-5 py-4 border rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-lg ${
+                    emailError ? "border-red-500" : "border-gray-300"
+                  }`}
                   disabled={isOtpSent}
                 />
+                {emailError && <p className="text-red-500 text-sm mt-2">{emailError}</p>}
               </div>
 
-              {/* Send OTP Button */}
               {!isOtpSent ? (
                 <button
                   onClick={handleSendOTP}
-                  disabled={!phoneOrEmail || isLoading}
+                  disabled={!phoneOrEmail.includes("@") || isLoading}
                   className="w-full py-4 bg-blue-600 text-white font-semibold rounded-2xl hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 shadow-lg flex items-center justify-center gap-3"
                 >
                   {isLoading ? (
@@ -118,7 +153,6 @@ export default function LoginScreen() {
                 </button>
               ) : (
                 <>
-                  {/* 4-Digit OTP Boxes */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-4 text-center">
                       Enter 4-Digit OTP
@@ -139,7 +173,6 @@ export default function LoginScreen() {
                     </div>
                   </div>
 
-                  {/* Buttons - One Resend, One Verify */}
                   <div className="space-y-4">
                     <button
                       onClick={handleResendOTP}
@@ -154,8 +187,7 @@ export default function LoginScreen() {
                       onClick={handleVerifyOTP}
                       className="w-full py-4 bg-blue-600 text-white font-semibold rounded-2xl hover:bg-blue-700 transition shadow-lg flex items-center justify-center gap-3"
                     >
-                      <Send className="w-5 h-5" />
-                      Verify & Login
+                      Login
                     </button>
                   </div>
 

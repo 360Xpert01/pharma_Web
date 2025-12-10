@@ -8,26 +8,24 @@ export default function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   // const locale = getLocaleFromPath(pathname);
 
-  // Read auth flow (server-side cookie). Keep safe JSON parse.
-  const authFlowData = request.cookies.get("auth_flow");
-  let authFlow = null;
-  try {
-    authFlow = authFlowData ? JSON.parse(authFlowData.value) : null;
-  } catch {
-    authFlow = null;
+  const session = request.cookies.get("userSession")?.value;
+  const isLoggedIn = session ? true : false;
+
+  if (!isLoggedIn && !pathname.includes("/login")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
   }
 
-  // Redirect root path to dashboard
-  // if (pathname === "/") {
-  //   const url = request.nextUrl.clone();
-  //   url.pathname = `/dashboard`;
-  //   return NextResponse.redirect(url);
-  // }
-
-  // Redirect root with locale to dashboard
-  if (pathname === `/`) {
+  if (isLoggedIn && pathname.includes("/login")) {
     const url = request.nextUrl.clone();
-    url.pathname = `/login`;
+    url.pathname = "/dashboard";
+    return NextResponse.redirect(url);
+  }
+
+  if (pathname === "/" || pathname === "/en" || pathname === "/hi") {
+    const url = request.nextUrl.clone();
+    url.pathname = isLoggedIn ? "/dashboard" : "/login";
     return NextResponse.redirect(url);
   }
 

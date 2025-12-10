@@ -12,7 +12,7 @@ export default function AuthLayout({ children }: PropsWithChildren) {
     <div className="min-h-screen flex flex-col md:flex-row">
       <div className="relative w-full h-screen overflow-hidden">
         {/* Actual Image */}
-        <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/90 to-transparent pointer-events-none z-10" />
+        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-white/90 to-transparent pointer-events-none z-10" />
         <Image
           src="/ceturoLogin.jpg"
           alt="Cozy rustic room with natural light"
@@ -24,8 +24,8 @@ export default function AuthLayout({ children }: PropsWithChildren) {
 
         <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white/90 to-transparent pointer-events-none z-10" />
       </div>
-      <div className="flex items-center justify-center  w-full md:w-[30%] ">
-        <div className="w-full max-w-sm space-y-6">{children}</div>
+      <div className="flex items-center justify-center  w-full md:w-[40%] ">
+        <div className="w-full space-y-6">{children}</div>
       </div>
     </div>
   );

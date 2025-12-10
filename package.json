@@ -91,6 +91,7 @@
     "react-dom": "^18",
     "react-dropzone": "^14.3.8",
     "react-hook-form": "latest",
+    "react-hot-toast": "^2.6.0",
     "react-redux": "latest",
     "react-resizable-panels": "^2.1.7",
     "react-simple-maps": "^3.0.0",
