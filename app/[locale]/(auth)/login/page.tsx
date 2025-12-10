@@ -1,125 +1,174 @@
 "use client";
-import { useTranslations } from "next-intl";
-import { useRouter, usePathname } from "next/navigation";
-import Link from "next/link";
-import { useState } from "react";
-import { loginUser } from "@/store/slices/auth-slice";
-import { toast } from "sonner";
-import { createLoginSchema, type LoginFormValues } from "@/validations/authValidation";
-import { BaseForm } from "@/components/form/base-form";
-import type { FormField } from "@/types/form";
-import { useAppDispatch } from "@/store";
 
-export default function LoginPage() {
-  const t = useTranslations("auth.login");
-  const vt = useTranslations("auth.validation");
-  const router = useRouter();
-  const pathname = usePathname() || "/";
-  const dispatch = useAppDispatch();
+import React, { useState, useRef } from "react";
+import { Send, RotateCw } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+export default function LoginScreen() {
+  const [phoneOrEmail, setPhoneOrEmail] = useState("");
+  const [otp, setOtp] = useState(["", "", "", ""]);
+  const [isOtpSent, setIsOtpSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const router = useRouter();
 
-  const getLocaleFromPath = (p: string) => {
-    const m = p.match(/^\/(en|ur)/);
-    return m?.[1] || "en";
-  };
-  const locale = getLocaleFromPath(pathname);
+  const handleSendOTP = () => {
+    if (!phoneOrEmail.trim()) return;
 
-  const loginSchema = createLoginSchema(vt);
-
-  const formFields: FormField[] = [
-    {
-      id: "email",
-      name: "email",
-      label: t("emailLabel"),
-      type: "email",
-      placeholder: t("emailLabel"),
-      required: true,
-      className: "text-sm md:text-base",
-    },
-    {
-      id: "password",
-      name: "password",
-      label: t("passwordLabel"),
-      type: "password",
-      placeholder: t("passwordLabel"),
-      required: true,
-      className: "text-sm md:text-base",
-    },
-  ];
-
-  async function onSubmit(values: LoginFormValues) {
     setIsLoading(true);
-
-    try {
-      // use redux thunk that handles axios + cookie internally
-      await dispatch(loginUser({ email: values.email, password: values.password })).unwrap();
-
-      toast.success(t("success") || "Logged in");
-
-      // go to dashboard after successful login
-      router.push(`/${locale}/dashboard`);
-    } catch (err: any) {
-      const message = typeof err === "string" ? err : err?.message || "Login failed";
-      toast.error(t("error") || "Login failed", {
-        description: message,
-      });
-    } finally {
+    setTimeout(() => {
+      setIsOtpSent(true);
       setIsLoading(false);
+      setCountdown(30);
+
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }, 1500);
+  };
+
+  const handleResendOTP = () => {
+    setCountdown(30);
+    setOtp(["", "", "", ""]);
+    otpRefs.current[0]?.focus();
+    alert("OTP Resent!");
+  };
+
+  const handleVerifyOTP = () => {
+    const enteredOtp = otp.join("");
+    if (enteredOtp.length !== 4) {
+      alert("Please enter 4-digit OTP");
+      return;
     }
-  }
+    router.push("/dashboard");
+  };
+
+  const handleOtpChange = (index: number, value: string) => {
+    if (!/^\d*$/.test(value)) return;
+
+    const newOtp = [...otp];
+    newOtp[index] = value.slice(-1);
+    setOtp(newOtp);
+
+    // Auto focus next input
+    if (value && index < 3) {
+      otpRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      otpRefs.current[index - 1]?.focus();
+    }
+  };
 
   return (
-    <div className="relative space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold">{t("title")}</h1>
-        <p className="text-muted-foreground text-sm md:text-base">{t("subtitle")}</p>
-      </div>
+    <div className="">
+      <div className="w-full ">
+        <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden">
+          <div className="p-10 space-y-8">
+            {/* Title */}
+            <div className="text-center">
+              <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
+              <p className="text-gray-500 mt-2">Login with your email</p>
+            </div>
 
-      <div className="space-y-4">
-        <BaseForm
-          fields={formFields}
-          onSubmit={onSubmit}
-          defaultValues={{ email: "", password: "" }}
-          validationSchema={loginSchema}
-          submitText={t("submitButton")}
-          renderSubmitButton={({ isSubmitting }) => (
-            <button
-              type="submit"
-              className="w-full cursor-pointer text-sm md:text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              disabled={isLoading || isSubmitting}
-            >
-              {isLoading || isSubmitting ? (
-                <div className="flex items-center justify-center gap-2">
-                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
-                  {t("submittingButton")}
-                </div>
+            {/* Form */}
+            <div className="space-y-6">
+              {/* Phone/Email Input */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Enter your Email
+                </label>
+                <input
+                  type="text"
+                  value={phoneOrEmail}
+                  onChange={(e) => setPhoneOrEmail(e.target.value)}
+                  placeholder=" user@example.com"
+                  className="w-full px-5 py-4 border border-gray-300 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-lg"
+                  disabled={isOtpSent}
+                />
+              </div>
+
+              {/* Send OTP Button */}
+              {!isOtpSent ? (
+                <button
+                  onClick={handleSendOTP}
+                  disabled={!phoneOrEmail || isLoading}
+                  className="w-full py-4 bg-blue-600 text-white font-semibold rounded-2xl hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 shadow-lg flex items-center justify-center gap-3"
+                >
+                  {isLoading ? (
+                    <>
+                      <RotateCw className="w-5 h-5 animate-spin" />
+                      Sending OTP...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-5 h-5" />
+                      Send OTP
+                    </>
+                  )}
+                </button>
               ) : (
-                t("submitButton")
+                <>
+                  {/* 4-Digit OTP Boxes */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-4 text-center">
+                      Enter 4-Digit OTP
+                    </label>
+                    <div className="flex justify-center gap-4">
+                      {[0, 1, 2, 3].map((index) => (
+                        <input
+                          key={index}
+                          ref={(el) => (otpRefs.current[index] = el)}
+                          type="text"
+                          maxLength={1}
+                          value={otp[index]}
+                          onChange={(e) => handleOtpChange(index, e.target.value)}
+                          onKeyDown={(e) => handleKeyDown(index, e)}
+                          className="w-16 h-16 text-center text-2xl font-bold border-2 border-gray-300 rounded-2xl focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 outline-none transition-all"
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Buttons - One Resend, One Verify */}
+                  <div className="space-y-4">
+                    <button
+                      onClick={handleResendOTP}
+                      disabled={countdown > 0}
+                      className="w-full py-3 border border-gray-300 text-gray-600 font-medium rounded-xl hover:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
+                    >
+                      <RotateCw className={`w-4 h-4 ${countdown > 0 ? "animate-spin" : ""}`} />
+                      {countdown > 0 ? `Resend OTP in ${countdown}s` : "Resend OTP"}
+                    </button>
+
+                    <button
+                      onClick={handleVerifyOTP}
+                      className="w-full py-4 bg-blue-600 text-white font-semibold rounded-2xl hover:bg-blue-700 transition shadow-lg flex items-center justify-center gap-3"
+                    >
+                      <Send className="w-5 h-5" />
+                      Verify & Login
+                    </button>
+                  </div>
+
+                  <div className="text-center text-sm text-green-600 font-medium">
+                    OTP sent successfully!
+                  </div>
+                </>
               )}
-            </button>
-          )}
-        />
-
-        <div className="text-right">
-          <Link
-            href={`/${locale}/forgot`}
-            className="text-sm md:text-base text-muted-foreground underline hover:text-primary cursor-pointer transition-colors"
-          >
-            {t("forgotLink")}
-          </Link>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div className="text-center text-sm md:text-base text-muted-foreground">
-        <p>
-          {t("noAccountText")}{" "}
-          <Link
-            href={`/${locale}/signup`}
-            className="underline hover:text-primary cursor-pointer transition-colors font-medium"
-          >
-            {t("signupLink")}
-          </Link>
-        </p>
+        <div className="text-center py-6 text-sm text-gray-500">Pulse by CRM • © 2025</div>
       </div>
     </div>
   );

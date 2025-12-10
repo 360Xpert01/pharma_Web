@@ -18,16 +18,16 @@ export default function middleware(request: NextRequest) {
   }
 
   // Redirect root path to dashboard
-  if (pathname === "/") {
-    const url = request.nextUrl.clone();
-    url.pathname = `/dashboard`;
-    return NextResponse.redirect(url);
-  }
+  // if (pathname === "/") {
+  //   const url = request.nextUrl.clone();
+  //   url.pathname = `/dashboard`;
+  //   return NextResponse.redirect(url);
+  // }
 
   // Redirect root with locale to dashboard
   if (pathname === `/`) {
     const url = request.nextUrl.clone();
-    url.pathname = `/dashboard`;
+    url.pathname = `/login`;
     return NextResponse.redirect(url);
   }
 

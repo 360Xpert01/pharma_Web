@@ -10,17 +10,21 @@ export default function AuthLayout({ children }: PropsWithChildren) {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
-      <div className="relative hidden md:block w-full md:w-[70%] h-screen">
+      <div className="relative w-full h-screen overflow-hidden">
+        {/* Actual Image */}
+        <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/90 to-transparent pointer-events-none z-10" />
         <Image
-          src="https://images.pexels.com/photos/34094301/pexels-photo-34094301.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+          src="/ceturoLogin.jpg"
           alt="Cozy rustic room with natural light"
           fill
           priority
-          className="object-cover"
-          sizes="70vw"
+          className="object-contain"
+          sizes="100vw"
         />
+
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white/90 to-transparent pointer-events-none z-10" />
       </div>
-      <div className="flex items-center justify-center p-6 w-full md:w-[30%] min-h-screen">
+      <div className="flex items-center justify-center  w-full md:w-[30%] ">
         <div className="w-full max-w-sm space-y-6">{children}</div>
       </div>
     </div>
