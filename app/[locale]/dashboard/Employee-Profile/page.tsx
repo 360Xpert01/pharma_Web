@@ -28,11 +28,10 @@ export default function DashboardPage() {
         sample={"User Profile"}
         descrip={"Unlock the potential of your candidates"}
         table={"All product"}
-        btnAdd={"Update Employee"}
+        btnTrue={true}
         hideMetrics={true}
         employeeProfileBtn={true}
         candidate={candidate}
-        settingsRoute={"/dashboard/UpdateEmployees"}
         ActiveOn={true}
       />
     </div>

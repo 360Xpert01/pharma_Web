@@ -12,11 +12,11 @@ interface Device {
 
 export default function DeviceList() {
   const [devices, setDevices] = useState<Device[]>([
-    { id: "1", deviceId: "DEV-2025-001", made: "Samsung", status: "registered" },
-    { id: "2", deviceId: "DEV-2025-002", made: "Xiaomi", status: "registered" },
-    { id: "3", deviceId: "DEV-2025-003", made: "Apple", status: "unregistered" },
-    { id: "4", deviceId: "DEV-2025-004", made: "OnePlus", status: "registered" },
-    { id: "5", deviceId: "DEV-2025-005", made: "Google", status: "unregistered" },
+    { id: "1", deviceId: "DEV-2025-001", made: "Samsung A 12", status: "registered" },
+    { id: "2", deviceId: "DEV-2025-002", made: "Xiaomi redX ", status: "registered" },
+    { id: "3", deviceId: "DEV-2025-003", made: "Apple 13 pro", status: "unregistered" },
+    { id: "4", deviceId: "DEV-2025-004", made: "OnePlus 3 E1", status: "registered" },
+    { id: "5", deviceId: "DEV-2025-005", made: "Google pixel 2", status: "unregistered" },
   ]);
 
   const addDevice = () => {
@@ -51,7 +51,7 @@ export default function DeviceList() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
-                Device Management
+                Mobile Register
               </h2>
               <p className="text-gray-500 mt-1">{devices.length} devices connected</p>
             </div>
@@ -82,7 +82,7 @@ export default function DeviceList() {
                     <div>
                       <h3 className="font-bold text-gray-900">{device.deviceId}</h3>
                       <p className="text-sm text-gray-600">
-                        Made by: <span className="font-medium">{device.made}</span>
+                        <span className="font-medium">{device.made}</span>
                       </p>
                     </div>
                   </div>
