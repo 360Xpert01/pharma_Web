@@ -1,16 +1,12 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { Upload, X, Plus } from "lucide-react";
+import { Plus, Upload, X } from "lucide-react";
 import Image from "next/image";
 
-interface AddEmployeeFormProps {
-  ActiveOn?: boolean; // Optional prop to control toggle visibility + default value
-}
-
-export default function AddEmployeeForm({ ActiveOn }: AddEmployeeFormProps) {
+export default function AddEmployeeForm() {
+  const [status, setStatus] = useState<"Active" | "Inactive">("Active");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [isActive, setIsActive] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageClick = () => fileInputRef.current?.click();
@@ -18,8 +14,15 @@ export default function AddEmployeeForm({ ActiveOn }: AddEmployeeFormProps) {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Optional: Size check (5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert("Image size should be less than 5MB");
+        return;
+      }
       const reader = new FileReader();
-      reader.onloadend = () => setImagePreview(reader.result as string);
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
       reader.readAsDataURL(file);
     }
   };
@@ -31,201 +34,211 @@ export default function AddEmployeeForm({ ActiveOn }: AddEmployeeFormProps) {
   };
 
   return (
-    <div className="w-full  bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
-      <div className="p-10">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Left Side: Image Upload */}
-          <div className="space-y-8">
-            <div>
-              <div
-                onClick={handleImageClick}
-                className="relative w-full  aspect-square bg-gray-50 border-2 border-dashed border-gray-300 rounded-3xl cursor-pointer overflow-hidden group hover:border-gray-400 transition-all"
-              >
-                {imagePreview ? (
-                  <div className="relative w-full h-full">
-                    <Image src={imagePreview} alt="Employee" fill className="object-cover" />
+    <div className=" bg-gray-50">
+      <div className="bg-white rounded-2xl shadow-lg p-8 space-y-10">
+        {/* Section: Basic Info */}
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold text-gray-900">Basic Info</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Left: Profile Image Upload */}
+            <div className="space-y-6">
+              {/* Main Image Upload Box */}
+              <div className="relative">
+                <div
+                  onClick={handleImageClick}
+                  className="relative w-full h-96 bg-gray-100 border-2 border-dashed border-gray-300 rounded-3xl cursor-pointer overflow-hidden group hover:border-gray-400 transition-all"
+                >
+                  {imagePreview ? (
+                    <>
+                      <Image
+                        src={imagePreview}
+                        alt="Employee Profile"
+                        fill
+                        className="object-cover"
+                      />
+                      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <button
+                        onClick={removeImage}
+                        className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-gray-700 p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-white shadow-lg"
+                      >
+                        <X className="w-6 h-6" />
+                      </button>
+                    </>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center h-full text-gray-400 px-8">
+                      <Upload className="w-16 h-16 mb-4" />
+                      <p className="text-lg font-medium">Click to upload image</p>
+                      <p className="text-sm">PNG, JPG up to 5MB</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Hidden File Input - Inside the upload area */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/jpg"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </div>
+
+              {/* Optional: Small Thumbnails (if needed later) */}
+              {/* <div className="flex gap-4">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="w-24 h-24 bg-gray-200 border-2 border-dashed rounded-xl" />
+                ))}
+              </div> */}
+            </div>
+
+            {/* Right: Form Fields */}
+            <div className="md:col-span-2 space-y-6">
+              {/* Row 1: Pulse Code, Legacy Code, Status */}
+              <div className="grid grid-cols-3 gap-4 items-center">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Pulse Code*</label>
+                  <input
+                    type="text"
+                    placeholder="PLS_EMP_000152"
+                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Legacy code*</label>
+                  <input
+                    type="text"
+                    placeholder="000152"
+                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                  />
+                </div>
+                <div className="flex items-end justify-end pb-2">
+                  <div className="inline-flex border border-gray-300 rounded-full p-1 bg-gray-50 overflow-hidden">
                     <button
-                      onClick={removeImage}
-                      className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-gray-700 p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-white shadow-lg"
+                      onClick={() => setStatus("Active")}
+                      className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                        status === "Active"
+                          ? "bg-blue-600 text-white"
+                          : "text-gray-600 hover:bg-gray-100"
+                      }`}
                     >
-                      <X className="w-6 h-6" />
+                      Active
+                    </button>
+                    <button
+                      onClick={() => setStatus("Inactive")}
+                      className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                        status === "Inactive"
+                          ? "bg-blue-600 text-white"
+                          : "text-gray-600 hover:bg-gray-100"
+                      }`}
+                    >
+                      Inactive
                     </button>
                   </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center h-full text-gray-400">
-                    <Upload className="w-16 h-16 mb-4" />
-                    <p className="text-lg font-medium">Click to upload image</p>
-                    <p className="text-sm">PNG, JPG up to 5MB</p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Active Toggle */}
-
-            <div className="flex items-center justify-center gap-4">
-              <span className="text-sm font-medium text-gray-700">Status</span>
-              <button
-                onClick={() => setIsActive(!isActive)}
-                className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
-                  isActive ? "bg-blue-600" : "bg-gray-300"
-                }`}
-              >
-                <span
-                  className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform ${
-                    isActive ? "translate-x-7" : "translate-x-1"
-                  }`}
-                />
-              </button>
-              <span
-                className={`text-sm font-medium ${isActive ? "text-blue-600" : "text-gray-500"}`}
-              >
-                {isActive ? "Active" : "Inactive"}
-              </span>
-            </div>
-          </div>
-
-          {/* Right Side: Form Fields */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Pulse & Legacy Code */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Pulse Generated Code
-                </label>
-                <div className="px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl font-mono text-gray-900 text-center">
-                  KI-O97gdh3B-NJS
                 </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Employee Legacy Code <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="Legacy Code"
-                  className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
-                />
-              </div>
-            </div>
 
-            {/* Name Fields */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  First Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="First Name"
-                  className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
-                />
+              {/* Names */}
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">First Name*</label>
+                  <input
+                    type="text"
+                    placeholder="First Name"
+                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Middle Name</label>
+                  <input
+                    type="text"
+                    placeholder="Middle Name"
+                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Last Name*</label>
+                  <input
+                    type="text"
+                    placeholder="Last Name"
+                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                  />
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Middle Name</label>
-                <input
-                  type="text"
-                  placeholder="Middle Name"
-                  className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Last Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="Last Name"
-                  className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
-                />
-              </div>
-            </div>
 
-            {/* Contact Info */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="email"
-                  placeholder="employee@company.com"
-                  className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
-                />
+              {/* Email, Phone, DOB */}
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Email Address*</label>
+                  <input
+                    type="email"
+                    placeholder="e.g. abc123@gmail.com"
+                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Phone Number*</label>
+                  <input
+                    type="tel"
+                    placeholder="e.g. +92345678910"
+                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Date of Birth</label>
+                  <input
+                    type="date"
+                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                  />
+                </div>
               </div>
+
+              {/* Full Address */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Phone Number <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="tel"
-                  placeholder="+92-3456789000"
-                  className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Date Of Birth<span className="text-red-500">*</span>
-                </label>
+                <label className="block text-sm font-medium text-gray-700">Full Address</label>
                 <input
                   type="text"
-                  placeholder="Select Date of Birth"
-                  className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="e.g. B121, Block-2, Gulshan-e-Iqbal, Karachi, Pakistan"
+                  className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Adress</label>
-                <input
-                  type="text"
-                  placeholder="Adress"
-                  className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
-                />
-              </div>
-            </div>
-
-            {/* Role & Supervisor */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Role <span className="text-red-500">*</span>
-                </label>
-                <select className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 bg-white">
-                  <option>Sales Representative</option>
-                  <option>Manager</option>
-                  <option>Admin</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Supervisor</label>
-                <select className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 bg-white">
-                  <option>Select Line Manager</option>
-                  <option>Ahmed Khan</option>
-                  <option>Sara Ali</option>
-                  <option>Omar Farooq</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Buttons */}
-            <div className="flex justify-end gap-4 pt-8 border-t border-gray-200">
-              <button className="px-8 py-4 border border-gray-300 text-gray-700 font-medium rounded-full hover:bg-gray-50 transition">
-                Discard
-              </button>
-              <button className="px-10 py-4 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition flex items-center gap-3 shadow-lg">
-                Update Employee
-              </button>
             </div>
           </div>
         </div>
 
-        {/* Hidden File Input */}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-          className="hidden"
-        />
+        {/* Assign Role */}
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold text-gray-900">Assign Role</h2>
+          <div className="grid grid-cols-2 gap-8">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Select Role*</label>
+              <select className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white">
+                <option>Sales Representative</option>
+                <option>Team Lead</option>
+                <option>Manager</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Select Line Manager</label>
+              <select className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white">
+                <option>Sales Representative</option>
+                <option>Sara Ali</option>
+                <option>Usman Malik</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Buttons */}
+        <div className="flex justify-end gap-4 pt-6">
+          <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition">
+            Discard
+          </button>
+          <button className="px-8 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition flex items-center gap-2 shadow-lg">
+            <Plus className="w-5 h-5" />
+            Add Employee
+          </button>
+        </div>
       </div>
     </div>
   );

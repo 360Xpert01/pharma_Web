@@ -6,9 +6,10 @@ import Image from "next/image";
 interface UsersHeaderProps {
   campHeading?: string;
   filterT?: boolean;
+  title?: string;
 }
 
-export default function UsersHeader({ campHeading, filterT }: UsersHeaderProps) {
+export default function UsersHeader({ campHeading, filterT, title }: UsersHeaderProps) {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [openId, setOpenId] = useState<boolean>(false);
   const exportBtn = () => {
