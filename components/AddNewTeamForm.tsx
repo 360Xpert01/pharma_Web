@@ -1,372 +1,403 @@
 "use client";
 
 import React, { useState } from "react";
-import { Search, Plus, Trash2, X } from "lucide-react";
+import { Plus, Trash2, Search, ChevronDown, ChevronRight } from "lucide-react";
 import Image from "next/image";
 
 interface Product {
   id: string;
   code: string;
-  date: string;
   name: string;
-  skus: string[];
 }
 
-interface Rep {
+interface Member {
   id: string;
   name: string;
-  avatar: string;
-  brick: string;
+  pulseCode: string;
+  role: string;
+  bricks?: number[]; // Example bricks
 }
 
-const products: Product[] = [
-  {
-    id: "1",
-    code: "BRND12345678",
-    date: "2025-09-20",
-    name: "Amoxicillin",
-    skus: ["Capsule 500mg", "Capsule 800mg", "Capsule 1200mg"],
-  },
-  { id: "2", code: "BRND23456789", date: "2025-10-15", name: "Ibuprofen", skus: ["Tablet 200mg"] },
-  {
-    id: "3",
-    code: "BRND34567890",
-    date: "2025-11-10",
-    name: "Simvastatin",
-    skus: ["Tablet 10mg", "Tablet 40mg"],
-  },
-  {
-    id: "4",
-    code: "BRND45678901",
-    date: "2025-12-05",
-    name: "Lisinopril",
-    skus: ["Tablet 5mg", "Tablet 10mg"],
-  },
-];
+export default function CreateCampaignForm() {
+  const [status, setStatus] = useState<"Active" | "Inactive">("Active");
+  const [products, setProducts] = useState<Product[]>([
+    { id: "1", code: "PLS_PROD-0034", name: "Amoxicillin" },
+    { id: "2", code: "PLS_PROD-0123", name: "Lisinopril" },
+    { id: "3", code: "PLS_PROD-0123", name: "Lisinopril" },
+    { id: "4", code: "PLS_PROD-0078", name: "Ibuprofen" },
+    { id: "5", code: "PLS_PROD-0034", name: "Amoxicillin" },
+    { id: "6", code: "PLS_PROD-0123", name: "Lisinopril" },
+    { id: "7", code: "PLS_PROD-0123", name: "Lisinopril" },
+    { id: "8", code: "PLS_PROD-0078", name: "Ibuprofen" },
+  ]);
 
-const repsData: Rep[] = [
-  { id: "1", name: "Ahmed Khan", avatar: "/girlPic.svg", brick: "Nazimabad" },
-  { id: "2", name: "Sara Ali", avatar: "/girlPic.svg", brick: "Gulshan" },
-  { id: "3", name: "Omar Farooq", avatar: "/girlPic.svg", brick: "Clifton" },
-  { id: "4", name: "Ayesha Siddiqui", avatar: "/girlPic.svg", brick: "Defence" },
-];
-
-export default function CreateTeamForm() {
-  const [teamName, setTeamName] = useState("");
-  const [channel, setChannel] = useState("");
-  const [callPoint, setCallPoint] = useState("");
-  const [status, setStatus] = useState("Active");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchQueryPeople, setSearchQueryPeople] = useState("");
-  const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
-  const [assignedReps, setAssignedReps] = useState<Rep[]>([]);
-  const [pulseGenerated, setPulseGenerated] = useState<Rep[]>([]);
-
-  const filteredProducts = products.filter(
-    (p) =>
-      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.code.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const addProduct = (product: Product) => {
-    if (!selectedProducts.find((p) => p.id === product.id)) {
-      setSelectedProducts([...selectedProducts, product]);
-    }
-    setSearchQuery("");
-  };
+  const members: Member[] = [
+    { id: "1", name: "Ayan Tajammul", pulseCode: "", role: "Area Sales Manager" },
+    { id: "2", name: "Arqam Hussain", pulseCode: "", role: "Sales Manager" },
+    { id: "3", name: "Majid Hussain", pulseCode: "", role: "Sales Representative" },
+    { id: "4", name: "Danish Kumar", pulseCode: "", role: "Sales Representative" },
+    {
+      id: "5",
+      name: "Daniyal Ahmed",
+      pulseCode: "",
+      role: "Sales Representative",
+      bricks: [846, 830, 843, 852, 874, 838, 850, 1023, 841, 859],
+    },
+  ];
 
   const removeProduct = (id: string) => {
-    setSelectedProducts(selectedProducts.filter((p) => p.id !== id));
+    setProducts(products.filter((p) => p.id !== id));
   };
 
-  const toggleRep = (rep: Rep) => {
-    if (assignedReps.find((r) => r.id === rep.id)) {
-      setAssignedReps(assignedReps.filter((r) => r.id !== rep.id));
-    } else {
-      setAssignedReps([...assignedReps, rep]);
-    }
+  const [openSections, setOpenSections] = useState({
+    areaManager: true, // Ayan Tajammul open by default
+    salesManager: true, // Arqam Hussain open by default
+  });
+
+  const toggleSection = (section: "areaManager" | "salesManager") => {
+    setOpenSections((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
   };
 
   return (
-    <div className="w-full bg-white rounded-3xl shadow-lg border border-gray-100 ">
-      <div className="p-10 space-y-10">
-        {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Create New Team</h1>
-          <p className="text-sm text-gray-500 mt-2">
-            Configure your sales team with products and territories
-          </p>
-        </div>
+    <div className=" ">
+      <div className="bg-white rounded-2xl shadow-lg p-8 space-y-10">
+        {/* Team Name Section */}
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold text-gray-900">Team Name</h2>
 
-        {/* Team Info */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Team Code */}
-          {/* Team Name */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Team Name <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              value={teamName}
-              onChange={(e) => setTeamName(e.target.value)}
-              placeholder="e.g. Karachi North Team"
-              className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Team Code</label>
-            <div className="px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl font-mono text-gray-900">
-              TEAM-X9K2P7M
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Pulse Code*</label>
+              <input
+                type="text"
+                placeholder="PLS_TEM_072384"
+                className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Team Name*</label>
+              <input
+                type="text"
+                placeholder="e.g. High Blood Pressure"
+                className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Channel Name*</label>
+              <select className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                <option>Select Channel</option>
+              </select>
+            </div>
+            <div className="flex justify-end">
+              <div className="inline-flex border border-gray-300 rounded-full p-1 bg-gray-50">
+                <button
+                  onClick={() => setStatus("Active")}
+                  className={`px-6 py-2 rounded-full text-sm font-medium ${status === "Active" ? "bg-blue-600 text-white" : "text-gray-600"}`}
+                >
+                  Active
+                </button>
+                <button
+                  onClick={() => setStatus("Inactive")}
+                  className={`px-6 py-2 rounded-full text-sm font-medium ${status === "Inactive" ? "bg-blue-600 text-white" : "text-gray-600"}`}
+                >
+                  Inactive
+                </button>
+              </div>
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Pulse Generated Code
-              <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              value={pulseGenerated}
-              onChange={(e) => setPulseGenerated(e.target.value)}
-              placeholder="Pulse Generated Code"
-              className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
-            />
-          </div>
-
-          {/* Channel */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Channel <span className="text-red-500">*</span>
-            </label>
-            <select
-              value={channel}
-              onChange={(e) => setChannel(e.target.value)}
-              className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none bg-white"
-            >
-              <option value="">Select Channel</option>
-              <option>Doctor</option>
-              <option>Pharmacy</option>
-              <option>Hospital</option>
-              <option>Clinic</option>
-            </select>
-          </div>
-
-          {/* Call Point */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Call Point <span className="text-red-500">*</span>
-            </label>
-            <select
-              value={callPoint}
-              onChange={(e) => setCallPoint(e.target.value)}
-              className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none bg-white"
-            >
-              <option value="">Select Call Point</option>
-              <option>A.O Clinic</option>
-              <option>360Xpert Solutions</option>
-              <option>UBL Sports Complex</option>
-            </select>
-          </div>
-
-          {/* Status */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Status <span className="text-red-500">*</span>
-            </label>
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none bg-white"
-            >
-              <option>Active</option>
-              <option>Inactive</option>
+            <label className="block text-sm font-medium text-gray-700">Call Point*</label>
+            <select className="mt-1 w-full max-w-md px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+              <option>Select Call Point</option>
             </select>
           </div>
         </div>
 
-        {/* Product Search */}
-        <div>
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Select Products</h2>
+        {/* Select Products */}
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold text-gray-900">Select Products</h2>
+
+          <div className="flex items-center gap-4">
+            <input
+              type="text"
+              placeholder="Search Product Name"
+              className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+            <button className="px-6 py-3 bg-blue-600 text-white rounded-full flex items-center gap-2 hover:bg-blue-700 transition">
+              <Plus className="w-5 h-5" />
+              Add Products
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {products.map((product) => (
+              <div
+                key={product.id}
+                className="bg-gray-50 border border-gray-200 rounded-xl p-4 flex items-center justify-between hover:bg-gray-100 transition"
+              >
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">{product.code}</p>
+                  <p className="text-sm text-gray-600">{product.name}</p>
+                </div>
+                <button
+                  onClick={() => removeProduct(product.id)}
+                  className="text-red-500 hover:text-red-700"
+                >
+                  <Trash2 className="w-5 h-5" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Assign Members */}
+        <div className="space-y-6 py-8">
+          {/* Section Title + Search */}
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Assign Members</h2>
+            <div className="relative max-w-md">
+              <input
+                type="text"
+                placeholder="e.g. john doe (Optional)"
+                className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-gray-600"
+              />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            </div>
+          </div>
+
+          {/* Hierarchy Tree */}
           <div className="relative">
-            <Search className="absolute left-4 top-4 w-5 h-5 text-gray-400" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by product name or code..."
-              className="w-full pl-12 pr-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
-            />
-          </div>
+            {/* Main Vertical Line (from top to bottom) */}
+            {/* <div className="absolute left-10 top-10 bottom-[408px] border-t-4  border-dotted  w-0.5 bg-gray-300 z-0" /> */}
+            <div className="absolute left-10 top-10 bottom-[408px] border-l-2 border-dotted border-gray-300 z-0" />
 
-          {/* Search Results */}
-          {searchQuery && (
-            <div className="mt-3 space-y-2 max-h-60 overflow-y-auto bg-gray-50 rounded-xl p-4 border border-gray-200">
-              {filteredProducts.map((product) => (
-                <div
-                  key={product.id}
-                  onClick={() => addProduct(product)}
-                  className="p-3 bg-white rounded-lg hover:bg-blue-50 cursor-pointer border border-gray-200 transition"
-                >
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <span className="font-medium">{product.name}</span>
-                      <span className="text-sm text-gray-500 ml-3">{product.code}</span>
-                    </div>
-                    <span className="text-sm text-gray-600">{product.skus.join(", ")}</span>
-                  </div>
+            {/* Level 1: Area Sales Manager */}
+            <div className="relative">
+              <div
+                onClick={() => toggleSection("areaManager")}
+                className="flex items-center gap-4 bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-md transition-all cursor-pointer select-none"
+              >
+                <button className="flex-shrink-0 w-8 h-8 flex items-center justify-center">
+                  {openSections.areaManager ? (
+                    <ChevronDown className="w-5 h-5 text-gray-600" />
+                  ) : (
+                    <ChevronRight className="w-5 h-5 text-gray-600" />
+                  )}
+                </button>
+
+                <div className="w-12 h-12 rounded-full bg-gray-300 overflow-hidden flex-shrink-0">
+                  <Image
+                    src="/ayan.jpg"
+                    alt="Ayan"
+                    width={48}
+                    height={48}
+                    className="object-cover"
+                  />
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
 
-        {/* Selected Products */}
-        {selectedProducts.length > 0 && (
-          <div>
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Selected Products</h2>
-            <div className="space-y-3">
-              {selectedProducts.map((product) => (
-                <div
-                  key={product.id}
-                  className="bg-gray-50 rounded-xl p-5 flex items-center justify-between border border-gray-200"
-                >
-                  <div className="grid grid-cols-4 gap-6 flex-1">
-                    <div>
-                      <p className="text-xs text-gray-500">Product Code</p>
-                      <p className="font-mono font-bold">{product.code}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Added On</p>
-                      <p className="font-medium">{product.date}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Product Name</p>
-                      <p className="font-medium">{product.name}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">SKUs</p>
-                      <p className="text-sm text-gray-700">{product.skus.join(" | ")}</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => removeProduct(product.id)}
-                    className="ml-6 text-red-500 hover:bg-red-50 p-2 rounded-lg transition"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
+                <div className="flex-1">
+                  <p className="font-semibold text-gray-900">Ayan Tajammul</p>
+                  <p className="text-sm text-gray-600">Area Sales Manager</p>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
 
-        {/* Assign Agents - FULLY WORKING VERSION */}
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Assign Agents</h2>
-
-          <div className="flex flex-col lg:flex-row items-start lg:items-center gap-8">
-            {/* Search Input */}
-            <div className="flex-1 max-w-lg">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Enter Agent Name
-              </label>
-              <div className="relative">
-                <Search className="absolute left-4 top-4 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  value={searchQueryPeople}
-                  onChange={(e) => setSearchQueryPeople(e.target.value)}
-                  placeholder="e.g john doe (Optional)"
-                  className="w-full pl-12 pr-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none bg-white"
-                />
+                <button className="text-gray-400 hover:text-gray-600">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+                    />
+                  </svg>
+                </button>
               </div>
 
-              {/* Search Suggestions Dropdown */}
-              {searchQueryPeople && (
-                <div className="mt-2 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-64 overflow-y-auto z-10">
-                  {repsData
-                    .filter((rep) =>
-                      rep.name.toLowerCase().includes(searchQueryPeople.toLowerCase())
-                    )
-                    .map((rep) => (
-                      <div
-                        key={rep.id}
-                        onClick={() => {
-                          if (!assignedReps.find((r) => r.id === rep.id)) {
-                            setAssignedReps([...assignedReps, rep]);
-                          }
-                          setSearchQueryPeople(""); // clear search after selection
-                        }}
-                        className="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 cursor-pointer transition"
-                      >
-                        <Image
-                          src={rep.avatar}
-                          alt={rep.name}
-                          width={40}
-                          height={40}
-                          className="rounded-full"
-                        />
-                        <div className="ml-3">
-                          <p className="font-medium text-gray-900">{rep.name}</p>
-                          <p className="text-sm text-gray-500">{rep.brick}</p>
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              )}
-            </div>
+              {/* Children of Area Manager - Only show if open */}
+              {openSections.areaManager && (
+                <div className="relative mt-4">
+                  {/* Horizontal + Vertical Line for children */}
+                  {/* <div className="absolute left-10 top-0 bottom-0 w-0.5 bg-gray-300" /> */}
+                  <div className="absolute left-10 top-8 border-t-2 border-gray-100 border-dotted  w-12 h-0.5 bg-gray-300" />
 
-            {/* Selected Agents Avatars */}
-            <div className="flex items-center -space-x-4">
-              {assignedReps.length === 0 ? (
-                <span className="text-gray-400 text-sm italic">No agents assigned yet</span>
-              ) : (
-                <>
-                  {assignedReps.map((rep, index) => (
+                  {/* Level 2: Sales Manager */}
+                  <div className="ml-16 relative">
                     <div
-                      key={rep.id}
-                      className="relative group"
-                      style={{ zIndex: assignedReps.length - index }}
+                      onClick={() => toggleSection("salesManager")}
+                      className="flex items-center gap-4 bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-md transition-all cursor-pointer select-none"
                     >
-                      <Image
-                        src={rep.avatar}
-                        alt={rep.name}
-                        width={56}
-                        height={56}
-                        className="rounded-full border-4 border-white shadow-md ring-2 ring-gray-100"
-                      />
-                      {/* Remove Button on Hover */}
-                      <button
-                        onClick={() => toggleRep(rep)}
-                        className="absolute inset-0 rounded-full bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
-                      >
-                        <X className="w-7 h-7 text-white" />
+                      <button className="flex-shrink-0 w-8 h-8 flex items-center justify-center">
+                        {openSections.salesManager ? (
+                          <ChevronDown className="w-5 h-5 text-gray-600" />
+                        ) : (
+                          <ChevronRight className="w-5 h-5 text-gray-600" />
+                        )}
+                      </button>
+
+                      <div className="w-12 h-12 rounded-full bg-gray-300 overflow-hidden flex-shrink-0">
+                        <Image
+                          src="/arqam.jpg"
+                          alt="Arqam"
+                          width={48}
+                          height={48}
+                          className="object-cover"
+                        />
+                      </div>
+
+                      <div className="flex-1">
+                        <p className="font-semibold text-gray-900">Arqam Hussain</p>
+                        <p className="text-sm text-gray-600">Sales Manager</p>
+                      </div>
+
+                      <button className="text-gray-400 hover:text-gray-600">
+                        <svg
+                          className="w-6 h-6"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+                          />
+                        </svg>
                       </button>
                     </div>
-                  ))}
 
-                  {/* Plus Button to add more */}
-                  {assignedReps.length < repsData.length && (
-                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 border-4 border-white shadow-lg flex items-center justify-center cursor-pointer hover:from-blue-600 hover:to-blue-700 transition">
-                      <Plus className="w-7 h-7 text-white" />
-                    </div>
-                  )}
-                </>
+                    {/* Children of Sales Manager - Only show if open */}
+                    {openSections.salesManager && (
+                      <div className="relative mt-4">
+                        {/* Vertical Line for Sales Reps */}
+                        {/* <div className="absolute left-10 top-0 bottom-13 w-0.5 bg-gray-300" /> */}
+                        {/* <div className="absolute left-10 top-8 w-6 h-0.5 border-l-2 border-dotted  bg-gray-300" /> */}
+                        <div className="absolute left-10 top-0 bottom-13 border-l-2 border-dotted border-gray-300" />
+                        <div className="absolute left-10 top-8 w-6 border-t-2 border-dotted border-gray-300" />
+
+                        {/* Level 3: Sales Representatives */}
+                        <div className="ml-16 space-y-4">
+                          {/* Majid Hussain */}
+                          <div className="bg-white border border-gray-200 rounded-2xl p-6 flex items-center justify-between hover:shadow-md transition">
+                            <div className="flex items-center gap-4">
+                              <div className="w-12 h-12 rounded-full bg-gray-300 overflow-hidden">
+                                <Image
+                                  src="/majid.jpg"
+                                  alt="Majid"
+                                  width={48}
+                                  height={48}
+                                  className="object-cover"
+                                />
+                              </div>
+                              <div>
+                                <p className="font-semibold text-gray-900">Majid Hussain</p>
+                                <p className="text-sm text-gray-600">Sales Representative</p>
+                              </div>
+                            </div>
+                            <button className="px-6 py-3 bg-blue-600 text-white rounded-full flex items-center gap-2 hover:bg-blue-700 shadow-sm">
+                              <Plus className="w-5 h-5" />
+                              Assign Bricks
+                            </button>
+                          </div>
+
+                          {/* Danish Kumar */}
+                          {/* <div className="absolute left-10 top-38 w-6 h-0.5 bg-gray-300" /> */}
+                          <div className="absolute left-10 top-38 w-6 border-t-2 border-dotted border-gray-300" />
+
+                          <div className="bg-white border border-gray-200 rounded-2xl p-6 flex items-center justify-between hover:shadow-md transition">
+                            <div className="flex items-center gap-4">
+                              <div className="w-12 h-12 rounded-full bg-gray-300 overflow-hidden">
+                                <Image
+                                  src="/danish.jpg"
+                                  alt="Danish"
+                                  width={48}
+                                  height={48}
+                                  className="object-cover"
+                                />
+                              </div>
+                              <div>
+                                <p className="font-semibold text-gray-900">Danish Kumar</p>
+                                <p className="text-sm text-gray-600">Sales Representative</p>
+                              </div>
+                            </div>
+                            <div className="relative max-w-xs">
+                              <input
+                                type="text"
+                                placeholder="e.g. KL123, KL456, KL789"
+                                className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                              />
+                              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                            </div>
+                          </div>
+
+                          {/* Daniyal Ahmed */}
+                          <div className="absolute left-10 top-68 w-6 border-t-2 border-gray-100 border-dotted h-0.5 bg-gray-300" />
+
+                          <div className="bg-white border border-gray-200 rounded-2xl p-6 flex items-center justify-between hover:shadow-md transition">
+                            <div className="flex items-center gap-4">
+                              <div className="w-12 h-12 rounded-full bg-gray-300 overflow-hidden">
+                                <Image
+                                  src="/girlPic.svg"
+                                  alt="Daniyal"
+                                  width={48}
+                                  height={48}
+                                  className="object-cover"
+                                />
+                              </div>
+                              <div>
+                                <p className="font-semibold text-gray-900">Daniyal Ahmed</p>
+                                <p className="text-sm text-gray-600">Sales Representative</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <div className="flex flex-wrap gap-2">
+                                {[
+                                  "L46",
+                                  "939 x",
+                                  "L43",
+                                  "L52",
+                                  "874",
+                                  "L38",
+                                  "L59",
+                                  "1023",
+                                  "L41",
+                                  "L55",
+                                ].map((brick) => (
+                                  <span
+                                    key={brick}
+                                    className="px-3 py-1.5 bg-blue-100 text-blue-700 text-sm font-medium rounded-full"
+                                  >
+                                    {brick}
+                                  </span>
+                                ))}
+                              </div>
+                              <button className="px-6 py-3 bg-blue-600 text-white rounded-full flex items-center gap-2 hover:bg-blue-700 shadow-sm">
+                                <Plus className="w-5 h-5" />
+                                Assign Bricks
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
               )}
             </div>
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex justify-end gap-4 pt-8 border-t border-gray-200">
-          <button className="px-8 py-3.5 border border-gray-300 text-gray-700 font-medium rounded-full hover:bg-gray-50 transition">
+        {/* Buttons */}
+        <div className="flex justify-end gap-4 pt-6">
+          <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition">
             Discard
           </button>
-          <button className="px-10 py-3.5 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition flex items-center gap-3 shadow-lg">
+          <button className="px-8 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition flex items-center gap-2 shadow-lg">
             <Plus className="w-5 h-5" />
-            Create Team
+            Add Campaign
           </button>
         </div>
       </div>
