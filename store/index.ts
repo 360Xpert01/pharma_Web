@@ -6,10 +6,14 @@ import { persistReducer, persistStore } from "redux-persist";
 import { combineReducers } from "redux";
 import authReducer from "./slices/auth-slice";
 import uiReducer from "./slices/ui-slice";
+import loginSlice from "./slices/auth/loginSlice";
+import verifyOtp from "./slices/auth/verifyOtp";
 
 const rootReducer = combineReducers({
   auth: authReducer,
   ui: uiReducer,
+  login: loginSlice,
+  verifyOtp: verifyOtp,
 });
 
 const persistConfig = {
