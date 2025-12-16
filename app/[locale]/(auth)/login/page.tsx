@@ -1,84 +1,131 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Send, RotateCw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux"; // ← Manual dispatch & selector
+import { requestOtp } from "../../../../store/slices/auth/loginSlice";
+import { verifyOtp } from "../../../../store/slices/auth/verifyOtp";
 
 export default function LoginScreen() {
-  const [phoneOrEmail, setPhoneOrEmail] = useState("");
+  const [email, setEmail] = useState("");
   const [otp, setOtp] = useState(["", "", "", ""]);
+
   const [isOtpSent, setIsOtpSent] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [userNotFound, setUserNotFound] = useState(false);
+  const [otpSentState, setOtpSentState] = useState(false);
+  const [InvalidOtp, setInvalidOtp] = useState(false);
+  console.log("isOtpSent", isOtpSent);
   const [countdown, setCountdown] = useState(0);
+  const [isVerifying, setIsVerifying] = useState(false);
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
   const router = useRouter();
-  const [emailError, setEmailError] = useState("");
 
-  const isValidEmail = (email: string) => {
-    return email.includes("@") && email.includes(".") && email.length > 5;
-  };
-  const handleSendOTP = () => {
-    if (!phoneOrEmail.trim()) return;
+  // Manual dispatch (without typed hook)
+  const dispatch = useDispatch();
+  const { loading, success, error, message } = useSelector((state: any) => state.auth);
 
-    setIsLoading(true);
-    setTimeout(() => {
+  // Device ID
+  const deviceId = "ewb-123";
+
+  // Countdown timer
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown]);
+
+  // Handle OTP send success
+  useEffect(() => {
+    if (success && !isOtpSent) {
       setIsOtpSent(true);
-      setIsLoading(false);
-      setCountdown(30);
-      toast.success("OTP sent successfully!");
+      toast.success(message || "OTP sent successfully!");
+      otpRefs.current[0]?.focus();
+    }
+    if (error) {
+      toast.error(error);
+    }
+  }, [success, error, message, isOtpSent]);
 
-      const timer = setInterval(() => {
-        setCountdown((prev) => {
-          if (prev <= 1) {
-            clearInterval(timer);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }, 1500);
+  const handleSendOTP = async () => {
+    if (!email.trim() || !email.includes("@")) {
+      toast.error("Please enter a valid email");
+      return;
+    }
+
+    try {
+      const result = await dispatch(requestOtp({ email: email.trim(), deviceId }));
+      if (result.payload?.success) {
+        setIsOtpSent(true);
+        setUserNotFound(false);
+        toast.success("OTP sent successfully!");
+        otpRefs.current[0]?.focus();
+      }
+
+      if (result.payload === "User not found") {
+        setUserNotFound(true);
+      }
+
+      if (result.payload === "OTP request already exists") {
+        setOtpSentState(true);
+        setUserNotFound(false);
+        setIsOtpSent(true);
+      } else {
+        toast.error(result.payload?.error?.message || "Failed to send OTP");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Failed to send OTP");
+    }
   };
 
   const handleResendOTP = () => {
-    setCountdown(30);
     setOtp(["", "", "", ""]);
     otpRefs.current[0]?.focus();
-    toast.success("OTP Resent!");
+    setIsOtpSent(false);
+    setUserNotFound(false);
+    setInvalidOtp(false);
   };
 
-  const handleVerifyOTP = () => {
+  // Manual POST request for Verify OTP (without thunk)
+  const handleVerifyOTP = async () => {
     const enteredOtp = otp.join("");
-
     if (enteredOtp.length !== 4) {
       toast.error("Please enter 4-digit OTP");
       return;
     }
 
-    if (enteredOtp === "7866") {
-      // Success: Save login data in localStorage
-      const loginData = {
-        email: phoneOrEmail.trim(),
-        otp: enteredOtp,
-        isLoggedIn: true,
-        loginTime: new Date().toISOString(),
-      };
+    setIsVerifying(true);
 
-      localStorage.setItem("userSession", JSON.stringify(loginData));
-      // Optional: Cookies mein bhi daal do (extra safety)
-      document.cookie = `userSession=${JSON.stringify(loginData)}; path=/; max-age=86400`; // 24 hours
+    try {
+      const result = await dispatch(
+        verifyOtp({
+          deviceId,
+          otp: Number(enteredOtp),
+        })
+      );
 
-      toast.success("Login Successful! Welcome back 🎉");
+      if (result.payload?.success) {
+        const loginData = result?.payload?.data?.accessToken;
 
-      // Redirect to dashboard
-      router.push("/dashboard");
-    } else {
-      toast.error("Invalid OTP. Please try again.");
-      alert("Invalid OTP. Please try again.");
+        localStorage.setItem("userSession", JSON.stringify(loginData));
+        document.cookie = `userSession=${JSON.stringify(loginData)}; path=/; max-age=86400`;
+
+        toast.success("Login Successful! Welcome back 🎉");
+        router.push("/dashboard");
+      } else {
+        setInvalidOtp(true);
+        toast.error(result.payload?.message || "Invalid OTP. Please try again.");
+      }
+    } catch (err: any) {
+      setInvalidOtp(true);
+      toast.error(err.message || "Invalid OTP. Please try again.");
+    } finally {
+      setIsVerifying(false);
     }
   };
 
-  // Baki functions same
   const handleOtpChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return;
     const newOtp = [...otp];
@@ -96,11 +143,10 @@ export default function LoginScreen() {
   };
 
   return (
-    <div className="">
-      <div className="w-full ">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
         <div className="bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden">
           <div className="p-10 space-y-8">
-            {/* Title */}
             <div className="text-center">
               <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
               <p className="text-gray-500 mt-2">Login with your email</p>
@@ -112,43 +158,32 @@ export default function LoginScreen() {
                   Enter your Email
                 </label>
                 <input
-                  type="email" // ← type="text" se "email" kar diya (extra safety)
-                  value={phoneOrEmail}
-                  onChange={(e) => {
-                    setPhoneOrEmail(e.target.value);
-                    setEmailError(""); // clear error on typing
-                  }}
-                  onBlur={() => {
-                    if (phoneOrEmail && !phoneOrEmail.includes("@")) {
-                      setEmailError("Email must contain @ symbol");
-                      toast.error("Please enter a valid email with @");
-                    }
-                  }}
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder=" user@example.com"
-                  className={`w-full px-5 py-4 border rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-lg ${
-                    emailError ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className="w-full px-2 py-4 border border-gray-300 rounded-2xl  outline-none transition-all text-lg"
                   disabled={isOtpSent}
                 />
-                {emailError && <p className="text-red-500 text-sm mt-2">{emailError}</p>}
               </div>
+              {userNotFound && <p className="text-red-600 text-xs ">User not found</p>}
+              {otpSentState && (
+                <p className="text-red-600 text-xs ">An OTP has already been sent to this email.</p>
+              )}
 
               {!isOtpSent ? (
                 <button
                   onClick={handleSendOTP}
-                  disabled={!phoneOrEmail.includes("@") || isLoading}
+                  disabled={loading || !email.includes("@")}
                   className="w-full py-4 bg-blue-600 text-white font-semibold rounded-2xl hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 shadow-lg flex items-center justify-center gap-3"
                 >
-                  {isLoading ? (
+                  {loading ? (
                     <>
                       <RotateCw className="w-5 h-5 animate-spin" />
                       Sending OTP...
                     </>
                   ) : (
-                    <>
-                      <Send className="w-5 h-5" />
-                      Send OTP
-                    </>
+                    <>Send OTP</>
                   )}
                 </button>
               ) : (
@@ -172,27 +207,30 @@ export default function LoginScreen() {
                       ))}
                     </div>
                   </div>
-
+                  {InvalidOtp && <p className="text-red-600 text-xs ">Invalid OTP</p>}
                   <div className="space-y-4">
                     <button
                       onClick={handleResendOTP}
-                      disabled={countdown > 0}
+                      disabled={loading || countdown > 0}
                       className="w-full py-3 border border-gray-300 text-gray-600 font-medium rounded-xl hover:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
                     >
-                      <RotateCw className={`w-4 h-4 ${countdown > 0 ? "animate-spin" : ""}`} />
-                      {countdown > 0 ? `Resend OTP in ${countdown}s` : "Resend OTP"}
+                      Resend OTP
                     </button>
 
                     <button
                       onClick={handleVerifyOTP}
-                      className="w-full py-4 bg-blue-600 text-white font-semibold rounded-2xl hover:bg-blue-700 transition shadow-lg flex items-center justify-center gap-3"
+                      disabled={isVerifying}
+                      className="w-full py-4 bg-blue-600 text-white font-semibold rounded-2xl hover:bg-blue-700 disabled:bg-gray-400 transition shadow-lg flex items-center justify-center gap-3"
                     >
-                      Login
+                      {isVerifying ? (
+                        <>
+                          <RotateCw className="w-5 h-5 animate-spin" />
+                          Verifying...
+                        </>
+                      ) : (
+                        "Login"
+                      )}
                     </button>
-                  </div>
-
-                  <div className="text-center text-sm text-green-600 font-medium">
-                    OTP sent successfully!
                   </div>
                 </>
               )}
