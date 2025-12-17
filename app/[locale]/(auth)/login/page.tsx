@@ -109,7 +109,7 @@ export default function LoginScreen() {
       if (result.payload?.success) {
         const loginData = result?.payload?.data?.accessToken;
 
-        localStorage.setItem("userSession", JSON.stringify(loginData));
+        localStorage.setItem("userSession", loginData);
         document.cookie = `userSession=${JSON.stringify(loginData)}; path=/; max-age=86400`;
 
         toast.success("Login Successful! Welcome back 🎉");

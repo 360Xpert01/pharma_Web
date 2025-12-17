@@ -2,6 +2,10 @@
 
 import React, { useState } from "react";
 import { ChevronDown, ChevronUp, Plus } from "lucide-react";
+import toast from "react-hot-toast";
+import { createRole } from "@/store/slices/role/addRole";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
 interface Responsibility {
   id: string;
@@ -17,6 +21,10 @@ export default function AddNewRoleForm() {
     product: true,
     team: true,
   });
+
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const { loading, success, error, message } = useSelector((state: any) => state.addRole);
 
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
@@ -54,6 +62,26 @@ export default function AddNewRoleForm() {
 
   const getSelectedCount = (section: string) => {
     return responsibilities[section].filter((r) => r.checked).length;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!roleName.trim()) {
+      toast.error("Role name is required");
+      return;
+    }
+
+    const result = await dispatch(createRole({ roleName: roleName.trim() }));
+
+    if (createRole.fulfilled.match(result)) {
+      toast.success(message || "Role created successfully!");
+      setRoleName("");
+      router.push("/dashboard/User-Role");
+      //  router.push("/dashboard");
+    } else {
+      toast.error(error || "Failed to create role");
+    }
   };
 
   return (
@@ -261,7 +289,10 @@ export default function AddNewRoleForm() {
           <button className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-full hover:bg-gray-50 transition">
             Discard
           </button>
-          <button className="px-8 py-3 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition flex items-center gap-2 shadow-lg">
+          <button
+            onClick={handleSubmit}
+            className="px-8 py-3 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition flex items-center gap-2 shadow-lg"
+          >
             <Plus className="w-5 h-5" />
             Add Role
           </button>

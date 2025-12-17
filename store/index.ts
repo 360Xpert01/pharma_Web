@@ -8,12 +8,14 @@ import authReducer from "./slices/auth-slice";
 import uiReducer from "./slices/ui-slice";
 import loginSlice from "./slices/auth/loginSlice";
 import verifyOtp from "./slices/auth/verifyOtp";
+import addRole from "./slices/role/addRole";
 
 const rootReducer = combineReducers({
   auth: authReducer,
   ui: uiReducer,
   login: loginSlice,
   verifyOtp: verifyOtp,
+  addRole: addRole,
 });
 
 const persistConfig = {
