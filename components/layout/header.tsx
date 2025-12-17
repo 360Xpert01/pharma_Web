@@ -54,6 +54,8 @@ const Navbar = () => {
       items: [
         { label: "Products", href: "/dashboard/product-Management" },
         { label: "Set Target", href: "/dashboard/SetTarget" },
+        { label: "Add Prefix", href: "/dashboard/AddPrefix" },
+
         {
           label: "Promotional Materials",
           items: [

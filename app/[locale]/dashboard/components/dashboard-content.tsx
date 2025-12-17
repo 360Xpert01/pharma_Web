@@ -51,6 +51,8 @@ import AddNewTeamForm from "@/components/AddNewTeamForm";
 import SetTargetPage from "@/components/SetTargetPage";
 import UpdateEmployees from "@/components/UpdateEmployee";
 import DeviceList from "@/components/DeviceList";
+import AddPrefixNameComponent from "@/components/AddPrefix";
+import PreFixTable from "@/components/PreFixTable";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -97,6 +99,7 @@ export function DashboardContent({
   setTargetlist,
   ActiveOn,
   UpdateEmp,
+  prefixPro,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -174,6 +177,16 @@ export function DashboardContent({
             <div className=" shadow-[0px_5px_10px_rgba(0,0,0,0.20)] rounded-md p-3 mt-10  ">
               <TableHeader campHeading={campHeading} filterT={filterT} />
               <AllChannalB />
+            </div>
+          </div>
+        )}
+
+        {prefixPro && (
+          <div>
+            <AddPrefixNameComponent />
+            <div className=" shadow-[0px_5px_10px_rgba(0,0,0,0.20)] rounded-md p-3 mt-10  ">
+              <TableHeader campHeading={campHeading} filterT={filterT} />
+              <PreFixTable />
             </div>
           </div>
         )}

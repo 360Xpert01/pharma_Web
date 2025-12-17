@@ -149,4 +149,5 @@ export interface DashboardProps {
   setTargetlist?: boolean;
   ActiveOn?: boolean;
   UpdateEmp?: boolean;
+  prefixPro?: boolean;
 }
