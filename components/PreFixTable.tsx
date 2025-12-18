@@ -1,6 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllPrefixes } from "@/store/slices/preFix/getAllPrefixesSlice";
 
 interface PrefixItem {
   tableName: string;
@@ -20,26 +22,36 @@ const prefixData: PrefixItem[] = [
 ];
 
 export default function PrefixListComponent() {
+  const dispatch = useDispatch<any>();
+
+  useEffect(() => {
+    dispatch(getAllPrefixes());
+  }, [dispatch]);
+
+  const { prefixes, loading, error } = useSelector((state: any) => state.allPrefixes);
+
+  console.log("Prefixqwe", prefixes);
+
   return (
     <div className=" bg-gray-50 flex items-center justify-center p-8">
       <div className="w-full">
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
           <div className="p-8 space-y-6">
-            {prefixData.map((item, index) => (
+            {prefixes.map((item, index) => (
               <div
                 key={index}
                 className="flex items-center justify-between py-4 px-6  border border-gray-200 rounded-xl"
               >
                 {/* Table Name */}
-                <div className="text-lg font-medium w-[20%] text-gray-800">{item.tableName}</div>
+                <div className="text-lg font-medium w-[20%] text-gray-800">{item.entity}</div>
 
                 <div className=" text-gray-700 w-[20%] flex justify-start font-semibold rounded-full text-sm">
-                  {item.prefix}
+                  {item.code}
                 </div>
 
                 <div className="flex items-center gap-12">
                   <div className=" text-gray-600 font-medium rounded-full text-sm">
-                    {item.example}
+                    {item.code}-01
                   </div>
                 </div>
               </div>

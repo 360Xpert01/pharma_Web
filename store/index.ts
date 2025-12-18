@@ -9,6 +9,9 @@ import uiReducer from "./slices/ui-slice";
 import loginSlice from "./slices/auth/loginSlice";
 import verifyOtp from "./slices/auth/verifyOtp";
 import addRole from "./slices/role/addRole";
+import allPreFixTable from "./slices/preFix/allPreFixTable";
+import preFixReducer from "./slices/preFix/postPrefix";
+import allPrefixesReducer from "./slices/preFix/getAllPrefixesSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -16,6 +19,9 @@ const rootReducer = combineReducers({
   login: loginSlice,
   verifyOtp: verifyOtp,
   addRole: addRole,
+  allPreFixTable: allPreFixTable,
+  preFixReducer: preFixReducer,
+  allPrefixes: allPrefixesReducer,
 });
 
 const persistConfig = {
