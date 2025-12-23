@@ -9,9 +9,13 @@ import uiReducer from "./slices/ui-slice";
 import loginSlice from "./slices/auth/loginSlice";
 import verifyOtp from "./slices/auth/verifyOtp";
 import addRole from "./slices/role/addRole";
+import allRolesReducer from "./slices/role/getAllRolesSlice";
 import allPreFixTable from "./slices/preFix/allPreFixTable";
 import preFixReducer from "./slices/preFix/postPrefix";
 import allPrefixesReducer from "./slices/preFix/getAllPrefixesSlice";
+import generatePrefixReducer from "./slices/preFix/generatePrefixSlice";
+import registerEmployeeReducer from "./slices/employee/registerEmployee";
+import allUsersReducer from "./slices/employee/getAllUsersSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -19,9 +23,13 @@ const rootReducer = combineReducers({
   login: loginSlice,
   verifyOtp: verifyOtp,
   addRole: addRole,
+  allRoles: allRolesReducer,
   allPreFixTable: allPreFixTable,
   preFixReducer: preFixReducer,
   allPrefixes: allPrefixesReducer,
+  generatePrefix: generatePrefixReducer,
+  registerEmployee: registerEmployeeReducer,
+  allUsers: allUsersReducer,
 });
 
 const persistConfig = {

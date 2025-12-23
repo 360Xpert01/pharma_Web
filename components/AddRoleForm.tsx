@@ -1,11 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChevronDown, ChevronUp, Plus } from "lucide-react";
 import toast from "react-hot-toast";
 import { createRole } from "@/store/slices/role/addRole";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/store";
 import { useRouter } from "next/navigation";
+import { getAllPrefixes } from "@/store/slices/preFix/getAllPrefixesSlice";
+import {
+  generatePrefix,
+  resetGeneratePrefixState,
+} from "@/store/slices/preFix/generatePrefixSlice";
 
 interface Responsibility {
   id: string;
@@ -23,8 +28,33 @@ export default function AddNewRoleForm() {
   });
 
   const router = useRouter();
-  const dispatch = useDispatch();
-  const { loading, success, error, message } = useSelector((state: any) => state.addRole);
+  const dispatch = useAppDispatch();
+  const { loading, success, error, message } = useAppSelector((state) => state.addRole);
+  const {
+    generatedPrefix,
+    loading: prefixLoading,
+    error: prefixError,
+  } = useAppSelector((state) => state.generatePrefix);
+  const { prefixes } = useAppSelector((state) => state.allPrefixes);
+
+  useEffect(() => {
+    const fetchAndGenerate = async () => {
+      const result = await dispatch(getAllPrefixes());
+
+      // After fetching prefixes, use the first available entity
+      if (getAllPrefixes.fulfilled.match(result)) {
+        const availablePrefixes = result.payload.data;
+
+        if (availablePrefixes.length > 0) {
+          dispatch(generatePrefix({ entity: availablePrefixes[0].entity }));
+        }
+      }
+    };
+    fetchAndGenerate();
+    return () => {
+      dispatch(resetGeneratePrefixState());
+    };
+  }, [dispatch]);
 
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
@@ -64,7 +94,7 @@ export default function AddNewRoleForm() {
     return responsibilities[section].filter((r) => r.checked).length;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     if (!roleName.trim()) {
@@ -72,13 +102,23 @@ export default function AddNewRoleForm() {
       return;
     }
 
-    const result = await dispatch(createRole({ roleName: roleName.trim() }));
+    if (!generatedPrefix) {
+      toast.error("Pulse code is not generated yet. Please wait.");
+      return;
+    }
+
+    const result = await dispatch(
+      createRole({
+        roleName: roleName.trim(),
+        pulseCode: generatedPrefix,
+      })
+    );
 
     if (createRole.fulfilled.match(result)) {
       toast.success(message || "Role created successfully!");
       setRoleName("");
+      dispatch(resetGeneratePrefixState());
       router.push("/dashboard/User-Role");
-      //  router.push("/dashboard");
     } else {
       toast.error(error || "Failed to create role");
     }
@@ -92,21 +132,40 @@ export default function AddNewRoleForm() {
           <h1 className="text-3xl font-bold text-gray-900">Add New Role</h1>
           <p className="text-sm text-gray-500 mt-2">Unlock the potential of your candidates</p>
         </div>
-
-        {/* Role Name Input */}
+        {/* Pules Code and Role Name Inputs */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Role Name</label>
-          <div className="flex w-[100%] ">
+          {/* Labels Row */}
+          <div className="flex w-full mb-2">
+            <label className="block text-sm font-medium text-gray-700 w-[25%] mr-6">
+              Pules Code
+            </label>
+            <label className="block text-sm font-medium text-gray-700 w-[25%] mr-6">
+              Role Name
+            </label>
+          </div>
+
+          {/* Inputs Row */}
+          <div className="flex w-full items-start">
+            <div className="relative w-[25%] mr-6">
+              <input
+                type="text"
+                value={generatedPrefix || ""}
+                placeholder={prefixLoading ? "Generating..." : "PLS_ROLE_000001"}
+                readOnly
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 text-gray-700 cursor-not-allowed outline-none"
+                title={prefixError || "Auto-generated pulse code (read-only)"}
+              />
+            </div>
             <div className="relative w-[25%] mr-6">
               <input
                 type="text"
                 value={roleName}
                 onChange={(e) => setRoleName(e.target.value)}
                 placeholder="e.g. Sr. Sales Manager"
-                className="w-[100%] px-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
               />
             </div>
-            <p className="text-xs text-gray-500 mt-2  w-[20%] ">
+            <p className="text-xs text-gray-500 mt-2 w-[20%]">
               You can easily name the role you want and take on different responsibilities.
             </p>
           </div>
@@ -286,15 +345,22 @@ export default function AddNewRoleForm() {
 
         {/* Footer Buttons */}
         <div className="flex justify-end gap-4 pt-8">
-          <button className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-full hover:bg-gray-50 transition">
+          <button
+            type="button"
+            className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-full hover:bg-gray-50 transition"
+          >
             Discard
           </button>
           <button
+            type="button"
             onClick={handleSubmit}
-            className="px-8 py-3 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition flex items-center gap-2 shadow-lg"
+            disabled={loading || prefixLoading}
+            className={`px-8 py-3 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition flex items-center gap-2 shadow-lg ${
+              loading || prefixLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
             <Plus className="w-5 h-5" />
-            Add Role
+            {loading ? "Creating..." : "Add Role"}
           </button>
         </div>
       </div>

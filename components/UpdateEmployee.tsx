@@ -97,7 +97,7 @@ export default function AddEmployeeForm() {
               {/* Row 1: Pulse Code, Legacy Code, Status */}
               <div className="grid grid-cols-3 gap-4 items-center">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Pulse Code*</label>
+                  <label className="block text-sm font-medium text-gray-700">Pulse Code</label>
                   <input
                     type="text"
                     placeholder="PLS_EMP_000152"
@@ -105,14 +105,14 @@ export default function AddEmployeeForm() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Legacy code*</label>
+                  <label className="block text-sm font-medium text-gray-700">Legacy code</label>
                   <input
                     type="text"
                     placeholder="000152"
                     className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                   />
                 </div>
-                <div className="flex items-end justify-end pb-2">
+                <div className="flex">
                   <div className="inline-flex border border-gray-300 rounded-full p-1 bg-gray-50 overflow-hidden">
                     <button
                       onClick={() => setStatus("Active")}
@@ -194,7 +194,7 @@ export default function AddEmployeeForm() {
               </div>
 
               {/* Full Address */}
-              <div>
+              <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700">Full Address</label>
                 <input
                   type="text"
@@ -202,29 +202,31 @@ export default function AddEmployeeForm() {
                   className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                 />
               </div>
-            </div>
-          </div>
-        </div>
 
-        {/* Assign Role */}
-        <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-gray-900">Assign Role</h2>
-          <div className="grid grid-cols-2 gap-8">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Select Role*</label>
-              <select className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white">
-                <option>Sales Representative</option>
-                <option>Team Lead</option>
-                <option>Manager</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Select Line Manager</label>
-              <select className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white">
-                <option>Sales Representative</option>
-                <option>Sara Ali</option>
-                <option>Usman Malik</option>
-              </select>
+              {/* Assign Role - aligned below Full Address */}
+              <div className="md:col-span-2 space-y-6 pt-4">
+                <h2 className="text-2xl font-bold text-gray-900">Assign Role</h2>
+                <div className="grid grid-cols-2 gap-8">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Select Role*</label>
+                    <select className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white">
+                      <option>Sales Representative</option>
+                      <option>Team Lead</option>
+                      <option>Manager</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Select Line Manager
+                    </label>
+                    <select className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white">
+                      <option>Sales Representative</option>
+                      <option>Sara Ali</option>
+                      <option>Usman Malik</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

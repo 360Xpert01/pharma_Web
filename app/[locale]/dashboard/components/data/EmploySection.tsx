@@ -110,7 +110,7 @@ export default function SalesTeamTable() {
 
           <div className="flex  w-[80%] px-5   text-sm font-semibold text-gray-700">
             {/* Campaign ID */}
-            <div className="w-[20%] ">Campaign ID</div>
+            <div className="w-[20%] ">Employee ID</div>
 
             {/* Name + Role */}
             <div className="w-[19%] ">Name</div>
