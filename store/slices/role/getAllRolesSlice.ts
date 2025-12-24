@@ -7,6 +7,8 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 interface RoleItem {
   id: string;
   roleName: string;
+  pulseCode: string;
+  legacyCode?: string;
   parentRoleId?: string;
   createdAt?: string;
   permissions?: number;

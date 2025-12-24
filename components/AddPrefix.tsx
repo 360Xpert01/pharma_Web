@@ -10,12 +10,43 @@ import { createPrefix } from "@/store/slices/preFix/postPrefix";
 export default function AddPrefixNameComponent() {
   const [selectedTable, setSelectedTable] = useState("");
   const [prefix, setPrefix] = useState("");
+  const [validationError, setValidationError] = useState("");
 
   const preview = prefix ? `${prefix.toUpperCase()} 01` : "";
 
+  const handlePrefixChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    // Clear validation error when user starts typing
+    setValidationError("");
+
+    // Silently prevent spaces - don't update state if space is entered
+    if (value.includes(" ")) {
+      return;
+    }
+
+    // Silently prevent more than 5 characters
+    if (value.length > 5) {
+      return;
+    }
+
+    setPrefix(value);
+  };
+
   const handleAddPrefix = async () => {
     if (!selectedTable || !prefix) {
-      // toast.error("Please select a table and enter a prefix");
+      setValidationError("Please select a table and enter a prefix");
+      return;
+    }
+
+    // Final validation before submission
+    if (prefix.includes(" ")) {
+      setValidationError("Spaces are not allowed in prefix code");
+      return;
+    }
+
+    if (prefix.length > 5) {
+      setValidationError("Prefix code cannot exceed 5 characters");
       return;
     }
 
@@ -29,13 +60,24 @@ export default function AddPrefixNameComponent() {
     const result = await dispatch(createPrefix(payload));
 
     if (createPrefix.fulfilled.match(result)) {
-      // toast.success(message || "Prefix added successfully!");
+      toast({
+        title: "Success",
+        description: "Prefix added successfully!",
+      });
       // Optional: refetch prefixes list
       dispatch(fetchPrefixes());
       setPrefix("");
       setSelectedTable("");
+      setValidationError("");
     } else {
-      // toast.error(error || "Failed to add prefix");
+      // Display error from API
+      const errorMsg = (result.payload as string) || "Failed to add prefix";
+      setValidationError(errorMsg);
+      toast({
+        title: "Error",
+        description: errorMsg,
+        variant: "destructive",
+      });
     }
   };
 
@@ -44,11 +86,12 @@ export default function AddPrefixNameComponent() {
   useEffect(() => {
     dispatch(fetchPrefixes());
   }, [dispatch]);
-  const { prefixes, loading, error } = useSelector((state: any) => state.allPreFixTable);
+  const { tables, loading, error } = useSelector((state: any) => state.allPreFixTable);
+  const { loading: createLoading, error: createError } = useSelector(
+    (state: any) => state.createPrefix
+  );
 
-  const tablesList = prefixes?.tables;
-
-  console.log("Prefixes:", tablesList);
+  console.log("Tables:", tables);
   return (
     <div className=" bg-gray-50 flex items-center justify-center ">
       <div className="w-full">
@@ -71,18 +114,20 @@ export default function AddPrefixNameComponent() {
                   <select
                     value={selectedTable}
                     onChange={(e) => setSelectedTable(e.target.value)}
-                    disabled={loading || tablesList?.length === 0}
+                    disabled={loading || !tables || tables.length === 0}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 pr-10"
                   >
                     <option value="">{loading ? "Loading tables..." : "Select a table..."}</option>
-                    {tablesList?.map((item: any, index: number) => (
-                      <option className="h-10" key={index} value={item.tableName || item.name}>
-                        {item}
+                    {tables?.map((tableName: string, index: number) => (
+                      <option className="h-10" key={index} value={tableName}>
+                        {tableName}
                       </option>
                     ))}
                   </select>
                   <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
                 </div>
+                {/* Reserve space to align with other fields */}
+                <div className="h-5 mt-1"></div>
               </div>
 
               {/* Prefix Input */}
@@ -91,10 +136,18 @@ export default function AddPrefixNameComponent() {
                 <input
                   type="text"
                   value={prefix}
-                  onChange={(e) => setPrefix(e.target.value)}
+                  onChange={handlePrefixChange}
                   placeholder="e.g. EMP, max 5 characters"
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className={`w-full px-4 py-3 bg-gray-50 border rounded-xl focus:outline-none focus:ring-2 ${
+                    validationError
+                      ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                      : "border-gray-200 focus:ring-blue-500 focus:border-blue-500"
+                  }`}
                 />
+                {/* Reserve space for error message to prevent layout shift */}
+                <div className="h-5 mt-1">
+                  {validationError && <p className="text-sm text-red-600">{validationError}</p>}
+                </div>
               </div>
 
               {/* Preview Box */}
@@ -103,6 +156,8 @@ export default function AddPrefixNameComponent() {
                 <div className="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-xl text-gray-700 font-medium">
                   {preview || "—"}
                 </div>
+                {/* Reserve space to align with other fields */}
+                <div className="h-5 mt-1"></div>
               </div>
             </div>
 
@@ -110,9 +165,10 @@ export default function AddPrefixNameComponent() {
             <div className="flex justify-end">
               <button
                 onClick={handleAddPrefix}
-                className="px-8 py-3 bg-blue-500 text-white font-medium rounded-xl hover:bg-blue-700 transition shadow-md flex items-center gap-2"
+                disabled={createLoading || !selectedTable || !prefix}
+                className="px-8 py-3 bg-blue-500 text-white font-medium rounded-xl hover:bg-blue-700 transition shadow-md flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Add Prefix
+                {createLoading ? "Adding..." : "Add Prefix"}
               </button>
             </div>
           </div>

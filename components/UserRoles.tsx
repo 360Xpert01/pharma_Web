@@ -25,7 +25,7 @@ export default function RolesCardList() {
   // Map API data to component format
   const rolesData: Role[] = (roles || []).map((role) => ({
     id: role.id,
-    roleId: role.id, // Using id as roleId since API doesn't provide separate roleId
+    roleId: role.pulseCode, // Using pulseCode as roleId (e.g., "rol05")
     created: role.createdAt
       ? new Date(role.createdAt).toISOString().split("T")[0]
       : new Date().toISOString().split("T")[0],

@@ -11,7 +11,7 @@ import verifyOtp from "./slices/auth/verifyOtp";
 import addRole from "./slices/role/addRole";
 import allRolesReducer from "./slices/role/getAllRolesSlice";
 import allPreFixTable from "./slices/preFix/allPreFixTable";
-import preFixReducer from "./slices/preFix/postPrefix";
+import createPrefixReducer from "./slices/preFix/postPrefix";
 import allPrefixesReducer from "./slices/preFix/getAllPrefixesSlice";
 import generatePrefixReducer from "./slices/preFix/generatePrefixSlice";
 import registerEmployeeReducer from "./slices/employee/registerEmployee";
@@ -29,7 +29,7 @@ const rootReducer = combineReducers({
   addRole: addRole,
   allRoles: allRolesReducer,
   allPreFixTable: allPreFixTable,
-  preFixReducer: preFixReducer,
+  createPrefix: createPrefixReducer,
   allPrefixes: allPrefixesReducer,
   generatePrefix: generatePrefixReducer,
   registerEmployee: registerEmployeeReducer,

@@ -75,20 +75,6 @@ export default function AddChannelsCard() {
 
           {/* Add New Channel Form */}
           <div className="flex flex-wrap items-end gap-6">
-            {/* Channel Name */}
-            <div className="flex-1 min-w-64">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Channel Name <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                value={channelName}
-                onChange={(e) => setChannelName(e.target.value)}
-                placeholder="e.g. Doctor Channel"
-                className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-              />
-            </div>
-
             {/* Pulse Generated Code */}
             <div className="flex-1 min-w-64">
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -108,6 +94,20 @@ export default function AddChannelsCard() {
                   Regenerate
                 </button>
               </div>
+            </div>
+
+            {/* Channel Name */}
+            <div className="flex-1 min-w-64">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Channel Name <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={channelName}
+                onChange={(e) => setChannelName(e.target.value)}
+                placeholder="e.g. Doctor Channel"
+                className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+              />
             </div>
 
             {/* Legacy Code */}

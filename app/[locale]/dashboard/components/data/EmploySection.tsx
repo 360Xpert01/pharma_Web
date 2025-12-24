@@ -9,6 +9,7 @@ import SalesDashboard1 from "../SalesDashboard1";
 import TableHeader from "@/components/TableHeader";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllUsers } from "@/store/slices/employee/getAllUsersSlice";
+import { getAllRoles } from "@/store/slices/role/getAllRolesSlice";
 
 interface TeamMember {
   id: string;
@@ -23,11 +24,13 @@ interface TeamMember {
 export default function SalesTeamTable() {
   const dispatch = useAppDispatch();
   const { users, loading } = useAppSelector((state) => state.allUsers);
+  const { roles } = useAppSelector((state) => state.allRoles);
 
   const [openRowId, setOpenRowId] = useState<string | null>(null);
 
   useEffect(() => {
     dispatch(getAllUsers());
+    dispatch(getAllRoles());
   }, [dispatch]);
 
   const toggleRow = (id: string) => {
@@ -38,6 +41,10 @@ export default function SalesTeamTable() {
     const supervisor = users.find((u) => u.id === user.supervisorId);
     const supervisorName = supervisor ? `${supervisor.firstName} ${supervisor.lastName}` : "N/A";
 
+    // Find role name from roleId
+    const userRole = roles.find((r) => r.id === user.roleId);
+    const roleName = userRole ? userRole.roleName : "N/A";
+
     return {
       id: user.id,
       name: `${user.firstName}${user.middleName ? " " + user.middleName : ""} ${user.lastName}`,
@@ -45,7 +52,7 @@ export default function SalesTeamTable() {
       phone: user.mobileNumber || "N/A",
       role: user.pulseCode,
       supervisor: supervisorName,
-      roleBy: user.roleId || "N/A",
+      roleBy: roleName,
     };
   });
 

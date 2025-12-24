@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/index";
-import { addRole, resetRoleState } from "@/store/slices/role/addRole";
+import { createRole, resetRoleState } from "@/store/slices/role/addRole";
 import { getAllRoles } from "@/store/slices/role/getAllRolesSlice";
 import {
   generatePrefix,
