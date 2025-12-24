@@ -7,6 +7,7 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 // Types
 interface CreateRolePayload {
   roleName: string;
+  pulseCode: string;
 }
 
 interface CreateRoleResponse {
@@ -15,6 +16,7 @@ interface CreateRoleResponse {
   data?: {
     id: string;
     roleName: string;
+    pulseCode: string;
     createdAt: string;
     // आपके API response के अनुसार add करो
   };

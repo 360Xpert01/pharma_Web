@@ -4,24 +4,22 @@ import axios from "axios";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://api.ceturo.com";
 
 // Types
-interface PrefixItem {
-  tableName: string; // e.g., "Employee Table"
-  prefix: string; // e.g., "EMP"
-  example: string; // e.g., "EMP-03"
-  // Add more fields if your API returns them
+interface PrefixData {
+  tables: string[]; // Array of table names
+  count: number;
 }
 
 interface FetchPrefixesResponse {
   success: boolean;
   message?: string;
-  data: PrefixItem[];
+  data: PrefixData;
 }
 
 interface PrefixState {
   loading: boolean;
   success: boolean;
   error: string | null;
-  prefixes: PrefixItem[];
+  tables: string[]; // Store table names
 }
 
 // Initial State
@@ -29,7 +27,7 @@ const initialState: PrefixState = {
   loading: false,
   success: false,
   error: null,
-  prefixes: [],
+  tables: [],
 };
 
 // Async Thunk: Fetch All Entity Prefixes (GET request)
@@ -83,15 +81,15 @@ const prefixSlice = createSlice({
       .addCase(fetchPrefixes.fulfilled, (state, action: PayloadAction<FetchPrefixesResponse>) => {
         state.loading = false;
         state.success = true;
-        state.prefixes = action.payload.data;
-        console.log("Fetched prefixes:", state.prefixes);
+        state.tables = action.payload.data.tables;
+        console.log("Fetched prefix tables:", state.tables);
       })
       // Rejected
       .addCase(fetchPrefixes.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
         state.error = action.payload || "Failed to load prefixes";
-        state.prefixes = [];
+        state.tables = [];
       });
   },
 });

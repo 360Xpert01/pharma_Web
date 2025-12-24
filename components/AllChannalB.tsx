@@ -1,47 +1,37 @@
 // components/ChannelsManager.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ChevronDown, MoreVertical, Trash2, Edit2 } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/store/index";
+import { getAllChannels } from "@/store/slices/channel/getAllChannelsSlice";
 
 interface Channel {
   id: string;
   name: string;
+  legacyCode: string;
+  pulseCode: string;
   isActive: boolean;
 }
 
 export default function ChannelsManager() {
-  const [channelName, setChannelName] = useState("");
-  const [status, setStatus] = useState<"Active" | "Inactive">("Active");
-  const [channels, setChannels] = useState<Channel[]>([
-    { id: "1", name: "Chain Pharmacy", isActive: false },
-    { id: "2", name: "Doctors", isActive: true },
-    { id: "3", name: "Hospitals", isActive: true },
-    { id: "4", name: "Medical Stores", isActive: false },
-  ]);
+  const dispatch = useAppDispatch();
+  const { channels, loading, error } = useAppSelector((state) => state.allChannels);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
-  const handleAddChannel = () => {
-    if (channelName.trim()) {
-      setChannels([
-        ...channels,
-        {
-          id: Date.now().toString(),
-          name: channelName.trim(),
-          isActive: status === "Active",
-        },
-      ]);
-      setChannelName("");
-      setStatus("Active");
-    }
-  };
+  // Fetch channels on component mount
+  useEffect(() => {
+    dispatch(getAllChannels());
+  }, [dispatch]);
 
   const toggleStatus = (id: string) => {
-    setChannels(channels.map((ch) => (ch.id === id ? { ...ch, isActive: !ch.isActive } : ch)));
+    // TODO: Implement API call to update channel status
+    console.log("Toggle status for channel:", id);
   };
 
   const deleteChannel = (id: string) => {
-    setChannels(channels.filter((ch) => ch.id !== id));
+    // TODO: Implement API call to delete channel
+    console.log("Delete channel:", id);
     setOpenMenuId(null);
   };
 
@@ -97,10 +87,12 @@ export default function ChannelsManager() {
 
       {/* Channels List */}
       <div className="p-4 space-y-3">
-        {channels.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
-            No channels added yet. Start by adding one above!
-          </div>
+        {loading ? (
+          <div className="text-center py-12 text-gray-500">Loading channels...</div>
+        ) : error ? (
+          <div className="text-center py-12 text-red-500">Error: {error}</div>
+        ) : channels.length === 0 ? (
+          <div className="text-center py-12 text-gray-500">No channels found.</div>
         ) : (
           channels.map((channel) => (
             <div
@@ -111,25 +103,46 @@ export default function ChannelsManager() {
                
               `}
             >
-              <div className="flex items-center gap-4 flex-1">
-                <div className="text-lg w-40 font-medium text-gray-900">{channel.name}</div>
-                <div className="w-30">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleStatus(channel.id);
-                    }}
-                    className={`
-                    px-9 py-1 rounded-full text-sm font-medium transition-all shadow-sm
-                    ${
-                      channel.isActive
-                        ? "bg-emerald-200 text-green-500 hover:bg-green-300"
-                        : "bg-gray-300 text-gray-400 hover:bg-gray-200"
-                    }
-                  `}
-                  >
-                    {channel.isActive ? "Active" : "Inactive"}
-                  </button>
+              <div className="flex items-center justify-between w-full gap-6">
+                <div className="flex items-center gap-6">
+                  <div className="text-lg font-medium text-gray-900 min-w-[160px]">
+                    {channel.name}
+                  </div>
+                  <div className="text-sm text-gray-500 flex items-center gap-2">
+                    <span className="font-medium">Pulse:</span>
+                    <span className="text-gray-600">{channel.pulseCode}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center">
+                  <div className="inline-flex border border-gray-300 rounded-full p-1 bg-gray-50 overflow-hidden">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleStatus(channel.id);
+                      }}
+                      className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                        channel.isActive
+                          ? "bg-blue-600 text-white"
+                          : "text-gray-600 hover:bg-gray-100"
+                      }`}
+                    >
+                      Active
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleStatus(channel.id);
+                      }}
+                      className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                        !channel.isActive
+                          ? "bg-blue-600 text-white"
+                          : "text-gray-600 hover:bg-gray-100"
+                      }`}
+                    >
+                      Inactive
+                    </button>
+                  </div>
                 </div>
               </div>
 

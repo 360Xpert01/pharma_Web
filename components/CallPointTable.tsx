@@ -1,60 +1,85 @@
 "use client";
 
-import React from "react";
-import { MoreVertical, MapPin } from "lucide-react";
-
-interface CallPoint {
-  id: string;
-  name: string;
-  latitude: string;
-  longitude: string;
-}
-
-const callPointsData: CallPoint[] = [
-  { id: "1", name: "360 Xpert Solutions", latitude: "24.924371167", longitude: "0900777141" },
-  { id: "2", name: "UBL Sports Complex", latitude: "24.91121", longitude: "67.084682" },
-  { id: "3", name: "Tech Innovations LLC", latitude: "24.948231", longitude: "2023434.587" },
-  { id: "4", name: "Green Energy Corp", latitude: "24.935672", longitude: "1400567.899" },
-  { id: "5", name: "Urban Health Services", latitude: "24.920004", longitude: "0530423.434" },
-  { id: "6", name: "Creative Minds Agency", latitude: "24.950412", longitude: "0738923.456" },
-  { id: "7", name: "NextGen Robotics", latitude: "24.940489", longitude: "0612345.678" },
-  { id: "8", name: "Culinary Arts Institute", latitude: "24.952189", longitude: "0887645.123" },
-];
+import React, { useEffect, useRef } from "react";
+import { MoreVertical } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/store/index";
+import { getAllCallPoints } from "@/store/slices/callPoint/getAllCallPointsSlice";
 
 export default function CallPointsList() {
+  const dispatch = useAppDispatch();
+  const { callPoints, loading, error } = useAppSelector((state) => state.allCallPoints);
+  const hasFetched = useRef(false);
+
+  // Fetch call points on component mount (prevent double call)
+  useEffect(() => {
+    if (!hasFetched.current) {
+      dispatch(getAllCallPoints());
+      hasFetched.current = true;
+    }
+  }, [dispatch]);
   return (
     <div className="w-full mt-3 bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
       <div className="p-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-8">Call Points</h2>
 
+        {/* Column Headers */}
+        <div className="flex items-center justify-between px-6 py-3 mb-2">
+          <div className="flex-1 min-w-[200px]">
+            <span className="text-sm font-semibold text-gray-700">Pulse Code</span>
+          </div>
+          <div className="flex-1 min-w-[250px]">
+            <span className="text-sm font-semibold text-gray-700">Location Title</span>
+          </div>
+          <div className="flex-1">
+            <span className="text-sm font-semibold text-gray-700">Latitude</span>
+          </div>
+          <div className="flex-1">
+            <span className="text-sm font-semibold text-gray-700">Longitude</span>
+          </div>
+          <div className="w-10"></div>
+        </div>
+
         {/* List */}
         <div className="space-y-4">
-          {callPointsData.map((point) => (
-            <div
-              key={point.id}
-              className="flex items-center justify-between p-6 bg-gray-50/50 rounded-2xl hover:bg-gray-100/70 transition-all duration-200 border border-gray-200"
-            >
-              {/* Left: Name + Coordinates */}
-              <div className=" flex items-center gap-8">
-                <div className="flex items-center gap-4">
-                  <div>
-                    <h3 className="font-semibold text-gray-900 text-lg">{point.name}</h3>
-                  </div>
+          {loading ? (
+            <div className="text-center py-8 text-gray-500">Loading call points...</div>
+          ) : callPoints.length === 0 ? (
+            <div className="text-center py-12 text-gray-500">No call points found.</div>
+          ) : (
+            callPoints.map((point) => (
+              <div
+                key={point.id}
+                className="flex items-center justify-between p-6 bg-gray-50/50 rounded-2xl hover:bg-gray-100/70 transition-all duration-200 border border-gray-200"
+              >
+                {/* Pulse Code - First Column */}
+                <div className="flex-1 min-w-[200px]">
+                  <h3 className="font-semibold text-black text-base">{point.pulseCode || "N/A"}</h3>
                 </div>
-              </div>
-              <div className="flex items-center gap-12 text-sm text-gray-600">
-                <span>{point.latitude}</span>
-              </div>
-              <div className="flex items-start justify-start text-start gap-12 text-sm text-gray-600">
-                <span>{point.longitude}</span>
-              </div>
 
-              {/* Right: More Options */}
-              <button className="text-gray-400 hover:text-gray-700 transition">
-                <MoreVertical className="w-5 h-5" />
-              </button>
-            </div>
-          ))}
+                {/* Name */}
+                <div className="flex-1 min-w-[250px]">
+                  <h3 className="font-semibold text-gray-900 text-lg">{point.name}</h3>
+                </div>
+
+                {/* Latitude */}
+                <div className="flex-1 text-sm text-gray-600">
+                  <span className="font-medium">Lat: </span>
+                  <span>{point.latitude}</span>
+                </div>
+
+                {/* Longitude */}
+                <div className="flex-1 text-sm text-gray-600">
+                  <span className="font-medium">Long: </span>
+                  <span>{point.longitude}</span>
+                </div>
+
+                {/* More Options */}
+                <button className="text-gray-400 hover:text-gray-700 transition ml-4">
+                  <MoreVertical className="w-5 h-5" />
+                </button>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>
