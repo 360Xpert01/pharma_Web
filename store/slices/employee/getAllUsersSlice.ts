@@ -17,12 +17,19 @@ interface UserItem {
   empLegacyCode?: string;
   profilePicture?: string;
   dob?: string;
+  supervisorId?: string;
 }
 
 interface GetUsersResponse {
   success: boolean;
   message?: string;
   data: UserItem[];
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
 interface UsersState {
@@ -30,6 +37,12 @@ interface UsersState {
   success: boolean;
   error: string | null;
   users: UserItem[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  } | null;
 }
 
 // Initial State
@@ -38,6 +51,7 @@ const initialState: UsersState = {
   success: false,
   error: null,
   users: [],
+  pagination: null,
 };
 
 // Async Thunk: Get All Users (GET /api/v1/users)
@@ -93,6 +107,7 @@ const getAllUsersSlice = createSlice({
         state.loading = false;
         state.success = true;
         state.users = action.payload.data;
+        state.pagination = action.payload.pagination || null;
       })
       .addCase(getAllUsers.rejected, (state, action) => {
         state.loading = false;

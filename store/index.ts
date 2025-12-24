@@ -16,6 +16,8 @@ import allPrefixesReducer from "./slices/preFix/getAllPrefixesSlice";
 import generatePrefixReducer from "./slices/preFix/generatePrefixSlice";
 import registerEmployeeReducer from "./slices/employee/registerEmployee";
 import allUsersReducer from "./slices/employee/getAllUsersSlice";
+import allChannelsReducer from "./slices/channel/getAllChannelsSlice";
+import createChannelReducer from "./slices/channel/createChannelSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -30,6 +32,8 @@ const rootReducer = combineReducers({
   generatePrefix: generatePrefixReducer,
   registerEmployee: registerEmployeeReducer,
   allUsers: allUsersReducer,
+  allChannels: allChannelsReducer,
+  createChannel: createChannelReducer,
 });
 
 const persistConfig = {

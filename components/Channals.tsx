@@ -1,7 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Plus, X } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/store/index";
+import { createChannel, resetChannelState } from "@/store/slices/channel/createChannelSlice";
+import { getAllChannels } from "@/store/slices/channel/getAllChannelsSlice";
 
 interface Channel {
   id: string;
@@ -11,33 +14,49 @@ interface Channel {
 }
 
 export default function AddChannelsCard() {
+  const dispatch = useAppDispatch();
+  const { loading, success, error, message } = useAppSelector((state) => state.createChannel);
+
   const [channelName, setChannelName] = useState("");
-  const [pulseCode, setPulseCode] = useState(""); // ← Naya state
-  const [legacyCode, setLegacyCode] = useState(""); // ← Naya state
+  const [pulseCode, setPulseCode] = useState("");
+  const [legacyCode, setLegacyCode] = useState("");
   const [channelsList, setChannelsList] = useState<Channel[]>([]);
 
   const generatePulseCode = () => {
-    // Auto generate Pulse Code (example format)
     const random = Math.random().toString(36).substring(2, 8).toUpperCase();
     return `PULSE-${random}`;
   };
 
-  const handleAddChannel = () => {
+  // Reset state and refresh channels list on success
+  useEffect(() => {
+    if (success) {
+      // Clear form
+      setChannelName("");
+      setPulseCode("");
+      setLegacyCode("");
+
+      // Refresh channels list
+      dispatch(getAllChannels());
+
+      // Reset state after a delay
+      setTimeout(() => {
+        dispatch(resetChannelState());
+      }, 3000);
+    }
+  }, [success, dispatch]);
+
+  const handleAddChannel = async () => {
     if (!channelName.trim()) return;
 
-    const newChannel: Channel = {
-      id: Date.now().toString(),
-      channelName: channelName.trim(),
-      pulseCode: pulseCode || generatePulseCode(), // agar khali ho to auto generate
-      legacyCode: legacyCode.trim() || "-",
+    const channelData = {
+      name: channelName.trim(),
+      pulseCode: pulseCode || generatePulseCode(),
+      legacyCode: legacyCode.trim() || "",
+      isActive: true,
     };
 
-    setChannelsList([...channelsList, newChannel]);
-
-    // Reset form
-    setChannelName("");
-    setPulseCode("");
-    setLegacyCode("");
+    // Dispatch to API
+    dispatch(createChannel(channelData));
   };
 
   const removeChannel = (id: string) => {
@@ -109,11 +128,11 @@ export default function AddChannelsCard() {
             <div>
               <button
                 onClick={handleAddChannel}
-                disabled={!channelName.trim()}
+                disabled={!channelName.trim() || loading}
                 className="px-10 py-4 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 shadow-lg flex items-center gap-2"
               >
                 <Plus className="w-5 h-5" />
-                Add to list
+                {loading ? "Adding..." : "Add to list"}
               </button>
             </div>
           </div>
