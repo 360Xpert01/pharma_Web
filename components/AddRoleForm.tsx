@@ -1,16 +1,18 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { ChevronDown, ChevronUp, Plus } from "lucide-react";
-import toast from "react-hot-toast";
-import { createRole } from "@/store/slices/role/addRole";
-import { useAppDispatch, useAppSelector } from "@/store";
+import React, { useState, useEffect } from "react";
+import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { getAllPrefixes } from "@/store/slices/preFix/getAllPrefixesSlice";
+import { useAppDispatch, useAppSelector } from "@/store/index";
+import { addRole, resetRoleState } from "@/store/slices/role/addRole";
+import { getAllRoles } from "@/store/slices/role/getAllRolesSlice";
 import {
   generatePrefix,
   resetGeneratePrefixState,
 } from "@/store/slices/preFix/generatePrefixSlice";
+import { fetchPrefixes } from "@/store/slices/preFix/allPreFixTable";
+import toast from "react-hot-toast";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface Responsibility {
   id: string;
@@ -35,18 +37,19 @@ export default function AddNewRoleForm() {
     loading: prefixLoading,
     error: prefixError,
   } = useAppSelector((state) => state.generatePrefix);
-  const { prefixes } = useAppSelector((state) => state.allPrefixes);
+  const { prefixes } = useAppSelector((state) => state.allPreFixTable);
 
   useEffect(() => {
     const fetchAndGenerate = async () => {
-      const result = await dispatch(getAllPrefixes());
+      const result = await dispatch(fetchPrefixes());
 
-      // After fetching prefixes, use the first available entity
-      if (getAllPrefixes.fulfilled.match(result)) {
-        const availablePrefixes = result.payload.data;
+      // After fetching prefixes, use the Role entity
+      if (fetchPrefixes.fulfilled.match(result)) {
+        const availableTables = result.payload.data.tables;
 
-        if (availablePrefixes.length > 0) {
-          dispatch(generatePrefix({ entity: availablePrefixes[0].entity }));
+        // Find "Role" table for role pulse code
+        if (availableTables && availableTables.includes("Role")) {
+          dispatch(generatePrefix({ entity: "Role" }));
         }
       }
     };

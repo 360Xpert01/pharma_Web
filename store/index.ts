@@ -18,6 +18,8 @@ import registerEmployeeReducer from "./slices/employee/registerEmployee";
 import allUsersReducer from "./slices/employee/getAllUsersSlice";
 import allChannelsReducer from "./slices/channel/getAllChannelsSlice";
 import createChannelReducer from "./slices/channel/createChannelSlice";
+import allCallPointsReducer from "./slices/callPoint/getAllCallPointsSlice";
+import createCallPointReducer from "./slices/callPoint/createCallPointSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -34,6 +36,8 @@ const rootReducer = combineReducers({
   allUsers: allUsersReducer,
   allChannels: allChannelsReducer,
   createChannel: createChannelReducer,
+  allCallPoints: allCallPointsReducer,
+  createCallPoint: createCallPointReducer,
 });
 
 const persistConfig = {

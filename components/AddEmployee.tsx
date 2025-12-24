@@ -8,7 +8,7 @@ import {
   generatePrefix,
   resetGeneratePrefixState,
 } from "@/store/slices/preFix/generatePrefixSlice";
-import { getAllPrefixes } from "@/store/slices/preFix/getAllPrefixesSlice";
+import { fetchPrefixes } from "@/store/slices/preFix/allPreFixTable";
 import { getAllRoles } from "@/store/slices/role/getAllRolesSlice";
 import { registerEmployee, resetEmployeeState } from "@/store/slices/employee/registerEmployee";
 import { getAllUsers } from "@/store/slices/employee/getAllUsersSlice";
@@ -25,7 +25,7 @@ export default function AddEmployeeForm() {
     loading: prefixLoading,
     error: prefixError,
   } = useAppSelector((state) => state.generatePrefix);
-  const { prefixes } = useAppSelector((state) => state.allPrefixes);
+  const { prefixes } = useAppSelector((state) => state.allPreFixTable);
   const { roles, loading: rolesLoading } = useAppSelector((state) => state.allRoles);
   const { users, loading: usersLoading } = useAppSelector((state) => state.allUsers);
   const {
@@ -54,14 +54,15 @@ export default function AddEmployeeForm() {
   useEffect(() => {
     const fetchAndGenerate = async () => {
       // Fetch all prefixes
-      const result = await dispatch(getAllPrefixes());
+      const result = await dispatch(fetchPrefixes());
 
-      // After fetching prefixes, use the employee entity
-      if (getAllPrefixes.fulfilled.match(result)) {
-        const availablePrefixes = result.payload.data;
+      // After fetching prefixes, use the User entity for employees
+      if (fetchPrefixes.fulfilled.match(result)) {
+        const availableTables = result.payload.data.tables;
 
-        if (availablePrefixes.length > 0) {
-          dispatch(generatePrefix({ entity: availablePrefixes[6].entity }));
+        // Find "User" table for employee pulse code
+        if (availableTables && availableTables.includes("User")) {
+          dispatch(generatePrefix({ entity: "User" }));
         }
       }
 
