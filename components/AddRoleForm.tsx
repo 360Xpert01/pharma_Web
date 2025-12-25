@@ -10,7 +10,6 @@ import {
   generatePrefix,
   resetGeneratePrefixState,
 } from "@/store/slices/preFix/generatePrefixSlice";
-import { fetchPrefixes } from "@/store/slices/preFix/allPreFixTable";
 import toast from "react-hot-toast";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
@@ -37,23 +36,13 @@ export default function AddNewRoleForm() {
     loading: prefixLoading,
     error: prefixError,
   } = useAppSelector((state) => state.generatePrefix);
-  const { prefixes } = useAppSelector((state) => state.allPreFixTable);
 
   useEffect(() => {
-    const fetchAndGenerate = async () => {
-      const result = await dispatch(fetchPrefixes());
+    // 🔥 Always call generate for "Role" entity
+    // Role forms create roles (business logic, not dynamic)
+    // The /generate API is idempotent - handles existence automatically
+    dispatch(generatePrefix({ entity: "Role" }));
 
-      // After fetching prefixes, use the Role entity
-      if (fetchPrefixes.fulfilled.match(result)) {
-        const availableTables = result.payload.data.tables;
-
-        // Find "Role" table for role pulse code
-        if (availableTables && availableTables.includes("Role")) {
-          dispatch(generatePrefix({ entity: "Role" }));
-        }
-      }
-    };
-    fetchAndGenerate();
     return () => {
       dispatch(resetGeneratePrefixState());
     };

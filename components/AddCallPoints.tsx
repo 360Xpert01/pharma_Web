@@ -11,7 +11,6 @@ import {
   generatePrefix,
   resetGeneratePrefixState,
 } from "@/store/slices/preFix/generatePrefixSlice";
-import { fetchPrefixes } from "@/store/slices/preFix/allPreFixTable";
 
 export default function AddCallPointForm() {
   const dispatch = useAppDispatch();
@@ -28,20 +27,10 @@ export default function AddCallPointForm() {
 
   // Fetch prefixes and generate pulse code on mount
   useEffect(() => {
-    const fetchAndGenerate = async () => {
-      const result = await dispatch(fetchPrefixes());
-
-      if (fetchPrefixes.fulfilled.match(result)) {
-        const availableTables = result.payload.data.tables;
-
-        // Find "CallPoint" table for call point pulse code
-        if (availableTables && availableTables.includes("CallPoint")) {
-          dispatch(generatePrefix({ entity: "CallPoint" }));
-        }
-      }
-    };
-
-    fetchAndGenerate();
+    // 🔥 Always call generate for "CallPoint" entity
+    // Call point forms create call points (business logic, not dynamic)
+    // The /generate API is idempotent - handles existence automatically
+    dispatch(generatePrefix({ entity: "CallPoint" }));
 
     return () => {
       dispatch(resetGeneratePrefixState());

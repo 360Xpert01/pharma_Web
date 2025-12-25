@@ -8,7 +8,6 @@ import {
   generatePrefix,
   resetGeneratePrefixState,
 } from "@/store/slices/preFix/generatePrefixSlice";
-import { fetchPrefixes } from "@/store/slices/preFix/allPreFixTable";
 import { getAllRoles } from "@/store/slices/role/getAllRolesSlice";
 import { registerEmployee, resetEmployeeState } from "@/store/slices/employee/registerEmployee";
 import { getAllUsers } from "@/store/slices/employee/getAllUsersSlice";
@@ -25,7 +24,6 @@ export default function AddEmployeeForm() {
     loading: prefixLoading,
     error: prefixError,
   } = useAppSelector((state) => state.generatePrefix);
-  const { prefixes } = useAppSelector((state) => state.allPreFixTable);
   const { roles, loading: rolesLoading } = useAppSelector((state) => state.allRoles);
   const { users, loading: usersLoading } = useAppSelector((state) => state.allUsers);
   const {
@@ -52,28 +50,16 @@ export default function AddEmployeeForm() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const fetchAndGenerate = async () => {
-      // Fetch all prefixes
-      const result = await dispatch(fetchPrefixes());
+    // 🔥 Always call generate for "User" entity
+    // Employee = User entity (business logic, not dynamic)
+    // The /generate API is idempotent - handles existence automatically
+    dispatch(generatePrefix({ entity: "User" }));
 
-      // After fetching prefixes, use the User entity for employees
-      if (fetchPrefixes.fulfilled.match(result)) {
-        const availableTables = result.payload.data.tables;
+    // Fetch all roles for dropdown
+    dispatch(getAllRoles());
 
-        // Find "User" table for employee pulse code
-        if (availableTables && availableTables.includes("User")) {
-          dispatch(generatePrefix({ entity: "User" }));
-        }
-      }
-
-      // Fetch all roles for dropdown
-      dispatch(getAllRoles());
-
-      // Fetch all users for line manager dropdown
-      dispatch(getAllUsers());
-    };
-
-    fetchAndGenerate();
+    // Fetch all users for line manager dropdown
+    dispatch(getAllUsers());
 
     return () => {
       dispatch(resetGeneratePrefixState());

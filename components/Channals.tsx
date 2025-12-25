@@ -5,6 +5,10 @@ import { Plus, X } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/index";
 import { createChannel, resetChannelState } from "@/store/slices/channel/createChannelSlice";
 import { getAllChannels } from "@/store/slices/channel/getAllChannelsSlice";
+import {
+  generatePrefix,
+  resetGeneratePrefixState,
+} from "@/store/slices/preFix/generatePrefixSlice";
 
 interface Channel {
   id: string;
@@ -16,27 +20,40 @@ interface Channel {
 export default function AddChannelsCard() {
   const dispatch = useAppDispatch();
   const { loading, success, error, message } = useAppSelector((state) => state.createChannel);
+  const {
+    generatedPrefix,
+    loading: prefixLoading,
+    error: prefixError,
+  } = useAppSelector((state) => state.generatePrefix);
 
   const [channelName, setChannelName] = useState("");
-  const [pulseCode, setPulseCode] = useState("");
   const [legacyCode, setLegacyCode] = useState("");
   const [channelsList, setChannelsList] = useState<Channel[]>([]);
 
-  const generatePulseCode = () => {
-    const random = Math.random().toString(36).substring(2, 8).toUpperCase();
-    return `PULSE-${random}`;
-  };
+  // Generate prefix on mount
+  useEffect(() => {
+    // 🔥 Always call generate for "Channel" entity
+    // Channel forms create channels (business logic, not dynamic)
+    // The /generate API is idempotent - handles existence automatically
+    dispatch(generatePrefix({ entity: "Channel" }));
+
+    return () => {
+      dispatch(resetGeneratePrefixState());
+    };
+  }, [dispatch]);
 
   // Reset state and refresh channels list on success
   useEffect(() => {
     if (success) {
       // Clear form
       setChannelName("");
-      setPulseCode("");
       setLegacyCode("");
 
       // Refresh channels list
       dispatch(getAllChannels());
+
+      // Regenerate prefix for next channel
+      dispatch(generatePrefix({ entity: "Channel" }));
 
       // Reset state after a delay
       setTimeout(() => {
@@ -48,9 +65,15 @@ export default function AddChannelsCard() {
   const handleAddChannel = async () => {
     if (!channelName.trim()) return;
 
+    // Validate pulse code is generated
+    if (!generatedPrefix) {
+      console.error("Pulse code not generated yet");
+      return;
+    }
+
     const channelData = {
       name: channelName.trim(),
-      pulseCode: pulseCode || generatePulseCode(),
+      pulseCode: generatedPrefix, // Use API-generated prefix
       legacyCode: legacyCode.trim() || "",
       isActive: true,
     };
@@ -80,20 +103,14 @@ export default function AddChannelsCard() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Pulse Generated Code
               </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  value={pulseCode || generatePulseCode()}
-                  readOnly
-                  className="w-full px-5 py-4 bg-gray-100 border border-gray-200 rounded-xl font-mono text-gray-700 cursor-not-allowed"
-                />
-                <button
-                  onClick={() => setPulseCode(generatePulseCode())}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-600 hover:text-blue-700 text-xs font-medium"
-                >
-                  Regenerate
-                </button>
-              </div>
+              <input
+                type="text"
+                value={generatedPrefix || ""}
+                placeholder={prefixLoading ? "Generating..." : "PLS_CH_000001"}
+                readOnly
+                className="w-full px-5 py-4 bg-gray-100 border border-gray-200 rounded-xl font-mono text-gray-700 cursor-not-allowed"
+                title={prefixError || "Auto-generated pulse code (read-only)"}
+              />
             </div>
 
             {/* Channel Name */}
