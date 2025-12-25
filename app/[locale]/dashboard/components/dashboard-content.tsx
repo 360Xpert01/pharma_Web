@@ -53,6 +53,7 @@ import UpdateEmployees from "@/components/UpdateEmployee";
 import DeviceList from "@/components/DeviceList";
 import AddPrefixNameComponent from "@/components/AddPrefix";
 import PreFixTable from "@/components/PreFixTable";
+import TargetListView from "@/components/TargetListView";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -100,6 +101,7 @@ export function DashboardContent({
   ActiveOn,
   UpdateEmp,
   prefixPro,
+  targetListView,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -361,6 +363,8 @@ export function DashboardContent({
         )}
 
         {teamFormTabel && <AddNewTeamForm />}
+
+        {targetListView && <TargetListView />}
 
         {/* Quick Stats Footer */}
         {/* <PerformanceStats isLoading={combinedLoading} /> */}

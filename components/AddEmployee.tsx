@@ -47,6 +47,9 @@ export default function AddEmployeeForm() {
   const [selectedRoleId, setSelectedRoleId] = useState("");
   const [selectedSupervisorId, setSelectedSupervisorId] = useState("");
 
+  // Validation errors state
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -91,6 +94,32 @@ export default function AddEmployeeForm() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+  // Helper function to get error message for a field
+  const getErrorMessage = (fieldName: string) => validationErrors[fieldName] || "";
+
+  // Helper function to check if a field has an error
+  const hasError = (fieldName: string) => !!validationErrors[fieldName];
+
+  // Helper function to clear error for a specific field when user types
+  const clearFieldError = (fieldName: string) => {
+    if (validationErrors[fieldName]) {
+      setValidationErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[fieldName];
+        return newErrors;
+      });
+    }
+  };
+
+  // Helper function to get input CSS classes based on validation state
+  const getInputClasses = (fieldName: string) => {
+    const baseClasses = "mt-1 w-full px-4 py-3 border rounded-xl outline-none transition-all";
+    if (hasError(fieldName)) {
+      return `${baseClasses} border-red-500 focus:ring-2 focus:ring-red-500 focus:border-red-500`;
+    }
+    return `${baseClasses} border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500`;
+  };
+
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
@@ -115,11 +144,26 @@ export default function AddEmployeeForm() {
     const validation = employeeRegistrationSchema.safeParse(formData);
 
     if (!validation.success) {
-      // Show first validation error
+      // Create an errors object mapping field names to error messages
+      const errors: Record<string, string> = {};
+      validation.error.errors.forEach((err) => {
+        const fieldName = err.path[0] as string;
+        if (!errors[fieldName]) {
+          errors[fieldName] = err.message;
+        }
+      });
+
+      // Set validation errors to display inline
+      setValidationErrors(errors);
+
+      // Also show the first error as a toast for immediate feedback
       const firstError = validation.error.errors[0];
       toast.error(firstError.message);
       return;
     }
+
+    // Clear any previous validation errors
+    setValidationErrors({});
 
     // Use validated and transformed data (email lowercased, phone sanitized, etc.)
     const validatedData = validation.data;
@@ -159,6 +203,7 @@ export default function AddEmployeeForm() {
       setSelectedRoleId("");
       setSelectedSupervisorId("");
       setImagePreview(null);
+      setValidationErrors({}); // Clear validation errors
       dispatch(resetGeneratePrefixState());
       router.push("/dashboard/Employees-Management");
     } else {
@@ -247,7 +292,10 @@ export default function AddEmployeeForm() {
                   <input
                     type="text"
                     value={legacyCode}
-                    onChange={(e) => setLegacyCode(e.target.value)}
+                    onChange={(e) => {
+                      setLegacyCode(e.target.value);
+                      clearFieldError("empLegacyCode");
+                    }}
                     placeholder="000152"
                     className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                   />
@@ -286,30 +334,48 @@ export default function AddEmployeeForm() {
                   <input
                     type="text"
                     value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
+                    onChange={(e) => {
+                      setFirstName(e.target.value);
+                      clearFieldError("firstName");
+                    }}
                     placeholder="First Name"
-                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    className={getInputClasses("firstName")}
                   />
+                  {hasError("firstName") && (
+                    <p className="mt-1 text-sm text-red-600">{getErrorMessage("firstName")}</p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Middle Name</label>
                   <input
                     type="text"
                     value={middleName}
-                    onChange={(e) => setMiddleName(e.target.value)}
+                    onChange={(e) => {
+                      setMiddleName(e.target.value);
+                      clearFieldError("middleName");
+                    }}
                     placeholder="Middle Name"
-                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    className={getInputClasses("middleName")}
                   />
+                  {hasError("middleName") && (
+                    <p className="mt-1 text-sm text-red-600">{getErrorMessage("middleName")}</p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Last Name*</label>
                   <input
                     type="text"
                     value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
+                    onChange={(e) => {
+                      setLastName(e.target.value);
+                      clearFieldError("lastName");
+                    }}
                     placeholder="Last Name"
-                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    className={getInputClasses("lastName")}
                   />
+                  {hasError("lastName") && (
+                    <p className="mt-1 text-sm text-red-600">{getErrorMessage("lastName")}</p>
+                  )}
                 </div>
               </div>
 
@@ -320,29 +386,47 @@ export default function AddEmployeeForm() {
                   <input
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      clearFieldError("email");
+                    }}
                     placeholder="e.g. abc123@gmail.com"
-                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    className={getInputClasses("email")}
                   />
+                  {hasError("email") && (
+                    <p className="mt-1 text-sm text-red-600">{getErrorMessage("email")}</p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Mobile Number*</label>
                   <input
                     type="tel"
                     value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    onChange={(e) => {
+                      setPhoneNumber(e.target.value);
+                      clearFieldError("mobileNumber");
+                    }}
                     placeholder="e.g. 923456789010"
-                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    className={getInputClasses("mobileNumber")}
                   />
+                  {hasError("mobileNumber") && (
+                    <p className="mt-1 text-sm text-red-600">{getErrorMessage("mobileNumber")}</p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Date of Birth</label>
                   <input
                     type="date"
                     value={dob}
-                    onChange={(e) => setDob(e.target.value)}
-                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    onChange={(e) => {
+                      setDob(e.target.value);
+                      clearFieldError("dob");
+                    }}
+                    className={getInputClasses("dob")}
                   />
+                  {hasError("dob") && (
+                    <p className="mt-1 text-sm text-red-600">{getErrorMessage("dob")}</p>
+                  )}
                 </div>
               </div>
 
@@ -352,10 +436,16 @@ export default function AddEmployeeForm() {
                 <input
                   type="text"
                   value={fullAddress}
-                  onChange={(e) => setFullAddress(e.target.value)}
+                  onChange={(e) => {
+                    setFullAddress(e.target.value);
+                    clearFieldError("fullAddress");
+                  }}
                   placeholder="e.g. B121, Block-2, Gulshan-e-Iqbal, Karachi, Pakistan"
-                  className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                  className={getInputClasses("fullAddress")}
                 />
+                {hasError("fullAddress") && (
+                  <p className="mt-1 text-sm text-red-600">{getErrorMessage("fullAddress")}</p>
+                )}
               </div>
 
               {/* Assign Role - aligned below Full Address */}
@@ -366,8 +456,11 @@ export default function AddEmployeeForm() {
                     <label className="block text-sm font-medium text-gray-700">Select Role</label>
                     <select
                       value={selectedRoleId}
-                      onChange={(e) => setSelectedRoleId(e.target.value)}
-                      className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white"
+                      onChange={(e) => {
+                        setSelectedRoleId(e.target.value);
+                        clearFieldError("roleId");
+                      }}
+                      className={getInputClasses("roleId")}
                     >
                       <option value="">Select a role</option>
                       {rolesLoading ? (
@@ -380,6 +473,9 @@ export default function AddEmployeeForm() {
                         ))
                       )}
                     </select>
+                    {hasError("roleId") && (
+                      <p className="mt-1 text-sm text-red-600">{getErrorMessage("roleId")}</p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
@@ -387,8 +483,11 @@ export default function AddEmployeeForm() {
                     </label>
                     <select
                       value={selectedSupervisorId}
-                      onChange={(e) => setSelectedSupervisorId(e.target.value)}
-                      className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white"
+                      onChange={(e) => {
+                        setSelectedSupervisorId(e.target.value);
+                        clearFieldError("supervisorId");
+                      }}
+                      className={getInputClasses("supervisorId")}
                     >
                       <option value="">Select a line manager</option>
                       {usersLoading ? (
@@ -402,6 +501,9 @@ export default function AddEmployeeForm() {
                         ))
                       )}
                     </select>
+                    {hasError("supervisorId") && (
+                      <p className="mt-1 text-sm text-red-600">{getErrorMessage("supervisorId")}</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -421,7 +523,7 @@ export default function AddEmployeeForm() {
             type="button"
             onClick={handleSubmit}
             disabled={registerLoading || prefixLoading}
-            className={`px-8 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition flex items-center gap-2 shadow-lg ${
+            className={`px-8 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition flex cursor-pointer items-center gap-2 shadow-lg ${
               registerLoading || prefixLoading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >

@@ -55,6 +55,7 @@ const Navbar = () => {
         { label: "Products", href: "/dashboard/product-Management" },
         { label: "Set Target", href: "/dashboard/SetTarget" },
         { label: "Add Prefix", href: "/dashboard/AddPrefix" },
+        { label: "Target View", href: "/dashboard/target-listview" },
 
         {
           label: "Promotional Materials",
