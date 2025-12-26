@@ -212,7 +212,7 @@ export default function LoginScreen() {
                 <button
                   onClick={handleSendOTP}
                   disabled={loading || !email.includes("@")}
-                  className="w-full py-3.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                  className="w-full py-3.5 bg-blue-600 text-white cursor-pointer font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
                 >
                   {loading ? (
                     <>

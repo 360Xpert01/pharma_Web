@@ -15,18 +15,11 @@ import {
 const data = [
   { date: "03", value: 80 },
   { date: "04", value: 70 },
-  { date: "05", value: 110 },
-  { date: "06", value: 140 },
-  { date: "07", value: 160 },
-  { date: "08", value: 130 },
-  { date: "09", value: 170 },
-  { date: "10", value: 190 },
-  { date: "11", value: 200 },
-  { date: "12", value: 150 },
+  { date: "05", value: 20 },
   { date: "13", value: 90 },
   { date: "14", value: 60 },
   { date: "15", value: 80 },
-  { date: "16", value: 110 },
+  { date: "16", value: 100 },
 ];
 
 const CustomTooltip = ({ active, payload }: any) => {
@@ -45,7 +38,7 @@ export default function WeeklyExpensesChart() {
   return (
     <div className="w-full bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-900">Weekly Expenses</h2>
         <div className="flex items-center gap-3 bg-blue-50 text-blue-600 px-5 py-3 rounded-full text-sm font-medium hover:bg-blue-100 transition cursor-pointer">
           <ChevronLeft className="w-4 h-4" />
@@ -55,7 +48,7 @@ export default function WeeklyExpensesChart() {
       </div>
 
       {/* Chart */}
-      <div className="h-90">
+      <div className="h-40">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
             {/* Gradient Fill */}
@@ -75,7 +68,7 @@ export default function WeeklyExpensesChart() {
               tickLine={false}
             />
             <YAxis
-              ticks={[0, 50, 100, 150, 200]}
+              ticks={[0, 50, 100]}
               tick={{ fill: "#9CA3AF", fontSize: 14 }}
               axisLine={false}
               tickLine={false}

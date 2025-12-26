@@ -22,6 +22,9 @@ import allChannelsReducer from "./slices/channel/getAllChannelsSlice";
 import createChannelReducer from "./slices/channel/createChannelSlice";
 import allCallPointsReducer from "./slices/callPoint/getAllCallPointsSlice";
 import createCallPointReducer from "./slices/callPoint/createCallPointSlice";
+import allGiveawaysReducer from "./slices/giveaway/getAllGiveawaysSlice";
+import createGiveawayReducer from "./slices/giveaway/createGiveawaySlice";
+import allProductsReducer from "./slices/product/getAllProductsSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -42,6 +45,9 @@ const rootReducer = combineReducers({
   createChannel: createChannelReducer,
   allCallPoints: allCallPointsReducer,
   createCallPoint: createCallPointReducer,
+  allGiveaways: allGiveawaysReducer,
+  createGiveaway: createGiveawayReducer,
+  allProducts: allProductsReducer,
 });
 
 const persistConfig = {

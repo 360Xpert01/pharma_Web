@@ -1,9 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { ChevronDown, Search, Bell, User, ChevronRight } from "lucide-react";
+import { ChevronDown, Search, Bell, User, ChevronRight, LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
+import { persistor } from "@/store";
 
 interface DropdownItem {
   label: string;
@@ -18,12 +21,16 @@ interface NavItem {
 }
 
 const Navbar = () => {
+  const router = useRouter();
+  const locale = useLocale();
   const [hoveredItem, setHoveredItem] = useState<string | null>(null); // for hover
   const [clickedItem, setClickedItem] = useState<string | null>(null); // for click (mobile)
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const profileRef = useRef<HTMLDivElement | null>(null);
 
   const navItems: NavItem[] = [
     {
@@ -252,6 +259,16 @@ const Navbar = () => {
   // Close on outside click (only for clicked state - mobile)
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
+      // Close profile dropdown
+      if (
+        showProfileDropdown &&
+        profileRef.current &&
+        !profileRef.current.contains(e.target as Node)
+      ) {
+        setShowProfileDropdown(false);
+      }
+
+      // Close nav dropdowns
       if (clickedItem) {
         const clickedOutside = Object.values(dropdownRefs.current).every(
           (ref) => ref && !ref.contains(e.target as Node)
@@ -265,7 +282,41 @@ const Navbar = () => {
 
     document.addEventListener("mousedown", handleOutsideClick);
     return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, [clickedItem]);
+  }, [clickedItem, showProfileDropdown]);
+
+  // Logout handler
+  const handleLogout = async () => {
+    try {
+      // Clear Redux persist store
+      await persistor.purge();
+
+      // Clear cookies - specifically the userSession cookie
+      document.cookie = "userSession=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+
+      // Clear all other cookies
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i];
+        const eqPos = cookie.indexOf("=");
+        const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+        document.cookie = name + "=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+      }
+
+      // Clear localStorage and sessionStorage
+      localStorage.clear();
+      sessionStorage.clear();
+
+      // Close dropdown
+      setShowProfileDropdown(false);
+
+      // Redirect to login with locale
+      router.push(`/${locale}/login`);
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Still redirect even if there's an error
+      router.push(`/${locale}/login`);
+    }
+  };
 
   const renderDropdownItems = (items: DropdownItem[], isSubmenu = false) => {
     return items.map((item) => (
@@ -383,21 +434,58 @@ const Navbar = () => {
               </span>
             </button>
 
-            <div className="flex items-center gap-2 p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
-              <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                {/* <User className="w-5 h-5 text-gray-600" /> */}
-                <Image
-                  src="/girlPic.svg"
-                  alt="Ceturvi Logo"
-                  width={60}
-                  height={60}
-                  className="object-contain"
-                />
+            <div className="relative" ref={profileRef}>
+              <div
+                onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                className="flex items-center gap-2 p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer"
+              >
+                <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                  <Image
+                    src="/girlPic.svg"
+                    alt="Profile"
+                    width={60}
+                    height={60}
+                    className="object-contain"
+                  />
+                </div>
+                <div>
+                  <div className="text-sm font-medium">Nirma Amir</div>
+                  <div className="text-xs text-gray-500">namraamir@ceturo.com</div>
+                </div>
               </div>
-              <div>
-                <div className="text-sm font-medium">Nirma Amir</div>
-                <div className="text-xs text-gray-500">namraamir@ceturo.com</div>
-              </div>
+
+              {/* Profile Dropdown */}
+              {showProfileDropdown && (
+                <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                  {/* Profile Info */}
+                  <div className="px-4 py-3 border-b border-gray-200">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                        <Image
+                          src="/girlPic.svg"
+                          alt="Profile"
+                          width={60}
+                          height={60}
+                          className="object-contain"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-sm font-semibold text-gray-900">Nirma Amir</div>
+                        <div className="text-xs text-gray-500">namraamir@ceturo.com</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Logout Button */}
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span className="font-medium">Logout</span>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>

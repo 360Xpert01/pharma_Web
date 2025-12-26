@@ -30,7 +30,7 @@ export default function ByBrands({ height }: ByBrandsProps) {
           <button
             key={b.name}
             style={{ backgroundColor: b.color }}
-            className="text-white text-sm p-3 rounded"
+            className="text-white text-sm p-3 rounded cursor-pointer"
           >
             {b.name}
           </button>
