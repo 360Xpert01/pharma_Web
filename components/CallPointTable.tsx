@@ -75,7 +75,7 @@ export default function CallPointsList() {
                 </div>
 
                 {/* More Options */}
-                <button className="text-gray-400 hover:text-gray-700 transition ml-4">
+                <button className="text-gray-400 hover:text-gray-700 transition ml-4 cursor-pointer">
                   <MoreVertical className="w-5 h-5" />
                 </button>
               </div>

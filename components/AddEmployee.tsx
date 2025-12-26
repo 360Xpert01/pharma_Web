@@ -251,7 +251,7 @@ export default function AddEmployeeForm() {
                       <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity" />
                       <button
                         onClick={removeImage}
-                        className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-gray-700 p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-white shadow-lg"
+                        className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-gray-700 p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-white shadow-lg cursor-pointer"
                       >
                         <X className="w-6 h-6" />
                       </button>
@@ -316,7 +316,7 @@ export default function AddEmployeeForm() {
                   <div className="inline-flex border border-gray-300 rounded-full p-1 bg-gray-50 overflow-hidden">
                     <button
                       onClick={() => setStatus("Active")}
-                      className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                      className={`px-6 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
                         status === "Active"
                           ? "bg-blue-600 text-white"
                           : "text-gray-600 hover:bg-gray-100"
@@ -326,7 +326,7 @@ export default function AddEmployeeForm() {
                     </button>
                     <button
                       onClick={() => setStatus("Inactive")}
-                      className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                      className={`px-6 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
                         status === "Inactive"
                           ? "bg-blue-600 text-white"
                           : "text-gray-600 hover:bg-gray-100"
@@ -526,7 +526,7 @@ export default function AddEmployeeForm() {
         <div className="flex justify-end gap-4 pt-6">
           <button
             type="button"
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition"
+            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition cursor-pointer"
           >
             Discard
           </button>

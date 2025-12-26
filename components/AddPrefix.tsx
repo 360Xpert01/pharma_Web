@@ -166,7 +166,7 @@ export default function AddPrefixNameComponent() {
               <button
                 onClick={handleAddPrefix}
                 disabled={createLoading || !selectedTable || !prefix}
-                className="px-8 py-3 bg-blue-500 text-white font-medium rounded-xl hover:bg-blue-700 transition shadow-md flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-8 py-3 bg-blue-500 text-white font-medium rounded-xl hover:bg-blue-700 transition shadow-md flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 {createLoading ? "Adding..." : "Add Prefix"}
               </button>

@@ -15,6 +15,8 @@ import createPrefixReducer from "./slices/preFix/postPrefix";
 import allPrefixesReducer from "./slices/preFix/getAllPrefixesSlice";
 import generatePrefixReducer from "./slices/preFix/generatePrefixSlice";
 import registerEmployeeReducer from "./slices/employee/registerEmployee";
+import updateEmployeeReducer from "./slices/employee/updateEmployeeSlice";
+import getUserByIdReducer from "./slices/employee/getUserByIdSlice";
 import allUsersReducer from "./slices/employee/getAllUsersSlice";
 import allChannelsReducer from "./slices/channel/getAllChannelsSlice";
 import createChannelReducer from "./slices/channel/createChannelSlice";
@@ -33,6 +35,8 @@ const rootReducer = combineReducers({
   allPrefixes: allPrefixesReducer,
   generatePrefix: generatePrefixReducer,
   registerEmployee: registerEmployeeReducer,
+  updateEmployee: updateEmployeeReducer,
+  getUserById: getUserByIdReducer,
   allUsers: allUsersReducer,
   allChannels: allChannelsReducer,
   createChannel: createChannelReducer,

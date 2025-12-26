@@ -125,7 +125,7 @@ export default function ChannelsManager() {
                         e.stopPropagation();
                         toggleStatus(channel.id);
                       }}
-                      className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                      className={`px-6 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
                         channel.isActive ? "bg-blue-600 text-white" : "text-black hover:bg-gray-100"
                       }`}
                     >
@@ -136,7 +136,7 @@ export default function ChannelsManager() {
                         e.stopPropagation();
                         toggleStatus(channel.id);
                       }}
-                      className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                      className={`px-6 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
                         !channel.isActive
                           ? "bg-blue-600 text-white"
                           : "text-gray-600 hover:bg-gray-100"
@@ -158,7 +158,7 @@ export default function ChannelsManager() {
                       e.stopPropagation();
                       setOpenMenuId(openMenuId === channel.id ? null : channel.id);
                     }}
-                    className="p-2 rounded-lg "
+                    className="p-2 rounded-lg cursor-pointer"
                   >
                     <MoreVertical className="w-5 h-5 text-gray-500" />
                   </button>
@@ -167,15 +167,15 @@ export default function ChannelsManager() {
                     <>
                       <div className="fixed inset-0 z-40" onClick={() => setOpenMenuId(null)} />
                       <div className="absolute right-3 top-7 mt-2 w-48 py-2 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
-                        <button className="w-full flex items-center gap-3 px-4 py-1 text-sm hover:bg-gray-50">
+                        <button className="w-full flex items-center gap-3 px-4 py-1 text-sm hover:bg-gray-50 cursor-pointer">
                           Add New Campaign
                         </button>
-                        <button className="w-full flex items-center gap-3 px-4 py-1 text-sm hover:bg-gray-50">
+                        <button className="w-full flex items-center gap-3 px-4 py-1 text-sm hover:bg-gray-50 cursor-pointer">
                           Edit Channel
                         </button>
                         <button
                           onClick={() => deleteChannel(channel.id)}
-                          className="w-full flex items-center  px-4 py-1 text-sm text-red-600 hover:bg-red-50"
+                          className="w-full flex items-center  px-4 py-1 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
                         >
                           Delete Channal
                         </button>
