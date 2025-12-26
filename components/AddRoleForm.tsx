@@ -175,7 +175,7 @@ export default function AddNewRoleForm() {
             <div className="bg-gray-50/50 rounded-2xl overflow-hidden border border-gray-200">
               <button
                 onClick={() => toggleSection("plan")}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-100 transition"
+                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-100 transition cursor-pointer"
               >
                 <div>
                   <h3 className="font-semibold text-gray-900">
@@ -219,7 +219,7 @@ export default function AddNewRoleForm() {
             <div className="bg-gray-50/50 rounded-2xl overflow-hidden border border-gray-200">
               <button
                 onClick={() => toggleSection("channel")}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-100 transition"
+                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-100 transition cursor-pointer"
               >
                 <h3 className="font-semibold text-gray-900">
                   Channel Managements{" "}
@@ -256,7 +256,7 @@ export default function AddNewRoleForm() {
             <div className="bg-gray-50/50 rounded-2xl overflow-hidden border border-gray-200">
               <button
                 onClick={() => toggleSection("product")}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-100 transition"
+                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-100 transition cursor-pointer"
               >
                 <div className="flex items-center justify-between w-full">
                   <h3 className="font-semibold text-gray-900">
@@ -300,7 +300,7 @@ export default function AddNewRoleForm() {
             <div className="bg-gray-50/50 rounded-2xl overflow-hidden border border-gray-200">
               <button
                 onClick={() => toggleSection("team")}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-100 transition"
+                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-100 transition cursor-pointer"
               >
                 <h3 className="font-semibold text-gray-900">
                   Team Management{" "}
@@ -339,7 +339,7 @@ export default function AddNewRoleForm() {
         <div className="flex justify-end gap-4 pt-8">
           <button
             type="button"
-            className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-full hover:bg-gray-50 transition"
+            className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-full hover:bg-gray-50 transition cursor-pointer"
           >
             Discard
           </button>

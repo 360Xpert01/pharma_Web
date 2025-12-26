@@ -54,6 +54,8 @@ import DeviceList from "@/components/DeviceList";
 import AddPrefixNameComponent from "@/components/AddPrefix";
 import PreFixTable from "@/components/PreFixTable";
 import TargetListView from "@/components/TargetListView";
+import { useState } from "react";
+import EmployeeProfileTabs from "@/components/EmployeeProfileTabs";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -102,6 +104,7 @@ export function DashboardContent({
   UpdateEmp,
   prefixPro,
   targetListView,
+  showTabs,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -297,47 +300,7 @@ export function DashboardContent({
 
         {proBar && <SalesTeamTable />}
 
-        {employeeProfileBtn && (
-          <div className="space-y-6">
-            <UserProfile candidate={candidate} />
-            <div className=" flex justify-between gap-6 w-[100%]">
-              <div className="w-[60%]">
-                <MonthlyTargets currentMonth={75.08} lastMonth={45.27} date="September, 27 2025" />
-              </div>
-              <div className="w-[40%]">
-                <EmployeeGraphRed />
-              </div>
-            </div>
-            <div className="w-[100%] flex justify-between ">
-              <div className="w-[59%]">
-                <EmployeeSaleCall />
-                <WeekelyExpenses />
-                <ExpansesListApprove />
-              </div>
-              <div className="w-[39%] space-y-3 mt-3">
-                <MonthlyAttendance />
-                <WeeklyAttendance />
-              </div>
-            </div>
-            <div className="flex w-[100%] justify-between ">
-              <div className="w-[30%] h-[100%]">
-                <ByBrands height={395} />
-              </div>
-              <div className="w-[69%] ">
-                <CountryMap />
-              </div>
-            </div>
-            <div className="flex w-[100%] justify-between">
-              <div className="w-[69%]">
-                <TodaysAppointments />
-              </div>
-              <div className="w-[30%]">
-                <MostSoldProducts weight={100} />
-                <DeviceList />
-              </div>
-            </div>
-          </div>
-        )}
+        {employeeProfileBtn && showTabs && <EmployeeProfileTabs candidate={candidate} />}
 
         {AddemployeeBtn && <AddEmployeeForm ActiveOn={ActiveOn} />}
         {UpdateEmp && <UpdateEmployees />}

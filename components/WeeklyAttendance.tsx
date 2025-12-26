@@ -49,10 +49,10 @@ export default function AttendanceDashboard() {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-500">Weekly Attendance</h2>
-          <div className="flex items-center gap-2 text-sm text-blue-700">
-            <ChevronLeft className="w-4 h-4" />
+          <div className="flex items-center gap-2 text-sm text-blue-700 cursor-pointer">
+            <ChevronLeft className="w-4 h-4 cursor-pointer" />
             <span>01 - 07 Sept, 2025</span>
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-4 h-4 cursor-pointer" />
           </div>
         </div>
 
@@ -74,7 +74,7 @@ export default function AttendanceDashboard() {
                   <div className="flex justify-between  w-[100%] items-center gap-4 mt-2">
                     <div className="flex items-center gap-2">
                       <div className="w-10 h-10 bg-blue-100 rounded-md flex items-center justify-center">
-                        <ChevronRight className="w-5 h-5 text-blue-600 rotate-180" />
+                        <ChevronRight className="w-5 h-5 text-blue-600 rotate-180 cursor-pointer" />
                       </div>
                       <div>
                         <p className="text-2xl font-semibold text-gray-900">{day.checkIn}</p>
@@ -84,7 +84,7 @@ export default function AttendanceDashboard() {
 
                     <div className="flex items-center gap-2">
                       <div className="w-10 h-10 bg-blue-100 rounded-md flex items-center justify-center">
-                        <ChevronRight className="w-5 h-5 text-blue-600" />
+                        <ChevronRight className="w-5 h-5 text-blue-600 cursor-pointer" />
                       </div>
                       <div>
                         <p className="text-2xl font-semibold text-gray-900">{day.checkOut}</p>

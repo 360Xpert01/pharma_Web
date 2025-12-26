@@ -113,7 +113,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
           {hasChildren ? (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="w-6 h-6 flex items-center justify-center hover:bg-gray-200 rounded transition-colors z-10"
+              className="w-6 h-6 flex items-center justify-center hover:bg-gray-200 rounded transition-colors z-10 cursor-pointer"
               aria-label={isExpanded ? "Collapse" : "Expand"}
             >
               {isExpanded ? (
@@ -185,7 +185,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
           )}
 
           <button
-            className="h-8 w-8 sm:h-9 sm:w-9 flex items-center justify-center hover:bg-gray-200 rounded-full transition-colors text-gray-500 flex-shrink-0"
+            className="h-8 w-8 sm:h-9 sm:w-9 flex items-center justify-center hover:bg-gray-200 rounded-full transition-colors text-gray-500 flex-shrink-0 cursor-pointer"
             onClick={() => onMoreOptions?.(item.id, item.type)}
             aria-label="More options"
           >

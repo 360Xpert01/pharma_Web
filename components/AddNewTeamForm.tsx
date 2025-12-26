@@ -1,8 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Plus, Trash2, Search, ChevronDown, ChevronRight } from "lucide-react";
 import Image from "next/image";
+import { useAppDispatch, useAppSelector } from "@/store";
+import {
+  generatePrefix,
+  resetGeneratePrefixState,
+} from "@/store/slices/preFix/generatePrefixSlice";
+import { getAllChannels } from "@/store/slices/channel/getAllChannelsSlice";
+import { getAllCallPoints } from "@/store/slices/callPoint/getAllCallPointsSlice";
 
 interface Product {
   id: string;
@@ -19,7 +26,22 @@ interface Member {
 }
 
 export default function CreateCampaignForm() {
+  const dispatch = useAppDispatch();
+
+  // Redux selectors
+  const {
+    generatedPrefix,
+    loading: prefixLoading,
+    error: prefixError,
+  } = useAppSelector((state) => state.generatePrefix);
+  const { channels, loading: channelsLoading } = useAppSelector((state) => state.allChannels);
+  const { callPoints, loading: callPointsLoading } = useAppSelector((state) => state.allCallPoints);
+
+  // Form States
   const [status, setStatus] = useState<"Active" | "Inactive">("Active");
+  const [teamName, setTeamName] = useState("");
+  const [selectedChannelId, setSelectedChannelId] = useState("");
+  const [selectedCallPointId, setSelectedCallPointId] = useState("");
   const [products, setProducts] = useState<Product[]>([
     { id: "1", code: "PLS_PROD-0034", name: "Amoxicillin" },
     { id: "2", code: "PLS_PROD-0123", name: "Lisinopril" },
@@ -44,6 +66,21 @@ export default function CreateCampaignForm() {
       bricks: [846, 830, 843, 852, 874, 838, 850, 1023, 841, 859],
     },
   ];
+
+  useEffect(() => {
+    // Generate pulse code for "Team" entity
+    dispatch(generatePrefix({ entity: "Team" }));
+
+    // Fetch all channels for dropdown
+    dispatch(getAllChannels());
+
+    // Fetch all call points for dropdown
+    dispatch(getAllCallPoints());
+
+    return () => {
+      dispatch(resetGeneratePrefixState());
+    };
+  }, [dispatch]);
 
   const removeProduct = (id: string) => {
     setProducts(products.filter((p) => p.id !== id));
@@ -73,35 +110,53 @@ export default function CreateCampaignForm() {
               <label className="block text-sm font-medium text-gray-700">Pulse Code*</label>
               <input
                 type="text"
-                placeholder="PLS_TEM_072384"
-                className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+                value={generatedPrefix || ""}
+                placeholder={prefixLoading ? "Generating..." : "PLS_TEM_072384"}
+                readOnly
+                className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 text-gray-700 cursor-not-allowed outline-none"
+                title={prefixError || "Auto-generated pulse code (read-only)"}
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">Team Name*</label>
               <input
                 type="text"
+                value={teamName}
+                onChange={(e) => setTeamName(e.target.value)}
                 placeholder="e.g. High Blood Pressure"
                 className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">Channel Name*</label>
-              <select className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none bg-white">
-                <option>Select Channel</option>
+              <select
+                value={selectedChannelId}
+                onChange={(e) => setSelectedChannelId(e.target.value)}
+                className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+              >
+                <option value="">Select Channel</option>
+                {channelsLoading ? (
+                  <option disabled>Loading channels...</option>
+                ) : (
+                  channels.map((channel) => (
+                    <option key={channel.id} value={channel.id}>
+                      {channel.name}
+                    </option>
+                  ))
+                )}
               </select>
             </div>
             <div className="flex justify-end">
               <div className="inline-flex border border-gray-300 rounded-full p-1 bg-gray-50">
                 <button
                   onClick={() => setStatus("Active")}
-                  className={`px-6 py-2 rounded-full text-sm font-medium ${status === "Active" ? "bg-blue-600 text-white" : "text-gray-600"}`}
+                  className={`px-6 py-2 rounded-full text-sm font-medium cursor-pointer ${status === "Active" ? "bg-blue-600 text-white" : "text-gray-600"}`}
                 >
                   Active
                 </button>
                 <button
                   onClick={() => setStatus("Inactive")}
-                  className={`px-6 py-2 rounded-full text-sm font-medium ${status === "Inactive" ? "bg-blue-600 text-white" : "text-gray-600"}`}
+                  className={`px-6 py-2 rounded-full text-sm font-medium cursor-pointer ${status === "Inactive" ? "bg-blue-600 text-white" : "text-gray-600"}`}
                 >
                   Inactive
                 </button>
@@ -111,8 +166,21 @@ export default function CreateCampaignForm() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700">Call Point*</label>
-            <select className="mt-1 w-full max-w-md px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none bg-white">
-              <option>Select Call Point</option>
+            <select
+              value={selectedCallPointId}
+              onChange={(e) => setSelectedCallPointId(e.target.value)}
+              className="mt-1 w-full max-w-md px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+            >
+              <option value="">Select Call Point</option>
+              {callPointsLoading ? (
+                <option disabled>Loading call points...</option>
+              ) : (
+                callPoints.map((callPoint) => (
+                  <option key={callPoint.id} value={callPoint.id}>
+                    {callPoint.name}
+                  </option>
+                ))
+              )}
             </select>
           </div>
         </div>
@@ -127,7 +195,7 @@ export default function CreateCampaignForm() {
               placeholder="Search Product Name"
               className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
             />
-            <button className="px-6 py-3 bg-blue-600 text-white rounded-full flex items-center gap-2 hover:bg-blue-700 transition">
+            <button className="px-6 py-3 bg-blue-600 text-white rounded-full flex items-center gap-2 hover:bg-blue-700 transition cursor-pointer">
               <Plus className="w-5 h-5" />
               Add Products
             </button>
@@ -145,7 +213,7 @@ export default function CreateCampaignForm() {
                 </div>
                 <button
                   onClick={() => removeProduct(product.id)}
-                  className="text-red-500 hover:text-red-700"
+                  className="text-red-500 hover:text-red-700 cursor-pointer"
                 >
                   <Trash2 className="w-5 h-5" />
                 </button>
@@ -181,7 +249,7 @@ export default function CreateCampaignForm() {
                 onClick={() => toggleSection("areaManager")}
                 className="flex items-center gap-4 bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-md transition-all cursor-pointer select-none"
               >
-                <button className="flex-shrink-0 w-8 h-8 flex items-center justify-center">
+                <button className="flex-shrink-0 w-8 h-8 flex items-center justify-center cursor-pointer">
                   {openSections.areaManager ? (
                     <ChevronDown className="w-5 h-5 text-gray-600" />
                   ) : (
@@ -204,7 +272,7 @@ export default function CreateCampaignForm() {
                   <p className="text-sm text-gray-600">Area Sales Manager</p>
                 </div>
 
-                <button className="text-gray-400 hover:text-gray-600">
+                <button className="text-gray-400 hover:text-gray-600 cursor-pointer">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
@@ -229,7 +297,7 @@ export default function CreateCampaignForm() {
                       onClick={() => toggleSection("salesManager")}
                       className="flex items-center gap-4 bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-md transition-all cursor-pointer select-none"
                     >
-                      <button className="flex-shrink-0 w-8 h-8 flex items-center justify-center">
+                      <button className="flex-shrink-0 w-8 h-8 flex items-center justify-center cursor-pointer">
                         {openSections.salesManager ? (
                           <ChevronDown className="w-5 h-5 text-gray-600" />
                         ) : (
@@ -252,7 +320,7 @@ export default function CreateCampaignForm() {
                         <p className="text-sm text-gray-600">Sales Manager</p>
                       </div>
 
-                      <button className="text-gray-400 hover:text-gray-600">
+                      <button className="text-gray-400 hover:text-gray-600 cursor-pointer">
                         <svg
                           className="w-6 h-6"
                           fill="none"
@@ -297,7 +365,7 @@ export default function CreateCampaignForm() {
                                 <p className="text-sm text-gray-600">Sales Representative</p>
                               </div>
                             </div>
-                            <button className="px-6 py-3 bg-blue-600 text-white rounded-full flex items-center gap-2 hover:bg-blue-700 shadow-sm">
+                            <button className="px-6 py-3 bg-blue-600 text-white rounded-full flex items-center gap-2 hover:bg-blue-700 shadow-sm cursor-pointer">
                               <Plus className="w-5 h-5" />
                               Assign Bricks
                             </button>
@@ -374,7 +442,7 @@ export default function CreateCampaignForm() {
                                   </span>
                                 ))}
                               </div>
-                              <button className="px-6 py-3 bg-blue-600 text-white rounded-full flex items-center gap-2 hover:bg-blue-700 shadow-sm">
+                              <button className="px-6 py-3 bg-blue-600 text-white rounded-full flex items-center gap-2 hover:bg-blue-700 shadow-sm cursor-pointer">
                                 <Plus className="w-5 h-5" />
                                 Assign Bricks
                               </button>
@@ -392,10 +460,10 @@ export default function CreateCampaignForm() {
 
         {/* Buttons */}
         <div className="flex justify-end gap-4 pt-6">
-          <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition">
+          <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition cursor-pointer">
             Discard
           </button>
-          <button className="px-8 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition flex items-center gap-2 shadow-lg">
+          <button className="px-8 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition flex items-center gap-2 shadow-lg cursor-pointer">
             <Plus className="w-5 h-5" />
             Add Campaign
           </button>

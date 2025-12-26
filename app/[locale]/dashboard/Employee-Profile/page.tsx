@@ -1,11 +1,3 @@
-// export default function Page() {
-//   return (
-//     <div className="p-8 mt-16 bg-gray-50 min-h-screen">
-//       <UserProfile candidate={candidate} />
-//     </div>
-//   );
-// }
-
 "use client";
 import { DashboardContent } from "../components/dashboard-content";
 
@@ -33,6 +25,7 @@ export default function DashboardPage() {
         employeeProfileBtn={true}
         candidate={candidate}
         ActiveOn={true}
+        showTabs={true}
       />
     </div>
   );

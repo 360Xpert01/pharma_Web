@@ -64,7 +64,7 @@ export default function MonthlyTargets({
         <div className="flex items-center gap-2">
           <button
             onClick={handlePreviousMonth}
-            className="p-1 hover:bg-white rounded-md transition-colors"
+            className="p-1 hover:bg-white rounded-md transition-colors cursor-pointer"
             aria-label="Previous month"
           >
             <ChevronLeft className="w-5 h-5 text-blue-500" />
@@ -74,7 +74,7 @@ export default function MonthlyTargets({
           </span>
           <button
             onClick={handleNextMonth}
-            className="p-1 hover:bg-white rounded-md transition-colors"
+            className="p-1 hover:bg-white rounded-md transition-colors cursor-pointer"
             aria-label="Next month"
           >
             <ChevronRight className="w-5 h-5 text-blue-500" />

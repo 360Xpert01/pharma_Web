@@ -166,10 +166,10 @@ export default function ExpenseApprovalList() {
 
               {/* Right: Action Buttons */}
               <div className="flex items-center gap-3">
-                <button className="flex items-center gap-2 px-3 py-2  bg-blue-600 text-white font-sm rounded-xl hover:bg-blue-700 transition shadow-sm">
+                <button className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white font-sm rounded-xl hover:bg-blue-700 transition shadow-sm cursor-pointer">
                   Approve
                 </button>
-                <button className="flex items-center gap-2 px-3 py-2  border border-red-300 text-red-600 font-sm rounded-xl hover:bg-red-50 transition">
+                <button className="flex items-center gap-2 px-3 py-2 border border-red-300 text-red-600 font-sm rounded-xl hover:bg-red-50 transition cursor-pointer">
                   Reject
                 </button>
               </div>

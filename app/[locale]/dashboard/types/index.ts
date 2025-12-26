@@ -151,4 +151,5 @@ export interface DashboardProps {
   UpdateEmp?: boolean;
   prefixPro?: boolean;
   targetListView?: boolean;
+  showTabs?: boolean;
 }

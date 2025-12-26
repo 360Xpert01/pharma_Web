@@ -1,13 +1,109 @@
 "use client";
 
-import React, { useState, useRef } from "react";
-import { Plus, Upload, X } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { Plus, Upload, X, Loader2 } from "lucide-react";
 import Image from "next/image";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { getAllRoles } from "@/store/slices/role/getAllRolesSlice";
+import {
+  updateEmployee,
+  resetUpdateEmployeeState,
+} from "@/store/slices/employee/updateEmployeeSlice";
+import { getUserById, resetGetUserByIdState } from "@/store/slices/employee/getUserByIdSlice";
+import { getAllUsers } from "@/store/slices/employee/getAllUsersSlice";
+import { useRouter, useSearchParams } from "next/navigation";
+import toast from "react-hot-toast";
+import { employeeRegistrationSchema } from "@/validations";
 
-export default function AddEmployeeForm() {
+interface UpdateEmployeeFormProps {
+  userId?: string; // Can pass userId directly as prop
+}
+
+export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmployeeFormProps) {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const userId = userIdProp || searchParams?.get("userId") || "";
+
+  const { roles, loading: rolesLoading } = useAppSelector((state) => state.allRoles);
+  const { users, loading: usersLoading } = useAppSelector((state) => state.allUsers);
+  const {
+    loading: updateLoading,
+    success,
+    error: updateError,
+    message,
+  } = useAppSelector((state) => state.updateEmployee);
+  const {
+    user: employeeData,
+    loading: fetchingUser,
+    error: fetchError,
+  } = useAppSelector((state) => state.getUserById);
+
+  // Form States - Initialize with employee data
   const [status, setStatus] = useState<"Active" | "Inactive">("Active");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [firstName, setFirstName] = useState("");
+  const [middleName, setMiddleName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [dob, setDob] = useState("");
+  const [fullAddress, setFullAddress] = useState("");
+  const [legacyCode, setLegacyCode] = useState("");
+  const [pulseCode, setPulseCode] = useState("");
+  const [selectedRoleId, setSelectedRoleId] = useState("");
+  const [selectedSupervisorId, setSelectedSupervisorId] = useState("");
+
+  // Validation errors state
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Fetch user data by ID on component mount
+  useEffect(() => {
+    if (userId) {
+      dispatch(getUserById(userId));
+    } else {
+      toast.error("No user ID provided");
+    }
+
+    return () => {
+      dispatch(resetGetUserByIdState());
+      dispatch(resetUpdateEmployeeState());
+    };
+  }, [dispatch, userId]);
+
+  // Populate form with fetched employee data
+  useEffect(() => {
+    if (employeeData) {
+      setFirstName(employeeData.firstName || "");
+      setMiddleName(employeeData.middleName || "");
+      setLastName(employeeData.lastName || "");
+      setEmail(employeeData.email || "");
+      setPhoneNumber(employeeData.mobileNumber || "");
+      setDob(employeeData.dob || "");
+      setFullAddress(employeeData.fullAddress || "");
+      setLegacyCode(employeeData.empLegacyCode || "");
+      setPulseCode(employeeData.pulseCode || "");
+      setSelectedRoleId(employeeData.roleId || "");
+      setSelectedSupervisorId(employeeData.supervisorId || "");
+      setImagePreview(employeeData.profilePicture || null);
+      setStatus(employeeData.status === "Inactive" ? "Inactive" : "Active");
+    }
+  }, [employeeData]);
+
+  // Fetch roles and users for dropdowns
+  useEffect(() => {
+    dispatch(getAllRoles());
+    dispatch(getAllUsers());
+  }, [dispatch]);
+
+  // Show error toast if fetching user fails
+  useEffect(() => {
+    if (fetchError) {
+      toast.error(fetchError);
+    }
+  }, [fetchError]);
 
   const handleImageClick = () => fileInputRef.current?.click();
 
@@ -32,6 +128,163 @@ export default function AddEmployeeForm() {
     setImagePreview(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
+
+  // Helper function to get error message for a field
+  const getErrorMessage = (fieldName: string) => validationErrors[fieldName] || "";
+
+  // Helper function to check if a field has an error
+  const hasError = (fieldName: string) => !!validationErrors[fieldName];
+
+  // Helper function to clear error for a specific field when user types
+  const clearFieldError = (fieldName: string) => {
+    if (validationErrors[fieldName]) {
+      setValidationErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[fieldName];
+        return newErrors;
+      });
+    }
+  };
+
+  // Helper function to get input CSS classes based on validation state
+  const getInputClasses = (fieldName: string) => {
+    const baseClasses = "mt-1 w-full px-4 py-3 border rounded-xl outline-none transition-all";
+    if (hasError(fieldName)) {
+      return `${baseClasses} border-red-500 focus:ring-2 focus:ring-red-500 focus:border-red-500`;
+    }
+    return `${baseClasses} border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500`;
+  };
+
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    if (!userId) {
+      toast.error("No user ID provided");
+      return;
+    }
+
+    // Prepare form data for validation
+    const formData = {
+      email,
+      firstName,
+      middleName,
+      lastName,
+      fullAddress,
+      roleId: selectedRoleId,
+      mobileNumber: phoneNumber,
+      pulseCode: pulseCode || "",
+      empLegacyCode: legacyCode,
+      profilePicture: imagePreview || "",
+      dob,
+      supervisorId: selectedSupervisorId,
+      verifiedDevices: [],
+    };
+
+    // Validate using Zod schema
+    const validation = employeeRegistrationSchema.safeParse(formData);
+
+    if (!validation.success) {
+      // Create an errors object mapping field names to error messages
+      const errors: Record<string, string> = {};
+      validation.error.errors.forEach((err) => {
+        const fieldName = err.path[0] as string;
+        if (!errors[fieldName]) {
+          errors[fieldName] = err.message;
+        }
+      });
+
+      // Set validation errors to display inline
+      setValidationErrors(errors);
+
+      // Also show the first error as a toast for immediate feedback
+      const firstError = validation.error.errors[0];
+      toast.error(firstError.message);
+      return;
+    }
+
+    // Clear any previous validation errors
+    setValidationErrors({});
+
+    // Use validated and transformed data (email lowercased, phone sanitized, etc.)
+    const validatedData = validation.data;
+
+    // Prepare final payload - only include non-empty optional fields
+    const payload: any = {
+      userId,
+    };
+
+    // Add fields only if they have values
+    if (validatedData.email) payload.email = validatedData.email;
+    if (validatedData.firstName) payload.firstName = validatedData.firstName;
+    if (validatedData.middleName) payload.middleName = validatedData.middleName;
+    if (validatedData.lastName) payload.lastName = validatedData.lastName;
+    if (validatedData.fullAddress) payload.fullAddress = validatedData.fullAddress;
+    if (validatedData.roleId) payload.roleId = validatedData.roleId;
+    if (validatedData.mobileNumber) payload.mobileNumber = validatedData.mobileNumber;
+    if (validatedData.pulseCode) payload.pulseCode = validatedData.pulseCode;
+    if (validatedData.empLegacyCode) payload.empLegacyCode = validatedData.empLegacyCode;
+    if (validatedData.profilePicture) payload.profilePicture = validatedData.profilePicture;
+    if (validatedData.dob) payload.dob = validatedData.dob;
+    if (validatedData.supervisorId) payload.supervisorId = validatedData.supervisorId;
+    if (validatedData.verifiedDevices) payload.verifiedDevices = validatedData.verifiedDevices;
+
+    const result = await dispatch(updateEmployee(payload));
+
+    if (updateEmployee.fulfilled.match(result)) {
+      toast.success(message || "Employee updated successfully!");
+      dispatch(resetUpdateEmployeeState());
+      router.push("/dashboard/Employees-Management");
+    } else {
+      // Extract error message from the rejected action
+      const errorMsg = (result.payload as string) || updateError || "Failed to update employee";
+
+      // Check if the error is about duplicate email
+      if (errorMsg.toLowerCase().includes("email already registered")) {
+        // Set validation error on the email field
+        setValidationErrors({
+          email: "Email Already Taken",
+        });
+        toast.error("Email Already Taken");
+      } else {
+        // Show generic error for other cases
+        toast.error(errorMsg);
+      }
+    }
+  };
+
+  const handleDiscard = () => {
+    router.push("/dashboard/Employees-Management");
+  };
+
+  // Show loading state while fetching user data
+  if (fetchingUser) {
+    return (
+      <div className="bg-gray-50 flex items-center justify-center min-h-[600px]">
+        <div className="bg-white rounded-2xl shadow-lg p-12 flex flex-col items-center gap-4">
+          <Loader2 className="w-12 h-12 animate-spin text-blue-600" />
+          <p className="text-lg font-medium text-gray-700">Loading employee data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state if user data fetch failed
+  if (fetchError && !employeeData) {
+    return (
+      <div className="bg-gray-50 flex items-center justify-center min-h-[600px]">
+        <div className="bg-white rounded-2xl shadow-lg p-12 flex flex-col items-center gap-4">
+          <p className="text-lg font-medium text-red-600">Failed to load employee data</p>
+          <p className="text-sm text-gray-600">{fetchError}</p>
+          <button
+            onClick={() => router.push("/dashboard/Employees-Management")}
+            className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition cursor-pointer"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className=" bg-gray-50">
@@ -60,7 +313,7 @@ export default function AddEmployeeForm() {
                       <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity" />
                       <button
                         onClick={removeImage}
-                        className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-gray-700 p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-white shadow-lg"
+                        className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-gray-700 p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-white shadow-lg cursor-pointer"
                       >
                         <X className="w-6 h-6" />
                       </button>
@@ -83,13 +336,6 @@ export default function AddEmployeeForm() {
                   className="hidden"
                 />
               </div>
-
-              {/* Optional: Small Thumbnails (if needed later) */}
-              {/* <div className="flex gap-4">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="w-24 h-24 bg-gray-200 border-2 border-dashed rounded-xl" />
-                ))}
-              </div> */}
             </div>
 
             {/* Right: Form Fields */}
@@ -100,23 +346,31 @@ export default function AddEmployeeForm() {
                   <label className="block text-sm font-medium text-gray-700">Pulse Code</label>
                   <input
                     type="text"
-                    placeholder="PLS_EMP_000152"
-                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    value={pulseCode || ""}
+                    readOnly
+                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 text-gray-700 cursor-not-allowed outline-none"
+                    title="Pulse code (read-only)"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Legacy code</label>
                   <input
                     type="text"
+                    value={legacyCode}
+                    onChange={(e) => {
+                      setLegacyCode(e.target.value);
+                      clearFieldError("empLegacyCode");
+                    }}
                     placeholder="000152"
                     className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                   />
                 </div>
+
                 <div className="flex">
                   <div className="inline-flex border border-gray-300 rounded-full p-1 bg-gray-50 overflow-hidden">
                     <button
                       onClick={() => setStatus("Active")}
-                      className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                      className={`px-6 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
                         status === "Active"
                           ? "bg-blue-600 text-white"
                           : "text-gray-600 hover:bg-gray-100"
@@ -126,7 +380,7 @@ export default function AddEmployeeForm() {
                     </button>
                     <button
                       onClick={() => setStatus("Inactive")}
-                      className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                      className={`px-6 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
                         status === "Inactive"
                           ? "bg-blue-600 text-white"
                           : "text-gray-600 hover:bg-gray-100"
@@ -144,25 +398,49 @@ export default function AddEmployeeForm() {
                   <label className="block text-sm font-medium text-gray-700">First Name*</label>
                   <input
                     type="text"
+                    value={firstName}
+                    onChange={(e) => {
+                      setFirstName(e.target.value);
+                      clearFieldError("firstName");
+                    }}
                     placeholder="First Name"
-                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    className={getInputClasses("firstName")}
                   />
+                  {hasError("firstName") && (
+                    <p className="mt-1 text-sm text-red-600">{getErrorMessage("firstName")}</p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Middle Name</label>
                   <input
                     type="text"
+                    value={middleName}
+                    onChange={(e) => {
+                      setMiddleName(e.target.value);
+                      clearFieldError("middleName");
+                    }}
                     placeholder="Middle Name"
-                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    className={getInputClasses("middleName")}
                   />
+                  {hasError("middleName") && (
+                    <p className="mt-1 text-sm text-red-600">{getErrorMessage("middleName")}</p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Last Name*</label>
                   <input
                     type="text"
+                    value={lastName}
+                    onChange={(e) => {
+                      setLastName(e.target.value);
+                      clearFieldError("lastName");
+                    }}
                     placeholder="Last Name"
-                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    className={getInputClasses("lastName")}
                   />
+                  {hasError("lastName") && (
+                    <p className="mt-1 text-sm text-red-600">{getErrorMessage("lastName")}</p>
+                  )}
                 </div>
               </div>
 
@@ -172,24 +450,48 @@ export default function AddEmployeeForm() {
                   <label className="block text-sm font-medium text-gray-700">Email Address*</label>
                   <input
                     type="email"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      clearFieldError("email");
+                    }}
                     placeholder="e.g. abc123@gmail.com"
-                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    className={getInputClasses("email")}
                   />
+                  {hasError("email") && (
+                    <p className="mt-1 text-sm text-red-600">{getErrorMessage("email")}</p>
+                  )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Phone Number*</label>
+                  <label className="block text-sm font-medium text-gray-700">Mobile Number*</label>
                   <input
                     type="tel"
-                    placeholder="e.g. +92345678910"
-                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    value={phoneNumber}
+                    onChange={(e) => {
+                      setPhoneNumber(e.target.value);
+                      clearFieldError("mobileNumber");
+                    }}
+                    placeholder="e.g. 923456789010"
+                    className={getInputClasses("mobileNumber")}
                   />
+                  {hasError("mobileNumber") && (
+                    <p className="mt-1 text-sm text-red-600">{getErrorMessage("mobileNumber")}</p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Date of Birth</label>
                   <input
                     type="date"
-                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    value={dob}
+                    onChange={(e) => {
+                      setDob(e.target.value);
+                      clearFieldError("dob");
+                    }}
+                    className={getInputClasses("dob")}
                   />
+                  {hasError("dob") && (
+                    <p className="mt-1 text-sm text-red-600">{getErrorMessage("dob")}</p>
+                  )}
                 </div>
               </div>
 
@@ -198,9 +500,17 @@ export default function AddEmployeeForm() {
                 <label className="block text-sm font-medium text-gray-700">Full Address</label>
                 <input
                   type="text"
+                  value={fullAddress}
+                  onChange={(e) => {
+                    setFullAddress(e.target.value);
+                    clearFieldError("fullAddress");
+                  }}
                   placeholder="e.g. B121, Block-2, Gulshan-e-Iqbal, Karachi, Pakistan"
-                  className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                  className={getInputClasses("fullAddress")}
                 />
+                {hasError("fullAddress") && (
+                  <p className="mt-1 text-sm text-red-600">{getErrorMessage("fullAddress")}</p>
+                )}
               </div>
 
               {/* Assign Role - aligned below Full Address */}
@@ -208,22 +518,57 @@ export default function AddEmployeeForm() {
                 <h2 className="text-2xl font-bold text-gray-900">Assign Role</h2>
                 <div className="grid grid-cols-2 gap-8">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Select Role*</label>
-                    <select className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white">
-                      <option>Sales Representative</option>
-                      <option>Team Lead</option>
-                      <option>Manager</option>
+                    <label className="block text-sm font-medium text-gray-700">Select Role</label>
+                    <select
+                      value={selectedRoleId}
+                      onChange={(e) => {
+                        setSelectedRoleId(e.target.value);
+                        clearFieldError("roleId");
+                      }}
+                      className={getInputClasses("roleId")}
+                    >
+                      <option value="">Select a role</option>
+                      {rolesLoading ? (
+                        <option disabled>Loading roles...</option>
+                      ) : (
+                        roles.map((role) => (
+                          <option key={role.id} value={role.id}>
+                            {role.roleName}
+                          </option>
+                        ))
+                      )}
                     </select>
+                    {hasError("roleId") && (
+                      <p className="mt-1 text-sm text-red-600">{getErrorMessage("roleId")}</p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
                       Select Line Manager
                     </label>
-                    <select className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white">
-                      <option>Sales Representative</option>
-                      <option>Sara Ali</option>
-                      <option>Usman Malik</option>
+                    <select
+                      value={selectedSupervisorId}
+                      onChange={(e) => {
+                        setSelectedSupervisorId(e.target.value);
+                        clearFieldError("supervisorId");
+                      }}
+                      className={getInputClasses("supervisorId")}
+                    >
+                      <option value="">Select a line manager</option>
+                      {usersLoading ? (
+                        <option disabled>Loading users...</option>
+                      ) : (
+                        users.map((user) => (
+                          <option key={user.id} value={user.id}>
+                            {user.firstName} {user.lastName}{" "}
+                            {user.pulseCode && `(${user.pulseCode})`}
+                          </option>
+                        ))
+                      )}
                     </select>
+                    {hasError("supervisorId") && (
+                      <p className="mt-1 text-sm text-red-600">{getErrorMessage("supervisorId")}</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -233,12 +578,23 @@ export default function AddEmployeeForm() {
 
         {/* Buttons */}
         <div className="flex justify-end gap-4 pt-6">
-          <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition">
+          <button
+            type="button"
+            onClick={handleDiscard}
+            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition cursor-pointer"
+          >
             Discard
           </button>
-          <button className="px-8 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition flex items-center gap-2 shadow-lg">
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={updateLoading}
+            className={`px-8 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition flex cursor-pointer items-center gap-2 shadow-lg ${
+              updateLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
             <Plus className="w-5 h-5" />
-            Add Employee
+            {updateLoading ? "Updating..." : "Update Employee"}
           </button>
         </div>
       </div>
