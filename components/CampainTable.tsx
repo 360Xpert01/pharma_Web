@@ -2,10 +2,11 @@
 
 import React, { useState } from "react";
 import { MoreVertical } from "lucide-react";
+import TableColumnHeader from "@/components/TableColumnHeader";
 
 interface Campaign {
   id: string;
-  condition: string;
+  name: string;
   channel: string;
   brand: string;
   productTitle?: string;
@@ -17,7 +18,7 @@ interface Campaign {
 const campaignsData: Campaign[] = [
   {
     id: "1",
-    condition: "Migraine Headache",
+    name: "Migraine Headache",
     channel: "Doctors",
     brand: "Haleon",
     productTitle: "Panadol",
@@ -27,7 +28,7 @@ const campaignsData: Campaign[] = [
   },
   {
     id: "2",
-    condition: "High Blood Pressure",
+    name: "High Blood Pressure",
     channel: "Chain Pharmacy",
     brand: "PharmaCorp",
     productTitle: "Amlodipine",
@@ -37,7 +38,7 @@ const campaignsData: Campaign[] = [
   },
   {
     id: "3",
-    condition: "Asthma",
+    name: "Asthma",
     channel: "Doctors",
     productTitle: "Albuterol",
     brand: "HealthPlus",
@@ -47,7 +48,7 @@ const campaignsData: Campaign[] = [
   },
   {
     id: "4",
-    condition: "Diabetes Type 2",
+    name: "Diabetes Type 2",
     channel: "Pharmacy/Stores",
     productTitle: "Metformin",
     brand: "Medico",
@@ -57,7 +58,7 @@ const campaignsData: Campaign[] = [
   },
   {
     id: "5",
-    condition: "Cholesterol",
+    name: "Cholesterol",
     channel: "GT’s",
     productTitle: "Cetirizine",
     brand: "CardioCare",
@@ -67,7 +68,7 @@ const campaignsData: Campaign[] = [
   },
   {
     id: "6",
-    condition: "Allergies",
+    name: "Allergies",
     channel: "Doctors",
     productTitle: "Cetirizine",
     brand: "AllergyRelief",
@@ -77,7 +78,7 @@ const campaignsData: Campaign[] = [
   },
   {
     id: "7",
-    condition: "Arthritis",
+    name: "Arthritis",
     channel: "Pharmacy/Stores",
     productTitle: "Ibuprofen",
     brand: "PainManagement",
@@ -87,7 +88,7 @@ const campaignsData: Campaign[] = [
   },
   {
     id: "8",
-    condition: "Anxiety",
+    name: "Anxiety",
     channel: "Doctors",
     productTitle: "Sertraline",
     brand: "MentalWellness",
@@ -96,25 +97,44 @@ const campaignsData: Campaign[] = [
     status: "Active",
   },
 ];
-
 export default function CampaignsTable() {
-  // Ab har row ka apna dropdown state
+  // Har row ka apna dropdown state
   const [openId, setOpenId] = useState<string | null>(null);
 
+  const handleToggle = (id: string) => {
+    setOpenId((prev) => (prev === id ? null : id));
+  };
+
+  // Table header columns
+  const campaignColumns = [
+    { label: "Name", className: "col-span-2" },
+    { label: "Channel", className: "col-span-2" },
+    { label: "Brand", className: "col-span-2" },
+    { label: "Products", className: "col-span-2 ml-6" },
+    { label: "Assigned", className: "col-span-2 ml-[160px]" },
+    { label: "Status", className: "col-span-1 ml-[80px]" },
+    { label: "", className: "col-span-1 ml-6" },
+  ];
+
   return (
-    <div className="w-full items-center overflow-hidden">
-      <div className="">
+    <div className="w-full overflow-hidden">
+      {/* Header */}
+      <div className="px-3">
+        <TableColumnHeader columns={campaignColumns} gridCols={12} />
+      </div>
+
+      {/* Rows */}
+      <div>
         {campaignsData.map((campaign) => (
           <div
             key={campaign.id}
-            className="px-3 py-1 hover:bg-gray-50 transition-colors duration-200 flex items-center justify-between relative"
+            className="px-3 py-1 hover:bg-gray-50 transition-colors duration-200 relative"
+            onClick={() => setOpenId(null)}
           >
-            {/* Left Side - Tumhara original grid */}
-            <div className="flex-1 items-center justify-center rounded-md p-2 border border-gray-200 grid grid-cols-12 gap-2 text-sm">
-              {/* Condition */}
-              <div className="col-span-2 font-semibold  text-font-semibold">
-                {campaign.condition}
-              </div>
+            {/* Grid with all columns including actions */}
+            <div className="rounded-md p-2 border border-gray-200 grid grid-cols-12 gap-3 text-sm">
+              {/* Name */}
+              <div className="col-span-2 font-semibold text-font-semibold">{campaign.name}</div>
 
               {/* Channel */}
               <div className="col-span-2 font-semibold text-black">{campaign.channel}</div>
@@ -123,20 +143,19 @@ export default function CampaignsTable() {
               <div className="col-span-2 font-semibold text-black">{campaign.brand}</div>
 
               {/* Products */}
-              <div className="col-span-4 font-semibold text-black">
+              <div className="col-span-2">
                 <p className="font-bold mb-0">{campaign.productTitle}</p>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1">
                   {campaign.products.map((product, idx) => (
-                    <span key={idx} className="py-1 text-gray-400 rounded-full text-sm font-normal">
+                    <span key={idx} className="text-gray-400 text-sm font-normal">
                       {product}
                     </span>
                   ))}
                 </div>
               </div>
 
-              {/* Assigned Users + Status + More Button */}
-              <div className="col-span-2 flex items-center justify-end gap-4">
-                {/* Avatar Stack */}
+              {/* Assigned Users */}
+              <div className="col-span-2 flex items-center ml-[150px]">
                 <div className="flex -space-x-2">
                   {campaign.assignedUsers.slice(0, 5).map((avatar, idx) => (
                     <div
@@ -148,21 +167,24 @@ export default function CampaignsTable() {
                         alt={`User ${idx + 1}`}
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          e.currentTarget.src = `https://ui-avatars.com/api/?name=User+${idx + 1}&background=random`;
+                          e.currentTarget.src = `https://ui-avatars.com/api/?name=User+${idx + 1}`;
                         }}
                       />
                     </div>
                   ))}
+
                   {campaign.assignedUsers.length > 5 && (
                     <div className="w-9 h-9 rounded-full border-2 border-white flex items-center justify-center text-xs font-medium text-gray-600 ring-2 ring-gray-100">
                       +{campaign.assignedUsers.length - 5}
                     </div>
                   )}
                 </div>
+              </div>
 
-                {/* Status Badge */}
+              {/* Status */}
+              <div className="col-span-1 flex items-center justify-center ml-[100px]">
                 <span
-                  className={`px-9 py-1 rounded-full text-sm font-medium ${
+                  className={`px-4 min-w-[90px] text-center py-1 rounded-full text-sm font-medium ${
                     campaign.status === "Active"
                       ? "bg-green-100 text-green-600"
                       : "bg-gray-100 text-gray-600"
@@ -170,54 +192,54 @@ export default function CampaignsTable() {
                 >
                   {campaign.status}
                 </span>
+              </div>
 
-                {/* More Options Button */}
-                <div className="relative">
-                  <button
-                    onClick={() => setOpenId(openId === campaign.id ? null : campaign.id)}
-                    className="text-gray-400 hover:text-gray-600 transition"
-                  >
-                    <MoreVertical className="w-5 h-5" />
-                  </button>
+              {/* Actions - Inside grid */}
+              <div
+                className="col-span-1 flex items-center justify-center ml-6"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  onClick={() => handleToggle(campaign.id)}
+                  className="text-gray-400 hover:text-gray-600 transition"
+                >
+                  <MoreVertical className="w-5 h-5" />
+                </button>
 
-                  {/* Dropdown - Sirf isi row ka */}
-                  {openId === campaign.id && (
-                    <>
-                      <div className="fixed inset-0 z-40" onClick={() => setOpenId(null)} />
-                      <div className="absolute right-0 top-6 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-                        <div className="py-1">
-                          <button
-                            onClick={() => {
-                              console.log("Edit", campaign.id);
-                              setOpenId(null);
-                            }}
-                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => {
-                              console.log("Duplicate", campaign.id);
-                              setOpenId(null);
-                            }}
-                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          >
-                            Duplicate
-                          </button>
-                          <button
-                            onClick={() => {
-                              console.log("Delete", campaign.id);
-                              setOpenId(null);
-                            }}
-                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </div>
+                {/* Dropdown */}
+                {openId === campaign.id && (
+                  <div className="absolute right-0 top-6 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                    <button
+                      onClick={() => {
+                        console.log("Edit", campaign.id);
+                        setOpenId(null);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        console.log("Duplicate", campaign.id);
+                        setOpenId(null);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                    >
+                      Duplicate
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        console.log("Delete", campaign.id);
+                        setOpenId(null);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>

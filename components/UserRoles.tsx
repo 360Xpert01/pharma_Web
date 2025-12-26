@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import { MoreVertical } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllRoles } from "@/store/slices/role/getAllRolesSlice";
+import TableColumnHeader from "@/components/TableColumnHeader";
 
 interface Role {
   id: string;
@@ -69,38 +70,19 @@ export default function RolesCardList() {
       </div>
     );
   }
+  // Define columns for the table header
+  const columns = [
+    { label: "Role ID" },
+    { label: "Date" },
+    { label: "Role Title" },
+    { label: "Permissions" },
+    { label: "Status" },
+  ];
+
   return (
     <div className="w-full ">
       {/* Table Header */}
-      <div className="bg-gray-50 rounded-xl p-3 mb-3">
-        <div className="flex items-center justify-between gap-6">
-          <div className="flex-1 grid grid-cols-5 gap-6">
-            <div>
-              <p className="font-semibold text-sm text-gray-600 capitalize tracking-wider">
-                Role ID
-              </p>
-            </div>
-            <div>
-              <p className="font-semibold text-sm text-gray-600 capitalize tracking-wider">Date</p>
-            </div>
-            <div>
-              <p className="font-semibold text-sm text-gray-600 capitalize tracking-wider">
-                Role Title
-              </p>
-            </div>
-            <div>
-              <p className="font-semibold text-sm text-gray-600 capitalize tracking-wider">
-                Permissions
-              </p>
-            </div>
-            <div>
-              <p className="font-semibold text-sm text-gray-600 capitalize tracking-wider">
-                Status
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <TableColumnHeader columns={columns} gridCols={5} />
 
       {/* Card List */}
       <div className="space-y-3">

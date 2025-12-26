@@ -7,6 +7,7 @@ import Link from "next/link";
 
 import SalesDashboard1 from "../SalesDashboard1";
 import TableHeader from "@/components/TableHeader";
+import TableColumnHeader from "@/components/TableColumnHeader";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllUsers } from "@/store/slices/employee/getAllUsersSlice";
 import { getAllRoles } from "@/store/slices/role/getAllRolesSlice";
@@ -56,19 +57,26 @@ export default function SalesTeamTable() {
     };
   });
 
+  // Define columns for the table header
+  const employeeColumns = [
+    { label: "Employee ID", className: "w-[20%] ml-4" },
+    { label: "Name", className: "w-[19%]" },
+    { label: "Email", className: "w-[25%]" },
+    { label: "Contact No #", className: "w-[24%]" },
+    { label: "Supervisor", className: "w-[10%]" },
+  ];
+
   return (
     <div className="mx-auto bg-gray-50 min-h-screen">
       <div className="bg-white rounded-xl shadow-[0px_5px_10px_rgba(0,0,0,0.20)] overflow-hidden">
         <div className="overflow-x-auto">
           <TableHeader title="Sales Team" campHeading="All User's" filterT searchT exportT />
 
-          <div className="flex w-[80%] px-5 text-sm font-semibold text-gray-700">
-            <div className="w-[20%]">Employee ID</div>
-            <div className="w-[19%]">Name</div>
-            <div className="w-[25%]">Email</div>
-            <div className="w-[24%]">Phone</div>
-            <div className="w-[10%]">Supervisor</div>
-          </div>
+          <TableColumnHeader
+            columns={employeeColumns}
+            containerClassName="flex w-[80%] px-5"
+            showBackground={false}
+          />
 
           {loading ? (
             <div className="px-8 py-12 text-center text-gray-500">Loading users...</div>

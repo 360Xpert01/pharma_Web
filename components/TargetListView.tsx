@@ -5,6 +5,7 @@ import { Search, SlidersHorizontal, ChevronDown } from "lucide-react";
 import { EmployeeTarget, GroupedTargets } from "@/types/target";
 import TargetEmployeeCard from "./TargetEmployeeCard";
 import TableHeader from "./TableHeader";
+import TableColumnHeader from "@/components/TableColumnHeader";
 
 // Mock data for demonstration
 const mockTargetData: EmployeeTarget[] = [
@@ -240,8 +241,24 @@ export default function TargetListView() {
         <div className="overflow-x-auto">
           <TableHeader campHeading="All Employees" filterT />
 
+          {/* Column Headers */}
+          <div className="px-6 mx-6">
+            <TableColumnHeader
+              columns={[
+                { label: "Month", className: "w-[12%]" },
+                { label: "Employee", className: "w-[16%]" },
+                { label: "Team Name", className: "w-[18%]" },
+                { label: "Channel", className: "w-[18%]" },
+                { label: "Supervisor", className: "w-[16%]" },
+                { label: "", className: "w-[10%]" }, // View Details
+              ]}
+              containerClassName="flex items-center"
+              showBackground={false}
+            />
+          </div>
+
           {/* Employee Cards Grouped by Month */}
-          <div className="p-6">
+          <div className="px-6 py-2">
             {Object.keys(groupedTargets).length === 0 ? (
               <div className="bg-gray-50 rounded-2xl p-12 text-center">
                 <p className="text-gray-500 text-lg">No targets found matching your criteria</p>

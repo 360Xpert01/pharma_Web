@@ -89,24 +89,33 @@ export default function LoginScreen() {
   };
 
   // Manual POST request for Verify OTP (without thunk)
-  const handleVerifyOTP = async () => {
-    const enteredOtp = otp.join("");
+  const handleVerifyOTP = async (otpToVerify?: string) => {
+    const enteredOtp = otpToVerify || otp.join("");
+    console.log("🔍 Verifying OTP:", enteredOtp);
+
     if (enteredOtp.length !== 4) {
       toast.error("Please enter 4-digit OTP");
       return;
     }
 
     setIsVerifying(true);
+    setInvalidOtp(false); // Clear any previous errors
 
     try {
-      const result = await dispatch(
+      const result: any = await dispatch(
         verifyOtp({
           deviceId,
           otp: Number(enteredOtp),
         })
       );
 
-      if (result.payload?.success) {
+      console.log("📦 Full result:", result);
+      console.log("✅ Result type:", result.type);
+      console.log("📝 Result payload:", result.payload);
+
+      // Check if the action was fulfilled (successful)
+      if (result.type === "auth/verifyOtp/fulfilled" && result.payload?.success) {
+        console.log("✅ OTP Verified Successfully!");
         const loginData = result?.payload?.data?.accessToken;
 
         localStorage.setItem("userSession", loginData);
@@ -115,10 +124,14 @@ export default function LoginScreen() {
         toast.success("Login Successful! Welcome back 🎉");
         router.push("/dashboard");
       } else {
+        console.log("❌ OTP Verification Failed");
         setInvalidOtp(true);
-        toast.error(result.payload?.message || "Invalid OTP. Please try again.");
+        const errorMsg =
+          result.payload?.message || result.error?.message || "Invalid OTP. Please try again.";
+        toast.error(errorMsg);
       }
     } catch (err: any) {
+      console.error("❌ Error during OTP verification:", err);
       setInvalidOtp(true);
       toast.error(err.message || "Invalid OTP. Please try again.");
     } finally {
@@ -128,11 +141,30 @@ export default function LoginScreen() {
 
   const handleOtpChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return;
+
+    // Clear error state when user starts typing
+    if (InvalidOtp) {
+      setInvalidOtp(false);
+    }
+
     const newOtp = [...otp];
     newOtp[index] = value.slice(-1);
     setOtp(newOtp);
+
+    // Move to next input if value exists and not last input
     if (value && index < 3) {
       otpRefs.current[index + 1]?.focus();
+    }
+
+    // Auto-verify when 4th digit is entered
+    if (index === 3 && value) {
+      const fullOtp = newOtp.join("");
+      if (fullOtp.length === 4) {
+        // Pass the complete OTP directly to avoid state delay
+        setTimeout(() => {
+          handleVerifyOTP(fullOtp);
+        }, 100);
+      }
     }
   };
 
@@ -161,21 +193,26 @@ export default function LoginScreen() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder=" user@example.com"
-                  className="w-full px-2 py-4 border border-gray-300 rounded-2xl  outline-none transition-all text-lg"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !isOtpSent && email.includes("@") && !loading) {
+                      handleSendOTP();
+                    }
+                  }}
+                  placeholder="user@example.com"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-base"
                   disabled={isOtpSent}
                 />
               </div>
-              {userNotFound && <p className="text-red-600 text-xs ">User not found</p>}
+              {userNotFound && <p className="text-red-600 text-sm">User not found</p>}
               {otpSentState && (
-                <p className="text-red-600 text-xs ">An OTP has already been sent to this email.</p>
+                <p className="text-red-600 text-sm">An OTP has already been sent to this email.</p>
               )}
 
               {!isOtpSent ? (
                 <button
                   onClick={handleSendOTP}
                   disabled={loading || !email.includes("@")}
-                  className="w-full py-4 bg-blue-600 text-white font-semibold rounded-2xl hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 shadow-lg flex items-center justify-center gap-3"
+                  className="w-full py-3.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
                 >
                   {loading ? (
                     <>
@@ -202,34 +239,35 @@ export default function LoginScreen() {
                           value={otp[index]}
                           onChange={(e) => handleOtpChange(index, e.target.value)}
                           onKeyDown={(e) => handleKeyDown(index, e)}
-                          className="w-16 h-16 text-center text-2xl font-bold border-2 border-gray-300 rounded-2xl focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 outline-none transition-all"
+                          disabled={isVerifying}
+                          className="w-16 h-16 text-center text-2xl font-bold border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 outline-none transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
                         />
                       ))}
                     </div>
+
+                    {/* Verification Status */}
+                    {isVerifying && (
+                      <div className="mt-4 flex items-center justify-center gap-2 text-blue-600">
+                        <RotateCw className="w-5 h-5 animate-spin" />
+                        <span className="text-sm font-medium">Verifying OTP...</span>
+                      </div>
+                    )}
                   </div>
-                  {InvalidOtp && <p className="text-red-600 text-xs ">Invalid OTP</p>}
-                  <div className="space-y-4">
+
+                  {InvalidOtp && (
+                    <p className="text-red-600 text-sm text-center">
+                      Invalid OTP. Please try again.
+                    </p>
+                  )}
+
+                  {/* Resend OTP Link */}
+                  <div className="text-center">
                     <button
                       onClick={handleResendOTP}
-                      disabled={loading || countdown > 0}
-                      className="w-full py-3 border border-gray-300 text-gray-600 font-medium rounded-xl hover:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
+                      disabled={loading || countdown > 0 || isVerifying}
+                      className="text-sm text-blue-600 hover:text-blue-700 disabled:text-gray-400 disabled:cursor-not-allowed underline cursor-pointer transition"
                     >
-                      Resend OTP
-                    </button>
-
-                    <button
-                      onClick={handleVerifyOTP}
-                      disabled={isVerifying}
-                      className="w-full py-4 bg-blue-600 text-white font-semibold rounded-2xl hover:bg-blue-700 disabled:bg-gray-400 transition shadow-lg flex items-center justify-center gap-3"
-                    >
-                      {isVerifying ? (
-                        <>
-                          <RotateCw className="w-5 h-5 animate-spin" />
-                          Verifying...
-                        </>
-                      ) : (
-                        "Login"
-                      )}
+                      {countdown > 0 ? `Resend OTP in ${countdown}s` : "Resend OTP"}
                     </button>
                   </div>
                 </>

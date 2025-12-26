@@ -3,6 +3,7 @@
 import React from "react";
 import { Mail, Phone, MapPin, Eye, MoreVertical, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import TableColumnHeader from "@/components/TableColumnHeader";
 
 interface Doctor {
   id: string;
@@ -81,20 +82,21 @@ const doctorsData: Doctor[] = [
 ];
 
 export default function DoctorsTable() {
+  // Define columns for the table header
+  const doctorColumns = [
+    { label: "Name", className: "col-span-2" },
+    { label: "Specialization", className: "col-span-2" },
+    { label: "Email", className: "col-span-2" },
+    { label: "Phone No", className: "col-span-2" },
+    { label: "Location", className: "col-span-1" },
+    { label: "Status", className: "col-span-2 text-center" },
+    { label: "", className: "col-span-1" }, // Empty for action buttons
+  ];
+
   return (
     <div className="w-full  overflow-hidden">
-      <div className="bg-gray">
-        <div className="px-7 py-4">
-          <div className="grid grid-cols-12 gap-4 text-sm font-semibold text-gray-700">
-            <div className="col-span-2">Name</div>
-            <div className="col-span-2">Specialization</div>
-            <div className="col-span-2">Email</div>
-            <div className="col-span-2">Phone No</div>
-            <div className="col-span-1">Location</div>
-            <div className="col-span-2 text-center">Status</div>
-            <div className="col-span-1"></div> {/* Empty for action buttons */}
-          </div>
-        </div>
+      <div className="px-7 py-4">
+        <TableColumnHeader columns={doctorColumns} gridCols={12} />
       </div>
 
       {doctorsData.map((doctor, index) => (
