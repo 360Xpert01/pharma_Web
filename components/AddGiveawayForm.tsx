@@ -98,7 +98,7 @@ export default function AddGiveawayForm() {
 
           {/* Row 2 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Sample QTY <span className="text-red-500">*</span>
               </label>
@@ -107,9 +107,9 @@ export default function AddGiveawayForm() {
                 placeholder="220"
                 className="w-full px-5 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition"
               />
-            </div>
+            </div> */}
 
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Threshold Value <span className="text-red-500">*</span>
               </label>
@@ -118,7 +118,7 @@ export default function AddGiveawayForm() {
                 placeholder="25"
                 className="w-full px-5 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition"
               />
-            </div>
+            </div> */}
           </div>
 
           {/* Description */}

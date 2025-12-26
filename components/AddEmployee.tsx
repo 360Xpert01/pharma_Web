@@ -209,7 +209,18 @@ export default function AddEmployeeForm() {
     } else {
       // Extract error message from the rejected action
       const errorMsg = (result.payload as string) || registerError || "Failed to register employee";
-      toast.error(errorMsg);
+
+      // Check if the error is about duplicate email
+      if (errorMsg.toLowerCase().includes("email already registered")) {
+        // Set validation error on the email field
+        setValidationErrors({
+          email: "Email Already Taken",
+        });
+        toast.error("Email Already Taken");
+      } else {
+        // Show generic error for other cases
+        toast.error(errorMsg);
+      }
     }
   };
 

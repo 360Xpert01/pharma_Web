@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import { ChevronDown, MoreVertical, Trash2, Edit2 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/index";
 import { getAllChannels } from "@/store/slices/channel/getAllChannelsSlice";
+import TableColumnHeader from "@/components/TableColumnHeader";
 
 interface Channel {
   id: string;
@@ -86,6 +87,16 @@ export default function ChannelsManager() {
       </div> */}
 
       {/* Channels List */}
+      <div className="px-6">
+        <TableColumnHeader
+          columns={[
+            { label: "Pulse Code", className: "flex-1" },
+            { label: "Channel Name", className: "flex-1" },
+            { label: "Status", className: "flex-1 text-right pr-[100px]" },
+          ]}
+          containerClassName="flex items-center gap-6"
+        />
+      </div>
       <div className="p-4 space-y-3">
         {loading ? (
           <div className="text-center py-12 text-gray-500">Loading channels...</div>
@@ -103,18 +114,11 @@ export default function ChannelsManager() {
                
               `}
             >
-              <div className="flex items-center justify-between w-full gap-6">
-                <div className="flex items-center gap-6">
-                  <div className="text-lg font-medium text-gray-900 min-w-[160px]">
-                    {channel.name}
-                  </div>
-                  <div className="text-sm text-gray-500 flex items-center gap-2">
-                    <span className="font-medium">Pulse:</span>
-                    <span className="text-gray-600">{channel.pulseCode}</span>
-                  </div>
-                </div>
+              <div className="flex items-center w-full gap-6">
+                <div className="text-sm text-black flex-1">{channel.pulseCode}</div>
+                <div className="text-sm font-normal text-black flex-1">{channel.name}</div>
 
-                <div className="flex items-center">
+                <div className="flex items-center flex-1 justify-end">
                   <div className="inline-flex border border-gray-300 rounded-full p-1 bg-gray-50 overflow-hidden">
                     <button
                       onClick={(e) => {
@@ -122,9 +126,7 @@ export default function ChannelsManager() {
                         toggleStatus(channel.id);
                       }}
                       className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                        channel.isActive
-                          ? "bg-blue-600 text-white"
-                          : "text-gray-600 hover:bg-gray-100"
+                        channel.isActive ? "bg-blue-600 text-white" : "text-black hover:bg-gray-100"
                       }`}
                     >
                       Active

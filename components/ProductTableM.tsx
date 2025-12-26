@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { MoreVertical } from "lucide-react";
 import Image from "next/image";
+import TableColumnHeader from "@/components/TableColumnHeader";
 
 interface Medicine {
   id: string;
@@ -81,8 +82,22 @@ const medicinesData: Medicine[] = [
 export default function MedicineTable() {
   const [openId, setOpenId] = useState<string | null>(null);
 
+  // Define columns for the table header
+  const productColumns = [
+    { label: "Pulse Code", className: "col-span-2" },
+    { label: "Name", className: "col-span-2" },
+    { label: "Category", className: "col-span-2" },
+    { label: "SKU", className: "col-span-2 text-center" },
+    { label: "Image", className: "col-span-2 text-center" },
+    { label: "Formula", className: "col-span-2" },
+    { label: "", className: "col-span-1" },
+  ];
+
   return (
     <div className="">
+      <div className="px-8">
+        <TableColumnHeader columns={productColumns} gridCols={12} />
+      </div>
       <div className="">
         <div className="space-y-3">
           {medicinesData.map((med) => (
@@ -90,13 +105,8 @@ export default function MedicineTable() {
               <div className="grid grid-cols-12 gap-4 px-8 py-3 items-center">
                 {/* New Code Field */}
 
-                <div className="col-span-1">
-                  <span className="font-mono text-sm text-gray-600">{med.code}</span>
-                </div>
-
-                {/* SAP ID */}
                 <div className="col-span-2">
-                  <span className="font-mono text-sm text-gray-600">{med.sapId}</span>
+                  <span className="font-mono text-sm text-gray-600">{med.code}</span>
                 </div>
 
                 {/* Name */}
@@ -112,12 +122,12 @@ export default function MedicineTable() {
                 </div>
 
                 {/* SKU Count */}
-                <div className="col-span-1 text-center">
+                <div className="col-span-2 text-center">
                   <span className="text-lg font-bold text-gray-900">{med.skuCount}</span>
                 </div>
 
                 {/* Image */}
-                <div className="col-span-1 flex justify-center">
+                <div className="col-span-2 flex justify-center">
                   <div className="w-12 h-12 rounded-xl overflow-hidden ring-2 ring-gray-200">
                     <Image
                       src={med.image}
@@ -130,7 +140,7 @@ export default function MedicineTable() {
                 </div>
 
                 {/* Formula */}
-                <div className="col-span-2">
+                <div className="col-span-1">
                   <span className="font-mono text-sm text-gray-700">{med.formula}</span>
                 </div>
 

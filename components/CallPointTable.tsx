@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from "react";
 import { MoreVertical } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/index";
 import { getAllCallPoints } from "@/store/slices/callPoint/getAllCallPointsSlice";
+import TableColumnHeader from "@/components/TableColumnHeader";
 
 export default function CallPointsList() {
   const dispatch = useAppDispatch();
@@ -17,27 +18,27 @@ export default function CallPointsList() {
       hasFetched.current = true;
     }
   }, [dispatch]);
+
+  // Define columns for the table header
+  const callPointColumns = [
+    { label: "Pulse Code", className: "flex-1 min-w-[200px]" },
+    { label: "Location Title", className: "flex-1 min-w-[250px]" },
+    { label: "Latitude", className: "flex-1" },
+    { label: "Longitude", className: "flex-1" },
+    { label: "", className: "w-10" }, // Empty for action button
+  ];
+
   return (
     <div className="w-full mt-3 bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
       <div className="p-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-8">Call Points</h2>
 
         {/* Column Headers */}
-        <div className="flex items-center justify-between px-6 py-3 mb-2">
-          <div className="flex-1 min-w-[200px]">
-            <span className="text-sm font-semibold text-gray-700">Pulse Code</span>
-          </div>
-          <div className="flex-1 min-w-[250px]">
-            <span className="text-sm font-semibold text-gray-700">Location Title</span>
-          </div>
-          <div className="flex-1">
-            <span className="text-sm font-semibold text-gray-700">Latitude</span>
-          </div>
-          <div className="flex-1">
-            <span className="text-sm font-semibold text-gray-700">Longitude</span>
-          </div>
-          <div className="w-10"></div>
-        </div>
+        <TableColumnHeader
+          columns={callPointColumns}
+          containerClassName="flex items-center justify-between px-6 py-3"
+          showBackground={false}
+        />
 
         {/* List */}
         <div className="space-y-4">

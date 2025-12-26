@@ -3,6 +3,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllPrefixes } from "@/store/slices/preFix/getAllPrefixesSlice";
+import TableColumnHeader from "@/components/TableColumnHeader";
 
 interface PrefixItem {
   tableName: string;
@@ -33,10 +34,21 @@ export default function PrefixListComponent() {
   console.log("Prefixqwe", prefixes);
 
   return (
-    <div className=" bg-gray-50 flex items-center justify-center p-8">
+    <div className="flex items-center justify-center p-8">
       <div className="w-full">
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-          <div className="p-8 space-y-6">
+          <div className="px-6 py-4">
+            <TableColumnHeader
+              columns={[
+                { label: "Entity Name", className: "flex-1" },
+                { label: "Prefix Code", className: "flex-1" },
+                { label: "Example", className: "" },
+              ]}
+              containerClassName="flex items-center px-6 py-2"
+              showBackground={false}
+            />
+          </div>
+          <div className="px-8  space-y-6">
             {prefixes.map((item, index) => (
               <div
                 key={index}
