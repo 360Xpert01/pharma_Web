@@ -12,6 +12,7 @@ import {
 } from "@/store/slices/preFix/generatePrefixSlice";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { giveawayCreationSchema } from "@/validations/giveawayValidation";
 
 export default function AddGiveawayForm() {
   const dispatch = useAppDispatch();
@@ -39,6 +40,9 @@ export default function AddGiveawayForm() {
   const [units, setUnits] = useState(1);
   const [legacyCode, setLegacyCode] = useState("");
 
+  // Validation errors state
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Generate prefix on mount
@@ -63,6 +67,7 @@ export default function AddGiveawayForm() {
       setUnits(1);
       setLegacyCode("");
       setImage(null);
+      setValidationErrors({});
       if (fileInputRef.current) fileInputRef.current.value = "";
 
       // Refresh giveaways list
@@ -84,6 +89,27 @@ export default function AddGiveawayForm() {
       toast.error(createError);
     }
   }, [createError]);
+
+  // Helper functions for validation
+  const getErrorMessage = (fieldName: string) => validationErrors[fieldName] || "";
+  const hasError = (fieldName: string) => !!validationErrors[fieldName];
+  const clearFieldError = (fieldName: string) => {
+    if (validationErrors[fieldName]) {
+      setValidationErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[fieldName];
+        return newErrors;
+      });
+    }
+  };
+
+  const getInputClasses = (fieldName: string) => {
+    const baseClasses = "w-full px-5 py-3.5 border rounded-xl outline-none transition";
+    if (hasError(fieldName)) {
+      return `${baseClasses} border-red-500 focus:ring-2 focus:ring-red-500 focus:border-red-500`;
+    }
+    return `${baseClasses} border-gray-300 focus:ring-2 focus:ring-blue-500`;
+  };
 
   const handleImageClick = () => fileInputRef.current?.click();
 
@@ -110,33 +136,57 @@ export default function AddGiveawayForm() {
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    // Validation
-    if (!name.trim()) {
-      toast.error("Item name is required");
+    // Prepare form data for validation
+    const formData = {
+      name,
+      category,
+      productName,
+      description,
+      units,
+      pulseCode: generatedPrefix || "",
+      legacyCode,
+      imageUrl: image || "",
+    };
+
+    // Validate using Zod schema
+    const validation = giveawayCreationSchema.safeParse(formData);
+
+    if (!validation.success) {
+      // Create an errors object mapping field names to error messages
+      const errors: Record<string, string> = {};
+      validation.error.errors.forEach((err) => {
+        const fieldName = err.path[0] as string;
+        if (!errors[fieldName]) {
+          errors[fieldName] = err.message;
+        }
+      });
+
+      // Set validation errors to display inline
+      setValidationErrors(errors);
+
+      // Also show the first error as a toast for immediate feedback
+      const firstError = validation.error.errors[0];
+      toast.error(firstError.message);
       return;
     }
 
-    if (!category.trim()) {
-      toast.error("Item category is required");
-      return;
-    }
+    // Clear any previous validation errors
+    setValidationErrors({});
 
-    if (!generatedPrefix) {
-      toast.error("Pulse code is not generated yet. Please wait.");
-      return;
-    }
+    // Use validated and transformed data
+    const validatedData = validation.data;
 
-    // Create giveaway - empty strings will be converted to null, then to "N/A" in the slice
+    // Create giveaway
     dispatch(
       createGiveaway({
-        name: name.trim(),
-        category: category.trim() || null,
-        productName: productName.trim() || null,
-        imageUrl: image || null,
-        description: description.trim() || null,
-        units,
-        pulseCode: generatedPrefix,
-        legacyCode: legacyCode.trim() || generatedPrefix, // Use pulse code if legacy code is empty
+        name: validatedData.name,
+        category: validatedData.category || null,
+        productName: validatedData.productName || null,
+        imageUrl: validatedData.imageUrl || null,
+        description: validatedData.description || null,
+        units: validatedData.units,
+        pulseCode: validatedData.pulseCode,
+        legacyCode: validatedData.legacyCode || validatedData.pulseCode,
       })
     );
   };
@@ -149,6 +199,7 @@ export default function AddGiveawayForm() {
     setUnits(1);
     setLegacyCode("");
     setImage(null);
+    setValidationErrors({});
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -205,10 +256,16 @@ export default function AddGiveawayForm() {
               <input
                 type="text"
                 value={legacyCode}
-                onChange={(e) => setLegacyCode(e.target.value)}
+                onChange={(e) => {
+                  setLegacyCode(e.target.value);
+                  clearFieldError("legacyCode");
+                }}
                 placeholder="Optional legacy code"
-                className="w-full px-5 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition"
+                className={getInputClasses("legacyCode")}
               />
+              {hasError("legacyCode") && (
+                <p className="mt-1 text-sm text-red-600">{getErrorMessage("legacyCode")}</p>
+              )}
             </div>
           </div>
 
@@ -221,10 +278,16 @@ export default function AddGiveawayForm() {
               <input
                 type="text"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  clearFieldError("name");
+                }}
                 placeholder="e.g. Pen, Diary"
-                className="w-full px-5 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                className={getInputClasses("name")}
               />
+              {hasError("name") && (
+                <p className="mt-1 text-sm text-red-600">{getErrorMessage("name")}</p>
+              )}
             </div>
 
             <div>
@@ -234,10 +297,16 @@ export default function AddGiveawayForm() {
               <input
                 type="text"
                 value={category}
-                onChange={(e) => setCategory(e.target.value)}
+                onChange={(e) => {
+                  setCategory(e.target.value);
+                  clearFieldError("category");
+                }}
                 placeholder="Gift / Sample / Promotional Material"
-                className="w-full px-5 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition"
+                className={getInputClasses("category")}
               />
+              {hasError("category") && (
+                <p className="mt-1 text-sm text-red-600">{getErrorMessage("category")}</p>
+              )}
             </div>
           </div>
 
@@ -250,10 +319,16 @@ export default function AddGiveawayForm() {
               <input
                 type="text"
                 value={productName}
-                onChange={(e) => setProductName(e.target.value)}
+                onChange={(e) => {
+                  setProductName(e.target.value);
+                  clearFieldError("productName");
+                }}
                 placeholder="Panadol"
-                className="w-full px-5 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition"
+                className={getInputClasses("productName")}
               />
+              {hasError("productName") && (
+                <p className="mt-1 text-sm text-red-600">{getErrorMessage("productName")}</p>
+              )}
             </div>
 
             <div>
@@ -264,10 +339,16 @@ export default function AddGiveawayForm() {
                 type="number"
                 min="1"
                 value={units}
-                onChange={(e) => setUnits(parseInt(e.target.value) || 1)}
+                onChange={(e) => {
+                  setUnits(parseInt(e.target.value) || 1);
+                  clearFieldError("units");
+                }}
                 placeholder="1"
-                className="w-full px-5 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition"
+                className={getInputClasses("units")}
               />
+              {hasError("units") && (
+                <p className="mt-1 text-sm text-red-600">{getErrorMessage("units")}</p>
+              )}
             </div>
           </div>
 
@@ -279,10 +360,16 @@ export default function AddGiveawayForm() {
             <textarea
               rows={4}
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(e) => {
+                setDescription(e.target.value);
+                clearFieldError("description");
+              }}
               placeholder="Pain reliever tablet"
-              className="w-full px-5 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition resize-none"
+              className={`${getInputClasses("description")} resize-none`}
             />
+            {hasError("description") && (
+              <p className="mt-1 text-sm text-red-600">{getErrorMessage("description")}</p>
+            )}
           </div>
 
           {/* Buttons */}

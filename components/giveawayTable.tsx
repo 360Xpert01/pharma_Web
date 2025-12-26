@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { MoreVertical } from "lucide-react";
 import TableColumnHeader from "@/components/TableColumnHeader";
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -13,6 +13,17 @@ export default function GiveawayTable() {
 
   // Redux state
   const { giveaways, loading, error } = useAppSelector((state) => state.allGiveaways);
+
+  // Sort giveaways by createdAt (newest first)
+  const sortedGiveaways = useMemo(() => {
+    if (!giveaways || giveaways.length === 0) return [];
+
+    return [...giveaways].sort((a, b) => {
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return dateB - dateA; // Descending order (newest first)
+    });
+  }, [giveaways]);
 
   // Fetch giveaways on mount (prevent double call)
   useEffect(() => {
@@ -50,10 +61,10 @@ export default function GiveawayTable() {
         <div className="text-center py-12 text-gray-500">Loading giveaways...</div>
       ) : error ? (
         <div className="text-center py-12 text-red-500">{error}</div>
-      ) : giveaways.length === 0 ? (
+      ) : sortedGiveaways.length === 0 ? (
         <div className="text-center py-12 text-gray-500">No giveaways found</div>
       ) : (
-        giveaways.map((item) => (
+        sortedGiveaways.map((item) => (
           <div
             key={item.id}
             className="px-3 py-1 hover:bg-gray-50 transition-colors flex items-center"

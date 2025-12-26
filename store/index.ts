@@ -25,6 +25,9 @@ import createCallPointReducer from "./slices/callPoint/createCallPointSlice";
 import allGiveawaysReducer from "./slices/giveaway/getAllGiveawaysSlice";
 import createGiveawayReducer from "./slices/giveaway/createGiveawaySlice";
 import allProductsReducer from "./slices/product/getAllProductsSlice";
+import productCategoriesReducer from "./slices/product/getProductCategoriesSlice";
+import createProductReducer from "./slices/product/createProductSlice";
+import allTeamsReducer from "./slices/team/getAllTeamsSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -48,6 +51,9 @@ const rootReducer = combineReducers({
   allGiveaways: allGiveawaysReducer,
   createGiveaway: createGiveawayReducer,
   allProducts: allProductsReducer,
+  productCategories: productCategoriesReducer,
+  createProduct: createProductReducer,
+  allTeams: allTeamsReducer,
 });
 
 const persistConfig = {

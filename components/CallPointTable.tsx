@@ -64,13 +64,11 @@ export default function CallPointsList() {
 
                 {/* Latitude */}
                 <div className="flex-1 text-sm text-gray-600">
-                  <span className="font-medium">Lat: </span>
                   <span>{point.latitude}</span>
                 </div>
 
                 {/* Longitude */}
                 <div className="flex-1 text-sm text-gray-600">
-                  <span className="font-medium">Long: </span>
                   <span>{point.longitude}</span>
                 </div>
 

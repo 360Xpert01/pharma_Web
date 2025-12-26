@@ -12,6 +12,7 @@ import {
 } from "@/store/slices/preFix/generatePrefixSlice";
 import toast from "react-hot-toast";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { roleCreationSchema } from "@/validations/roleValidation";
 
 interface Responsibility {
   id: string;
@@ -27,6 +28,9 @@ export default function AddNewRoleForm() {
     product: true,
     team: true,
   });
+
+  // Validation errors state
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -47,6 +51,27 @@ export default function AddNewRoleForm() {
       dispatch(resetGeneratePrefixState());
     };
   }, [dispatch]);
+
+  // Helper functions for validation
+  const getErrorMessage = (fieldName: string) => validationErrors[fieldName] || "";
+  const hasError = (fieldName: string) => !!validationErrors[fieldName];
+  const clearFieldError = (fieldName: string) => {
+    if (validationErrors[fieldName]) {
+      setValidationErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[fieldName];
+        return newErrors;
+      });
+    }
+  };
+
+  const getInputClasses = (fieldName: string) => {
+    const baseClasses = "w-full px-4 py-3 border rounded-xl outline-none";
+    if (hasError(fieldName)) {
+      return `${baseClasses} border-red-500 focus:ring-2 focus:ring-red-500 focus:border-red-500`;
+    }
+    return `${baseClasses} border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent`;
+  };
 
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
@@ -89,26 +114,51 @@ export default function AddNewRoleForm() {
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    if (!roleName.trim()) {
-      toast.error("Role name is required");
+    // Prepare form data for validation
+    const formData = {
+      roleName,
+      pulseCode: generatedPrefix || "",
+    };
+
+    // Validate using Zod schema
+    const validation = roleCreationSchema.safeParse(formData);
+
+    if (!validation.success) {
+      // Create an errors object mapping field names to error messages
+      const errors: Record<string, string> = {};
+      validation.error.errors.forEach((err) => {
+        const fieldName = err.path[0] as string;
+        if (!errors[fieldName]) {
+          errors[fieldName] = err.message;
+        }
+      });
+
+      // Set validation errors to display inline
+      setValidationErrors(errors);
+
+      // Also show the first error as a toast for immediate feedback
+      const firstError = validation.error.errors[0];
+      toast.error(firstError.message);
       return;
     }
 
-    if (!generatedPrefix) {
-      toast.error("Pulse code is not generated yet. Please wait.");
-      return;
-    }
+    // Clear any previous validation errors
+    setValidationErrors({});
+
+    // Use validated data
+    const validatedData = validation.data;
 
     const result = await dispatch(
       createRole({
-        roleName: roleName.trim(),
-        pulseCode: generatedPrefix,
+        roleName: validatedData.roleName,
+        pulseCode: validatedData.pulseCode,
       })
     );
 
     if (createRole.fulfilled.match(result)) {
       toast.success(message || "Role created successfully!");
       setRoleName("");
+      setValidationErrors({});
       dispatch(resetGeneratePrefixState());
       router.push("/dashboard/User-Role");
     } else {
@@ -132,7 +182,7 @@ export default function AddNewRoleForm() {
               Pules Code
             </label>
             <label className="block text-sm font-medium text-gray-700 w-[25%] mr-6">
-              Role Name
+              Role Name <span className="text-red-500">*</span>
             </label>
           </div>
 
@@ -152,10 +202,16 @@ export default function AddNewRoleForm() {
               <input
                 type="text"
                 value={roleName}
-                onChange={(e) => setRoleName(e.target.value)}
+                onChange={(e) => {
+                  setRoleName(e.target.value);
+                  clearFieldError("roleName");
+                }}
                 placeholder="e.g. Sr. Sales Manager"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                className={getInputClasses("roleName")}
               />
+              {hasError("roleName") && (
+                <p className="mt-1 text-sm text-red-600">{getErrorMessage("roleName")}</p>
+              )}
             </div>
             <p className="text-xs text-gray-500 mt-2 w-[20%]">
               You can easily name the role you want and take on different responsibilities.
