@@ -63,13 +63,21 @@ export const createGiveaway = createAsyncThunk<
     }
 
     // Transform payload to handle null values
-    const transformedPayload = {
+    // Note: imageUrl should be omitted if not provided, as API expects valid URI format
+    const transformedPayload: any = {
       ...payload,
       category: payload.category || "N/A",
       productName: payload.productName || "N/A",
-      imageUrl: payload.imageUrl || "N/A",
       description: payload.description || "N/A",
     };
+
+    // Only include imageUrl if it's a valid URL (not base64, not null, not empty)
+    // For now, we omit it entirely since we're not uploading images to a server
+    // If you have image upload functionality, replace this with the actual uploaded URL
+    if (payload.imageUrl && payload.imageUrl.startsWith("http")) {
+      transformedPayload.imageUrl = payload.imageUrl;
+    }
+    // Otherwise, omit the field entirely
 
     const response = await axios.post<CreateGiveawayResponse>(
       `${baseUrl}api/v1/giveaway`,

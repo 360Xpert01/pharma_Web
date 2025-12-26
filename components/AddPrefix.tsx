@@ -6,19 +6,47 @@ import { fetchPrefixes } from "@/store/slices/preFix/allPreFixTable";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "./ui/use-toast";
 import { createPrefix } from "@/store/slices/preFix/postPrefix";
+import { prefixCreationSchema } from "@/validations/prefixValidation";
 
 export default function AddPrefixNameComponent() {
   const [selectedTable, setSelectedTable] = useState("");
   const [prefix, setPrefix] = useState("");
   const [validationError, setValidationError] = useState("");
 
+  // Validation errors state
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+
   const preview = prefix ? `${prefix.toUpperCase()} 01` : "";
+
+  // Helper functions for validation
+  const getErrorMessage = (fieldName: string) => validationErrors[fieldName] || "";
+  const hasError = (fieldName: string) => !!validationErrors[fieldName];
+  const clearFieldError = (fieldName: string) => {
+    if (validationErrors[fieldName]) {
+      setValidationErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[fieldName];
+        return newErrors;
+      });
+    }
+    // Also clear the old validationError state
+    setValidationError("");
+  };
+
+  const getInputClasses = (fieldName: string) => {
+    const baseClasses =
+      "w-full px-4 py-3 bg-gray-50 border rounded-xl focus:outline-none focus:ring-2";
+    if (hasError(fieldName)) {
+      return `${baseClasses} border-red-500 focus:ring-red-500 focus:border-red-500`;
+    }
+    return `${baseClasses} border-gray-200 focus:ring-blue-500 focus:border-blue-500`;
+  };
 
   const handlePrefixChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
 
     // Clear validation error when user starts typing
-    setValidationError("");
+    clearFieldError("code");
 
     // Silently prevent spaces - don't update state if space is entered
     if (value.includes(" ")) {
@@ -34,28 +62,46 @@ export default function AddPrefixNameComponent() {
   };
 
   const handleAddPrefix = async () => {
-    if (!selectedTable || !prefix) {
-      setValidationError("Please select a table and enter a prefix");
-      return;
-    }
-
-    // Final validation before submission
-    if (prefix.includes(" ")) {
-      setValidationError("Spaces are not allowed in prefix code");
-      return;
-    }
-
-    if (prefix.length > 5) {
-      setValidationError("Prefix code cannot exceed 5 characters");
-      return;
-    }
-
-    const payload = {
-      code: prefix.toUpperCase(), // e.g., "EMP"
-      entity: selectedTable, // long entity string from dropdown
+    // Prepare form data for validation
+    const formData = {
+      code: prefix,
+      entity: selectedTable,
     };
 
-    console.log("Payload", payload);
+    // Validate using Zod schema
+    const validation = prefixCreationSchema.safeParse(formData);
+
+    if (!validation.success) {
+      // Create an errors object mapping field names to error messages
+      const errors: Record<string, string> = {};
+      validation.error.errors.forEach((err) => {
+        const fieldName = err.path[0] as string;
+        if (!errors[fieldName]) {
+          errors[fieldName] = err.message;
+        }
+      });
+
+      // Set validation errors to display inline
+      setValidationErrors(errors);
+
+      // Also show the first error as a toast for immediate feedback
+      const firstError = validation.error.errors[0];
+      toast({
+        title: "Error",
+        description: firstError.message,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Clear validation errors
+    setValidationErrors({});
+    setValidationError("");
+
+    const payload = {
+      code: validation.data.code, // Already uppercased by schema
+      entity: validation.data.entity,
+    };
 
     const result = await dispatch(createPrefix(payload));
 
@@ -108,14 +154,17 @@ export default function AddPrefixNameComponent() {
               {/* Select Data Table Dropdown */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Select Data Table
+                  Select Data Table <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <select
                     value={selectedTable}
-                    onChange={(e) => setSelectedTable(e.target.value)}
+                    onChange={(e) => {
+                      setSelectedTable(e.target.value);
+                      clearFieldError("entity");
+                    }}
                     disabled={loading || !tables || tables.length === 0}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 pr-10"
+                    className={getInputClasses("entity")}
                   >
                     <option value="">{loading ? "Loading tables..." : "Select a table..."}</option>
                     {tables?.map((tableName: string, index: number) => (
@@ -126,27 +175,33 @@ export default function AddPrefixNameComponent() {
                   </select>
                   <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
                 </div>
-                {/* Reserve space to align with other fields */}
-                <div className="h-5 mt-1"></div>
+                {/* Reserve space for error message */}
+                <div className="h-5 mt-1">
+                  {hasError("entity") && (
+                    <p className="text-sm text-red-600">{getErrorMessage("entity")}</p>
+                  )}
+                </div>
               </div>
 
               {/* Prefix Input */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Prefix</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Prefix <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
                   value={prefix}
                   onChange={handlePrefixChange}
                   placeholder="e.g. EMP, max 5 characters"
-                  className={`w-full px-4 py-3 bg-gray-50 border rounded-xl focus:outline-none focus:ring-2 ${
-                    validationError
-                      ? "border-red-500 focus:ring-red-500 focus:border-red-500"
-                      : "border-gray-200 focus:ring-blue-500 focus:border-blue-500"
-                  }`}
+                  className={getInputClasses("code")}
                 />
                 {/* Reserve space for error message to prevent layout shift */}
                 <div className="h-5 mt-1">
-                  {validationError && <p className="text-sm text-red-600">{validationError}</p>}
+                  {(hasError("code") || validationError) && (
+                    <p className="text-sm text-red-600">
+                      {getErrorMessage("code") || validationError}
+                    </p>
+                  )}
                 </div>
               </div>
 

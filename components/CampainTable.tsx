@@ -1,105 +1,22 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MoreVertical } from "lucide-react";
 import TableColumnHeader from "@/components/TableColumnHeader";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { getAllTeams } from "@/store/slices/team/getAllTeamsSlice";
+import type { TeamItem } from "@/store/slices/team/getAllTeamsSlice";
 
-interface Campaign {
-  id: string;
-  name: string;
-  channel: string;
-  brand: string;
-  productTitle?: string;
-  products: string[];
-  assignedUsers: string[];
-  status: "Active" | "Inactive";
-}
-
-const campaignsData: Campaign[] = [
-  {
-    id: "1",
-    name: "Migraine Headache",
-    channel: "Doctors",
-    brand: "Haleon",
-    productTitle: "Panadol",
-    products: ["Panadol Extra", "Paracetamol", "Caffeine"],
-    assignedUsers: ["/u1.jpg", "/u2.jpg", "/u3.jpg", "/u4.jpg", "/u5.jpg"],
-    status: "Active",
-  },
-  {
-    id: "2",
-    name: "High Blood Pressure",
-    channel: "Chain Pharmacy",
-    brand: "PharmaCorp",
-    productTitle: "Amlodipine",
-    products: ["Lisinopril", "Losartan", "Hydrochlorothiazide"],
-    assignedUsers: ["/u6.jpg", "/u7.jpg", "/u8.jpg", "/u9.jpg"],
-    status: "Active",
-  },
-  {
-    id: "3",
-    name: "Asthma",
-    channel: "Doctors",
-    productTitle: "Albuterol",
-    brand: "HealthPlus",
-    products: ["Budesonide", "Levalbuterol", "Montelukast"],
-    assignedUsers: ["/u10.jpg", "/u11.jpg", "/u12.jpg"],
-    status: "Active",
-  },
-  {
-    id: "4",
-    name: "Diabetes Type 2",
-    channel: "Pharmacy/Stores",
-    productTitle: "Metformin",
-    brand: "Medico",
-    products: ["Glyburide", "Dapagliflozin", "Liraglutide"],
-    assignedUsers: ["/u13.jpg", "/u14.jpg", "/u15.jpg", "/u16.jpg"],
-    status: "Active",
-  },
-  {
-    id: "5",
-    name: "Cholesterol",
-    channel: "GT’s",
-    productTitle: "Cetirizine",
-    brand: "CardioCare",
-    products: ["Simvastatin", "Rosuvastatin", "Ezetimibe"],
-    assignedUsers: ["/u17.jpg", "/u18.jpg", "/u19.jpg"],
-    status: "Inactive",
-  },
-  {
-    id: "6",
-    name: "Allergies",
-    channel: "Doctors",
-    productTitle: "Cetirizine",
-    brand: "AllergyRelief",
-    products: ["Loratadine", "Fexofenadine", "Desloratadine"],
-    assignedUsers: ["/u20.jpg", "/u21.jpg", "/u22.jpg", "/u23.jpg", "/u24.jpg"],
-    status: "Active",
-  },
-  {
-    id: "7",
-    name: "Arthritis",
-    channel: "Pharmacy/Stores",
-    productTitle: "Ibuprofen",
-    brand: "PainManagement",
-    products: ["Naproxen", "Celecoxib", "Diclofenac"],
-    assignedUsers: ["/u25.jpg", "/u26.jpg", "/u27.jpg", "/u28.jpg"],
-    status: "Active",
-  },
-  {
-    id: "8",
-    name: "Anxiety",
-    channel: "Doctors",
-    productTitle: "Sertraline",
-    brand: "MentalWellness",
-    products: ["Escitalopram", "Fluoxetine", "Paroxetine"],
-    assignedUsers: ["/u29.jpg", "/u30.jpg"],
-    status: "Active",
-  },
-];
 export default function CampaignsTable() {
+  const dispatch = useAppDispatch();
+  const { teams, loading, error } = useAppSelector((state) => state.allTeams);
+
   // Har row ka apna dropdown state
   const [openId, setOpenId] = useState<string | null>(null);
+
+  useEffect(() => {
+    dispatch(getAllTeams());
+  }, [dispatch]);
 
   const handleToggle = (id: string) => {
     setOpenId((prev) => (prev === id ? null : id));
@@ -109,12 +26,66 @@ export default function CampaignsTable() {
   const campaignColumns = [
     { label: "Name", className: "col-span-2" },
     { label: "Channel", className: "col-span-2" },
-    { label: "Brand", className: "col-span-2" },
+    { label: "Call Point", className: "col-span-2" },
     { label: "Products", className: "col-span-2 ml-6" },
     { label: "Assigned", className: "col-span-2 ml-[160px]" },
     { label: "Status", className: "col-span-1 ml-[80px]" },
     { label: "", className: "col-span-1 ml-6" },
   ];
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="w-full overflow-hidden">
+        <div className="px-3">
+          <TableColumnHeader columns={campaignColumns} gridCols={12} />
+        </div>
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+            <p className="mt-4 text-gray-600">Loading teams...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="w-full overflow-hidden">
+        <div className="px-3">
+          <TableColumnHeader columns={campaignColumns} gridCols={12} />
+        </div>
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <p className="text-red-600 font-medium">Error loading teams</p>
+            <p className="text-gray-600 mt-2">{error}</p>
+            <button
+              onClick={() => dispatch(getAllTeams())}
+              className="mt-4 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition cursor-pointer"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Empty state
+  if (!teams || teams.length === 0) {
+    return (
+      <div className="w-full overflow-hidden">
+        <div className="px-3">
+          <TableColumnHeader columns={campaignColumns} gridCols={12} />
+        </div>
+        <div className="flex items-center justify-center py-12">
+          <p className="text-gray-600">No teams found</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full overflow-hidden">
@@ -125,72 +96,90 @@ export default function CampaignsTable() {
 
       {/* Rows */}
       <div>
-        {campaignsData.map((campaign) => (
+        {teams.map((team) => (
           <div
-            key={campaign.id}
+            key={team.id}
             className="px-3 py-1 hover:bg-gray-50 transition-colors duration-200 relative"
             onClick={() => setOpenId(null)}
           >
             {/* Grid with all columns including actions */}
             <div className="rounded-md p-2 border border-gray-200 grid grid-cols-12 gap-3 text-sm">
               {/* Name */}
-              <div className="col-span-2 font-semibold text-font-semibold">{campaign.name}</div>
+              <div className="col-span-2 font-semibold text-font-semibold">{team.name}</div>
 
               {/* Channel */}
-              <div className="col-span-2 font-semibold text-black">{campaign.channel}</div>
+              <div className="col-span-2 font-semibold text-black">{team.channelName || "N/A"}</div>
 
-              {/* Brand */}
-              <div className="col-span-2 font-semibold text-black">{campaign.brand}</div>
+              {/* Call Point */}
+              <div className="col-span-2 font-semibold text-black">
+                {team.callPointName || "N/A"}
+              </div>
 
               {/* Products */}
               <div className="col-span-2">
-                <p className="font-bold mb-0">{campaign.productTitle}</p>
-                <div className="flex flex-wrap gap-1">
-                  {campaign.products.map((product, idx) => (
-                    <span key={idx} className="text-gray-400 text-sm font-normal">
-                      {product}
-                    </span>
-                  ))}
-                </div>
+                {team.products && team.products.length > 0 ? (
+                  <>
+                    <p className="font-bold mb-0">{team.products[0]?.name || ""}</p>
+                    <div className="flex flex-wrap gap-1">
+                      {team.products[0]?.skus?.slice(0, 3).map((sku, idx) => (
+                        <span key={sku.id} className="text-gray-400 text-sm font-normal">
+                          {sku.sku}
+                        </span>
+                      ))}
+                      {team.products[0]?.skus && team.products[0].skus.length > 3 && (
+                        <span className="text-gray-400 text-sm font-normal">
+                          +{team.products[0].skus.length - 3} more
+                        </span>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <span className="text-gray-400">No products</span>
+                )}
               </div>
 
               {/* Assigned Users */}
               <div className="col-span-2 flex items-center ml-[150px]">
-                <div className="flex -space-x-2">
-                  {campaign.assignedUsers.slice(0, 5).map((avatar, idx) => (
-                    <div
-                      key={idx}
-                      className="w-9 h-9 rounded-full border-2 border-white overflow-hidden ring-2 ring-gray-100"
-                    >
-                      <img
-                        src={avatar}
-                        alt={`User ${idx + 1}`}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.currentTarget.src = `https://ui-avatars.com/api/?name=User+${idx + 1}`;
-                        }}
-                      />
-                    </div>
-                  ))}
+                {team.users && team.users.length > 0 ? (
+                  <div className="flex -space-x-2">
+                    {team.users.slice(0, 5).map((user, idx) => (
+                      <div
+                        key={user.id}
+                        className="w-9 h-9 rounded-full border-2 border-white overflow-hidden ring-2 ring-gray-100"
+                      >
+                        <img
+                          src={
+                            user.profilePicture ||
+                            `https://ui-avatars.com/api/?name=User+${idx + 1}`
+                          }
+                          alt={`User ${idx + 1}`}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.src = `https://ui-avatars.com/api/?name=User+${idx + 1}`;
+                          }}
+                        />
+                      </div>
+                    ))}
 
-                  {campaign.assignedUsers.length > 5 && (
-                    <div className="w-9 h-9 rounded-full border-2 border-white flex items-center justify-center text-xs font-medium text-gray-600 ring-2 ring-gray-100">
-                      +{campaign.assignedUsers.length - 5}
-                    </div>
-                  )}
-                </div>
+                    {team.users.length > 5 && (
+                      <div className="w-9 h-9 rounded-full border-2 border-white flex items-center justify-center text-xs font-medium text-gray-600 ring-2 ring-gray-100 bg-gray-100">
+                        +{team.users.length - 5}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <span className="text-gray-400 text-sm">No users assigned</span>
+                )}
               </div>
 
               {/* Status */}
               <div className="col-span-1 flex items-center justify-center ml-[100px]">
                 <span
                   className={`px-4 min-w-[90px] text-center py-1 rounded-full text-sm font-medium ${
-                    campaign.status === "Active"
-                      ? "bg-green-100 text-green-600"
-                      : "bg-gray-100 text-gray-600"
+                    team.isActive ? "bg-green-100 text-green-600" : "bg-gray-100 text-gray-600"
                   }`}
                 >
-                  {campaign.status}
+                  {team.isActive ? "Active" : "Inactive"}
                 </span>
               </div>
 
@@ -200,41 +189,41 @@ export default function CampaignsTable() {
                 onClick={(e) => e.stopPropagation()}
               >
                 <button
-                  onClick={() => handleToggle(campaign.id)}
-                  className="text-gray-400 hover:text-gray-600 transition"
+                  onClick={() => handleToggle(team.id)}
+                  className="text-gray-400 hover:text-gray-600 transition cursor-pointer"
                 >
                   <MoreVertical className="w-5 h-5" />
                 </button>
 
                 {/* Dropdown */}
-                {openId === campaign.id && (
+                {openId === team.id && (
                   <div className="absolute right-0 top-6 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                     <button
                       onClick={() => {
-                        console.log("Edit", campaign.id);
+                        console.log("Edit", team.id);
                         setOpenId(null);
                       }}
-                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
                     >
                       Edit
                     </button>
 
                     <button
                       onClick={() => {
-                        console.log("Duplicate", campaign.id);
+                        console.log("Duplicate", team.id);
                         setOpenId(null);
                       }}
-                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
                     >
                       Duplicate
                     </button>
 
                     <button
                       onClick={() => {
-                        console.log("Delete", campaign.id);
+                        console.log("Delete", team.id);
                         setOpenId(null);
                       }}
-                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 cursor-pointer"
                     >
                       Delete
                     </button>
