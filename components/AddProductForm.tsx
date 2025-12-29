@@ -37,7 +37,7 @@ export default function AddProductForm() {
   const [categoryId, setCategoryId] = useState("");
   const [chemicalFormula, setChemicalFormula] = useState("");
   const [isPrescription, setIsPrescription] = useState("");
-  const [skus, setSkus] = useState<string[]>(["Capsule 500mg"]);
+  const [skus, setSkus] = useState<string[]>(["500mg", "750mg", "1000mg"]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch product categories and generate prefix on mount
@@ -160,15 +160,15 @@ export default function AddProductForm() {
           {/* Header */}
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Add New Product</h1>
-            <p className="text-sm text-gray-500 mt-2">Fill in the product details below</p>
+            <p className="text-sm text-gray-500 mt-2">Unlock the potential of your candidates</p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-[30%_70%] gap-12 pr-12">
             {/* Left: Image Upload */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div
                 onClick={handleImageClick}
-                className="relative w-full aspect-square max-w-sm bg-gray-100 border-2 border-dashed border-gray-300 rounded-2xl cursor-pointer overflow-hidden group hover:border-gray-400 transition-all"
+                className="relative w-full aspect-square bg-gray-100 border-2 border-dashed border-gray-300 rounded-2xl cursor-pointer overflow-hidden group hover:border-gray-400 transition-all"
               >
                 {image ? (
                   <div className="relative w-full h-full">
@@ -188,63 +188,69 @@ export default function AddProductForm() {
                   </div>
                 )}
               </div>
+
+              {/* Small Thumbnail */}
+              <div
+                onClick={handleImageClick}
+                className="w-24 h-24 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 transition-all flex items-center justify-center"
+              >
+                {image ? (
+                  <Image
+                    src={image}
+                    alt="Thumbnail"
+                    width={96}
+                    height={96}
+                    className="object-cover rounded-lg"
+                  />
+                ) : (
+                  <Upload className="w-8 h-8 text-gray-400" />
+                )}
+              </div>
             </div>
 
             {/* Right: Form Fields */}
-            <div className="lg:col-span-2 space-y-8">
-              {/* Product Codes */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Pulse Generated Code */}
+            <div className="space-y-6">
+              {/* FIRST ROW: Pulse Code + Product code (2 columns) */}
+              <div className="grid grid-cols-2 gap-4">
+                {/* Pulse Code */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Product Code (Pulse Generated)
+                    Pules Code<span className="text-red-500">*</span>
                   </label>
-                  <div className="px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl font-mono text-gray-900">
-                    {generatedPrefix || (prefixLoading ? "Generating..." : "PLS_PROD_000001")}
+                  <div className="px-3 py-3 bg-gray-50 border border-gray-200 rounded-lg font-mono text-gray-600 text-sm">
+                    {generatedPrefix || "PLS_PRD_001247"}
                   </div>
                 </div>
 
-                {/* Legacy Code */}
+                {/* Product code */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Product Code (Legacy) <span className="text-red-500">*</span>
+                    Product code<span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     value={legacyCode}
                     onChange={(e) => setLegacyCode(e.target.value)}
-                    placeholder="e.g. MED-2025-001"
-                    className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+                    placeholder="001247"
+                    className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
                   />
                 </div>
               </div>
 
-              {/* Product Name & Category */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* SECOND ROW: Category + Name + Formula (3 columns) */}
+              <div className="grid grid-cols-3 gap-4">
+                {/* Product Category */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Product Name <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={productName}
-                    onChange={(e) => setProductName(e.target.value)}
-                    placeholder="e.g. Amoxicillin 500mg"
-                    className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Category <span className="text-red-500">*</span>
+                    Product Category<span className="text-red-500">*</span>
                   </label>
                   <select
                     value={categoryId}
                     onChange={(e) => setCategoryId(e.target.value)}
-                    className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none bg-white cursor-pointer"
+                    className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white cursor-pointer text-sm"
                   >
                     <option value="">
-                      {categoriesLoading ? "Loading categories..." : "Select a category"}
+                      {categoriesLoading ? "Loading..." : "e.g. Doctor, Heart..."}
                     </option>
                     {categories.map((cat) => (
                       <option key={cat.id} value={cat.id}>
@@ -253,83 +259,112 @@ export default function AddProductForm() {
                     ))}
                   </select>
                 </div>
-              </div>
 
-              {/* Prescription & Formula */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Product Name */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Prescription Required
+                    Product Name<span className="text-red-500">*</span>
                   </label>
-                  <div className="flex items-center gap-4">
-                    <input
-                      type="text"
-                      value={isPrescription}
-                      onChange={(e) => setIsPrescription(e.target.value)}
-                      placeholder="Prescription Required"
-                      className="w-full px-3 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-mono"
-                    />
-                  </div>
+                  <input
+                    type="text"
+                    value={productName}
+                    onChange={(e) => setProductName(e.target.value)}
+                    placeholder="e.g. Panadol"
+                    className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                  />
                 </div>
 
+                {/* Product Formula */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Chemical Formula
+                    Product Formula<span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     value={chemicalFormula}
                     onChange={(e) => setChemicalFormula(e.target.value)}
-                    placeholder="e.g. C₁₆H₁₉N₃O₅S"
-                    className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-mono"
+                    placeholder="e.g. divalproex sodium"
+                    className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
                   />
                 </div>
               </div>
 
-              {/* SKUs Section */}
-              <div className="border-t border-gray-200 pt-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  SKUs ({skus.filter((s) => s.trim()).length})
-                </h3>
-                <div className="space-y-4">
-                  {skus.map((sku, index) => (
-                    <div key={index} className="flex items-center gap-3">
-                      <input
-                        type="text"
-                        value={sku}
-                        onChange={(e) => updateSku(index, e.target.value)}
-                        placeholder="e.g. Capsule 500mg"
-                        className="flex-1 px-5 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
-                      />
-                      {skus.length > 1 && (
-                        <button
-                          onClick={() => removeSku(index)}
-                          className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition cursor-pointer"
-                        >
-                          <X className="w-5 h-5" />
-                        </button>
-                      )}
-                    </div>
-                  ))}
+              {/* THIRD ROW: Product Description (full width) */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Product Description<span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={isPrescription}
+                  onChange={(e) => setIsPrescription(e.target.value)}
+                  placeholder="e.g. Panadol"
+                  className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                />
+              </div>
+
+              {/* SKU SECTION */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Add Product SKU's<span className="text-red-500">*</span>
+                </label>
+
+                {/* Input + Button side by side */}
+                <div className="flex gap-3">
+                  <input
+                    type="text"
+                    id="sku-input"
+                    placeholder="e.g. Capsule 500Mg"
+                    className="flex-1 px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && e.currentTarget.value.trim()) {
+                        setSkus([...skus, e.currentTarget.value.trim()]);
+                        e.currentTarget.value = "";
+                      }
+                    }}
+                  />
                   <button
-                    onClick={addSkuField}
-                    className="px-6 py-3 border border-dashed border-blue-400 text-blue-600 rounded-xl hover:bg-blue-50 transition flex items-center gap-2 text-sm font-medium cursor-pointer"
+                    onClick={() => {
+                      const input = document.getElementById("sku-input") as HTMLInputElement;
+                      if (input && input.value.trim()) {
+                        setSkus([...skus, input.value.trim()]);
+                        input.value = "";
+                      }
+                    }}
+                    className="px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-600 transition flex items-center gap-2 text-sm font-medium cursor-pointer whitespace-nowrap"
                   >
-                    <Plus className="w-5 h-5" />
-                    Add Another SKU
+                    <Plus className="w-4 h-4" />
+                    Add Brand SKUs
                   </button>
+                </div>
+
+                {/* SKU Chips Display */}
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {skus
+                    .filter((s) => s.trim())
+                    .map((sku, index) => (
+                      <div
+                        key={index}
+                        className="px-4 py-2 bg-blue-600 text-white rounded-full text-sm font-medium flex items-center gap-2 hover:bg-blue-600 transition"
+                      >
+                        {sku}
+                        <button onClick={() => removeSku(index)} className="cursor-pointer">
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
                 </div>
               </div>
 
-              {/* Buttons */}
-              <div className="flex justify-end gap-4 pt-8 border-t border-gray-200">
-                <button className="px-8 py-4 border border-gray-300 text-gray-700 font-medium rounded-full hover:bg-gray-50 transition cursor-pointer">
+              {/* FOOTER ACTIONS */}
+              <div className="flex justify-end gap-4 pt-6">
+                <button className="px-8 py-3 border border-blue-500 text-blue-500 font-medium rounded-full hover:bg-blue-50 transition cursor-pointer">
                   Discard
                 </button>
                 <button
                   onClick={handleSubmit}
                   disabled={productLoading}
-                  className="px-10 py-4 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition flex items-center gap-3 shadow-lg cursor-pointer disabled:bg-blue-400 disabled:cursor-not-allowed"
+                  className="px-10 py-3 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition flex items-center gap-3 shadow-lg cursor-pointer disabled:bg-blue-400 disabled:cursor-not-allowed"
                 >
                   {productLoading ? (
                     <>

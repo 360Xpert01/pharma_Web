@@ -35,7 +35,9 @@ export default function TargetConfigForm({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
         {/* Select Team */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Select Team*</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Select Team<span className="text-red-500">*</span>
+          </label>
           <select
             value={selectedTeam}
             onChange={(e) => onTeamChange(e.target.value)}
@@ -50,7 +52,9 @@ export default function TargetConfigForm({
 
         {/* Target Month */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Target Month*</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Target Month<span className="text-red-500">*</span>
+          </label>
           <select
             value={targetMonth}
             onChange={(e) => onMonthChange(e.target.value)}
@@ -78,7 +82,9 @@ export default function TargetConfigForm({
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Team Role Code */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Team Role Code</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Team Role Code<span className="text-red-500">*</span>
+          </label>
           <input
             type="text"
             value={teamRoleCode}
