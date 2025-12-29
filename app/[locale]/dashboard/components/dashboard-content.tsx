@@ -56,6 +56,7 @@ import PreFixTable from "@/components/PreFixTable";
 import TargetListView from "@/components/TargetListView";
 import { useState } from "react";
 import EmployeeProfileTabs from "@/components/EmployeeProfileTabs";
+import AddAllocateGivewaySample from "@/components/AddAllocateGivewaySample";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -105,6 +106,8 @@ export function DashboardContent({
   prefixPro,
   targetListView,
   showTabs,
+  allocateGiveaways,
+  AddAllocateGiveaway,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -223,6 +226,20 @@ export function DashboardContent({
           </div>
         )}
         {setTargetlist && <SetTargetPage />}
+
+        {allocateGiveaways && (
+          <div className="">
+            {" "}
+            {/* rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)]  */}
+            <AddAllocateGivewaySample />
+          </div>
+        )}
+
+        {AddAllocateGiveaway && (
+          <div className="">
+            <AddAllocateGivewaySample />
+          </div>
+        )}
 
         {doctorForm && (
           <div className=" rounded-md  shadow-[0px_5px_10px_rgba(0,0,0,0.20)] ">

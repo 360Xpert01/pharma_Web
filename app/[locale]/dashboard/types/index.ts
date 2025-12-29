@@ -152,4 +152,6 @@ export interface DashboardProps {
   prefixPro?: boolean;
   targetListView?: boolean;
   showTabs?: boolean;
+  allocateGiveaways?: boolean;
+  AddAllocateGiveaway?: boolean;
 }

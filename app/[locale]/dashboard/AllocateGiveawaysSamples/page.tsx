@@ -2,17 +2,17 @@
 
 import { DashboardContent } from "../components/dashboard-content";
 
-export default function SetTargetRoute() {
+export default function AllocateGiveawaysSamplesRoute() {
   return (
-    <div className="bg-gray-50">
+    <div className="bg-white">
       <DashboardContent
-        sample={"Set Team Target"}
+        sample={"Allocate Giveaways & Samples"}
         descrip={"Unlock the potential of your candidates"}
         hideHeader={false}
         hideMetrics={true}
         hideData={true}
         btnTrue={true}
-        setTargetlist={true}
+        AddAllocateGiveaway={true}
       />
     </div>
   );
