@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import TargetConfigForm from "./TargetConfigForm";
 import ManagerSection, { Manager } from "./ManagerSection";
+import ConflictModal from "./ConflictModal";
 
 export default function SetTargetPage() {
   // Form state
@@ -12,6 +13,9 @@ export default function SetTargetPage() {
   // Manager selection state
   const [selectedManager1, setSelectedManager1] = useState("manager1");
   const [selectedManager2, setSelectedManager2] = useState("manager2");
+
+  // Conflict Modal state
+  const [isConflictModalOpen, setIsConflictModalOpen] = useState(false);
 
   // Mock data for demonstration - matches screenshot
   const [managers, setManagers] = useState<Manager[]>([
@@ -287,6 +291,7 @@ export default function SetTargetPage() {
                     manager={manager}
                     onDeleteProduct={handleDeleteProduct}
                     onProductInputChange={handleProductInputChange}
+                    onConflictClick={() => setIsConflictModalOpen(true)}
                   />
                 );
               })}
@@ -307,6 +312,9 @@ export default function SetTargetPage() {
           </button>
         </div>
       </div>
+
+      {/* Conflict Modal */}
+      <ConflictModal isOpen={isConflictModalOpen} onClose={() => setIsConflictModalOpen(false)} />
     </div>
   );
 }

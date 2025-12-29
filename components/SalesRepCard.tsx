@@ -18,12 +18,14 @@ interface SalesRepCardProps {
   rep: SalesRep;
   onDeleteProduct: (repId: string, productId: string) => void;
   onProductInputChange: (repId: string, productId: string, value: string) => void;
+  onConflictClick?: () => void;
 }
 
 export default function SalesRepCard({
   rep,
   onDeleteProduct,
   onProductInputChange,
+  onConflictClick,
 }: SalesRepCardProps) {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-5 space-y-4">
@@ -87,6 +89,7 @@ export default function SalesRepCard({
             product={product}
             onDelete={(productId) => onDeleteProduct(rep.id, productId)}
             onInputChange={(productId, value) => onProductInputChange(rep.id, productId, value)}
+            onConflictClick={onConflictClick}
           />
         ))}
       </div>

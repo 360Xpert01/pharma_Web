@@ -17,12 +17,14 @@ interface ProductTargetRowProps {
   product: ProductTarget;
   onDelete: (id: string) => void;
   onInputChange: (id: string, value: string) => void;
+  onConflictClick?: () => void;
 }
 
 export default function ProductTargetRow({
   product,
   onDelete,
   onInputChange,
+  onConflictClick,
 }: ProductTargetRowProps) {
   const getPercentageColor = (percentage: number) => {
     if (percentage === 100) return "text-green-600";
@@ -84,7 +86,10 @@ export default function ProductTargetRow({
 
       {/* Conflict Error Message */}
       {product.hasConflict && (
-        <div className="flex items-center gap-2 px-3 py-2 bg-red-50 border border-red-200 rounded-lg">
+        <div
+          onClick={onConflictClick}
+          className="flex items-center gap-2 px-3 py-2 bg-red-50 border border-red-200 rounded-lg cursor-pointer hover:bg-red-100 transition-colors"
+        >
           <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
           <p className="text-xs text-red-600">
             {product.conflictMessage || "Conflict with existing target"}

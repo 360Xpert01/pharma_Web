@@ -13,12 +13,14 @@ interface ManagerSectionProps {
   manager: Manager;
   onDeleteProduct: (repId: string, productId: string) => void;
   onProductInputChange: (repId: string, productId: string, value: string) => void;
+  onConflictClick?: () => void;
 }
 
 export default function ManagerSection({
   manager,
   onDeleteProduct,
   onProductInputChange,
+  onConflictClick,
 }: ManagerSectionProps) {
   return (
     <div className="flex gap-6">
@@ -40,6 +42,7 @@ export default function ManagerSection({
             rep={rep}
             onDeleteProduct={onDeleteProduct}
             onProductInputChange={onProductInputChange}
+            onConflictClick={onConflictClick}
           />
         ))}
       </div>
