@@ -1,18 +1,18 @@
 "use client";
+
 import { DashboardContent } from "../components/dashboard-content";
 
-export default function DashboardPage() {
+export default function SetTargetRoute() {
   return (
-    <div className=" bg-white">
+    <div className="bg-gray-50">
       <DashboardContent
-        sample={"Daily Call Reports"}
-        descrip={"Welcome to Ceutro, It's looking like a slow day"}
-        table={"Calls Report"}
-        btnTrue={true}
-        filterT={true}
+        sample={"Set Team Target"}
+        descrip={"Unlock the potential of your candidates"}
+        hideHeader={false}
         hideMetrics={true}
+        hideData={true}
+        btnTrue={true}
         setTargetlist={true}
-        channalTrue={true}
       />
     </div>
   );

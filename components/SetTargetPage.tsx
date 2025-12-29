@@ -1,241 +1,311 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronDown, User, Target } from "lucide-react";
-import Image from "next/image";
+import TargetConfigForm from "./TargetConfigForm";
+import ManagerSection, { Manager } from "./ManagerSection";
 
-interface SalesRep {
-  id: string;
-  name: string;
-  avatar: string;
-  manager: string;
-  managerAvatar: string;
-}
+export default function SetTargetPage() {
+  // Form state
+  const [selectedTeam, setSelectedTeam] = useState("");
+  const [targetMonth, setTargetMonth] = useState("");
 
-interface Team {
-  id: string;
-  name: string;
-  reps: SalesRep[];
-}
+  // Manager selection state
+  const [selectedManager1, setSelectedManager1] = useState("manager1");
+  const [selectedManager2, setSelectedManager2] = useState("manager2");
 
-const teamsData: Team[] = [
-  {
-    id: "1",
-    name: "Karachi North Team",
-    reps: [
-      {
-        id: "r1",
-        name: "Ahmed Khan",
-        avatar: "/avatars/ahmed.jpg",
-        manager: "Sara Ali",
-        managerAvatar: "/avatars/sara.jpg",
-      },
-      {
-        id: "r2",
-        name: "Omar Farooq",
-        avatar: "/avatars/omar.jpg",
-        manager: "Sara Ali",
-        managerAvatar: "/avatars/sara.jpg",
-      },
-      {
-        id: "r3",
-        name: "Ayesha Raza",
-        avatar: "/avatars/ayesha.jpg",
-        manager: "Sara Ali",
-        managerAvatar: "/avatars/sara.jpg",
-      },
-    ],
-  },
-  {
-    id: "2",
-    name: "Lahore Central Team",
-    reps: [
-      {
-        id: "r4",
-        name: "Bilal Ahmed",
-        avatar: "/avatars/bilal.jpg",
-        manager: "Usman Malik",
-        managerAvatar: "/avatars/usman.jpg",
-      },
-      {
-        id: "r5",
-        name: "Fatima Noor",
-        avatar: "/avatars/fatima.jpg",
-        manager: "Usman Malik",
-        managerAvatar: "/avatars/usman.jpg",
-      },
-    ],
-  },
-];
+  // Mock data for demonstration - matches screenshot
+  const [managers, setManagers] = useState<Manager[]>([
+    {
+      id: "manager1",
+      name: "Abdul Aziz Warsi",
+      salesReps: [
+        {
+          id: "rep1",
+          name: "Danish Kumar",
+          role: "Sales Representative",
+          avatar: "/placeholder-avatar.jpg",
+          productTags: ["L40", "L42", "L48", "L57"],
+          products: [
+            {
+              id: "prod1",
+              name: "Dapakan 500mg",
+              targetQuantity: "50 Packets",
+              completionPercentage: 100,
+              inputValue: "Atorvastatin 10mg",
+              hasConflict: false,
+            },
+            {
+              id: "prod2",
+              name: "Medooro 500mg",
+              targetQuantity: "50 Packets",
+              completionPercentage: 50,
+              inputValue: "Elt 250mg",
+              hasConflict: true,
+              conflictMessage: "Conflict with existing target",
+            },
+          ],
+        },
+        {
+          id: "rep2",
+          name: "Majid Hussain",
+          role: "Sales Representative",
+          avatar: "/placeholder-avatar.jpg",
+          productTags: ["L40", "L57", "L48", "L42"],
+          products: [
+            {
+              id: "prod3",
+              name: "Atorvastatin 10mg",
+              targetQuantity: "50 Packets",
+              completionPercentage: 100,
+              inputValue: "Atorvastatin 10mg",
+              hasConflict: false,
+            },
+            {
+              id: "prod4",
+              name: "Elt 250mg",
+              targetQuantity: "50 Packets",
+              completionPercentage: 100,
+              inputValue: "Elt 250mg",
+              hasConflict: false,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: "manager2",
+      name: "Asad Raza",
+      salesReps: [
+        {
+          id: "rep3",
+          name: "Danish Kumar",
+          role: "Sales Representative",
+          avatar: "/placeholder-avatar.jpg",
+          productTags: ["L40", "L42", "L48"],
+          products: [
+            {
+              id: "prod5",
+              name: "Divalol 750mg",
+              targetQuantity: "50 Packets",
+              completionPercentage: 100,
+              inputValue: "",
+              hasConflict: false,
+            },
+          ],
+        },
+        {
+          id: "rep4",
+          name: "Majid Hussain",
+          role: "Sales Representative",
+          avatar: "/placeholder-avatar.jpg",
+          productTags: ["L40", "L42", "L48", "L57"],
+          products: [
+            {
+              id: "prod6",
+              name: "Medooro 100mg",
+              targetQuantity: "50 Packets",
+              completionPercentage: 100,
+              inputValue: "",
+              hasConflict: false,
+            },
+            {
+              id: "prod7",
+              name: "Elt 250mg",
+              targetQuantity: "50 Packets",
+              completionPercentage: 100,
+              inputValue: "",
+              hasConflict: false,
+            },
+          ],
+        },
+        {
+          id: "rep5",
+          name: "Danish Kumar",
+          role: "Sales Representative",
+          avatar: "/placeholder-avatar.jpg",
+          productTags: ["L40", "L48"],
+          products: [
+            {
+              id: "prod8",
+              name: "Divalol 750mg",
+              targetQuantity: "50 Packets",
+              completionPercentage: 100,
+              inputValue: "",
+              hasConflict: false,
+            },
+          ],
+        },
+      ],
+    },
+  ]);
 
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+  // Read-only field values (populated when team is selected)
+  const teamMetadata = {
+    teamRoleCode: selectedTeam ? "PL_SPT_017284" : "",
+    teamName: selectedTeam ? "High Blood Pressure" : "",
+    channelName: selectedTeam ? "Chain Pharmacy" : "",
+    callPoint: selectedTeam ? "36 Export Solutions" : "",
+  };
 
-const products = [
-  "Amoxicillin 500mg",
-  "Ibuprofen 200mg",
-  "Paracetamol 650mg",
-  "Metformin 500mg",
-  "Lisinopril 10mg",
-];
+  // Handler functions
+  const handleDeleteProduct = (repId: string, productId: string) => {
+    setManagers((prevManagers) =>
+      prevManagers.map((manager) => ({
+        ...manager,
+        salesReps: manager.salesReps.map((rep) =>
+          rep.id === repId
+            ? {
+                ...rep,
+                products: rep.products.filter((p) => p.id !== productId),
+              }
+            : rep
+        ),
+      }))
+    );
+  };
 
-export default function SetTargetComponent() {
-  const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+  const handleProductInputChange = (repId: string, productId: string, value: string) => {
+    setManagers((prevManagers) =>
+      prevManagers.map((manager) => ({
+        ...manager,
+        salesReps: manager.salesReps.map((rep) =>
+          rep.id === repId
+            ? {
+                ...rep,
+                products: rep.products.map((p) =>
+                  p.id === productId ? { ...p, inputValue: value } : p
+                ),
+              }
+            : rep
+        ),
+      }))
+    );
+  };
+
+  const handleSetTarget = () => {
+    // Validate for conflicts
+    const hasConflicts = managers.some((manager) =>
+      manager.salesReps.some((rep) => rep.products.some((product) => product.hasConflict))
+    );
+
+    if (hasConflicts) {
+      alert("Please resolve all conflicts before setting targets");
+      return;
+    }
+
+    // Submit logic here
+    console.log("Setting targets...", { selectedTeam, targetMonth, managers });
+    alert("Targets set successfully!");
+  };
 
   return (
-    <div className="w-full bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
-      <div className="p-10 space-y-10">
-        {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-            Set Monthly Target
-          </h1>
-          <p className="text-gray-500 mt-2">Assign targets to sales representatives</p>
-        </div>
+    <div className="min-h-screen bg-gray-50">
+      {/* Centered Content Container */}
+      {/* Main White Card */}
+      <div className="bg-white rounded-xl shadow-[0px_5px_10px_rgba(0,0,0,0.20)] p-8 overflow-hidden">
+        {/* Target Configuration Form */}
+        <TargetConfigForm
+          selectedTeam={selectedTeam}
+          targetMonth={targetMonth}
+          teamRoleCode={teamMetadata.teamRoleCode}
+          teamName={teamMetadata.teamName}
+          channelName={teamMetadata.channelName}
+          callPoint={teamMetadata.callPoint}
+          onTeamChange={setSelectedTeam}
+          onMonthChange={setTargetMonth}
+        />
 
-        {/* Select Team */}
-        <div>
-          <label className="block text-lg font-semibold text-gray-900 mb-4">Select Team</label>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {teamsData.map((team) => (
-              <div
-                key={team.id}
-                onClick={() => setSelectedTeam(team)}
-                className={`p-6 rounded-2xl border-2 cursor-pointer transition-all ${
-                  selectedTeam?.id === team.id
-                    ? "border-blue-500 bg-blue-50"
-                    : "border-gray-200 hover:border-gray-300 bg-white"
-                }`}
-              >
-                <h3 className="font-bold text-gray-900">{team.name}</h3>
-                <p className="text-sm text-gray-500 mt-1">{team.reps.length} Members</p>
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* Members Info Section */}
+        <div className="space-y-6 pt-6">
+          <div>
+            <h2 className="text-xl font-bold text-gray-900 mb-6">Members Info</h2>
 
-        {/* Target Assignment Table - Only show if team selected */}
-        {selectedTeam && (
-          <div className="border-t border-gray-200 pt-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              {selectedTeam.name} - Target Assignment
-            </h2>
-
-            <div className="space-y-6">
-              {selectedTeam.reps.map((rep) => (
-                <div key={rep.id} className="bg-gray-50/70 rounded-2xl p-6 border border-gray-200">
-                  {/* Rep Header */}
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-4">
-                      <Image
-                        src="/girlPic.svg"
-                        alt={rep.name}
-                        width={56}
-                        height={56}
-                        className="rounded-full ring-4 ring-white shadow-md"
-                      />
-                      <div>
-                        <h4 className="font-bold text-gray-900">{rep.name}</h4>
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <span>Reports to:</span>
-                          <div className="flex items-center gap-2">
-                            <Image
-                              src="/CapMan.svg"
-                              alt={rep.manager}
-                              width={24}
-                              height={24}
-                              className="rounded-full"
-                            />
-                            <span className="font-medium">{rep.manager}</span>
-                          </div>
-                        </div>
+            {/* Manager Selection Input Fields */}
+            <div className="grid grid-cols-4 gap-4 mb-8">
+              {/* First Manager Input */}
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-2">
+                  Head of Sales
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={managers.find((m) => m.id === selectedManager1)?.name || ""}
+                    readOnly
+                    className="w-full px-4 py-2.5 pr-10 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-700 cursor-default"
+                  />
+                  {selectedManager1 && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <div className="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                        <span className="text-xs text-white font-medium">
+                          {managers.findIndex((m) => m.id === selectedManager1) + 1}
+                        </span>
                       </div>
                     </div>
-                  </div>
-
-                  {/* Target Fields */}
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
-                    {/* Month */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Month</label>
-                      <select className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 bg-white">
-                        {months.map((m) => (
-                          <option key={m}>{m} 2025</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    {/* Target */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Target (Units)
-                      </label>
-                      <input
-                        type="number"
-                        placeholder="e.g. 500"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-
-                    {/* Product SKU */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Product SKU
-                      </label>
-                      <select className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 bg-white">
-                        <option>Select SKU</option>
-                        {products.map((p) => (
-                          <option key={p}>{p}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    {/* Incentive % */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Incentive % <span className="text-gray-400 text-xs">(Default 100%)</span>
-                      </label>
-                      <input
-                        type="number"
-                        defaultValue={100}
-                        min={0}
-                        max={200}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                  </div>
+                  )}
                 </div>
-              ))}
+              </div>
+
+              {/* Second Manager Input */}
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-2">
+                  Sales Manager
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={managers.find((m) => m.id === selectedManager2)?.name || ""}
+                    readOnly
+                    className="w-full px-4 py-2.5 pr-10 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-700 cursor-default"
+                  />
+                  {selectedManager2 && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <div className="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
+                        <span className="text-xs text-white font-medium">
+                          {managers.findIndex((m) => m.id === selectedManager2) + 1}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Empty columns to maintain 50% width */}
+              <div></div>
+              <div></div>
             </div>
 
-            {/* Submit Button */}
-            <div className="flex justify-end mt-10">
-              <button className="px-10 py-4 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition flex items-center gap-3 shadow-xl">
-                Save All Targets
-              </button>
+            {/* Manager Sections */}
+            <div className="space-y-10">
+              {[selectedManager1, selectedManager2].map((managerId) => {
+                const manager = managers.find((m) => m.id === managerId);
+                if (!manager) return null;
+
+                return (
+                  <ManagerSection
+                    key={manager.id}
+                    manager={manager}
+                    onDeleteProduct={handleDeleteProduct}
+                    onProductInputChange={handleProductInputChange}
+                  />
+                );
+              })}
             </div>
           </div>
-        )}
+        </div>
 
-        {/* No Team Selected */}
-        {!selectedTeam && (
-          <div className="text-center py-20 text-gray-400">
-            <User className="w-20 h-20 mx-auto mb-4 opacity-30" />
-            <p className="text-xl">Select a team to assign targets</p>
-          </div>
-        )}
+        {/* Footer Action Buttons */}
+        <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
+          <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition cursor-pointer font-medium">
+            Discard
+          </button>
+          <button
+            onClick={handleSetTarget}
+            className="px-8 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition shadow-lg cursor-pointer font-medium"
+          >
+            Set Target
+          </button>
+        </div>
       </div>
     </div>
   );
