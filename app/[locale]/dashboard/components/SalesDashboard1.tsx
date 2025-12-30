@@ -7,8 +7,8 @@ import SaleAndCalls from "../../../../components/SaleAndCalls";
 
 export default function SalesDashboard() {
   return (
-    <div className=" text-black p-1">
-      <div className="w-full bg-gray-50 p-2 rounded-xl ">
+    <div className=" text-(--dark) p-1">
+      <div className="w-full bg-(--gray-0) p-2 rounded-xl ">
         {/* <Header /> */}
 
         <div className="flex justify-between gap-2">

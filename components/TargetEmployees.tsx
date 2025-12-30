@@ -57,27 +57,27 @@ export default function MonthlyTargets({
   };
 
   return (
-    <div className="w-full bg-white rounded-lg  p-6 shadow-sm">
+    <div className="w-full bg-(--light) rounded-lg  p-6 shadow-sm">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-black">Monthly Targets</h2>
+        <h2 className="text-xl font-semibold text-(--dark)">Monthly Targets</h2>
         <div className="flex items-center gap-2">
           <button
             onClick={handlePreviousMonth}
-            className="p-1 hover:bg-white rounded-md transition-colors cursor-pointer"
+            className="p-1 hover:bg-(--light) rounded-md transition-colors cursor-pointer"
             aria-label="Previous month"
           >
-            <ChevronLeft className="w-5 h-5 text-blue-500" />
+            <ChevronLeft className="w-5 h-5 text-(--primary)" />
           </button>
-          <span className="text-sm font-medium text-blue-500 min-w-[140px] text-center">
+          <span className="text-sm font-medium text-(--primary) min-w-[140px] text-center">
             {displayDate}
           </span>
           <button
             onClick={handleNextMonth}
-            className="p-1 hover:bg-white rounded-md transition-colors cursor-pointer"
+            className="p-1 hover:bg-(--light) rounded-md transition-colors cursor-pointer"
             aria-label="Next month"
           >
-            <ChevronRight className="w-5 h-5 text-blue-500" />
+            <ChevronRight className="w-5 h-5 text-(--primary)" />
           </button>
         </div>
       </div>
@@ -86,11 +86,11 @@ export default function MonthlyTargets({
       <div className="flex gap-8 mb-8">
         <div>
           <p className="text-sm text-muted-foreground mb-1">This month</p>
-          <p className="text-3xl font-bold text-blue-500">{currentMonth}</p>
+          <p className="text-3xl font-bold text-(--primary)">{currentMonth}</p>
         </div>
         <div>
           <p className="text-sm text-muted-foreground mb-1">Last month</p>
-          <p className="text-3xl font-bold text-red-500">{lastMonth}</p>
+          <p className="text-3xl font-bold text-(--destructive)">{lastMonth}</p>
         </div>
       </div>
 

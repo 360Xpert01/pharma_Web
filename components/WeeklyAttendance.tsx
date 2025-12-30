@@ -46,10 +46,10 @@ export default function AttendanceDashboard() {
 
   return (
     <div className="w-full">
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+      <div className="bg-(--background) rounded-2xl shadow-sm border border-(--gray-1) p-5">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-500">Weekly Attendance</h2>
-          <div className="flex items-center gap-2 text-sm text-blue-700 cursor-pointer">
+          <h2 className="text-2xl font-bold text-(--gray-5)">Weekly Attendance</h2>
+          <div className="flex items-center gap-2 text-sm text-(--primary) cursor-pointer">
             <ChevronLeft className="w-4 h-4 cursor-pointer" />
             <span>01 - 07 Sept, 2025</span>
             <ChevronRight className="w-4 h-4 cursor-pointer" />
@@ -61,41 +61,41 @@ export default function AttendanceDashboard() {
             <div key={index} className="space-y-3">
               {/* Offsite Warning */}
               {day.offsite && (
-                <div className="flex items-center gap-2 bg-red-50 text-red-700 px-4 py-3 rounded-lg text-sm font-medium">
+                <div className="flex items-center gap-2 bg-red-50 text-(--destructive) px-4 py-3 rounded-lg text-sm font-medium">
                   <AlertTriangle className="w-5 h-5" />
                   Checked in at off-site location.
                 </div>
               )}
 
               {/* Day Row */}
-              <div className="border border-gray-200 rounded-xl p-2">
+              <div className="border border-(--gray-2) rounded-xl p-2">
                 <div>
-                  <p className="font-medium text-gray-900">{day.date}</p>
+                  <p className="font-medium text-(--gray-9)">{day.date}</p>
                   <div className="flex justify-between  w-[100%] items-center gap-4 mt-2">
                     <div className="flex items-center gap-2">
                       <div className="w-10 h-10 bg-blue-100 rounded-md flex items-center justify-center">
-                        <ChevronRight className="w-5 h-5 text-blue-600 rotate-180 cursor-pointer" />
+                        <ChevronRight className="w-5 h-5 text-(--primary) rotate-180 cursor-pointer" />
                       </div>
                       <div>
-                        <p className="text-2xl font-semibold text-gray-900">{day.checkIn}</p>
-                        <p className="text-sm text-gray-500">Check-in</p>
+                        <p className="text-2xl font-semibold text-(--gray-9)">{day.checkIn}</p>
+                        <p className="text-sm text-(--gray-5)">Check-in</p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2">
                       <div className="w-10 h-10 bg-blue-100 rounded-md flex items-center justify-center">
-                        <ChevronRight className="w-5 h-5 text-blue-600 cursor-pointer" />
+                        <ChevronRight className="w-5 h-5 text-(--primary) cursor-pointer" />
                       </div>
                       <div>
-                        <p className="text-2xl font-semibold text-gray-900">{day.checkOut}</p>
-                        <p className="text-sm text-gray-500">Check-out</p>
+                        <p className="text-2xl font-semibold text-(--gray-9)">{day.checkOut}</p>
+                        <p className="text-sm text-(--gray-5)">Check-out</p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* {index < weeklyData.length - 1 && <hr className="border-gray-100" />} */}
+              {/* {index < weeklyData.length - 1 && <hr className="border-(--gray-1)" />} */}
             </div>
           ))}
         </div>

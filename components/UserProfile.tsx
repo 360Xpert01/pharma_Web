@@ -31,7 +31,7 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
     <div className=" ">
       <div className="flex justify-between w-[100%]   gap-3">
         {/* Left - Avatar + Basic Info */}
-        <div className="flex justify-between gap-6 w-[39%]  rounded-lg shadow-sm p-4 border border-gray-100 ">
+        <div className="flex justify-between gap-6 w-[39%]  rounded-lg shadow-sm p-4 border border-(--gray-1) ">
           <div className="flex gap-3 justify-center">
             <div className="relative w-38 h-38 rounded-lg overflow-hidden  shadow-lg">
               <Image
@@ -45,13 +45,13 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
 
             <div>
               <div className="flex item-center gap-3 mb-2 ">
-                <div className="bg-blue-600 w-[60%] text-white text-[10px] font-bold px-3 py-1.5 rounded-full">
+                <div className="bg-(--primary) w-[60%] text-(--light) text-[10px] font-bold px-3 py-1.5 rounded-full">
                   PLS_EMP-000124
                 </div>
                 |<span className="text-[12px] my-auto"> 000124</span>
               </div>
-              <h2 className="text-2xl font-bold text-slate-900">{candidate.name}</h2>
-              <p className="text-slate-900 mt-1 mb-2 font-semibold text-[13px]">
+              <h2 className="text-2xl font-bold text-(--gray-9)">{candidate.name}</h2>
+              <p className="text-(--gray-9) mt-1 mb-2 font-semibold text-[13px]">
                 Repoting Manager
                 <span className="text-slate-400 text-[13px] font-normal"> Saboor raza</span>
               </p>
@@ -64,7 +64,7 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
             <div className="flex justify-end">
               <button
                 onClick={handlePush}
-                className="bg-blue-600 w-[50%] cursor-pointer p-2 gap-2 text-[13px] flex  rounded-full text-white"
+                className="bg-(--primary) w-[50%] cursor-pointer p-2 gap-2 text-[13px] flex  rounded-full text-(--light)"
               >
                 <PencilLine className="h-4 w-4 mr-1" />
                 Edit Employee
@@ -79,57 +79,59 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
 
         {/* Middle Left */}
 
-        <div className="flex justify-between gap-15 w-[60%] rounded-lg shadow-sm p-4 border border-gray-200 ">
+        <div className="flex justify-between gap-15 w-[60%] rounded-lg shadow-sm p-4 border border-(--gray-2) ">
           <div className="space-y-14">
             <div>
-              <p className="text-[10px] text-slate-500 uppercase tracking-wider">Campaign</p>
-              <p className="font-semibold text-xl text-slate-900">{candidate.campaign}</p>
+              <p className="text-[10px] text-(--gray-5) uppercase tracking-wider">Campaign</p>
+              <p className="font-semibold text-xl text-(--gray-9)">{candidate.campaign}</p>
             </div>
             <div>
-              <p className="text-[10px] text-slate-500 uppercase tracking-wider">Total Call</p>
-              <p className="font-semibold text-xl text-slate-900">{candidate.totalCalls}</p>
+              <p className="text-[10px] text-(--gray-5) uppercase tracking-wider">Total Call</p>
+              <p className="font-semibold text-xl text-(--gray-9)">{candidate.totalCalls}</p>
             </div>
           </div>
 
           {/* Middle Right */}
           <div className="space-y-14">
             <div>
-              <p className="text-[10px] text-slate-500 uppercase tracking-wider">Requested Month</p>
-              <p className="font-semibold text-xl text-slate-900">{candidate.requestedMonth}</p>
+              <p className="text-[10px] text-(--gray-5) uppercase tracking-wider">
+                Requested Month
+              </p>
+              <p className="font-semibold text-xl text-(--gray-9)">{candidate.requestedMonth}</p>
             </div>
             <div>
-              <p className="text-[10px]text-slate-500 uppercase tracking-wider">Total Call</p>
-              <p className="font-semibold text-xl text-slate-900">{candidate.totalCalls}</p>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <div>
-              <p className="text-[10px] text-slate-500 uppercase tracking-wider">Channal</p>
-              <p className="font-semibold text-xl text-slate-900">{candidate.channel}</p>
+              <p className="text-[10px]text-(--gray-5) uppercase tracking-wider">Total Call</p>
+              <p className="font-semibold text-xl text-(--gray-9)">{candidate.totalCalls}</p>
             </div>
           </div>
 
           <div className="space-y-4">
             <div>
-              <p className="text-[10px] text-slate-500 uppercase tracking-wider">Total Call</p>
-              <p className="font-semibold text-xl text-slate-900">{candidate.totalCalls}</p>
+              <p className="text-[10px] text-(--gray-5) uppercase tracking-wider">Channal</p>
+              <p className="font-semibold text-xl text-(--gray-9)">{candidate.channel}</p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <p className="text-[10px] text-(--gray-5) uppercase tracking-wider">Total Call</p>
+              <p className="font-semibold text-xl text-(--gray-9)">{candidate.totalCalls}</p>
             </div>
           </div>
 
           {/* Right - Status + Calls */}
           <div className=" space-y-4">
             <div>
-              <p className="text-xs text-slate-500 uppercase tracking-wider">Status</p>
+              <p className="text-xs text-(--gray-5) uppercase tracking-wider">Status</p>
               <span
-                className={`inline-block px-4 py-1.5 rounded-full text-xs font-medium text-white mt-1 ${
+                className={`inline-block px-4 py-1.5 rounded-full text-xs font-medium text-(--light) mt-1 ${
                   candidate.status.toLowerCase() === "active" ||
                   candidate.status.toLowerCase() === "approved"
                     ? "bg-green-500"
                     : candidate.status.toLowerCase().includes("pending") ||
                         candidate.status.toLowerCase().includes("review")
                       ? "bg-yellow-500"
-                      : "bg-gray-500"
+                      : "bg-(--gray-5)"
                 }`}
               >
                 {candidate.status}

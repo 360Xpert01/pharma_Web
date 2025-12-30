@@ -67,11 +67,11 @@ const appointments: Appointment[] = [
 
 export default function TodaysAppointments() {
   return (
-    <div className="w-full bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div className="w-full overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-gray-100">
-        <h2 className="text-2xl font-bold text-gray-900">Todays Appointments</h2>
-        <div className="flex items-center gap-3 bg-blue-50 text-blue-600 px-5 py-2.5 rounded-full text-sm font-medium hover:bg-blue-100 transition cursor-pointer">
+      <div className="flex items-center justify-between p-6 border-b border-(--gray-1)">
+        <h2 className="text-2xl font-bold text-(--gray-9)">Todays Appointments</h2>
+        <div className="flex items-center gap-3 bg-blue-50 text-(--primary) px-5 py-2.5 rounded-full text-sm font-medium hover:bg-blue-100 transition cursor-pointer">
           <ChevronLeft className="w-4 h-4" />
           01 - 07 Sept, 2025
           <ChevronRight className="w-4 h-4" />
@@ -79,17 +79,17 @@ export default function TodaysAppointments() {
       </div>
 
       {/* Appointments List */}
-      <div className="divide-y divide-gray-100">
+      <div className="divide-y divide-(--gray-1)">
         {appointments.map((appt) => (
           <div key={appt.id} className="p-6 hover:bg-gray-50/50 transition-all duration-200">
             {/* Appointment Title */}
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">{appt.title}</h3>
+            <h3 className="text-lg font-semibold text-(--gray-9) mb-4">{appt.title}</h3>
 
             <div className="flex items-start justify-between gap-6">
               {/* Doctor Info */}
               <div className="flex items-center gap-4">
                 <div className="relative">
-                  <div className="w-14 h-14 rounded-full overflow-hidden ring-4 ring-white shadow-md">
+                  <div className="w-14 h-14 rounded-full overflow-hidden ring-4 ring-(--light) shadow-md">
                     <Image
                       src={appt.avatar || "https://randomuser.me/api/portraits/women/44.jpg"}
                       alt={appt.doctorName}
@@ -101,18 +101,18 @@ export default function TodaysAppointments() {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900">{appt.doctorName}</h4>
-                  <p className="text-sm text-gray-600">{appt.specialty}</p>
+                  <h4 className="font-semibold text-(--gray-9)">{appt.doctorName}</h4>
+                  <p className="text-sm text-(--gray-6)">{appt.specialty}</p>
                 </div>
               </div>
 
               {/* Clinic & Location */}
               <div className="text-right">
-                <div className="flex items-center gap-2 text-blue-600 mb-1">
+                <div className="flex items-center gap-2 text-(--primary) mb-1">
                   <MapPin className="w-4 h-4" />
                   <span className="font-medium">{appt.clinic}</span>
                 </div>
-                <p className="text-sm text-gray-500 max-w-xs">{appt.address}</p>
+                <p className="text-sm text-(--gray-5) max-w-xs">{appt.address}</p>
               </div>
             </div>
           </div>

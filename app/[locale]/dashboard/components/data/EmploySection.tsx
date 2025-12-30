@@ -67,8 +67,8 @@ export default function SalesTeamTable() {
   ];
 
   return (
-    <div className="mx-auto bg-gray-50 min-h-screen">
-      <div className="bg-white rounded-xl shadow-[0px_5px_10px_rgba(0,0,0,0.20)] overflow-hidden">
+    <div className="mx-auto bg-(--gray-0) min-h-screen">
+      <div className="bg-(--background) rounded-xl shadow-[0px_5px_10px_rgba(0,0,0,0.20)] overflow-hidden">
         <div className="overflow-x-auto">
           <TableHeader title="Sales Team" campHeading="All User's" filterT searchT exportT />
 
@@ -79,18 +79,18 @@ export default function SalesTeamTable() {
           />
 
           {loading ? (
-            <div className="px-8 py-12 text-center text-gray-500">Loading users...</div>
+            <div className="px-8 py-12 text-center text-(--gray-5)">Loading users...</div>
           ) : teamMembers.length === 0 ? (
-            <div className="px-8 py-12 text-center text-gray-500">No users found</div>
+            <div className="px-8 py-12 text-center text-(--gray-5)">No users found</div>
           ) : (
             <div>
               {teamMembers.map((member) => (
                 <div key={member.id}>
                   {/* Main Row */}
-                  <div className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-gray-50 transition-all cursor-pointer border border-gray-200 mx-4 my-3 rounded-2xl">
+                  <div className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-(--gray-0) transition-all cursor-pointer border border-(--gray-2) mx-4 my-3 rounded-2xl">
                     <div
                       onClick={() => toggleRow(member.id)}
-                      className="w-[15%] text-sm font-bold text-gray-900"
+                      className="w-[15%] text-sm font-bold text-(--gray-9)"
                     >
                       {member.role}
                     </div>
@@ -107,40 +107,40 @@ export default function SalesTeamTable() {
                         className="rounded-full"
                       />
                       <div>
-                        <p className="font-bold text-gray-900">{member.name}</p>
-                        <span className="text-xs text-gray-500 font-medium">{member.roleBy}</span>
+                        <p className="font-bold text-(--gray-9)">{member.name}</p>
+                        <span className="text-xs text-(--gray-5) font-medium">{member.roleBy}</span>
                       </div>
                     </div>
 
                     <div
                       onClick={() => toggleRow(member.id)}
-                      className="w-[20%] text-sm text-gray-600"
+                      className="w-[20%] text-sm text-(--gray-6)"
                     >
                       {member.email}
                     </div>
 
                     <div onClick={() => toggleRow(member.id)} className="w-[20%]">
-                      <span className="font-bold text-gray-900">{member.phone}</span>
+                      <span className="font-bold text-(--gray-9)">{member.phone}</span>
                     </div>
 
                     <div
                       onClick={() => toggleRow(member.id)}
-                      className="w-[20%] text-sm font-bold text-gray-900"
+                      className="w-[20%] text-sm font-bold text-(--gray-9)"
                     >
                       {member.supervisor}
                     </div>
 
                     <Link href="/dashboard/Employee-Profile" className="w-[10%] ml-auto">
-                      <button className="flex items-center gap-1 text-sm text-gray-500">
+                      <button className="flex items-center gap-1 text-sm text-(--gray-5)">
                         View Details
-                        <ChevronRight className="w-6 h-6 text-blue-600" />
+                        <ChevronRight className="w-6 h-6 text-(--primary)" />
                       </button>
                     </Link>
                   </div>
 
                   {/* Expanded Row */}
                   {openRowId === member.id && (
-                    <div className="bg-gray-50 -mt-3 mx-4 rounded-b-2xl border-t">
+                    <div className="bg-(--gray-0) -mt-3 mx-4 rounded-b-2xl border-t">
                       <div className="px-6 py-8">
                         <SalesDashboard1 member={member} />
                       </div>

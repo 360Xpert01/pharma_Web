@@ -25,9 +25,9 @@ const data = [
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white px-4 py-2 rounded-lg shadow-lg border border-gray-100">
+      <div className="bg-(--light) px-4 py-2 rounded-lg shadow-lg border border-(--gray-1)">
         <p className="text-lg font-bold text-gray-900">{payload[0].value.toLocaleString()}</p>
-        <p className="text-xs text-gray-500">SEP, {payload[0].payload.date} 2025</p>
+        <p className="text-xs text-(--gray-5)">SEP, {payload[0].payload.date} 2025</p>
       </div>
     );
   }
@@ -36,11 +36,11 @@ const CustomTooltip = ({ active, payload }: any) => {
 
 export default function WeeklyExpensesChart() {
   return (
-    <div className="w-full bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+    <div className="w-full bg-(--light) rounded-2xl shadow-sm border border-(--gray-1) p-8">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Weekly Expenses</h2>
-        <div className="flex items-center gap-3 bg-blue-50 text-blue-600 px-5 py-3 rounded-full text-sm font-medium hover:bg-blue-100 transition cursor-pointer">
+        <h2 className="text-2xl font-bold text-(--gray-9)">Weekly Expenses</h2>
+        <div className="flex items-center gap-3 bg-blue-50 text-(--primary) px-5 py-3 rounded-full text-sm font-medium hover:bg-blue-100 transition cursor-pointer">
           <ChevronLeft className="w-4 h-4" />
           September, 27 2025
           <ChevronRight className="w-4 h-4" />
