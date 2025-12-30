@@ -26,7 +26,11 @@ export default function Providers({ children }: PropsWithChildren) {
         {" "}
         {/* loading={fallback} */}
         <QueryClientProvider client={queryClient}>
-          <ThemeProvider themes={["light", "dark", "ocean"]}>
+          <ThemeProvider
+            themes={["light", "dark", "ocean", "ceturo"]}
+            defaultTheme="ceturo"
+            enableSystem
+          >
             <GlobalLoadingProvider>
               <ErrorProvider maxErrors={10}>
                 <ErrorBoundary showDetails={process.env.NODE_ENV === "development"}>

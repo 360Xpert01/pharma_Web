@@ -335,7 +335,7 @@ const Navbar = () => {
               setClickedItem(null);
               setActiveSubmenu(null);
             }}
-            className="flex items-center  transition-all duration-200  justify-between px-4 py-2.5 text-sm text-gray-700  border-b border-gray-100"
+            className="flex items-center  transition-all duration-200  justify-between px-4 py-2.5 text-sm text-(--gray-7)  border-b border-(--gray-1)"
           >
             <span>{item.label}</span>
             {item.items && (
@@ -352,7 +352,7 @@ const Navbar = () => {
             )}
           </Link>
         ) : (
-          <div className="flex items-center cursor-pointer justify-between px-4 py-2.5 text-sm text-gray-700  border-b border-gray-100 ">
+          <div className="flex items-center cursor-pointer justify-between px-4 py-2.5 text-sm text-(--gray-7)  border-b border-(--gray-1) ">
             <span>{item.label}</span>
             {item.items && (
               <Image
@@ -372,7 +372,7 @@ const Navbar = () => {
         {/* Flyout Submenu */}
         {item.items && activeSubmenu === item.label && (
           <div
-            className="absolute cursor-pointer left-60 top-0 mt-2 bg-white  w-58 z-50"
+            className="absolute cursor-pointer left-60 top-0 mt-2 bg-(--background)  w-58 z-50"
             style={{ top: -8 }}
             onMouseEnter={() => setActiveSubmenu(item.label)}
             onMouseLeave={() => setActiveSubmenu(null)}
@@ -391,7 +391,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white border-b fixed top-0 left-0 right-0 z-50 border-gray-200">
+    <nav className="bg-(--background) border-b fixed top-0 left-0 right-0 z-50 border-(--border)">
       {/* Your top bar code remains same */}
       <div className="mx-auto px-6">
         <div className="flex items-center justify-between h-14">
@@ -408,19 +408,19 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3 bg-white rounded-full px-4 py-2.5 w-full max-w-md border border-gray-300 hover:border-gray-400 transition-colors">
-              <Search className="h-5 w-5 text-blue-600 flex-shrink-0" />
+            <div className="flex items-center gap-3 bg-(--background) rounded-full px-4 py-2.5 w-full max-w-md border border-(--gray-3) hover:border-(--gray-4)transition-colors">
+              <Search className="h-5 w-5 text-(--primary) flex-shrink-0" />
               <input
                 type="text"
                 placeholder="Search here..."
                 value={query}
                 onChange={handleChange}
-                className="border-0 bg-transparent text-gray-900 focus:outline-none text-sm w-full"
+                className="border-0 bg-transparent focus:outline-none text-(--gray-9) text-sm w-full"
               />
             </div>
 
-            <button className="relative p-2 text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">
-              {/* <Bell className="w-5 h-5 text-blue-600" /> */}
+            <button className="relative p-2 text-(--gray-6) hover:text-(--gray-9) bg-(--gray-1) hover:bg-(--gray-2) rounded-full transition-colors">
+              {/* <Bell className="w-5 h-5 text-(--primary)" /> */}
               <div>
                 <Image
                   src="/notification.svg"
@@ -430,7 +430,7 @@ const Navbar = () => {
                   className="object-contain"
                 />
               </div>
-              <span className="absolute top-1.5 right-2 w-4 h-4 bg-black text-white text-xs rounded-full">
+              <span className="absolute top-1.5 right-2 w-4 h-4 bg-(--dark) text-(--light) text-xs rounded-full">
                 9
               </span>
             </button>
@@ -438,9 +438,9 @@ const Navbar = () => {
             <div className="relative" ref={profileRef}>
               <div
                 onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                className="flex items-center gap-2 p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer"
+                className="flex items-center gap-2 p-2 text-(--gray-7) hover:text-(--gray-9) hover:bg-gray-50 rounded-lg transition-colors cursor-pointer"
               >
-                <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-(--gray-2) rounded-full flex items-center justify-center">
                   <Image
                     src="/girlPic.svg"
                     alt="Profile"
@@ -451,17 +451,17 @@ const Navbar = () => {
                 </div>
                 <div>
                   <div className="text-sm font-medium">Nirma Amir</div>
-                  <div className="text-xs text-gray-500">namraamir@ceturo.com</div>
+                  <div className="text-xs text-(--gray-5)">namraamir@ceturo.com</div>
                 </div>
               </div>
 
               {/* Profile Dropdown */}
               {showProfileDropdown && (
-                <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                <div className="absolute right-0 top-full mt-2 w-64 bg-(--background) rounded-lg shadow-lg border border-(--gray-2) py-2 z-50">
                   {/* Profile Info */}
-                  <div className="px-4 py-3 border-b border-gray-200">
+                  <div className="px-4 py-3 border-b border-(--gray-2)">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                      <div className="w-12 h-12 bg-(--gray-2) rounded-full flex items-center justify-center">
                         <Image
                           src="/girlPic.svg"
                           alt="Profile"
@@ -471,8 +471,8 @@ const Navbar = () => {
                         />
                       </div>
                       <div className="flex-1">
-                        <div className="text-sm font-semibold text-gray-900">Nirma Amir</div>
-                        <div className="text-xs text-gray-500">namraamir@ceturo.com</div>
+                        <div className="text-sm font-semibold text-(--gray-9)">Nirma Amir</div>
+                        <div className="text-xs text-(--gray-5)">namraamir@ceturo.com</div>
                       </div>
                     </div>
                   </div>
@@ -491,9 +491,9 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-      <hr className="border-gray-200" />
+      <hr className="border-(--gray-2)" />
 
-      <div className="flex items-center  justify-around bg-white text-gray-700">
+      <div className="flex items-center  justify-around bg-(--background) text-(--gray-7)">
         {navItems.map((item) => (
           <div
             key={item.label}
@@ -509,7 +509,7 @@ const Navbar = () => {
                   item.items && toggleClick(item.label);
                 }}
                 className={`flex items-center  gap-1 cursor-pointer px-2 py-3 text-sm font-medium transition-all duration-200 hover:bg-gray-50 ${
-                  activeDropdown === item.label ? "text-blue-600" : "text-gray-600"
+                  activeDropdown === item.label ? "text-(--primary)" : "text-(--gray-6)"
                 }`}
               >
                 {item.label}
@@ -532,7 +532,7 @@ const Navbar = () => {
             ) : (
               <Link
                 href={item.href || "#"}
-                className="px-4 py-3 text-sm font-medium hover:text-blue-600 hover:bg-gray-50 transition-all"
+                className="px-4 py-3 text-sm font-medium hover:text-(--primary) hover:bg-gray-50 transition-all"
               >
                 {item.label}
               </Link>
@@ -541,7 +541,7 @@ const Navbar = () => {
             {/* Mega Menu Dropdown */}
             {item.items && activeDropdown === item.label && (
               <div
-                className="absolute shadow-[0px_5px_10px_rgba(0,0,0,0.20)]  top-full left-1/2 -translate-x-1/2 mt-1  w-60 bg-white py-3 z-50"
+                className="absolute shadow-[0px_5px_10px_rgba(0,0,0,0.20)]  top-full left-1/2 -translate-x-1/2 mt-1  w-60 bg-(--background) py-3 z-50"
                 onMouseEnter={() => hoveredItem && handleMouseEnter(item.label)}
                 onMouseLeave={handleMouseLeave}
               >
