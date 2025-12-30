@@ -27,10 +27,9 @@ export default function CampaignsTable() {
     { label: "Name", className: "col-span-2" },
     { label: "Channel", className: "col-span-2" },
     { label: "Call Point", className: "col-span-2" },
-    { label: "Products", className: "col-span-2 ml-6" },
-    { label: "Assigned", className: "col-span-2 ml-[160px]" },
-    { label: "Status", className: "col-span-1 ml-[80px]" },
-    { label: "", className: "col-span-1 ml-6" },
+    { label: "Assigned", className: "col-span-2 ml-4" },
+    { label: "Status", className: "col-span-2 ml-[100px]" },
+    { label: "", className: "col-span-2" },
   ];
 
   // Loading state
@@ -115,31 +114,8 @@ export default function CampaignsTable() {
                 {team.callPointName || "N/A"}
               </div>
 
-              {/* Products */}
-              <div className="col-span-2">
-                {team.products && team.products.length > 0 ? (
-                  <>
-                    <p className="font-bold mb-0">{team.products[0]?.name || ""}</p>
-                    <div className="flex flex-wrap gap-1">
-                      {team.products[0]?.skus?.slice(0, 3).map((sku, idx) => (
-                        <span key={sku.id} className="text-gray-400 text-sm font-normal">
-                          {sku.sku}
-                        </span>
-                      ))}
-                      {team.products[0]?.skus && team.products[0].skus.length > 3 && (
-                        <span className="text-gray-400 text-sm font-normal">
-                          +{team.products[0].skus.length - 3} more
-                        </span>
-                      )}
-                    </div>
-                  </>
-                ) : (
-                  <span className="text-gray-400">No products</span>
-                )}
-              </div>
-
               {/* Assigned Users */}
-              <div className="col-span-2 flex items-center ml-[150px]">
+              <div className="col-span-2 flex items-center">
                 {team.users && team.users.length > 0 ? (
                   <div className="flex -space-x-2">
                     {team.users.slice(0, 5).map((user, idx) => (
@@ -173,7 +149,7 @@ export default function CampaignsTable() {
               </div>
 
               {/* Status */}
-              <div className="col-span-1 flex items-center justify-center ml-[100px]">
+              <div className="col-span-2 flex items-center justify-center">
                 <span
                   className={`px-4 min-w-[90px] text-center py-1 rounded-full text-sm font-medium ${
                     team.isActive ? "bg-green-100 text-green-600" : "bg-gray-100 text-gray-600"
@@ -185,7 +161,7 @@ export default function CampaignsTable() {
 
               {/* Actions - Inside grid */}
               <div
-                className="col-span-1 flex items-center justify-center ml-6"
+                className="col-span-2 flex items-center justify-end"
                 onClick={(e) => e.stopPropagation()}
               >
                 <button

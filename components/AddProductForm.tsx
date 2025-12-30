@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Upload, X, Plus } from "lucide-react";
+import { Upload, X, Plus, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
@@ -10,10 +10,15 @@ import {
 } from "@/store/slices/preFix/generatePrefixSlice";
 import { getProductCategories } from "@/store/slices/product/getProductCategoriesSlice";
 import { createProduct, resetProductState } from "@/store/slices/product/createProductSlice";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { productSchema, ProductFormValues } from "@/validations";
+import ConflictModal from "./ConflictModal";
+import { uploadImageFile } from "@/utils/uploadImage";
 
 export default function AddProductForm() {
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   // Redux state
   const {
@@ -28,16 +33,21 @@ export default function AddProductForm() {
     loading: productLoading,
     success: productSuccess,
     error: productError,
+    status: productStatus,
   } = useAppSelector((state) => state.createProduct);
 
   // Form state
   const [image, setImage] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageUploading, setImageUploading] = useState(false);
   const [productName, setProductName] = useState("");
   const [legacyCode, setLegacyCode] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [chemicalFormula, setChemicalFormula] = useState("");
-  const [isPrescription, setIsPrescription] = useState("");
+  const [description, setDescription] = useState("");
   const [skus, setSkus] = useState<string[]>(["500mg", "750mg", "1000mg"]);
+  const [isConflictModalOpen, setIsConflictModalOpen] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch product categories and generate prefix on mount
@@ -60,7 +70,7 @@ export default function AddProductForm() {
       setLegacyCode("");
       setCategoryId("");
       setChemicalFormula("");
-      setIsPrescription("");
+      setDescription("");
       setSkus(["Capsule 500mg"]);
       setImage(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -68,21 +78,29 @@ export default function AddProductForm() {
       // Generate new prefix for next product
       dispatch(generatePrefix({ entity: "Product" }));
       dispatch(resetProductState());
+
+      // Redirect to product management
+      router.push("/dashboard/product-Management");
     }
-  }, [productSuccess, dispatch]);
+  }, [productSuccess, dispatch, router]);
 
   // Handle error state
   useEffect(() => {
     if (productError) {
-      toast.error(productError);
+      if (productStatus === 409) {
+        setIsConflictModalOpen(true);
+      } else {
+        toast.error(productError);
+      }
     }
-  }, [productError]);
+  }, [productError, productStatus]);
 
   const handleImageClick = () => fileInputRef.current?.click();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => setImage(reader.result as string);
       reader.readAsDataURL(file);
@@ -92,6 +110,7 @@ export default function AddProductForm() {
   const removeImage = (e: React.MouseEvent) => {
     e.stopPropagation();
     setImage(null);
+    setImageFile(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -103,26 +122,30 @@ export default function AddProductForm() {
   };
   const removeSku = (index: number) => setSkus(skus.filter((_, i) => i !== index));
 
-  // Form submission handler
-  const handleSubmit = () => {
-    // Validation
-    if (!productName.trim()) {
-      toast.error("Product name is required");
-      return;
+  // Helper functions for validation
+  const getErrorMessage = (fieldName: string) => validationErrors[fieldName] || "";
+  const hasError = (fieldName: string) => !!validationErrors[fieldName];
+  const clearFieldError = (fieldName: string) => {
+    if (validationErrors[fieldName]) {
+      setValidationErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[fieldName];
+        return newErrors;
+      });
     }
-    if (!legacyCode.trim()) {
-      toast.error("Legacy code is required");
-      return;
-    }
-    if (!categoryId) {
-      toast.error("Product category is required");
-      return;
-    }
-    if (!generatedPrefix) {
-      toast.error("Product code is still generating. Please wait.");
-      return;
-    }
+  };
 
+  const getInputClasses = (fieldName: string) => {
+    const baseClasses =
+      "w-full px-3 py-3 border rounded-lg focus:ring-2 outline-none text-sm transition-all";
+    if (hasError(fieldName)) {
+      return `${baseClasses} border-red-500 focus:ring-red-500`;
+    }
+    return `${baseClasses} border-gray-300 focus:ring-blue-500`;
+  };
+
+  // Form submission handler
+  const handleSubmit = async () => {
     // Transform SKUs to match API structure
     const productSkus = skus
       .filter((sku) => sku.trim())
@@ -131,26 +154,56 @@ export default function AddProductForm() {
         quantity: 0,
       }));
 
-    if (productSkus.length === 0) {
-      toast.error("At least one SKU is required");
-      return;
+    // Upload image to Cloudinary if a file is selected
+    let uploadedImageUrl = "";
+    if (imageFile) {
+      try {
+        setImageUploading(true);
+        uploadedImageUrl = await uploadImageFile(imageFile);
+      } catch (error) {
+        toast.error("Failed to upload image. Please try again.");
+        setImageUploading(false);
+        return;
+      } finally {
+        setImageUploading(false);
+      }
     }
 
-    // Prepare payload
-    const payload = {
-      pulseCode: generatedPrefix,
+    // Prepare payload strictly matching the requested schema
+    const formData = {
+      pulseCode: generatedPrefix || "",
       productCode: legacyCode.trim(),
       name: productName.trim(),
       productCategoryId: categoryId,
-      productFormula: chemicalFormula.trim() || null,
-      imageUrl: image || null,
-      description: isPrescription.trim() || null,
+      productFormula: chemicalFormula.trim(),
+      imageUrl: uploadedImageUrl,
+      description: description.trim(),
       status: "active" as const,
       productSkus,
     };
 
+    // Validate using Zod schema
+    const validation = productSchema.safeParse(formData);
+
+    if (!validation.success) {
+      const errors: Record<string, string> = {};
+      validation.error.errors.forEach((err) => {
+        const fieldName = err.path[0] as string;
+        if (!errors[fieldName]) {
+          errors[fieldName] = err.message;
+        }
+      });
+
+      setValidationErrors(errors);
+      toast.error(validation.error.errors[0].message);
+      return;
+    }
+
+    // Clear previous errors
+    setValidationErrors({});
+
     // Dispatch create action
-    dispatch(createProduct(payload));
+    dispatch(createProduct(validation.data));
   };
 
   return (
@@ -189,6 +242,14 @@ export default function AddProductForm() {
                 )}
               </div>
 
+              {/* Image Upload Status */}
+              {imageUploading && (
+                <div className="flex items-center gap-2 text-sm text-blue-600">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Uploading image to cloud...</span>
+                </div>
+              )}
+
               {/* Small Thumbnail */}
               <div
                 onClick={handleImageClick}
@@ -217,9 +278,14 @@ export default function AddProductForm() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Pules Code<span className="text-red-500">*</span>
                   </label>
-                  <div className="px-3 py-3 bg-gray-50 border border-gray-200 rounded-lg font-mono text-gray-600 text-sm">
+                  <div
+                    className={`px-3 py-3 bg-gray-50 border rounded-lg font-mono text-gray-600 text-sm ${hasError("pulseCode") ? "border-red-500" : "border-gray-200"}`}
+                  >
                     {generatedPrefix || "PLS_PRD_001247"}
                   </div>
+                  {hasError("pulseCode") && (
+                    <p className="mt-1 text-sm text-red-500">{getErrorMessage("pulseCode")}</p>
+                  )}
                 </div>
 
                 {/* Product code */}
@@ -230,10 +296,16 @@ export default function AddProductForm() {
                   <input
                     type="text"
                     value={legacyCode}
-                    onChange={(e) => setLegacyCode(e.target.value)}
+                    onChange={(e) => {
+                      setLegacyCode(e.target.value);
+                      clearFieldError("productCode");
+                    }}
                     placeholder="001247"
-                    className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                    className={getInputClasses("productCode")}
                   />
+                  {hasError("productCode") && (
+                    <p className="mt-1 text-sm text-red-500">{getErrorMessage("productCode")}</p>
+                  )}
                 </div>
               </div>
 
@@ -246,8 +318,11 @@ export default function AddProductForm() {
                   </label>
                   <select
                     value={categoryId}
-                    onChange={(e) => setCategoryId(e.target.value)}
-                    className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white cursor-pointer text-sm"
+                    onChange={(e) => {
+                      setCategoryId(e.target.value);
+                      clearFieldError("productCategoryId");
+                    }}
+                    className={getInputClasses("productCategoryId")}
                   >
                     <option value="">
                       {categoriesLoading ? "Loading..." : "e.g. Doctor, Heart..."}
@@ -258,6 +333,11 @@ export default function AddProductForm() {
                       </option>
                     ))}
                   </select>
+                  {hasError("productCategoryId") && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {getErrorMessage("productCategoryId")}
+                    </p>
+                  )}
                 </div>
 
                 {/* Product Name */}
@@ -268,10 +348,16 @@ export default function AddProductForm() {
                   <input
                     type="text"
                     value={productName}
-                    onChange={(e) => setProductName(e.target.value)}
+                    onChange={(e) => {
+                      setProductName(e.target.value);
+                      clearFieldError("name");
+                    }}
                     placeholder="e.g. Panadol"
-                    className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                    className={getInputClasses("name")}
                   />
+                  {hasError("name") && (
+                    <p className="mt-1 text-sm text-red-500">{getErrorMessage("name")}</p>
+                  )}
                 </div>
 
                 {/* Product Formula */}
@@ -282,10 +368,16 @@ export default function AddProductForm() {
                   <input
                     type="text"
                     value={chemicalFormula}
-                    onChange={(e) => setChemicalFormula(e.target.value)}
+                    onChange={(e) => {
+                      setChemicalFormula(e.target.value);
+                      clearFieldError("productFormula");
+                    }}
                     placeholder="e.g. divalproex sodium"
-                    className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                    className={getInputClasses("productFormula")}
                   />
+                  {hasError("productFormula") && (
+                    <p className="mt-1 text-sm text-red-500">{getErrorMessage("productFormula")}</p>
+                  )}
                 </div>
               </div>
 
@@ -296,11 +388,17 @@ export default function AddProductForm() {
                 </label>
                 <input
                   type="text"
-                  value={isPrescription}
-                  onChange={(e) => setIsPrescription(e.target.value)}
+                  value={description}
+                  onChange={(e) => {
+                    setDescription(e.target.value);
+                    clearFieldError("description");
+                  }}
                   placeholder="e.g. Panadol"
-                  className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                  className={getInputClasses("description")}
                 />
+                {hasError("description") && (
+                  <p className="mt-1 text-sm text-red-500">{getErrorMessage("description")}</p>
+                )}
               </div>
 
               {/* SKU SECTION */}
@@ -329,6 +427,7 @@ export default function AddProductForm() {
                       if (input && input.value.trim()) {
                         setSkus([...skus, input.value.trim()]);
                         input.value = "";
+                        clearFieldError("productSkus");
                       }
                     }}
                     className="px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-600 transition flex items-center gap-2 text-sm font-medium cursor-pointer whitespace-nowrap"
@@ -337,6 +436,9 @@ export default function AddProductForm() {
                     Add Brand SKUs
                   </button>
                 </div>
+                {hasError("productSkus") && (
+                  <p className="mt-1 text-sm text-red-500">{getErrorMessage("productSkus")}</p>
+                )}
 
                 {/* SKU Chips Display */}
                 <div className="flex flex-wrap gap-2 mt-3">
@@ -363,13 +465,13 @@ export default function AddProductForm() {
                 </button>
                 <button
                   onClick={handleSubmit}
-                  disabled={productLoading}
+                  disabled={productLoading || imageUploading}
                   className="px-10 py-3 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition flex items-center gap-3 shadow-lg cursor-pointer disabled:bg-blue-400 disabled:cursor-not-allowed"
                 >
-                  {productLoading ? (
+                  {productLoading || imageUploading ? (
                     <>
                       <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      Creating...
+                      {imageUploading ? "Uploading Image..." : "Creating..."}
                     </>
                   ) : (
                     <>
@@ -390,6 +492,14 @@ export default function AddProductForm() {
         accept="image/*"
         onChange={handleFileChange}
         className="hidden"
+      />
+
+      <ConflictModal
+        isOpen={isConflictModalOpen}
+        onClose={() => {
+          setIsConflictModalOpen(false);
+          dispatch(resetProductState());
+        }}
       />
     </div>
   );

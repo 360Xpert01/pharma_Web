@@ -9,6 +9,7 @@ export default function DashboardPage() {
         descrip={"Welcome to Ceutro, It's looking like a slow day"}
         table={"All Samples"}
         btnAdd={"Add Sample"}
+        btnTrue={true}
         campHeading={"All Samples"}
         filterT={true}
         sampleTable={true}
