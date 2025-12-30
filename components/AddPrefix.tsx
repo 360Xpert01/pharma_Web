@@ -16,7 +16,7 @@ export default function AddPrefixNameComponent() {
   // Validation errors state
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
-  const preview = prefix ? `${prefix.toUpperCase()} 01` : "";
+  const preview = prefix ? `${prefix.toUpperCase()}01` : "";
 
   // Helper functions for validation
   const getErrorMessage = (fieldName: string) => validationErrors[fieldName] || "";
@@ -25,12 +25,10 @@ export default function AddPrefixNameComponent() {
     if (validationErrors[fieldName]) {
       setValidationErrors((prev) => {
         const newErrors = { ...prev };
-        delete newErrors[fieldName];
         return newErrors;
       });
+      setValidationError("");
     }
-    // Also clear the old validationError state
-    setValidationError("");
   };
 
   const getInputClasses = (fieldName: string) => {
@@ -43,13 +41,15 @@ export default function AddPrefixNameComponent() {
   };
 
   const handlePrefixChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+    const value = e.target.value.toLowerCase(); // Convert to lowercase
 
     // Clear validation error when user starts typing
     clearFieldError("code");
 
-    // Silently prevent spaces - don't update state if space is entered
-    if (value.includes(" ")) {
+    // Only allow lowercase letters and numbers
+    // Block spaces, hyphens, underscores and all other special characters
+    const validPattern = /^[a-z0-9]*$/;
+    if (!validPattern.test(value)) {
       return;
     }
 
@@ -99,7 +99,7 @@ export default function AddPrefixNameComponent() {
     setValidationError("");
 
     const payload = {
-      code: validation.data.code, // Already uppercased by schema
+      code: validation.data.code.toLowerCase(), // Send lowercase to API
       entity: validation.data.entity,
     };
 
@@ -169,11 +169,11 @@ export default function AddPrefixNameComponent() {
                     <option value="">{loading ? "Loading tables..." : "Select a table..."}</option>
                     {tables?.map((tableName: string, index: number) => (
                       <option className="h-10" key={index} value={tableName}>
-                        {tableName}
+                        {tableName.replace(/-/g, "")}
                       </option>
                     ))}
                   </select>
-                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                  {/* <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" /> */}
                 </div>
                 {/* Reserve space for error message */}
                 <div className="h-5 mt-1">
@@ -193,7 +193,8 @@ export default function AddPrefixNameComponent() {
                   value={prefix}
                   onChange={handlePrefixChange}
                   placeholder="e.g. EMP, max 5 characters"
-                  className={getInputClasses("code")}
+                  disabled={!selectedTable}
+                  className={`${getInputClasses("code")} ${!selectedTable ? "opacity-50 cursor-not-allowed" : ""}`}
                 />
                 {/* Reserve space for error message to prevent layout shift */}
                 <div className="h-5 mt-1">

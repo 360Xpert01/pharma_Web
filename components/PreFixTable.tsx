@@ -5,23 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllPrefixes } from "@/store/slices/preFix/getAllPrefixesSlice";
 import TableColumnHeader from "@/components/TableColumnHeader";
 
-interface PrefixItem {
-  tableName: string;
-  prefix: string;
-  example: string;
-}
-
-const prefixData: PrefixItem[] = [
-  { tableName: "Employee Table", prefix: "EMP", example: "EMP-03" },
-  { tableName: "Product Table", prefix: "PRD", example: "PRD-08" },
-  { tableName: "Giveaway Samples", prefix: "GYS", example: "GYS-12" },
-  { tableName: "Promotional Items", prefix: "PRM", example: "PRM-45" },
-  { tableName: "Product Trials", prefix: "PTL", example: "PTL-34" },
-  { tableName: "Exclusive Offers", prefix: "EOL", example: "EOL-89" },
-  { tableName: "Seasonal Discounts", prefix: "SDC", example: "SDC-56" },
-  { tableName: "Customer Rewards", prefix: "CRW", example: "CRW-78" },
-];
-
 export default function PrefixListComponent() {
   const dispatch = useDispatch<any>();
 
@@ -63,7 +46,7 @@ export default function PrefixListComponent() {
 
                 <div className="flex items-center gap-12">
                   <div className=" text-gray-600 font-medium rounded-full text-sm">
-                    {item.code}-01
+                    {item.code}01
                   </div>
                 </div>
               </div>

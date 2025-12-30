@@ -10,11 +10,13 @@ import {
 } from "@/store/slices/preFix/generatePrefixSlice";
 import { getAllChannels } from "@/store/slices/channel/getAllChannelsSlice";
 import { getAllCallPoints } from "@/store/slices/callPoint/getAllCallPointsSlice";
+import { getAllProducts } from "@/store/slices/product/getAllProductsSlice";
 
 interface Product {
   id: string;
   code: string;
   name: string;
+  skus?: string[];
 }
 
 interface Member {
@@ -36,22 +38,18 @@ export default function CreateCampaignForm() {
   } = useAppSelector((state) => state.generatePrefix);
   const { channels, loading: channelsLoading } = useAppSelector((state) => state.allChannels);
   const { callPoints, loading: callPointsLoading } = useAppSelector((state) => state.allCallPoints);
+  const { products: allProducts, loading: productsLoading } = useAppSelector(
+    (state) => state.allProducts
+  );
 
   // Form States
   const [status, setStatus] = useState<"Active" | "Inactive">("Active");
   const [teamName, setTeamName] = useState("");
   const [selectedChannelId, setSelectedChannelId] = useState("");
   const [selectedCallPointId, setSelectedCallPointId] = useState("");
-  const [products, setProducts] = useState<Product[]>([
-    { id: "1", code: "PLS_PROD-0034", name: "Amoxicillin" },
-    { id: "2", code: "PLS_PROD-0123", name: "Lisinopril" },
-    { id: "3", code: "PLS_PROD-0123", name: "Lisinopril" },
-    { id: "4", code: "PLS_PROD-0078", name: "Ibuprofen" },
-    { id: "5", code: "PLS_PROD-0034", name: "Amoxicillin" },
-    { id: "6", code: "PLS_PROD-0123", name: "Lisinopril" },
-    { id: "7", code: "PLS_PROD-0123", name: "Lisinopril" },
-    { id: "8", code: "PLS_PROD-0078", name: "Ibuprofen" },
-  ]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSearchResults, setShowSearchResults] = useState(false);
 
   const members: Member[] = [
     { id: "1", name: "Ayan Tajammul", pulseCode: "", role: "Area Sales Manager" },
@@ -77,6 +75,9 @@ export default function CreateCampaignForm() {
     // Fetch all call points for dropdown
     dispatch(getAllCallPoints());
 
+    // Fetch all products for search
+    dispatch(getAllProducts());
+
     return () => {
       dispatch(resetGeneratePrefixState());
     };
@@ -85,6 +86,28 @@ export default function CreateCampaignForm() {
   const removeProduct = (id: string) => {
     setProducts(products.filter((p) => p.id !== id));
   };
+
+  const addProduct = (product: any) => {
+    if (!products.find((p) => p.id === product.id)) {
+      setProducts([
+        ...products,
+        {
+          id: product.id,
+          code: product.productCode,
+          name: product.name,
+          skus: product.productSkus,
+        },
+      ]);
+    }
+    setSearchQuery("");
+    setShowSearchResults(false);
+  };
+
+  const filteredProducts = allProducts.filter(
+    (p) =>
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.productCode.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const [openSections, setOpenSections] = useState({
     areaManager: true, // Ayan Tajammul open by default
@@ -107,7 +130,9 @@ export default function CreateCampaignForm() {
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Pulse Code*</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Pulse Code<span className="text-red-500">*</span>
+              </label>
               <input
                 type="text"
                 value={generatedPrefix || ""}
@@ -118,7 +143,9 @@ export default function CreateCampaignForm() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Team Name*</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Team Name<span className="text-red-500">*</span>
+              </label>
               <input
                 type="text"
                 value={teamName}
@@ -128,7 +155,9 @@ export default function CreateCampaignForm() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Channel Name*</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Channel Name<span className="text-red-500">*</span>
+              </label>
               <select
                 value={selectedChannelId}
                 onChange={(e) => setSelectedChannelId(e.target.value)}
@@ -165,7 +194,9 @@ export default function CreateCampaignForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Call Point*</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Call Point<span className="text-red-500">*</span>
+            </label>
             <select
               value={selectedCallPointId}
               onChange={(e) => setSelectedCallPointId(e.target.value)}
@@ -189,33 +220,71 @@ export default function CreateCampaignForm() {
         <div className="space-y-6">
           <h2 className="text-2xl font-bold text-gray-900">Select Products</h2>
 
-          <div className="flex items-center gap-4">
-            <input
-              type="text"
-              placeholder="Search Product Name"
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
-            />
-            <button className="px-6 py-3 bg-blue-600 text-white rounded-full flex items-center gap-2 hover:bg-blue-700 transition cursor-pointer">
-              <Plus className="w-5 h-5" />
-              Add Products
-            </button>
+          <div className="relative">
+            <div className="flex items-center gap-4">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setShowSearchResults(true);
+                  }}
+                  onFocus={() => setShowSearchResults(true)}
+                  placeholder="Search Product Name"
+                  className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+                />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              </div>
+              <button className="px-6 py-3 bg-blue-600 text-white rounded-full flex items-center gap-2 hover:bg-blue-700 transition cursor-pointer">
+                <Plus className="w-5 h-5" />
+                Add Products
+              </button>
+            </div>
+
+            {/* Search Results Dropdown */}
+            {showSearchResults && searchQuery && (
+              <div className="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl max-h-96 overflow-y-auto">
+                {filteredProducts.length > 0 ? (
+                  filteredProducts.map((product) => (
+                    <div
+                      key={product.id}
+                      onClick={() => addProduct(product)}
+                      className="p-4 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-0 transition-colors"
+                    >
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <p className="font-semibold text-gray-900">{product.name}</p>
+                          <p className="text-sm text-gray-500">{product.productCode}</p>
+                        </div>
+                        <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+                          {product.productCategory}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-4 text-center text-gray-500">No products found</div>
+                )}
+              </div>
+            )}
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-gray-50 p-4 rounded-xl">
             {products.map((product) => (
               <div
                 key={product.id}
-                className="bg-gray-50 border border-gray-200 rounded-xl p-4 flex items-center justify-between hover:bg-gray-100 transition"
+                className="bg-white border border-gray-100 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition group"
               >
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">{product.code}</p>
-                  <p className="text-sm text-gray-600">{product.name}</p>
+                <div className="flex items-center gap-6">
+                  <p className="text-sm text-gray-400 font-medium">{product.code}</p>
+                  <p className="text-sm font-bold text-gray-900">{product.name}</p>
                 </div>
                 <button
                   onClick={() => removeProduct(product.id)}
-                  className="text-red-500 hover:text-red-700 cursor-pointer"
+                  className="w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-100 transition-colors cursor-pointer"
                 >
-                  <Trash2 className="w-5 h-5" />
+                  <Trash2 className="w-4 h-4" />
                 </button>
               </div>
             ))}

@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { Search, MoreVertical } from "lucide-react";
+import { Search, MoreVertical, Trash2, AlertTriangle } from "lucide-react";
 import Image from "next/image";
-import ProductTargetRow, { ProductTarget } from "./ProductTargetRow";
+import { ProductTarget } from "./ProductTargetRow";
 
 export interface SalesRep {
   id: string;
@@ -27,26 +27,44 @@ export default function SalesRepCard({
   onProductInputChange,
   onConflictClick,
 }: SalesRepCardProps) {
+  // Check if any product has conflict
+  const hasAnyConflict = rep.products.some((p) => p.hasConflict);
+
+  // Get percentage color
+  const getPercentageColor = (percentage: number) => {
+    if (percentage === 100) return "text-gray-600";
+    if (percentage >= 50) return "text-orange-500";
+    return "text-red-500";
+  };
+
+  // Get row border style based on conflict
+  const getRowBorderStyle = (hasConflict: boolean) => {
+    if (hasConflict) {
+      return "border-2 border-red-400";
+    }
+    return "border border-gray-200";
+  };
+
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-5 space-y-4">
-      {/* Header Row: Avatar, Name, Role, Search */}
-      <div className="flex items-center justify-between gap-4">
+    <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+      {/* Header Row: Avatar, Name, Role, Search, Menu */}
+      <div className="flex items-center justify-between gap-4 p-5 pb-4">
         <div className="flex items-center gap-4">
           {/* Avatar */}
-          <div className="w-12 h-12 rounded-full bg-gray-300 overflow-hidden flex-shrink-0">
+          <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
             <Image
               src={rep.avatar}
               alt={rep.name}
               width={48}
               height={48}
-              className="object-cover"
+              className="object-cover w-full h-full"
             />
           </div>
 
           {/* Name and Role */}
           <div>
-            <p className="font-bold text-gray-900">{rep.name}</p>
-            <p className="text-sm text-gray-600">{rep.role}</p>
+            <p className="font-bold text-gray-900 text-lg">{rep.name}</p>
+            <p className="text-sm text-gray-500">{rep.role}</p>
           </div>
         </div>
 
@@ -56,8 +74,8 @@ export default function SalesRepCard({
           <div className="relative">
             <input
               type="text"
-              placeholder="Search SKU"
-              className="w-48 px-3 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+              placeholder="Select SKU's"
+              className="w-52 px-4 py-2.5 pl-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white"
             />
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           </div>
@@ -69,30 +87,115 @@ export default function SalesRepCard({
         </div>
       </div>
 
-      {/* Product Tags (Blue Chips) */}
-      <div className="flex flex-wrap gap-2">
-        {rep.productTags.map((tag, index) => (
-          <span
-            key={index}
-            className="px-3 py-1.5 bg-blue-600 text-white text-sm font-medium rounded-lg"
-          >
-            {tag}
-          </span>
-        ))}
+      {/* Product Tags Row */}
+      <div className="flex flex-wrap gap-2 px-5 pb-4">
+        {rep.productTags.map((tag, index) => {
+          // Alternate between filled and outlined styles
+          const isFilled = index % 2 === 0;
+          return (
+            <span
+              key={index}
+              className={`px-3 py-1.5 text-sm font-medium rounded-full ${
+                isFilled
+                  ? "bg-gray-800 text-white"
+                  : "bg-white border border-gray-300 text-gray-700"
+              }`}
+            >
+              {tag}
+            </span>
+          );
+        })}
       </div>
 
-      {/* Product Target Rows */}
-      <div className="space-y-3 pt-2">
-        {rep.products.map((product) => (
-          <ProductTargetRow
-            key={product.id}
-            product={product}
-            onDelete={(productId) => onDeleteProduct(rep.id, productId)}
-            onInputChange={(productId, value) => onProductInputChange(rep.id, productId, value)}
-            onConflictClick={onConflictClick}
-          />
-        ))}
+      {/* Product Target Rows - Two Column Layout */}
+      <div className="px-5 pb-4 space-y-3">
+        {/* Create pairs of products for two-column layout */}
+        {Array.from({ length: Math.ceil(rep.products.length / 2) }).map((_, rowIndex) => {
+          const leftProduct = rep.products[rowIndex * 2];
+          const rightProduct = rep.products[rowIndex * 2 + 1];
+
+          return (
+            <div key={rowIndex} className="grid grid-cols-2 gap-4">
+              {/* Left Product Card */}
+              {leftProduct && (
+                <div
+                  className={`rounded-xl p-4 bg-gray-50 ${getRowBorderStyle(leftProduct.hasConflict || false)}`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4 flex-1">
+                      {/* Product Name */}
+                      <span className="font-semibold text-gray-900 text-sm min-w-[120px]">
+                        {leftProduct.name}
+                      </span>
+                      {/* Target Quantity */}
+                      <span className="text-sm text-gray-500">{leftProduct.targetQuantity}</span>
+                      {/* Percentage */}
+                      <span
+                        className={`text-sm font-bold ${getPercentageColor(leftProduct.completionPercentage)}`}
+                      >
+                        {leftProduct.completionPercentage}%
+                      </span>
+                    </div>
+                    {/* Delete Button */}
+                    <button
+                      onClick={() => onDeleteProduct(rep.id, leftProduct.id)}
+                      className="text-red-400 hover:text-red-600 p-2 hover:bg-red-50 rounded-lg transition cursor-pointer"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Right Product Card - Input Style */}
+              {rightProduct && (
+                <div
+                  className={`rounded-xl p-4 bg-white ${getRowBorderStyle(false)} flex items-center gap-3`}
+                >
+                  {/* Product Name Input */}
+                  <div className="flex-1">
+                    <input
+                      type="text"
+                      value={rightProduct.inputValue || rightProduct.name}
+                      onChange={(e) =>
+                        onProductInputChange(rep.id, rightProduct.id, e.target.value)
+                      }
+                      placeholder="Product name"
+                      className="w-full font-semibold text-blue-600 text-sm bg-transparent outline-none"
+                    />
+                  </div>
+                  {/* Set Monthly Target Input */}
+                  <input
+                    type="text"
+                    placeholder="Set Monthly Target"
+                    className="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-400 w-36 bg-white"
+                  />
+                  {/* Share % Input */}
+                  <input
+                    type="text"
+                    placeholder="Share (%)"
+                    className="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-400 w-24 bg-white"
+                  />
+                </div>
+              )}
+
+              {/* Empty placeholder if odd number of products */}
+              {!rightProduct && leftProduct && <div></div>}
+            </div>
+          );
+        })}
       </div>
+
+      {/* Conflict Warning Banner */}
+      {hasAnyConflict && (
+        <div
+          onClick={onConflictClick}
+          className="flex items-center gap-2 px-5 py-3 bg-red-50 cursor-pointer hover:bg-red-100 transition-colors"
+        >
+          <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />
+          <p className="text-sm text-red-600 font-medium">Conflicts In Sales Allocation</p>
+        </div>
+      )}
     </div>
   );
 }

@@ -44,8 +44,7 @@ export default function GiveawayTable() {
     { label: "Name", className: "flex-1" },
     { label: "Category", className: "flex-1" },
     { label: "Product Name", className: "flex-1" },
-    { label: "Units", className: "w-24" },
-    { label: "", className: "w-12" }, // Actions
+    { label: "", className: "w-48" }, // Actions
   ];
 
   return (
@@ -86,11 +85,8 @@ export default function GiveawayTable() {
                 {/* Product Name */}
                 <div className="flex-1 font-medium text-gray-400">{item.productName}</div>
 
-                {/* Units */}
-                <div className="w-24 font-medium text-gray-600">{item.units}</div>
-
                 {/* More Options */}
-                <div className="w-12 flex justify-end flex-shrink-0">
+                <div className="w-44 flex justify-end flex-shrink-0">
                   <div className="relative">
                     <button
                       onClick={() => setOpenId(openId === item.id ? null : item.id)}
