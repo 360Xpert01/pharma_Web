@@ -22,15 +22,15 @@ const lastMonthData = [
 
 export default function MonthlyTargetCard() {
   return (
-    <div className="w-full h-full bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-8">
+    <div className="w-full h-full bg-(--background) rounded-2xl shadow-sm border border-(--gray-1) p-6 space-y-8">
       {/* This Month */}
       <div className="space-y-3">
-        <p className="text-sm font-medium text-gray-500">Monthly target</p>
+        <p className="text-sm font-medium text-(--gray-5)">Monthly target</p>
         <div className="flex items-end gap-3">
-          <span className="text-4xl font-bold text-blue-600">19,8K</span>
+          <span className="text-4xl font-bold text-(--primary)">19,8K</span>
           <div className="flex items-center gap-1 pb-1">
-            <TrendingUp className="w-4 h-4 text-green-500" />
-            <span className="text-sm font-semibold text-green-500 bg-blue-50 px-2 py-0.5 rounded-full">
+            <TrendingUp className="w-4 h-4 text-(--success)" />
+            <span className="text-sm font-semibold text-(--success) bg-blue-50 px-2 py-0.5 rounded-full">
               +12.88%
             </span>
           </div>
@@ -63,16 +63,16 @@ export default function MonthlyTargetCard() {
         </div>
       </div>
 
-      <div className="border-t border-gray-100 -mx-6" />
+      <div className="border-t border-(--gray-1) -mx-6" />
 
       {/* Last Month */}
       <div className="space-y-3">
-        <p className="text-sm font-medium text-gray-500">Last Month</p>
+        <p className="text-sm font-medium text-(--gray-5)">Last Month</p>
         <div className="flex items-end gap-3">
-          <span className="text-3xl font-bold text-red-600">1,321</span>
+          <span className="text-3xl font-bold text-(--destructive)">1,321</span>
           <div className="flex items-center gap-1 pb-1">
-            <TrendingDown className="w-4 h-4 text-red-500" />
-            <span className="text-sm font-semibold text-red-500 bg-red-50 px-2 py-0.5 rounded-full">
+            <TrendingDown className="w-4 h-4 text-(--destructive)" />
+            <span className="text-sm font-semibold text-(--destructive) bg-red-50 px-2 py-0.5 rounded-full">
               -3.53%
             </span>
           </div>
