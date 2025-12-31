@@ -31,7 +31,7 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
     <div className=" ">
       <div className="flex justify-between w-[100%]   gap-3">
         {/* Left - Avatar + Basic Info */}
-        <div className="flex justify-between gap-6 w-[39%]  rounded-lg shadow-sm p-4 border border-(--gray-1) ">
+        <div className="flex justify-between gap-6 w-[39%] bg-(--background) rounded-lg shadow-sm p-4 border border-(--gray-1) ">
           <div className="flex gap-3 justify-center">
             <div className="relative w-38 h-38 rounded-lg overflow-hidden  shadow-lg">
               <Image
@@ -79,7 +79,7 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
 
         {/* Middle Left */}
 
-        <div className="flex justify-between gap-15 w-[60%] rounded-lg shadow-sm p-4 border border-(--gray-2) ">
+        <div className="flex justify-between gap-15 w-[60%] bg-(--background) rounded-lg shadow-sm p-4 border border-(--gray-2) ">
           <div className="space-y-14">
             <div>
               <p className="text-[10px] text-(--gray-5) uppercase tracking-wider">Campaign</p>

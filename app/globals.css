@@ -110,10 +110,10 @@
 
 .ceturo {
   --page-background: #fafafa;
-  --background: #fafafa;
+  --background: #fff;
   --foreground: #feb8b8;
   --light: #ffffff;
-  --gray-0: #f9fafb;
+  --gray-0: #fafafa; /* for the page background */
   --gray-1: #f3f4f6;
   --gray-2: #e5e7eb;
   --gray-3: #d1d5dc;
