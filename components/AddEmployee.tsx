@@ -380,8 +380,7 @@ export default function AddEmployeeForm() {
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-(--gray-7)">Last Name*</label>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-(--gray-7)">
                     Last Name<span className="text-(--destructive)">*</span>
                   </label>
                   <input
@@ -406,8 +405,6 @@ export default function AddEmployeeForm() {
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-(--gray-7)">
-                    Email Address*
-                  <label className="block text-sm font-medium text-gray-700">
                     Email Address<span className="text-(--destructive)">*</span>
                   </label>
                   <input
@@ -426,8 +423,6 @@ export default function AddEmployeeForm() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-(--gray-7)">
-                    Mobile Number*
-                  <label className="block text-sm font-medium text-gray-700">
                     Mobile Number<span className="text-(--destructive)">*</span>
                   </label>
                   <input
