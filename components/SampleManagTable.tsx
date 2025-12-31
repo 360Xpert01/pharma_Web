@@ -5,6 +5,7 @@ import { MoreVertical } from "lucide-react";
 import TableColumnHeader from "@/components/TableColumnHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProducts } from "@/store/slices/product/getAllProductsSlice";
+import { formatDate } from "@/utils/formatDate";
 
 export default function SampleManagTable() {
   const [openId, setOpenId] = useState<string | null>(null);
@@ -19,7 +20,7 @@ export default function SampleManagTable() {
   // Define columns for the table header
   const sampleColumns = [
     { label: "Pulse Code", className: "flex-1" },
-    { label: "Product Code", className: "flex-1" },
+    { label: "Date", className: "flex-1" },
     { label: "Product Name", className: "flex-1" },
     { label: "SKUS", className: "flex-1" },
     { label: "", className: "w-12" }, // Actions
@@ -35,14 +36,14 @@ export default function SampleManagTable() {
       </div>
 
       {/* Loading State */}
-      {loading && <div className="px-3 py-8 text-center text-gray-500">Loading products...</div>}
+      {loading && <div className="px-3 py-8 text-center text-(--gray-5)">Loading products...</div>}
 
       {/* Error State */}
-      {error && <div className="px-3 py-8 text-center text-red-500">{error}</div>}
+      {error && <div className="px-3 py-8 text-center text-(--destructive)">{error}</div>}
 
       {/* Empty State */}
       {!loading && !error && products.length === 0 && (
-        <div className="px-3 py-8 text-center text-gray-500">No products found.</div>
+        <div className="px-3 py-8 text-center text-(--gray-5)">No products found.</div>
       )}
 
       {/* Products List */}
@@ -51,24 +52,26 @@ export default function SampleManagTable() {
         products.map((item: any) => (
           <div
             key={item.id}
-            className="px-3 py-1 hover:bg-gray-50 transition-colors  flex items-center"
+            className="px-3 py-1 transition-colors flex items-center hover:bg-(--gray-1)"
           >
-            <div className="w-full bg-white rounded-lg p-4 shadow-sm">
+            <div className="w-full rounded-lg p-4 shadow-sm bg-(--light)">
               {/* Perfectly Equal Columns using flex */}
               <div className="flex items-center text-sm font-medium gap-4">
                 {/* Pulse Code */}
-                <div className="flex-1 font-bold text-gray-600 font-mono">
+                <div className="flex-1 font-bold font-mono text-(--gray-6)">
                   {item.pulseCode || "N/A"}
                 </div>
 
-                {/* Product Code */}
-                <div className="flex-1 font-medium text-gray-400">{item.productCode || "N/A"}</div>
+                {/* Date */}
+                <div className="flex-1 font-medium text-(--gray-4)">
+                  {formatDate(item.createdAt)}
+                </div>
 
                 {/* Product Name */}
-                <div className="flex-1 font-semibold text-gray-900">{item.name || "N/A"}</div>
+                <div className="flex-1 font-semibold text-(--gray-9)">{item.name || "N/A"}</div>
 
                 {/* Category */}
-                <div className="flex-1 font-medium text-gray-400">
+                <div className="flex-1 font-medium text-(--gray-4)">
                   {item.productCategory || "N/A"}
                 </div>
 
@@ -77,7 +80,7 @@ export default function SampleManagTable() {
                   <div className="relative">
                     <button
                       onClick={() => setOpenId(openId === item.id ? null : item.id)}
-                      className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition cursor-pointer"
+                      className="p-2 rounded-full transition cursor-pointer text-(--gray-4) hover:text-(--gray-7) hover:bg-(--gray-1)"
                     >
                       <MoreVertical className="w-5 h-5" />
                     </button>
@@ -85,15 +88,15 @@ export default function SampleManagTable() {
                     {openId === item.id && (
                       <>
                         <div className="fixed inset-0 z-40" onClick={() => setOpenId(null)} />
-                        <div className="absolute right-0 top-10 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                        <div className="absolute right-0 top-10 mt-2 w-48 rounded-lg shadow-lg z-50 bg-(--light) border border-(--gray-2)">
                           <div className="py-1">
-                            <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <button className="w-full text-left px-4 py-2 text-sm cursor-pointer transition text-(--gray-7) hover:bg-(--gray-1)">
                               Edit
                             </button>
-                            <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <button className="w-full text-left px-4 py-2 text-sm cursor-pointer transition text-(--gray-7) hover:bg-(--gray-1)">
                               Duplicate
                             </button>
-                            <button className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 cursor-pointer">
+                            <button className="w-full text-left px-4 py-2 text-sm cursor-pointer transition text-(--destructive) hover:bg-(--gray-1)">
                               Delete
                             </button>
                           </div>

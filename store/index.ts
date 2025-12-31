@@ -18,6 +18,8 @@ import registerEmployeeReducer from "./slices/employee/registerEmployee";
 import updateEmployeeReducer from "./slices/employee/updateEmployeeSlice";
 import getUserByIdReducer from "./slices/employee/getUserByIdSlice";
 import allUsersReducer from "./slices/employee/getAllUsersSlice";
+import usersByRoleReducer from "./slices/employee/getUsersByRoleSlice";
+import userHierarchyReducer from "./slices/employee/getUserHierarchySlice";
 import allChannelsReducer from "./slices/channel/getAllChannelsSlice";
 import createChannelReducer from "./slices/channel/createChannelSlice";
 import allCallPointsReducer from "./slices/callPoint/getAllCallPointsSlice";
@@ -44,6 +46,8 @@ const rootReducer = combineReducers({
   updateEmployee: updateEmployeeReducer,
   getUserById: getUserByIdReducer,
   allUsers: allUsersReducer,
+  usersByRole: usersByRoleReducer,
+  userHierarchy: userHierarchyReducer,
   allChannels: allChannelsReducer,
   createChannel: createChannelReducer,
   allCallPoints: allCallPointsReducer,
