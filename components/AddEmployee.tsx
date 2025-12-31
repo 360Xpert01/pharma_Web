@@ -341,7 +341,10 @@ export default function AddEmployeeForm() {
               {/* Names */}
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-(--gray-7)">First Name*</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    First Name<span className="text-(--destructive)">*</span>
+                  </label>
+
                   <input
                     type="text"
                     value={firstName}
@@ -378,6 +381,9 @@ export default function AddEmployeeForm() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-(--gray-7)">Last Name*</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Last Name<span className="text-(--destructive)">*</span>
+                  </label>
                   <input
                     type="text"
                     value={lastName}
@@ -401,6 +407,8 @@ export default function AddEmployeeForm() {
                 <div>
                   <label className="block text-sm font-medium text-(--gray-7)">
                     Email Address*
+                  <label className="block text-sm font-medium text-gray-700">
+                    Email Address<span className="text-(--destructive)">*</span>
                   </label>
                   <input
                     type="email"
@@ -419,6 +427,8 @@ export default function AddEmployeeForm() {
                 <div>
                   <label className="block text-sm font-medium text-(--gray-7)">
                     Mobile Number*
+                  <label className="block text-sm font-medium text-gray-700">
+                    Mobile Number<span className="text-(--destructive)">*</span>
                   </label>
                   <input
                     type="tel"
@@ -483,7 +493,9 @@ export default function AddEmployeeForm() {
                       value={selectedRoleId}
                       onChange={(e) => {
                         setSelectedRoleId(e.target.value);
+                        setSelectedSupervisorId(""); // Reset supervisor when role changes
                         clearFieldError("roleId");
+                        clearFieldError("supervisorId");
                       }}
                       className={getInputClasses("roleId")}
                     >
@@ -515,17 +527,47 @@ export default function AddEmployeeForm() {
                         clearFieldError("supervisorId");
                       }}
                       className={getInputClasses("supervisorId")}
+                      disabled={!selectedRoleId}
                     >
-                      <option value="">Select a line manager</option>
+                      <option value="">
+                        {!selectedRoleId
+                          ? "Select a role first"
+                          : (() => {
+                              const selectedRole = roles.find((r) => r.id === selectedRoleId);
+                              if (!selectedRole?.parentRoleId)
+                                return "No supervisor required for this role";
+                              const parentRole = roles.find(
+                                (r) => r.id === selectedRole.parentRoleId
+                              );
+                              return parentRole
+                                ? `Select ${parentRole.roleName}`
+                                : "Select a line manager";
+                            })()}
+                      </option>
                       {usersLoading ? (
                         <option disabled>Loading users...</option>
                       ) : (
-                        users.map((user) => (
-                          <option key={user.id} value={user.id}>
-                            {user.firstName} {user.lastName}{" "}
-                            {user.pulseCode && `(${user.pulseCode})`}
-                          </option>
-                        ))
+                        (() => {
+                          // Get the parent role ID for the selected role
+                          const selectedRole = roles.find((r) => r.id === selectedRoleId);
+                          const parentRoleId = selectedRole?.parentRoleId;
+
+                          // Filter users who have the parent role
+                          const filteredUsers = parentRoleId
+                            ? users.filter((user) => user.roleId === parentRoleId)
+                            : [];
+
+                          return filteredUsers.length > 0
+                            ? filteredUsers.map((user) => (
+                                <option key={user.id} value={user.id}>
+                                  {user.firstName} {user.lastName}{" "}
+                                  {user.pulseCode && `(${user.pulseCode})`}
+                                </option>
+                              ))
+                            : selectedRoleId && (
+                                <option disabled>No supervisors available for this role</option>
+                              );
+                        })()
                       )}
                     </select>
                     {hasError("supervisorId") && (

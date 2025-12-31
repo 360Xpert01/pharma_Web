@@ -5,8 +5,6 @@ import { MoreVertical } from "lucide-react";
 import TableColumnHeader from "@/components/TableColumnHeader";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllTeams } from "@/store/slices/team/getAllTeamsSlice";
-import type { TeamItem } from "@/store/slices/team/getAllTeamsSlice";
-
 export default function CampaignsTable() {
   const dispatch = useAppDispatch();
   const { teams, loading, error } = useAppSelector((state) => state.allTeams);
@@ -24,12 +22,13 @@ export default function CampaignsTable() {
 
   // Table header columns
   const campaignColumns = [
+    { label: "Pulse Code", className: "col-span-2" },
     { label: "Name", className: "col-span-2" },
     { label: "Channel", className: "col-span-2" },
     { label: "Call Point", className: "col-span-2" },
-    { label: "Assigned", className: "col-span-2 ml-4" },
-    { label: "Status", className: "col-span-2 ml-[100px]" },
-    { label: "", className: "col-span-2" },
+    { label: "Assigned", className: "col-span-1" },
+    { label: "Status", className: "col-span-3 ml-24" },
+    { label: "", className: "col-span-1" },
   ];
 
   // Loading state
@@ -103,27 +102,27 @@ export default function CampaignsTable() {
           >
             {/* Grid with all columns including actions */}
             <div className="rounded-md p-2 border border-(--gray-2) grid grid-cols-12 gap-3 text-sm">
+              {/* Pulse Code */}
+              <div className="col-span-2 font-semibold text-(--gray-9)">
+                {team.pulseCode || "N/A"}
+              </div>
               {/* Name */}
-              <div className="col-span-2 font-semibold text-font-semibold">{team.name}</div>
+              <div className="col-span-2 font-semibold">{team.name}</div>
 
               {/* Channel */}
-              <div className="col-span-2 font-semibold text-(--dark)">
-                {team.channelName || "N/A"}
-              </div>
+              <div className="col-span-2 font-semibold">{team.channelName || "N/A"}</div>
 
               {/* Call Point */}
-              <div className="col-span-2 font-semibold text-(--dark)">
-                {team.callPointName || "N/A"}
-              </div>
+              <div className="col-span-2 font-semibold">{team.callPointName || "N/A"}</div>
 
               {/* Assigned Users */}
-              <div className="col-span-2 flex items-center">
+              <div className="col-span-1 flex items-center">
                 {team.users && team.users.length > 0 ? (
                   <div className="flex -space-x-2">
-                    {team.users.slice(0, 5).map((user, idx) => (
+                    {team.users.slice(0, 3).map((user, idx) => (
                       <div
                         key={user.id}
-                        className="w-9 h-9 rounded-full border-2 border-(--light) overflow-hidden ring-2 ring-(--gray-1)"
+                        className="w-7 h-7 rounded-full border-2 border-(--light) overflow-hidden ring-2 ring-(--gray-1)"
                       >
                         <img
                           src={
@@ -138,15 +137,14 @@ export default function CampaignsTable() {
                         />
                       </div>
                     ))}
-
-                    {team.users.length > 5 && (
-                      <div className="w-9 h-9 rounded-full border-2 border-(--light) flex items-center justify-center text-xs font-medium text-(--gray-6) ring-2 ring-(--gray-1) bg-(--gray-1)">
-                        +{team.users.length - 5}
+                    {team.users.length > 3 && (
+                      <div className="w-7 h-7 rounded-full border-2 border-(--light) flex items-center justify-center text-xs font-medium text-(--gray-5) ring-2 ring-(--gray-1) bg-(--gray-1)">
+                        +{team.users.length - 3}
                       </div>
                     )}
                   </div>
                 ) : (
-                  <span className="text-(--gray-4) text-sm">No users assigned</span>
+                  <span className="text-xs text-center text-(--gray-4)">N/A</span>
                 )}
               </div>
 
@@ -155,8 +153,8 @@ export default function CampaignsTable() {
                 <span
                   className={`px-4 min-w-[90px] text-center py-1 rounded-full text-sm font-medium ${
                     team.isActive
-                      ? "bg-green-100 text-(--success)"
-                      : "bg-(--gray-1) text-(--gray-6)"
+                      ? "bg-(--success)/10 text-(--success)"
+                      : "bg-(--gray-1) text-(--gray-5)"
                   }`}
                 >
                   {team.isActive ? "Active" : "Inactive"}
@@ -165,7 +163,7 @@ export default function CampaignsTable() {
 
               {/* Actions - Inside grid */}
               <div
-                className="col-span-2 flex items-center justify-end"
+                className="col-span-1 flex items-center justify-end"
                 onClick={(e) => e.stopPropagation()}
               >
                 <button
@@ -177,13 +175,13 @@ export default function CampaignsTable() {
 
                 {/* Dropdown */}
                 {openId === team.id && (
-                  <div className="absolute right-0 top-6 mt-2 w-48 bg-(--background) rounded-lg shadow-lg border border-(--gray-2) z-50">
+                  <div className="absolute right-0 top-6 mt-2 w-48 rounded-lg shadow-lg border border-(--gray-2) bg-(--light) z-50">
                     <button
                       onClick={() => {
                         console.log("Edit", team.id);
                         setOpenId(null);
                       }}
-                      className="w-full text-left px-4 py-2 text-sm hover:bg-(--gray-1) cursor-pointer"
+                      className="w-full text-left px-4 py-2 text-sm cursor-pointer hover:bg-(--gray-1)"
                     >
                       Edit
                     </button>
@@ -193,7 +191,7 @@ export default function CampaignsTable() {
                         console.log("Duplicate", team.id);
                         setOpenId(null);
                       }}
-                      className="w-full text-left px-4 py-2 text-sm hover:bg-(--gray-1) cursor-pointer"
+                      className="w-full text-left px-4 py-2 text-sm cursor-pointer hover:bg-(--gray-1)"
                     >
                       Duplicate
                     </button>
@@ -203,7 +201,7 @@ export default function CampaignsTable() {
                         console.log("Delete", team.id);
                         setOpenId(null);
                       }}
-                      className="w-full text-left px-4 py-2 text-sm text-(--destructive) hover:bg-(--gray-1) cursor-pointer"
+                      className="w-full text-left px-4 py-2 text-sm cursor-pointer text-(--destructive) hover:bg-(--gray-1)"
                     >
                       Delete
                     </button>
