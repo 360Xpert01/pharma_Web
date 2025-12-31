@@ -39,8 +39,8 @@ export default function RolesCardList() {
     return (
       <div className="w-full flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading roles...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-(--gray-9) mx-auto"></div>
+          <p className="mt-4 text-(--gray-6)">Loading roles...</p>
         </div>
       </div>
     );
@@ -51,10 +51,10 @@ export default function RolesCardList() {
       <div className="w-full flex items-center justify-center py-12">
         <div className="text-center">
           <p className="text-red-600 font-semibold">Error loading roles</p>
-          <p className="text-gray-600 mt-2">{error}</p>
+          <p className="text-(--gray-6) mt-2">{error}</p>
           <button
             onClick={() => dispatch(getAllRoles())}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            className="mt-4 px-4 py-2 bg-(--primary) text-(--light) rounded-lg hover:bg-(--primary-2) transition"
           >
             Retry
           </button>
@@ -66,7 +66,7 @@ export default function RolesCardList() {
   if (rolesData.length === 0) {
     return (
       <div className="w-full flex items-center justify-center py-12">
-        <p className="text-gray-600">No roles found</p>
+        <p className="text-(--gray-6)">No roles found</p>
       </div>
     );
   }
@@ -89,29 +89,29 @@ export default function RolesCardList() {
         {rolesData.map((role) => (
           <div
             key={role.id}
-            className="bg-white border border-gray-200 rounded-xl p-3 transition-shadow duration-200"
+            className="bg-(--background) border border-(--gray-2) rounded-xl p-3 transition-shadow duration-200"
           >
             <div className="flex items-center justify-between gap-6">
               {/* Left Section */}
               <div className="flex-1 grid grid-cols-5 gap-6">
                 {/* Role ID */}
                 <div>
-                  <p className="mt-1 font-semibold text-md text-gray-900">{role.roleId}</p>
+                  <p className="mt-1 font-semibold text-md text-(--gray-9)">{role.roleId}</p>
                 </div>
 
                 {/* Created Date */}
                 <div>
-                  <p className="mt-1 text-sm text-gray-500">{role.created}</p>
+                  <p className="mt-1 text-sm text-(--gray-5)">{role.created}</p>
                 </div>
 
                 {/* Title */}
                 <div>
-                  <p className="mt-1 font-semibold text-gray-900">{role.title}</p>
+                  <p className="mt-1 font-semibold text-(--gray-9)">{role.title}</p>
                 </div>
 
                 {/* Responsibilities */}
                 <div>
-                  <p className="mt-1 font-semibold text-gray-900">
+                  <p className="mt-1 font-semibold text-(--gray-9)">
                     {role.responsibilities} Responsibilities
                   </p>
                 </div>
@@ -121,8 +121,8 @@ export default function RolesCardList() {
                   <span
                     className={`inline-flex items-center gap-2 px-12 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${
                       role.status === "active"
-                        ? "bg-green-500 text-white"
-                        : "bg-gray-300 text-white"
+                        ? "bg-(--success) text-(--light)"
+                        : "bg-(--gray-3) text-(--light)"
                     }`}
                   >
                     {role.status === "active" ? "Active" : "Inactive"}
@@ -135,7 +135,7 @@ export default function RolesCardList() {
               {/* Right Section: Status + Actions */}
 
               <div className="">
-                <button className="text-gray-400 hover:text-gray-700 transition">
+                <button className="text-(--gray-4) hover:text-(--gray-7) transition">
                   <MoreVertical className="w-5 h-5" />
                 </button>
               </div>

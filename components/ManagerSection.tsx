@@ -27,10 +27,10 @@ export default function ManagerSection({
       {/* Left Side: Manager Name (25%) */}
       <div className="w-1/4">
         <div>
-          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+          <p className="text-xs font-medium text-(--gray-5) uppercase tracking-wide mb-1">
             Sales Manager
           </p>
-          <p className="text-lg font-bold text-gray-900">{manager.name}</p>
+          <p className="text-lg font-bold text-(--gray-9)">{manager.name}</p>
         </div>
       </div>
 

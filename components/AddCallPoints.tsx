@@ -83,62 +83,64 @@ export default function AddCallPointForm() {
 
   return (
     <div className="w-full">
-      <div className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
+      <div className="bg-(-background) rounded-3xl shadow-lg border border-(--gray-1) overflow-hidden">
         <div className="px-8 py-6">
           {/* Header */}
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">Add Call Point</h1>
-            <p className="text-sm text-gray-500 mt-1">Unlock the potential of your candidates</p>
+            <h1 className="text-2xl font-bold text-(--gray-9)">Add Call Point</h1>
+            <p className="text-sm text-(--gray-5) mt-1">Unlock the potential of your candidates</p>
           </div>
 
           {/* Form Fields - Single Row with 4 columns + button */}
           <div className="flex items-end gap-6">
             {/* Pulse Code */}
             <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Pulse Code</label>
+              <label className="block text-sm font-medium text-(--gray-7) mb-2">Pulse Code</label>
               <input
                 type="text"
                 value={generatedPrefix || ""}
                 placeholder={prefixLoading ? "Generating..." : "PLS_CP_000001"}
                 readOnly
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-700 cursor-not-allowed outline-none"
+                className="w-full px-4 py-3 bg-(--gray-0) border border-(--gray-3) rounded-xl text-(--gray-7) cursor-not-allowed outline-none"
                 title={prefixError || "Auto-generated pulse code (read-only)"}
               />
             </div>
 
             {/* Location Title */}
             <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Location Title</label>
+              <label className="block text-sm font-medium text-(--gray-7) mb-2">
+                Location Title
+              </label>
               <input
                 type="text"
                 value={locationTitle}
                 onChange={(e) => setLocationTitle(e.target.value)}
                 placeholder="e.g 360Xpert Solution"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 placeholder-gray-400 text-sm"
+                className="w-full px-4 py-3 bg-(--gray-0) border border-(--gray-2) rounded-xl focus:outline-none focus:ring-2 focus:ring-(--primary) focus:border-transparent text-(--gray-7) placeholder-(--gray-4) text-sm"
               />
             </div>
 
             {/* Latitude */}
             <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Latitude</label>
+              <label className="block text-sm font-medium text-(--gray-7) mb-2">Latitude</label>
               <input
                 type="text"
                 value={latitude}
                 onChange={(e) => setLatitude(e.target.value)}
                 placeholder="e.g 24.924371"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 placeholder-gray-400 text-sm"
+                className="w-full px-4 py-3 bg-(--gray-0) border border-(--gray-2) rounded-xl focus:outline-none focus:ring-2 focus:ring-(--primary) focus:border-transparent text-(--gray-7) placeholder-(--gray-4) text-sm"
               />
             </div>
 
             {/* Longitude */}
             <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Longitude</label>
+              <label className="block text-sm font-medium text-(--gray-7) mb-2">Longitude</label>
               <input
                 type="text"
                 value={longitude}
                 onChange={(e) => setLongitude(e.target.value)}
                 placeholder="e.g 67.084682"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 placeholder-gray-400 text-sm"
+                className="w-full px-4 py-3 bg-(--gray-0) border border-(--gray-2) rounded-xl focus:outline-none focus:ring-2 focus:ring-(--primary) focus:border-transparent text-(--gray-7) placeholder-(--gray-4) text-sm"
               />
             </div>
 
@@ -153,7 +155,7 @@ export default function AddCallPointForm() {
                   loading ||
                   prefixLoading
                 }
-                className="px-8 py-3 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all cursor-pointer text-sm"
+                className="px-8 py-3 bg-(--primary) text-(--light) font-medium rounded-full hover:bg-(--primary-2) disabled:bg-(--gray-3) disabled:cursor-not-allowed transition-all cursor-pointer text-sm"
               >
                 {loading ? "Adding..." : "Add Call Point"}
               </button>

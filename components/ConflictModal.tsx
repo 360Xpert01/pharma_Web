@@ -94,19 +94,19 @@ export default function ConflictModal({ isOpen, onClose }: ConflictModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-3xl w-full max-w-4xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300">
+      <div className="bg-(--background) rounded-3xl w-full max-w-4xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300">
         {/* Header */}
         <div className="p-8 pb-4">
           <div className="flex justify-between items-start mb-2">
-            <h2 className="text-3xl font-bold text-gray-900">Conflicts in sales</h2>
+            <h2 className="text-3xl font-bold text-(--gray-9)">Conflicts in sales</h2>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-full transition cursor-pointer"
+              className="p-2 hover:bg-(--gray-1) rounded-full transition cursor-pointer"
             >
-              <X className="w-6 h-6 text-gray-400" />
+              <X className="w-6 h-6 text-(--gray-4)" />
             </button>
           </div>
-          <p className="text-gray-500 text-lg">
+          <p className="text-(--gray-5) text-lg">
             Please review and confirm this expense before approval or rejection
           </p>
         </div>
@@ -116,8 +116,8 @@ export default function ConflictModal({ isOpen, onClose }: ConflictModalProps) {
           {products.map((product) => (
             <div
               key={product.id}
-              className={`border border-gray-100 rounded-2xl transition-all duration-200 ${
-                product.isExpanded ? "bg-gray-50/50" : "bg-white"
+              className={`border border-(--gray-1) rounded-2xl transition-all duration-200 ${
+                product.isExpanded ? "bg-gray-50/50" : "bg-(--light)"
               }`}
             >
               {/* Product Header */}
@@ -133,7 +133,7 @@ export default function ConflictModal({ isOpen, onClose }: ConflictModalProps) {
                         {product.reps.slice(0, 3).map((rep) => (
                           <div
                             key={rep.id}
-                            className="w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-gray-200"
+                            className="w-8 h-8 rounded-full border-2 border-(--light) overflow-hidden bg-(--gray-2)"
                           >
                             <Image
                               src={rep.avatar}
@@ -146,16 +146,18 @@ export default function ConflictModal({ isOpen, onClose }: ConflictModalProps) {
                         ))}
                       </div>
                     )}
-                    <span className="text-gray-400 text-sm">
+                    <span className="text-(--gray-4) text-sm">
                       Conflicts with{" "}
-                      <span className="text-red-500 font-medium">{product.reps.length} Reps</span>
+                      <span className="text-(--destructive) font-medium">
+                        {product.reps.length} Reps
+                      </span>
                     </span>
                   </div>
                 </div>
                 {product.isExpanded ? (
-                  <ChevronUp className="w-6 h-6 text-gray-900" />
+                  <ChevronUp className="w-6 h-6 text-(--gray-9)" />
                 ) : (
-                  <ChevronDown className="w-6 h-6 text-gray-900" />
+                  <ChevronDown className="w-6 h-6 text-(--gray-9)" />
                 )}
               </div>
 
@@ -168,7 +170,7 @@ export default function ConflictModal({ isOpen, onClose }: ConflictModalProps) {
                         key={rep.id}
                         type="text"
                         placeholder="Adjust Share (%)"
-                        className="px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                        className="px-4 py-3 bg-(--light) border border-(--gray-2) rounded-xl text-sm focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none transition-all"
                       />
                     ))}
                   </div>
@@ -182,13 +184,13 @@ export default function ConflictModal({ isOpen, onClose }: ConflictModalProps) {
         <div className="p-8 pt-4 flex justify-end gap-4">
           <button
             onClick={onClose}
-            className="px-8 py-3.5 border border-blue-600 text-blue-600 rounded-full font-bold hover:bg-blue-50 transition cursor-pointer"
+            className="px-8 py-3.5 border border-(--primary) text-(--primary) rounded-full font-bold hover:bg-(--primary-0) transition cursor-pointer"
           >
             Discard
           </button>
           <button
             onClick={onClose}
-            className="px-8 py-3.5 bg-blue-600 text-white rounded-full font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-200 flex items-center gap-2 cursor-pointer"
+            className="px-8 py-3.5 bg-(--primary) text-(--light) rounded-full font-bold hover:bg-(--primary-2) transition shadow-lg shadow-(--primary-1) flex items-center gap-2 cursor-pointer"
           >
             <Plus className="w-5 h-5" />
             Save Conflicts

@@ -57,40 +57,40 @@ export default function GiveawayTable() {
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-gray-500">Loading giveaways...</div>
+        <div className="text-center py-12 text-(--gray-5)">Loading giveaways...</div>
       ) : error ? (
-        <div className="text-center py-12 text-red-500">{error}</div>
+        <div className="text-center py-12 text-(--destructive)">{error}</div>
       ) : sortedGiveaways.length === 0 ? (
-        <div className="text-center py-12 text-gray-500">No giveaways found</div>
+        <div className="text-center py-12 text-(--gray-5)">No giveaways found</div>
       ) : (
         sortedGiveaways.map((item) => (
           <div
             key={item.id}
-            className="px-3 py-1 hover:bg-gray-50 transition-colors flex items-center"
+            className="px-3 py-1 hover:bg-(--gray-0) transition-colors flex items-center"
           >
-            <div className="w-full bg-white rounded-lg p-4 shadow-sm">
+            <div className="w-full bg-(--background) rounded-lg p-4 shadow-sm">
               {/* Perfectly Equal Columns using flex */}
               <div className="flex items-center text-sm font-medium gap-4">
                 {/* Pulse Code */}
-                <div className="flex-1 font-bold text-gray-600 font-mono">
+                <div className="flex-1 font-bold text-(--gray-6) font-mono">
                   {item.pulseCode || "N/A"}
                 </div>
 
                 {/* Name */}
-                <div className="flex-1 font-semibold text-gray-900">{item.name}</div>
+                <div className="flex-1 font-semibold text-(--gray-9)">{item.name}</div>
 
                 {/* Category */}
-                <div className="flex-1 font-medium text-gray-600">{item.category}</div>
+                <div className="flex-1 font-medium text-(--gray-6)">{item.category}</div>
 
                 {/* Product Name */}
-                <div className="flex-1 font-medium text-gray-400">{item.productName}</div>
+                <div className="flex-1 font-medium text-(--gray-4)">{item.productName}</div>
 
                 {/* More Options */}
                 <div className="w-44 flex justify-end flex-shrink-0">
                   <div className="relative">
                     <button
                       onClick={() => setOpenId(openId === item.id ? null : item.id)}
-                      className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition cursor-pointer"
+                      className="p-2 text-(--gray-4) hover:text-(--gray-7) hover:bg-(--gray-1) rounded-full transition cursor-pointer"
                     >
                       <MoreVertical className="w-5 h-5" />
                     </button>
@@ -98,15 +98,15 @@ export default function GiveawayTable() {
                     {openId === item.id && (
                       <>
                         <div className="fixed inset-0 z-40" onClick={() => setOpenId(null)} />
-                        <div className="absolute right-0 top-10 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                        <div className="absolute right-0 top-10 mt-2 w-48 bg-(--background) rounded-lg shadow-lg border border-(--gray-2) z-50">
                           <div className="py-1">
-                            <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <button className="w-full text-left px-4 py-2 text-sm text-(--gray-7) hover:bg-(--gray-1) cursor-pointer">
                               Edit
                             </button>
-                            <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <button className="w-full text-left px-4 py-2 text-sm text-(--gray-7) hover:bg-(--gray-1) cursor-pointer">
                               View Details
                             </button>
-                            <button className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 cursor-pointer">
+                            <button className="w-full text-left px-4 py-2 text-sm text-(--destructive) hover:bg-(--gray-1) cursor-pointer">
                               Delete
                             </button>
                           </div>

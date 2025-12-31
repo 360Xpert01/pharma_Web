@@ -150,9 +150,9 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
   const getInputClasses = (fieldName: string) => {
     const baseClasses = "mt-1 w-full px-4 py-3 border rounded-xl outline-none transition-all";
     if (hasError(fieldName)) {
-      return `${baseClasses} border-red-500 focus:ring-2 focus:ring-red-500 focus:border-red-500`;
+      return `${baseClasses} border-(--destructive) focus:ring-2 focus:ring-(--destructive) focus:border-(--destructive)`;
     }
-    return `${baseClasses} border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500`;
+    return `${baseClasses} border-(--gray-3) focus:ring-2 focus:ring-(--primary) focus:border-(--primary)`;
   };
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -259,10 +259,10 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
   // Show loading state while fetching user data
   if (fetchingUser) {
     return (
-      <div className="bg-gray-50 flex items-center justify-center min-h-[600px]">
-        <div className="bg-white rounded-2xl shadow-lg p-12 flex flex-col items-center gap-4">
-          <Loader2 className="w-12 h-12 animate-spin text-blue-600" />
-          <p className="text-lg font-medium text-gray-700">Loading employee data...</p>
+      <div className="bg-(--gray-0) flex items-center justify-center min-h-[600px]">
+        <div className="bg-(--background) rounded-2xl shadow-lg p-12 flex flex-col items-center gap-4">
+          <Loader2 className="w-12 h-12 animate-spin text-(--primary)" />
+          <p className="text-lg font-medium text-(--gray-7)">Loading employee data...</p>
         </div>
       </div>
     );
@@ -271,13 +271,13 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
   // Show error state if user data fetch failed
   if (fetchError && !employeeData) {
     return (
-      <div className="bg-gray-50 flex items-center justify-center min-h-[600px]">
-        <div className="bg-white rounded-2xl shadow-lg p-12 flex flex-col items-center gap-4">
-          <p className="text-lg font-medium text-red-600">Failed to load employee data</p>
-          <p className="text-sm text-gray-600">{fetchError}</p>
+      <div className="bg-(--gray-0) flex items-center justify-center min-h-[600px]">
+        <div className="bg-(--background) rounded-2xl shadow-lg p-12 flex flex-col items-center gap-4">
+          <p className="text-lg font-medium text-(--destructive)">Failed to load employee data</p>
+          <p className="text-sm text-(--gray-6)">{fetchError}</p>
           <button
             onClick={() => router.push("/dashboard/Employees-Management")}
-            className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition cursor-pointer"
+            className="px-6 py-2 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition cursor-pointer"
           >
             Go Back
           </button>
@@ -287,11 +287,11 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
   }
 
   return (
-    <div className=" bg-gray-50">
-      <div className="bg-white rounded-2xl shadow-lg p-8 space-y-10">
+    <div className=" bg-(--gray-0)">
+      <div className="bg-(--background) rounded-2xl shadow-lg p-8 space-y-10">
         {/* Section: Basic Info */}
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-gray-900">Basic Info</h2>
+          <h2 className="text-2xl font-bold text-(--gray-9)">Basic Info</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Left: Profile Image Upload */}
@@ -300,7 +300,7 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
               <div className="relative">
                 <div
                   onClick={handleImageClick}
-                  className="relative w-full h-96 bg-gray-100 border-2 border-dashed border-gray-300 rounded-3xl cursor-pointer overflow-hidden group hover:border-gray-400 transition-all"
+                  className="relative w-full h-96 bg-(--gray-1) border-2 border-dashed border-(--gray-3) rounded-3xl cursor-pointer overflow-hidden group hover:border-(--gray-4) transition-all"
                 >
                   {imagePreview ? (
                     <>
@@ -313,13 +313,13 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
                       <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity" />
                       <button
                         onClick={removeImage}
-                        className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-gray-700 p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-white shadow-lg cursor-pointer"
+                        className="absolute top-4 right-4 bg-(--background)/90 backdrop-blur-sm text-(--gray-7) p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-(--background) shadow-lg cursor-pointer"
                       >
                         <X className="w-6 h-6" />
                       </button>
                     </>
                   ) : (
-                    <div className="flex flex-col items-center justify-center h-full text-gray-400 px-8">
+                    <div className="flex flex-col items-center justify-center h-full text-(--gray-4) px-8">
                       <Upload className="w-16 h-16 mb-4" />
                       <p className="text-lg font-medium">Click to upload image</p>
                       <p className="text-sm">PNG, JPG up to 5MB</p>
@@ -343,17 +343,17 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
               {/* Row 1: Pulse Code, Legacy Code, Status */}
               <div className="grid grid-cols-3 gap-4 items-center">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Pulse Code</label>
+                  <label className="block text-sm font-medium text-(--gray-7)">Pulse Code</label>
                   <input
                     type="text"
                     value={pulseCode || ""}
                     readOnly
-                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 text-gray-700 cursor-not-allowed outline-none"
+                    className="mt-1 w-full px-4 py-3 border border-(--gray-3) rounded-xl bg-(--gray-0) text-(--gray-7) cursor-not-allowed outline-none"
                     title="Pulse code (read-only)"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Legacy code</label>
+                  <label className="block text-sm font-medium text-(--gray-7)">Legacy code</label>
                   <input
                     type="text"
                     value={legacyCode}
@@ -362,18 +362,18 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
                       clearFieldError("empLegacyCode");
                     }}
                     placeholder="000152"
-                    className="mt-1 w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    className="mt-1 w-full px-4 py-3 border border-(--gray-3) rounded-xl focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none transition-all"
                   />
                 </div>
 
                 <div className="flex">
-                  <div className="inline-flex border border-gray-300 rounded-full p-1 bg-gray-50 overflow-hidden">
+                  <div className="inline-flex border border-(--gray-3) rounded-full p-1 bg-(--gray-0) overflow-hidden">
                     <button
                       onClick={() => setStatus("Active")}
                       className={`px-6 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
                         status === "Active"
-                          ? "bg-blue-600 text-white"
-                          : "text-gray-600 hover:bg-gray-100"
+                          ? "bg-(--primary) text-(--light)"
+                          : "text-(--gray-6) hover:bg-(--gray-1)"
                       }`}
                     >
                       Active
@@ -382,8 +382,8 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
                       onClick={() => setStatus("Inactive")}
                       className={`px-6 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
                         status === "Inactive"
-                          ? "bg-blue-600 text-white"
-                          : "text-gray-600 hover:bg-gray-100"
+                          ? "bg-(--primary) text-(--light)"
+                          : "text-(--gray-6) hover:bg-(--gray-1)"
                       }`}
                     >
                       Inactive
@@ -395,7 +395,7 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
               {/* Names */}
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">First Name*</label>
+                  <label className="block text-sm font-medium text-(--gray-7)">First Name*</label>
                   <input
                     type="text"
                     value={firstName}
@@ -407,11 +407,13 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
                     className={getInputClasses("firstName")}
                   />
                   {hasError("firstName") && (
-                    <p className="mt-1 text-sm text-red-600">{getErrorMessage("firstName")}</p>
+                    <p className="mt-1 text-sm text-(--destructive)">
+                      {getErrorMessage("firstName")}
+                    </p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Middle Name</label>
+                  <label className="block text-sm font-medium text-(--gray-7)">Middle Name</label>
                   <input
                     type="text"
                     value={middleName}
@@ -423,11 +425,13 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
                     className={getInputClasses("middleName")}
                   />
                   {hasError("middleName") && (
-                    <p className="mt-1 text-sm text-red-600">{getErrorMessage("middleName")}</p>
+                    <p className="mt-1 text-sm text-(--destructive)">
+                      {getErrorMessage("middleName")}
+                    </p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Last Name*</label>
+                  <label className="block text-sm font-medium text-(--gray-7)">Last Name*</label>
                   <input
                     type="text"
                     value={lastName}
@@ -439,7 +443,9 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
                     className={getInputClasses("lastName")}
                   />
                   {hasError("lastName") && (
-                    <p className="mt-1 text-sm text-red-600">{getErrorMessage("lastName")}</p>
+                    <p className="mt-1 text-sm text-(--destructive)">
+                      {getErrorMessage("lastName")}
+                    </p>
                   )}
                 </div>
               </div>
@@ -447,7 +453,9 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
               {/* Email, Phone, DOB */}
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Email Address*</label>
+                  <label className="block text-sm font-medium text-(--gray-7)">
+                    Email Address*
+                  </label>
                   <input
                     type="email"
                     value={email}
@@ -459,11 +467,13 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
                     className={getInputClasses("email")}
                   />
                   {hasError("email") && (
-                    <p className="mt-1 text-sm text-red-600">{getErrorMessage("email")}</p>
+                    <p className="mt-1 text-sm text-(--destructive)">{getErrorMessage("email")}</p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Mobile Number*</label>
+                  <label className="block text-sm font-medium text-(--gray-7)">
+                    Mobile Number*
+                  </label>
                   <input
                     type="tel"
                     value={phoneNumber}
@@ -475,11 +485,13 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
                     className={getInputClasses("mobileNumber")}
                   />
                   {hasError("mobileNumber") && (
-                    <p className="mt-1 text-sm text-red-600">{getErrorMessage("mobileNumber")}</p>
+                    <p className="mt-1 text-sm text-(--destructive)">
+                      {getErrorMessage("mobileNumber")}
+                    </p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Date of Birth</label>
+                  <label className="block text-sm font-medium text-(--gray-7)">Date of Birth</label>
                   <input
                     type="date"
                     value={dob}
@@ -490,14 +502,14 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
                     className={getInputClasses("dob")}
                   />
                   {hasError("dob") && (
-                    <p className="mt-1 text-sm text-red-600">{getErrorMessage("dob")}</p>
+                    <p className="mt-1 text-sm text-(--destructive)">{getErrorMessage("dob")}</p>
                   )}
                 </div>
               </div>
 
               {/* Full Address */}
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700">Full Address</label>
+                <label className="block text-sm font-medium text-(--gray-7)">Full Address</label>
                 <input
                   type="text"
                   value={fullAddress}
@@ -509,16 +521,18 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
                   className={getInputClasses("fullAddress")}
                 />
                 {hasError("fullAddress") && (
-                  <p className="mt-1 text-sm text-red-600">{getErrorMessage("fullAddress")}</p>
+                  <p className="mt-1 text-sm text-(--destructive)">
+                    {getErrorMessage("fullAddress")}
+                  </p>
                 )}
               </div>
 
               {/* Assign Role - aligned below Full Address */}
               <div className="md:col-span-2 space-y-6 pt-4">
-                <h2 className="text-2xl font-bold text-gray-900">Assign Role</h2>
+                <h2 className="text-2xl font-bold text-(--gray-9)">Assign Role</h2>
                 <div className="grid grid-cols-2 gap-8">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Select Role</label>
+                    <label className="block text-sm font-medium text-(--gray-7)">Select Role</label>
                     <select
                       value={selectedRoleId}
                       onChange={(e) => {
@@ -539,11 +553,13 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
                       )}
                     </select>
                     {hasError("roleId") && (
-                      <p className="mt-1 text-sm text-red-600">{getErrorMessage("roleId")}</p>
+                      <p className="mt-1 text-sm text-(--destructive)">
+                        {getErrorMessage("roleId")}
+                      </p>
                     )}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-(--gray-7)">
                       Select Line Manager
                     </label>
                     <select
@@ -567,7 +583,9 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
                       )}
                     </select>
                     {hasError("supervisorId") && (
-                      <p className="mt-1 text-sm text-red-600">{getErrorMessage("supervisorId")}</p>
+                      <p className="mt-1 text-sm text-(--destructive)">
+                        {getErrorMessage("supervisorId")}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -581,7 +599,7 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
           <button
             type="button"
             onClick={handleDiscard}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition cursor-pointer"
+            className="px-6 py-3 border border-(--gray-3) text-(--gray-7) rounded-full hover:bg-(--gray-0) transition cursor-pointer"
           >
             Discard
           </button>
@@ -589,7 +607,7 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
             type="button"
             onClick={handleSubmit}
             disabled={updateLoading}
-            className={`px-8 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition flex cursor-pointer items-center gap-2 shadow-lg ${
+            className={`px-8 py-3 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition flex cursor-pointer items-center gap-2 shadow-lg ${
               updateLoading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >

@@ -127,7 +127,7 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
             onClick={() => setOpenId(!openId)}
             className="flex items-center cursor-pointer relative gap-2 border border-(--primary)  text-(--light) rounded-full text-sm font-medium  transition-colors shadow-sm"
           >
-            <div className="flex relative items-center  gap-2 bg-(--primary) px-3 py-3 overflow-hidden rounded-tl-full rounded-bl-full ">
+            <div className="flex relative items-center  gap-2 bg-(--primary) hover:bg-(--primary-2) px-3 py-3 overflow-hidden rounded-tl-full rounded-bl-full ">
               <Upload className="w-4 h-4" />
               <span>Export List</span>
             </div>

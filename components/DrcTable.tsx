@@ -98,12 +98,12 @@ const DEFAULT_AVATAR = "/girlPic.svg";
 
 export default function DcrTable() {
   return (
-    <div className="w-full bg-gray-50 p-4">
+    <div className="w-full bg-(--gray-0) p-4">
       <div className="space-y-3">
         {tableData.map((row) => (
           <div
             key={row.id}
-            className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+            className="bg-(--background) rounded-2xl border border-(--gray-2) shadow-sm hover:shadow-md transition-shadow"
           >
             <div className="px-6 py-5">
               {/* 12-column grid */}
@@ -113,11 +113,11 @@ export default function DcrTable() {
                   <img
                     src={DEFAULT_AVATAR}
                     alt={row.employee1.name}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md flex-shrink-0"
+                    className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-md flex-shrink-0"
                   />
                   <div>
-                    <p className="font-bold text-gray-900">{row.employee1.name}</p>
-                    <p className="text-xs text-gray-500">{row.employee1.role}</p>
+                    <p className="font-bold text-(--gray-9)">{row.employee1.name}</p>
+                    <p className="text-xs text-(--gray-5)">{row.employee1.role}</p>
                   </div>
                 </div>
 
@@ -126,32 +126,32 @@ export default function DcrTable() {
                   <img
                     src={DEFAULT_AVATAR}
                     alt={row.employee2.name}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md flex-shrink-0"
+                    className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-md flex-shrink-0"
                   />
                   <div>
-                    <p className="font-bold text-gray-900">{row.employee2.name}</p>
-                    <p className="text-xs text-gray-500">{row.employee2.role}</p>
+                    <p className="font-bold text-(--gray-9)">{row.employee2.name}</p>
+                    <p className="text-xs text-(--gray-5)">{row.employee2.role}</p>
                   </div>
                 </div>
 
                 {/* Specialty – Left aligned */}
                 <div className="w-[10%]">
-                  <p className="font-semibold text-gray-800">{row.specialty}</p>
+                  <p className="font-semibold text-(--gray-8)">{row.specialty}</p>
                 </div>
 
                 {/* Area – Left aligned */}
                 <div className="w-[13%]">
-                  <p className="font-semibold text-gray-700">{row.area}</p>
+                  <p className="font-semibold text-(--gray-7)">{row.area}</p>
                 </div>
 
                 {/* Doctor – Left aligned */}
                 <div className="w-[15%]">
-                  <p className="font-bold text-gray-900">{row.doctor}</p>
+                  <p className="font-bold text-(--gray-9)">{row.doctor}</p>
                 </div>
 
                 {/* Medicine – Left aligned */}
                 <div className="w-[10%]">
-                  <p className="font-bold text-gray-900">{row.medicine}</p>
+                  <p className="font-bold text-(--gray-9)">{row.medicine}</p>
                 </div>
 
                 {/* Strengths – Chips start from left */}
@@ -159,7 +159,7 @@ export default function DcrTable() {
                   {row.strengths.map((s, i) => (
                     <span
                       key={i}
-                      className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium whitespace-nowrap"
+                      className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-full text-xs font-medium whitespace-nowrap"
                     >
                       {s}
                     </span>

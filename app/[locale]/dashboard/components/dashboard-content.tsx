@@ -137,7 +137,7 @@ export function DashboardContent({
   };
 
   return (
-    <div className="space-y-1 px-7 mt-26 bg-gray-50">
+    <div className="space-y-1 px-7 mt-26 bg-(--gray-0)">
       {/* space-y-10 p-3 */}
       {/* Dashboard Header with Actions */}
 

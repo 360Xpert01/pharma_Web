@@ -33,11 +33,11 @@ export default function AddPrefixNameComponent() {
 
   const getInputClasses = (fieldName: string) => {
     const baseClasses =
-      "w-full px-4 py-3 bg-gray-50 border rounded-xl focus:outline-none focus:ring-2";
+      "w-full px-4 py-3 bg-(--gray-0) border rounded-xl focus:outline-none focus:ring-2";
     if (hasError(fieldName)) {
-      return `${baseClasses} border-red-500 focus:ring-red-500 focus:border-red-500`;
+      return `${baseClasses} border-(--destructive) focus:ring-(--destructive) focus:border-(--destructive)`;
     }
-    return `${baseClasses} border-gray-200 focus:ring-blue-500 focus:border-blue-500`;
+    return `${baseClasses} border-(--gray-2) focus:ring-(--primary) focus:border-(--primary)`;
   };
 
   const handlePrefixChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -139,22 +139,24 @@ export default function AddPrefixNameComponent() {
 
   console.log("Tables:", tables);
   return (
-    <div className=" bg-gray-50 flex items-center justify-center ">
+    <div className=" bg-(--gray-0) flex items-center justify-center ">
       <div className="w-full">
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+        <div className="bg-(--background) rounded-2xl shadow-lg border border-(--gray-1) overflow-hidden">
           <div className="p-8 space-y-6">
             {/* Title & Subtitle */}
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Add Prefix Name</h1>
-              <p className="text-sm text-gray-500 mt-1">Unlock the potential of your candidates</p>
+              <h1 className="text-2xl font-bold text-(--gray-9)">Add Prefix Name</h1>
+              <p className="text-sm text-(--gray-0)0 mt-1">
+                Unlock the potential of your candidates
+              </p>
             </div>
 
             {/* Form Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
               {/* Select Data Table Dropdown */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Select Data Table <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-(--gray-7) mb-2">
+                  Select Data Table <span className="text-(--destructive)">*</span>
                 </label>
                 <div className="relative">
                   <select
@@ -173,20 +175,20 @@ export default function AddPrefixNameComponent() {
                       </option>
                     ))}
                   </select>
-                  {/* <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" /> */}
+                  {/* <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-(--gray-4) pointer-events-none" /> */}
                 </div>
                 {/* Reserve space for error message */}
                 <div className="h-5 mt-1">
                   {hasError("entity") && (
-                    <p className="text-sm text-red-600">{getErrorMessage("entity")}</p>
+                    <p className="text-sm text-(--destructive)">{getErrorMessage("entity")}</p>
                   )}
                 </div>
               </div>
 
               {/* Prefix Input */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Prefix <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-(--gray-7) mb-2">
+                  Prefix <span className="text-(--destructive)">*</span>
                 </label>
                 <input
                   type="text"
@@ -199,7 +201,7 @@ export default function AddPrefixNameComponent() {
                 {/* Reserve space for error message to prevent layout shift */}
                 <div className="h-5 mt-1">
                   {(hasError("code") || validationError) && (
-                    <p className="text-sm text-red-600">
+                    <p className="text-sm text-(--destructive)">
                       {getErrorMessage("code") || validationError}
                     </p>
                   )}
@@ -208,8 +210,8 @@ export default function AddPrefixNameComponent() {
 
               {/* Preview Box */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Preview</label>
-                <div className="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-xl text-gray-700 font-medium">
+                <label className="block text-sm font-medium text-(--gray-7) mb-2">Preview</label>
+                <div className="w-full px-4 py-3 bg-(--gray-1) border border-(--gray-2) rounded-xl text-(--gray-7) font-medium">
                   {preview || "—"}
                 </div>
                 {/* Reserve space to align with other fields */}
@@ -222,7 +224,7 @@ export default function AddPrefixNameComponent() {
               <button
                 onClick={handleAddPrefix}
                 disabled={createLoading || !selectedTable || !prefix}
-                className="px-8 py-3 bg-blue-500 text-white font-medium rounded-xl hover:bg-blue-700 transition shadow-md flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                className="px-8 py-3 bg-(--primary) (--light) font-medium rounded-xl hover:bg-(--primary-2) transition shadow-md flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 {createLoading ? "Adding..." : "Add Prefix"}
               </button>

@@ -43,35 +43,40 @@ export function MetricsSection({
   return (
     <Card className={cn("shadow-[0px_5px_10px_rgba(0,0,0,0.20)]", className)}>
       <CardHeader className="">
-        <h3 className="text-1.5xl 2xl:text-2xl font-bold text-black">{title}</h3>
+        <h3 className="text-1.5xl 2xl:text-2xl font-bold text-(--dark)">{title}</h3>
       </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="flex items-baseline gap-2">
-          <span
-            className={cn(" text-3xl 2xl:text-4xl font-semibold", valueColorClasses[colorVariant])}
-          >
-            {value}
-          </span>
-          <span className="text-lg text-muted-foreground">{valueLabel}</span>
-        </div>
-
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <span>{subtitle}</span>
-          <div className="flex items-center gap-5">
-            <span>{detailValue}</span>
-            <TrendingUp className={cn("h-6 w-6", valueColorClasses[colorVariant])} />
+      <CardContent className="space-y-3 flex flex-col justify-between h-full">
+        <div>
+          <div className="flex items-baseline gap-2">
+            <span
+              className={cn(
+                " text-3xl 2xl:text-4xl font-semibold",
+                valueColorClasses[colorVariant]
+              )}
+            >
+              {value}
+            </span>
+            <span className="text-lg text-muted-foreground">{valueLabel}</span>
           </div>
-        </div>
 
-        {detailLabel && detailValue && (
-          <div className="flex items-center text-black justify-between text-sm">
-            <span className="text-muted-foreground">{detailLabel}</span>
-            <span className="font-medium">{detailValue}</span>
+          <div className="flex items-center justify-between text-sm text-muted-foreground">
+            <span>{subtitle}</span>
+            <div className="flex items-center gap-5">
+              <span>{detailValue}</span>
+              <TrendingUp className={cn("h-6 w-6", valueColorClasses[colorVariant])} />
+            </div>
           </div>
-        )}
+
+          {detailLabel && detailValue && (
+            <div className="flex items-center text-(--dark) justify-between text-sm">
+              <span className="text-muted-foreground">{detailLabel}</span>
+              <span className="font-medium">{detailValue}</span>
+            </div>
+          )}
+        </div>
 
         <div className="relative">
-          <Progress value={progress} className="h-3 bg-gray-200" />
+          <Progress value={progress} className="h-3 bg-(--gray-2)" />
           <div
             className={cn(
               "absolute inset-0 h-3 rounded-full transition-all",

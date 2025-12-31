@@ -236,8 +236,8 @@ export default function TargetListView() {
   }, [searchQuery]);
 
   return (
-    <div className="mx-auto bg-gray-50 min-h-screen">
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div className="mx-auto bg-(--gray-0) min-h-screen">
+      <div className="bg-(--background) rounded-xl border border-(--gray-2) overflow-hidden">
         <div className="overflow-x-auto">
           <TableHeader campHeading="All Employees" filterT />
 
@@ -260,8 +260,8 @@ export default function TargetListView() {
           {/* Employee Cards Grouped by Month */}
           <div className="px-6 py-2">
             {Object.keys(groupedTargets).length === 0 ? (
-              <div className="bg-gray-50 rounded-2xl p-12 text-center">
-                <p className="text-gray-500 text-lg">No targets found matching your criteria</p>
+              <div className="bg-(--gray-0) rounded-2xl p-12 text-center">
+                <p className="text-(--gray-5) text-lg">No targets found matching your criteria</p>
               </div>
             ) : (
               Object.entries(groupedTargets).map(([month, targets]) => (

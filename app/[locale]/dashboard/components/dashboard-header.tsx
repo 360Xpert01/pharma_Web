@@ -31,7 +31,7 @@ export function DashboardHeader({
   const t = useTranslations("dashboard");
   const heading = title;
   return (
-    <div className="flex text-black flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
+    <div className="flex text-(--dark) flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
       {/* Heading */}
       <div className="flex-1">
         <h1 className="text-3xl font-bold  tracking-tight">{heading || "plans Management"}</h1>
@@ -55,7 +55,7 @@ export function DashboardHeader({
         </Button> */}
         {!btnTrue && (
           <button
-            className="p-3 cursor-pointer bg-blue-500 hover:bg-blue-600 text-sm text-white rounded-full flex items-center"
+            className="p-3 cursor-pointer bg-(--primary) hover:bg-(--primary-2) text-sm text-(--light) rounded-full flex items-center"
             onClick={onSettings}
             title={t("tooltips.settings")}
             aria-label={t("tooltips.settings")}
@@ -67,7 +67,7 @@ export function DashboardHeader({
 
         {!btnReqquest && !btnTrue && btntextReq && (
           <button
-            className="p-3 bg-blue-500 cursor-pointer hover:bg-blue-600 text-sm text-white rounded-full flex items-center"
+            className="p-3 bg-(--primary) cursor-pointer hover:bg-(--primary-2) text-sm text-(--light) rounded-full flex items-center"
             onClick={onSettingView}
             title={t("tooltips.settings")}
             aria-label={t("tooltips.settings")}
