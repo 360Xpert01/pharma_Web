@@ -1,8 +1,9 @@
 "use client";
 
 import React from "react";
-import { Check, X } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
+import { Button } from "@/components/ui/button/button";
 
 interface ExpenseItem {
   id: string;
@@ -100,16 +101,27 @@ const expensesData: ExpenseItem[] = [
 
 export default function ExpenseApprovalList() {
   return (
-    <div className=" ">
+    <div className="">
       <div className="mt-3">
-        <div className="space-y-4">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold text-(--employee-detail-tab-heading)">
+            Weekly Expenses
+          </h2>
+          <div className="flex items-center gap-2 text-(--primary) text-sm font-medium cursor-pointer">
+            <ChevronLeft className="w-4 h-4" />
+            <span>01 - 07 Sept, 2025</span>
+            <ChevronRight className="w-4 h-4" />
+          </div>
+        </div>
+
+        <div className="space-y-3">
           {expensesData.map((item) => (
             <div
               key={item.id}
-              className="flex items-center justify-between rounded-2xl shadow-soft border border-gray-100 p-3"
+              className="flex items-center justify-between rounded-2xl shadow-soft border border-(--gray-1) bg-(--background) p-3"
             >
               {/* Left: User Info */}
-              <div className="flex items-center   gap-4">
+              <div className="flex items-center gap-4">
                 <div className="relative">
                   <div className="w-14 h-14 rounded-md overflow-hidden border-2 border-white shadow-soft">
                     <Image
@@ -123,14 +135,14 @@ export default function ExpenseApprovalList() {
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-gray-900">{item.name}</h3>
+                  <h3 className="font-semibold text-(--gray-9)">{item.name}</h3>
                   <div className="flex items-center gap-2">
-                    <p className="text-sm text-gray-600">{item.role}</p>
+                    <p className="text-sm text-(--gray-5)">{item.role}</p>
                     <span
-                      className={`px-2 py-1 text-xs font-medium rounded-full ${
+                      className={`px-2 py-0.5 text-xs font-medium rounded-full ${
                         item.status === "Review"
-                          ? "bg-amber-100 text-amber-700"
-                          : "bg-red-100 text-red-700"
+                          ? "bg-(--warning-light) text-(--warning-2)"
+                          : "bg-(--destructive-light) text-(--destructive)"
                       }`}
                     >
                       {item.status}
@@ -142,36 +154,41 @@ export default function ExpenseApprovalList() {
               {/* Center: Expense Breakdown */}
               <div className="flex items-center gap-12 text-center">
                 <div>
-                  <p className="text-xs text-gray-500">Total Expense</p>
-                  <p className="text-lg font-bold text-amber-600">
+                  <p className="text-xs text-(--gray-4)">Total Expense</p>
+                  <p className="text-lg font-bold text-(--warning-2)">
                     {item.total.toLocaleString()}
-                    <span className="text-xs ml-1">PKR</span>
+                    <span className="text-xs font-medium text-(--warning-2) ml-1">PKR</span>
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500">Approved</p>
-                  <p className="text-lg font-bold text-green-600">
+                  <p className="text-xs text-(--gray-4)">Approved</p>
+                  <p className="text-lg font-bold text-(--success)">
                     {item.approved.toLocaleString()}
-                    <span className="text-xs ml-1">PKR</span>
+                    <span className="text-xs font-medium text-(--success) ml-1">PKR</span>
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500">Rejected</p>
-                  <p className="text-lg font-bold text-red-600">
+                  <p className="text-xs text-(--gray-4)">Rejected</p>
+                  <p className="text-lg font-bold text-(--destructive)">
                     {item.rejected.toLocaleString()}
-                    <span className="text-xs ml-1">PKR</span>
+                    <span className="text-xs font-medium text-(--destructive) ml-1">PKR</span>
                   </p>
                 </div>
               </div>
 
               {/* Right: Action Buttons */}
               <div className="flex items-center gap-3">
-                <button className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white font-sm rounded-xl hover:bg-blue-700 transition shadow-soft cursor-pointer">
+                <Button variant="primary" size="sm" rounded="xl" className="px-5 shadow-soft">
                   Approve
-                </button>
-                <button className="flex items-center gap-2 px-3 py-2 border border-red-300 text-red-600 font-sm rounded-xl hover:bg-red-50 transition cursor-pointer">
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  rounded="xl"
+                  className="px-5 border-(--destructive-1) text-(--destructive) hover:bg-(--destructive-light) hover:text-(--destructive) hover:border-(--destructive)"
+                >
                   Reject
-                </button>
+                </Button>
               </div>
             </div>
           ))}

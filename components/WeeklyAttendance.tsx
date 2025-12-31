@@ -46,59 +46,57 @@ export default function AttendanceDashboard() {
 
   return (
     <div className="w-full">
-      <div className="bg-(--background) rounded-2xl shadow-soft border border-(--gray-1) p-5">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-(--gray-5)">Weekly Attendance</h2>
-          <div className="flex items-center gap-2 text-sm text-(--primary) cursor-pointer">
-            <ChevronLeft className="w-4 h-4 cursor-pointer" />
-            <span>01 - 07 Sept, 2025</span>
-            <ChevronRight className="w-4 h-4 cursor-pointer" />
-          </div>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold text-(--employee-detail-tab-heading)">
+          Weekly Attendance
+        </h2>
+        <div className="flex items-center gap-2 text-(--primary) text-sm font-medium cursor-pointer">
+          <ChevronLeft className="w-4 h-4" />
+          <span>01 - 07 Sept, 2025</span>
+          <ChevronRight className="w-4 h-4" />
         </div>
+      </div>
 
-        <div className="space-y-4">
-          {weeklyData.map((day, index) => (
-            <div key={index} className="space-y-3">
-              {/* Offsite Warning */}
-              {day.offsite && (
-                <div className="flex items-center gap-2 bg-red-50 text-(--destructive) px-4 py-3 rounded-lg text-sm font-medium">
-                  <AlertTriangle className="w-5 h-5" />
-                  Checked in at off-site location.
+      {/* Attendance List */}
+      <div className="space-y-4">
+        {weeklyData.map((day, index) => (
+          <div key={index} className="space-y-3">
+            {/* Offsite Warning */}
+            {day.offsite && (
+              <div className="flex items-center justify-center gap-2 bg-red-50 text-(--destructive) px-4 py-3 rounded-lg text-sm  font-medium shadow-soft">
+                <AlertTriangle className="w-5 h-5" />
+                Checked in at off-site location.
+              </div>
+            )}
+
+            {/* Day Row */}
+            <div className="bg-(--background) rounded-lg shadow-soft px-6 py-5">
+              <p className="text-base font-semibold text-(--gray-9) mb-3">{day.date}</p>
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                    <ChevronRight className="w-5 h-5 text-(--primary) rotate-180" />
+                  </div>
+                  <div>
+                    <p className="text-xl font-semibold text-(--gray-9)">{day.checkIn}</p>
+                    <p className="text-xs text-(--gray-5)">Check-in</p>
+                  </div>
                 </div>
-              )}
 
-              {/* Day Row */}
-              <div className="border border-(--gray-2) rounded-xl p-2">
-                <div>
-                  <p className="font-medium text-(--gray-9)">{day.date}</p>
-                  <div className="flex justify-between  w-[100%] items-center gap-4 mt-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-10 h-10 bg-blue-100 rounded-md flex items-center justify-center">
-                        <ChevronRight className="w-5 h-5 text-(--primary) rotate-180 cursor-pointer" />
-                      </div>
-                      <div>
-                        <p className="text-2xl font-semibold text-(--gray-9)">{day.checkIn}</p>
-                        <p className="text-sm text-(--gray-5)">Check-in</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <div className="w-10 h-10 bg-blue-100 rounded-md flex items-center justify-center">
-                        <ChevronRight className="w-5 h-5 text-(--primary) cursor-pointer" />
-                      </div>
-                      <div>
-                        <p className="text-2xl font-semibold text-(--gray-9)">{day.checkOut}</p>
-                        <p className="text-sm text-(--gray-5)">Check-out</p>
-                      </div>
-                    </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                    <ChevronRight className="w-5 h-5 text-(--primary)" />
+                  </div>
+                  <div>
+                    <p className="text-xl font-semibold text-(--gray-9)">{day.checkOut}</p>
+                    <p className="text-xs text-(--gray-5)">Check-out</p>
                   </div>
                 </div>
               </div>
-
-              {/* {index < weeklyData.length - 1 && <hr className="border-(--gray-1)" />} */}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );

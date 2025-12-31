@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ui/button/button";
 import UserProfile from "@/components/UserProfile";
 import MonthlyTargets from "@/components/TargetEmployees";
 import EmployeeGraphRed from "@/components/EmployeeGraphRed";
@@ -84,17 +85,18 @@ export default function EmployeeProfileTabs({ candidate }: EmployeeProfileTabsPr
         {/* Tab Navigation */}
         <div className="flex gap-2 bg-(--gray-2) rounded-full my-5 p-2 w-fit">
           {tabs.map((tab) => (
-            <button
+            <Button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-4 py-2.5 cursor-pointer rounded-full font-medium transition-all duration-200 ${
-                activeTab === tab
-                  ? "bg-blue-500 text-(--light) shadow-sm"
-                  : "text-gray-600 hover:bg-(--gray-1)"
+              variant={activeTab === tab ? "primary" : "ghost"}
+              size="sm"
+              rounded="full"
+              className={`px-4 py-2.5 font-medium transition-all duration-200 ${
+                activeTab === tab ? "shadow-sm" : "text-gray-600 hover:bg-(--gray-1)"
               }`}
             >
               {tab}
-            </button>
+            </Button>
           ))}
         </div>
 

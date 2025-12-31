@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Plus, Upload, X, Loader2 } from "lucide-react";
 import Image from "next/image";
+import { Button } from "@/components/ui/button/button";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllRoles } from "@/store/slices/role/getAllRolesSlice";
 import {
@@ -275,12 +276,14 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
         <div className="bg-(--background) rounded-2xl shadow-lg p-12 flex flex-col items-center gap-4">
           <p className="text-lg font-medium text-(--destructive)">Failed to load employee data</p>
           <p className="text-sm text-(--gray-6)">{fetchError}</p>
-          <button
+          <Button
             onClick={() => router.push("/dashboard/Employees-Management")}
-            className="px-6 py-2 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition cursor-pointer"
+            variant="primary"
+            size="default"
+            rounded="full"
           >
             Go Back
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -311,12 +314,14 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
                         className="object-cover"
                       />
                       <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <button
+                      <Button
+                        size="icon-lg"
+                        variant="ghost"
                         onClick={removeImage}
-                        className="absolute top-4 right-4 bg-(--background)/90 backdrop-blur-sm text-(--gray-7) p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-(--background) shadow-lg cursor-pointer"
+                        className="absolute top-4 right-4 bg-(--background)/90 backdrop-blur-sm text-(--gray-7) opacity-0 group-hover:opacity-100 transition-all hover:bg-(--background) shadow-lg"
                       >
                         <X className="w-6 h-6" />
-                      </button>
+                      </Button>
                     </>
                   ) : (
                     <div className="flex flex-col items-center justify-center h-full text-(--gray-4) px-8">
@@ -596,24 +601,29 @@ export default function UpdateEmployeeForm({ userId: userIdProp }: UpdateEmploye
 
         {/* Buttons */}
         <div className="flex justify-end gap-4 pt-6">
-          <button
+          <Button
             type="button"
             onClick={handleDiscard}
-            className="px-6 py-3 border border-(--gray-3) text-(--gray-7) rounded-full hover:bg-(--gray-0) transition cursor-pointer"
+            variant="outline"
+            size="lg"
+            rounded="full"
+            className="px-6"
           >
             Discard
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={handleSubmit}
             disabled={updateLoading}
-            className={`px-8 py-3 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition flex cursor-pointer items-center gap-2 shadow-lg ${
-              updateLoading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            loading={updateLoading}
+            icon={Plus}
+            variant="primary"
+            size="lg"
+            rounded="full"
+            className="px-8 shadow-lg"
           >
-            <Plus className="w-5 h-5" />
             {updateLoading ? "Updating..." : "Update Employee"}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

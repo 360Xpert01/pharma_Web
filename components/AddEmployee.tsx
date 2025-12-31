@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Plus, Upload, X } from "lucide-react";
 import Image from "next/image";
+import { Button } from "@/components/ui/button/button";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   generatePrefix,
@@ -249,12 +250,14 @@ export default function AddEmployeeForm() {
                         className="object-cover"
                       />
                       <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <button
+                      <Button
+                        size="icon-lg"
+                        variant="ghost"
                         onClick={removeImage}
-                        className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-(--gray-7) p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-(--light) shadow-lg cursor-pointer"
+                        className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-(--gray-7) opacity-0 group-hover:opacity-100 transition-all hover:bg-(--light) shadow-lg"
                       >
                         <X className="w-6 h-6" />
-                      </button>
+                      </Button>
                     </>
                   ) : (
                     <div className="flex flex-col items-center justify-center h-full text-(--gray-4) px-8">
@@ -579,23 +582,22 @@ export default function AddEmployeeForm() {
 
         {/* Buttons */}
         <div className="flex justify-end gap-4 pt-6">
-          <button
-            type="button"
-            className="px-6 py-3 border border-(--gray-3) text-(--gray-7) rounded-full hover:bg-(--gray-0) transition cursor-pointer"
-          >
+          <Button type="button" variant="outline" size="lg" rounded="full" className="px-6">
             Discard
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={handleSubmit}
             disabled={registerLoading || prefixLoading}
-            className={`px-8 py-3 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition flex cursor-pointer items-center gap-2 shadow-lg ${
-              registerLoading || prefixLoading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            loading={registerLoading || prefixLoading}
+            icon={Plus}
+            variant="primary"
+            size="lg"
+            rounded="full"
+            className="px-8 shadow-lg"
           >
-            <Plus className="w-5 h-5" />
             {registerLoading ? "Adding..." : "Add Employee"}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

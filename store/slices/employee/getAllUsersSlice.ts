@@ -18,6 +18,9 @@ interface UserItem {
   profilePicture?: string;
   dob?: string;
   supervisorId?: string;
+  role?: {
+    roleName: string;
+  };
 }
 
 interface GetUsersResponse {

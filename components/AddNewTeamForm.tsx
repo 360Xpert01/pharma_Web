@@ -5,6 +5,7 @@ import { Plus, Trash2, Search, ChevronDown, ChevronRight, X } from "lucide-react
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store";
+import { Button } from "@/components/ui/button/button";
 import {
   generatePrefix,
   resetGeneratePrefixState,
@@ -180,13 +181,13 @@ function HierarchyNode({
         className={`flex items-center gap-4 bg-[var(--light)] border border-[var(--gray-2)] rounded-2xl p-6 hover:shadow-md transition-all ${hasChildren ? "cursor-pointer" : ""} select-none`}
       >
         {hasChildren && (
-          <button className="flex-shrink-0 w-8 h-8 flex items-center justify-center cursor-pointer">
+          <Button size="icon" variant="ghost" className="flex-shrink-0 w-8 h-8">
             {isOpen ? (
               <ChevronDown className="w-5 h-5 text-[var(--gray-5)]" />
             ) : (
               <ChevronRight className="w-5 h-5 text-[var(--gray-5)]" />
             )}
-          </button>
+          </Button>
         )}
 
         <div className="w-12 h-12 rounded-full bg-[var(--gray-3)] overflow-hidden flex-shrink-0 flex items-center justify-center">
@@ -213,15 +214,17 @@ function HierarchyNode({
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--primary)] text-[var(--primary-foreground)] text-sm font-medium rounded-full whitespace-nowrap"
               >
                 {brick.name}
-                <button
+                <Button
+                  size="icon-sm"
+                  variant="ghost"
                   onClick={(e) => {
                     e.stopPropagation();
                     onRemoveBrick(node.userId, brick.id);
                   }}
-                  className="w-4 h-4 flex items-center justify-center hover:bg-[var(--primary-2)] rounded-full cursor-pointer"
+                  className="w-4 h-4 hover:bg-[var(--primary-2)]"
                 >
                   <X className="w-3 h-3" />
-                </button>
+                </Button>
               </span>
             ))}
             {userBricks.length > 4 && (
@@ -249,18 +252,19 @@ function HierarchyNode({
                     autoFocus
                   />
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--gray-4)]" />
-                  <button
+                  <Button
+                    size="icon-sm"
+                    variant="ghost"
                     onClick={() => onToggleBrickSearch(null)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--gray-4)] hover:text-[var(--gray-6)] cursor-pointer"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--gray-4)] hover:text-[var(--gray-6)]"
                   >
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                       <circle cx="12" cy="5" r="1.5" />
                       <circle cx="12" cy="12" r="1.5" />
                       <circle cx="12" cy="19" r="1.5" />
                     </svg>
-                  </button>
-                </div>
-
+                  </Button>
+                </div>{" "}
                 {/* Brick Dropdown */}
                 {brickSearchQuery && (
                   <div className="absolute z-20 w-64 mt-2 bg-[var(--light)] border border-[var(--gray-2)] rounded-xl shadow-xl max-h-48 overflow-y-auto">
@@ -281,18 +285,25 @@ function HierarchyNode({
                 )}
               </div>
             ) : (
-              <button
+              <Button
                 onClick={handleAssignBricksClick}
-                className="px-6 py-3 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-full flex items-center gap-2 hover:opacity-90 shadow-sm cursor-pointer"
+                variant="primary"
+                size="lg"
+                icon={Plus}
+                rounded="full"
+                className="shadow-sm"
               >
-                <Plus className="w-5 h-5" />
                 Assign Bricks
-              </button>
+              </Button>
             )}
           </div>
         )}
 
-        <button className="text-[var(--gray-4)] hover:text-[var(--gray-5)] cursor-pointer">
+        <Button
+          size="icon"
+          variant="ghost"
+          className="text-[var(--gray-4)] hover:text-[var(--gray-5)]"
+        >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
@@ -301,7 +312,7 @@ function HierarchyNode({
               d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
             />
           </svg>
-        </button>
+        </Button>
       </div>
 
       {/* Children */}
@@ -785,10 +796,9 @@ export default function CreateCampaignForm() {
                 />
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--gray-4)]" />
               </div>
-              <button className="px-6 py-3 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-full flex items-center gap-2 hover:opacity-90 transition cursor-pointer">
-                <Plus className="w-5 h-5" />
+              <Button variant="primary" size="lg" icon={Plus} rounded="full">
                 Add Products
-              </button>
+              </Button>
             </div>
 
             {/* Search Results Dropdown */}
@@ -830,12 +840,14 @@ export default function CreateCampaignForm() {
                     <p className="text-sm text-[var(--gray-4)] font-medium">{product.code}</p>
                     <p className="text-sm font-bold text-[var(--gray-9)]">{product.name}</p>
                   </div>
-                  <button
+                  <Button
+                    size="icon"
+                    variant="ghost"
                     onClick={() => removeProduct(product.id)}
-                    className="w-8 h-8 flex items-center justify-center bg-red-50 text-[var(--destructive)] rounded-lg hover:bg-red-100 transition-colors cursor-pointer"
+                    className="bg-red-50 text-[var(--destructive)] hover:bg-red-100"
                   >
                     <Trash2 className="w-4 h-4" />
-                  </button>
+                  </Button>
                 </div>
               ))}
             </div>
@@ -929,12 +941,14 @@ export default function CreateCampaignForm() {
                       </p>
                       <p className="text-xs text-[var(--gray-5)]">{member.pulseCode}</p>
                     </div>
-                    <button
+                    <Button
+                      size="icon-sm"
+                      variant="ghost"
                       onClick={() => handleRemoveMember(member.id)}
-                      className="w-7 h-7 flex items-center justify-center bg-red-50 text-[var(--destructive)] rounded-lg hover:bg-red-100 transition-colors cursor-pointer ml-2"
+                      className="bg-red-50 text-[var(--destructive)] hover:bg-red-100 ml-2"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+                    </Button>
                   </div>
                 ))}
               </div>
@@ -977,40 +991,21 @@ export default function CreateCampaignForm() {
 
         {/* Buttons */}
         <div className="flex justify-end gap-4 pt-6">
-          <button className="px-6 py-3 border border-[var(--gray-3)] text-[var(--gray-6)] rounded-full hover:bg-[var(--gray-1)] transition cursor-pointer">
+          <Button variant="outline" size="lg" rounded="full">
             Discard
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={handleSubmit}
             disabled={createTeamLoading}
-            className="px-8 py-3 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-full hover:opacity-90 transition flex items-center gap-2 shadow-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            loading={createTeamLoading}
+            variant="primary"
+            size="lg"
+            icon={Plus}
+            rounded="full"
+            className="shadow-lg"
           >
-            {createTeamLoading ? (
-              <>
-                <svg className="animate-spin w-5 h-5" viewBox="0 0 24 24" fill="none">
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                  />
-                </svg>
-                Creating...
-              </>
-            ) : (
-              <>
-                <Plus className="w-5 h-5" />
-                Add Team
-              </>
-            )}
-          </button>
+            {createTeamLoading ? "Creating..." : "Add Team"}
+          </Button>
         </div>
       </div>
     </div>

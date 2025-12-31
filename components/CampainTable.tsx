@@ -5,6 +5,8 @@ import { MoreVertical } from "lucide-react";
 import TableColumnHeader from "@/components/TableColumnHeader";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllTeams } from "@/store/slices/team/getAllTeamsSlice";
+import { Button } from "@/components/ui/button/button";
+import { Skeleton } from "@/components/ui/skeleton";
 export default function CampaignsTable() {
   const dispatch = useAppDispatch();
   const { teams, loading, error } = useAppSelector((state) => state.allTeams);
@@ -34,15 +36,49 @@ export default function CampaignsTable() {
   // Loading state
   if (loading) {
     return (
-      <div className="w-full overflow-hidden bg-[var(--background)]">
+      <div className="w-full overflow-hidden bg-white">
         <div className="px-3">
           <TableColumnHeader columns={campaignColumns} gridCols={12} />
         </div>
-        <div className="flex items-center justify-center py-12">
-          <div className="text-center">
-            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-            <p className="mt-4 text-[var(--gray-6)]">Loading teams...</p>
-          </div>
+        <div className="px-3 space-y-1">
+          {[...Array(5)].map((_, index) => (
+            <div key={index} className="py-1">
+              <div className="rounded-md p-2 border border-[var(--gray-2)] grid grid-cols-12 gap-3">
+                {/* Pulse Code Skeleton */}
+                <div className="col-span-2 flex items-center">
+                  <Skeleton className="h-5 w-20" />
+                </div>
+                {/* Name Skeleton */}
+                <div className="col-span-2 flex items-center">
+                  <Skeleton className="h-5 w-32" />
+                </div>
+                {/* Channel Skeleton */}
+                <div className="col-span-2 flex items-center">
+                  <Skeleton className="h-5 w-24" />
+                </div>
+                {/* Call Point Skeleton */}
+                <div className="col-span-2 flex items-center">
+                  <Skeleton className="h-5 w-28" />
+                </div>
+                {/* Assigned Users Skeleton */}
+                <div className="col-span-1 flex items-center">
+                  <div className="flex -space-x-2">
+                    <Skeleton className="w-7 h-7 rounded-full" />
+                    <Skeleton className="w-7 h-7 rounded-full" />
+                    <Skeleton className="w-7 h-7 rounded-full" />
+                  </div>
+                </div>
+                {/* Status Skeleton */}
+                <div className="col-span-2 flex items-center justify-center">
+                  <Skeleton className="h-6 w-20 rounded-full" />
+                </div>
+                {/* Action Button Skeleton */}
+                <div className="col-span-1 flex items-center justify-end">
+                  <Skeleton className="h-8 w-8 rounded-md" />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -51,20 +87,38 @@ export default function CampaignsTable() {
   // Error state
   if (error) {
     return (
-      <div className="w-full overflow-hidden bg-[var(--background)]">
+      <div className="w-full overflow-hidden bg-white">
         <div className="px-3">
           <TableColumnHeader columns={campaignColumns} gridCols={12} />
         </div>
-        <div className="flex items-center justify-center py-12">
-          <div className="text-center">
-            <p className="text-[var(--destructive)] font-medium">Error loading teams</p>
-            <p className="text-[var(--gray-6)] mt-2">{error}</p>
-            <button
+        <div className="flex items-center justify-center py-16">
+          <div className="text-center max-w-md">
+            <div className="mb-4">
+              <svg
+                className="mx-auto h-12 w-12 text-[var(--destructive)]"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold text-[var(--gray-9)] mb-2">Error Loading Teams</h3>
+            <p className="text-[var(--gray-6)] mb-6">{error}</p>
+            <Button
               onClick={() => dispatch(getAllTeams())}
-              className="mt-4 px-4 py-2 bg-primary text-[var(--light)] rounded-md hover:bg-primary/90 transition cursor-pointer"
+              variant="primary"
+              size="default"
+              rounded="lg"
             >
-              Retry
-            </button>
+              Try Again
+            </Button>
           </div>
         </div>
       </div>
@@ -74,12 +128,31 @@ export default function CampaignsTable() {
   // Empty state
   if (!teams || teams.length === 0) {
     return (
-      <div className="w-full overflow-hidden bg-[var(--background)]">
+      <div className="w-full overflow-hidden bg-white">
         <div className="px-3">
           <TableColumnHeader columns={campaignColumns} gridCols={12} />
         </div>
-        <div className="flex items-center justify-center py-12">
-          <p className="text-[var(--gray-6)]">No teams found</p>
+        <div className="flex items-center justify-center py-16">
+          <div className="text-center">
+            <div className="mb-4">
+              <svg
+                className="mx-auto h-12 w-12 text-[var(--gray-4)]"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold text-[var(--gray-9)] mb-2">No Teams Found</h3>
+            <p className="text-[var(--gray-6)]">Get started by creating your first team.</p>
+          </div>
         </div>
       </div>
     );
@@ -166,45 +239,59 @@ export default function CampaignsTable() {
                 className="col-span-1 flex items-center justify-end"
                 onClick={(e) => e.stopPropagation()}
               >
-                <button
+                <Button
                   onClick={() => handleToggle(team.id)}
-                  className="text-[var(--gray-4)] hover:text-[var(--gray-6)] transition cursor-pointer"
+                  variant="ghost"
+                  size="icon"
+                  className="text-[var(--gray-4)] hover:text-[var(--gray-6)]"
                 >
                   <MoreVertical className="w-5 h-5" />
-                </button>
+                </Button>
 
                 {/* Dropdown */}
                 {openId === team.id && (
                   <div className="absolute right-0 top-6 mt-2 w-48 rounded-lg shadow-lg border border-[var(--gray-2)] bg-[var(--light)] z-50">
-                    <button
+                    <Button
                       onClick={() => {
                         console.log("Edit", team.id);
                         setOpenId(null);
                       }}
-                      className="w-full text-left px-4 py-2 text-sm cursor-pointer hover:bg-[var(--gray-1)]"
+                      variant="ghost"
+                      size="sm"
+                      rounded="none"
+                      fullWidth
+                      className="justify-start hover:bg-[var(--gray-1)] rounded-none"
                     >
                       Edit
-                    </button>
+                    </Button>
 
-                    <button
+                    <Button
                       onClick={() => {
                         console.log("Duplicate", team.id);
                         setOpenId(null);
                       }}
-                      className="w-full text-left px-4 py-2 text-sm cursor-pointer hover:bg-[var(--gray-1)]"
+                      variant="ghost"
+                      size="sm"
+                      rounded="none"
+                      fullWidth
+                      className="justify-start hover:bg-[var(--gray-1)] rounded-none"
                     >
                       Duplicate
-                    </button>
+                    </Button>
 
-                    <button
+                    <Button
                       onClick={() => {
                         console.log("Delete", team.id);
                         setOpenId(null);
                       }}
-                      className="w-full text-left px-4 py-2 text-sm cursor-pointer text-[var(--destructive)] hover:bg-[var(--gray-1)]"
+                      variant="ghost"
+                      size="sm"
+                      rounded="none"
+                      fullWidth
+                      className="justify-start text-[var(--destructive)] hover:bg-[var(--gray-1)] rounded-none"
                     >
                       Delete
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>
