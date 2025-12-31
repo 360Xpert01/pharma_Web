@@ -139,9 +139,9 @@ export default function AddProductForm() {
     const baseClasses =
       "w-full px-3 py-3 border rounded-lg focus:ring-2 outline-none text-sm transition-all";
     if (hasError(fieldName)) {
-      return `${baseClasses} border-red-500 focus:ring-red-500`;
+      return `${baseClasses} border-(--destructive) focus:ring-(--destructive)`;
     }
-    return `${baseClasses} border-gray-300 focus:ring-blue-500`;
+    return `${baseClasses} border-(--gray-3) focus:ring-(--primary)`;
   };
 
   // Form submission handler
@@ -212,8 +212,8 @@ export default function AddProductForm() {
         <div className="p-10 space-y-12">
           {/* Header */}
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Add New Product</h1>
-            <p className="text-sm text-gray-500 mt-2">Unlock the potential of your candidates</p>
+            <h1 className="text-3xl font-bold text-(--gray-9)">Add New Product</h1>
+            <p className="text-sm text-(--gray-5) mt-2">Unlock the potential of your candidates</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-[30%_70%] gap-12 pr-12">
@@ -221,20 +221,20 @@ export default function AddProductForm() {
             <div className="space-y-4">
               <div
                 onClick={handleImageClick}
-                className="relative w-full aspect-square bg-gray-100 border-2 border-dashed border-gray-300 rounded-2xl cursor-pointer overflow-hidden group hover:border-gray-400 transition-all"
+                className="relative w-full aspect-square bg-(--gray-1) border-2 border-dashed border-(--gray-3) rounded-2xl cursor-pointer overflow-hidden group hover:border-(--gray-4) transition-all"
               >
                 {image ? (
                   <div className="relative w-full h-full">
                     <Image src={image} alt="Product" fill className="object-cover" />
                     <button
                       onClick={removeImage}
-                      className="absolute top-4 right-4 bg-red-500 text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-red-600 shadow-xl"
+                      className="absolute top-4 right-4 bg-(--destructive) text-(--light) p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-red-600 shadow-xl"
                     >
                       <X className="w-6 h-6" />
                     </button>
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                  <div className="flex flex-col items-center justify-center h-full text-(--gray-4)">
                     <Upload className="w-16 h-16 mb-4" />
                     <p className="text-lg font-medium">Click to upload image</p>
                     <p className="text-sm">PNG, JPG up to 5MB</p>
@@ -244,7 +244,7 @@ export default function AddProductForm() {
 
               {/* Image Upload Status */}
               {imageUploading && (
-                <div className="flex items-center gap-2 text-sm text-blue-600">
+                <div className="flex items-center gap-2 text-sm text-(--primary)">
                   <Loader2 className="w-4 h-4 animate-spin" />
                   <span>Uploading image to cloud...</span>
                 </div>
@@ -253,7 +253,7 @@ export default function AddProductForm() {
               {/* Small Thumbnail */}
               <div
                 onClick={handleImageClick}
-                className="w-24 h-24 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 transition-all flex items-center justify-center"
+                className="w-24 h-24 bg-(--gray-1) border-2 border-dashed border-(--gray-3) rounded-lg cursor-pointer hover:border-(--gray-4) transition-all flex items-center justify-center"
               >
                 {image ? (
                   <Image
@@ -264,7 +264,7 @@ export default function AddProductForm() {
                     className="object-cover rounded-lg"
                   />
                 ) : (
-                  <Upload className="w-8 h-8 text-gray-400" />
+                  <Upload className="w-8 h-8 text-(--gray-4)" />
                 )}
               </div>
             </div>
@@ -275,23 +275,25 @@ export default function AddProductForm() {
               <div className="grid grid-cols-2 gap-4">
                 {/* Pulse Code */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Pules Code<span className="text-red-500">*</span>
+                  <label className="block text-sm font-medium text-(--gray-7) mb-2">
+                    Pules Code<span className="text-(--destructive-foreground)">*</span>
                   </label>
                   <div
-                    className={`px-3 py-3 bg-gray-50 border rounded-lg font-mono text-gray-600 text-sm ${hasError("pulseCode") ? "border-red-500" : "border-gray-200"}`}
+                    className={`px-3 py-3 bg-(--gray-0) border rounded-lg font-mono text-(--gray-6) text-sm ${hasError("pulseCode") ? "border-(--destructive)" : "border-(--gray-2)"}`}
                   >
                     {generatedPrefix || "PLS_PRD_001247"}
                   </div>
                   {hasError("pulseCode") && (
-                    <p className="mt-1 text-sm text-red-500">{getErrorMessage("pulseCode")}</p>
+                    <p className="mt-1 text-sm text-(--destructive-foreground)">
+                      {getErrorMessage("pulseCode")}
+                    </p>
                   )}
                 </div>
 
                 {/* Product code */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Product code<span className="text-red-500">*</span>
+                  <label className="block text-sm font-medium text-(--gray-7) mb-2">
+                    Product code<span className="text-(--destructive-foreground)">*</span>
                   </label>
                   <input
                     type="text"
@@ -304,7 +306,9 @@ export default function AddProductForm() {
                     className={getInputClasses("productCode")}
                   />
                   {hasError("productCode") && (
-                    <p className="mt-1 text-sm text-red-500">{getErrorMessage("productCode")}</p>
+                    <p className="mt-1 text-sm text-(--destructive-foreground)">
+                      {getErrorMessage("productCode")}
+                    </p>
                   )}
                 </div>
               </div>
@@ -313,8 +317,8 @@ export default function AddProductForm() {
               <div className="grid grid-cols-3 gap-4">
                 {/* Product Category */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Product Category<span className="text-red-500">*</span>
+                  <label className="block text-sm font-medium text-(--gray-7) mb-2">
+                    Product Category<span className="text-(--destructive-foreground)">*</span>
                   </label>
                   <select
                     value={categoryId}
@@ -334,7 +338,7 @@ export default function AddProductForm() {
                     ))}
                   </select>
                   {hasError("productCategoryId") && (
-                    <p className="mt-1 text-sm text-red-500">
+                    <p className="mt-1 text-sm text-(--destructive-foreground)">
                       {getErrorMessage("productCategoryId")}
                     </p>
                   )}
@@ -342,8 +346,8 @@ export default function AddProductForm() {
 
                 {/* Product Name */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Product Name<span className="text-red-500">*</span>
+                  <label className="block text-sm font-medium text-(--gray-7) mb-2">
+                    Product Name<span className="text-(--destructive-foreground)">*</span>
                   </label>
                   <input
                     type="text"
@@ -356,14 +360,16 @@ export default function AddProductForm() {
                     className={getInputClasses("name")}
                   />
                   {hasError("name") && (
-                    <p className="mt-1 text-sm text-red-500">{getErrorMessage("name")}</p>
+                    <p className="mt-1 text-sm text-(--destructive-foreground)">
+                      {getErrorMessage("name")}
+                    </p>
                   )}
                 </div>
 
                 {/* Product Formula */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Product Formula<span className="text-red-500">*</span>
+                  <label className="block text-sm font-medium text-(--gray-7) mb-2">
+                    Product Formula<span className="text-(--destructive-foreground)">*</span>
                   </label>
                   <input
                     type="text"
@@ -376,15 +382,17 @@ export default function AddProductForm() {
                     className={getInputClasses("productFormula")}
                   />
                   {hasError("productFormula") && (
-                    <p className="mt-1 text-sm text-red-500">{getErrorMessage("productFormula")}</p>
+                    <p className="mt-1 text-sm text-(--destructive-foreground)">
+                      {getErrorMessage("productFormula")}
+                    </p>
                   )}
                 </div>
               </div>
 
               {/* THIRD ROW: Product Description (full width) */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Product Description<span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-(--gray-7) mb-2">
+                  Product Description<span className="text-(--destructive-foreground)">*</span>
                 </label>
                 <input
                   type="text"
@@ -397,14 +405,16 @@ export default function AddProductForm() {
                   className={getInputClasses("description")}
                 />
                 {hasError("description") && (
-                  <p className="mt-1 text-sm text-red-500">{getErrorMessage("description")}</p>
+                  <p className="mt-1 text-sm text-(--destructive-foreground)">
+                    {getErrorMessage("description")}
+                  </p>
                 )}
               </div>
 
               {/* SKU SECTION */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Add Product SKU's<span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-(--gray-7) mb-2">
+                  Add Product SKU's<span className="text-(--destructive-foreground)">*</span>
                 </label>
 
                 {/* Input + Button side by side */}
@@ -413,7 +423,7 @@ export default function AddProductForm() {
                     type="text"
                     id="sku-input"
                     placeholder="e.g. Capsule 500Mg"
-                    className="flex-1 px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                    className="flex-1 px-3 py-3 border border-(--gray-3) rounded-lg focus:ring-2 focus:ring-(--primary) outline-none text-sm"
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && e.currentTarget.value.trim()) {
                         setSkus([...skus, e.currentTarget.value.trim()]);
@@ -430,14 +440,16 @@ export default function AddProductForm() {
                         clearFieldError("productSkus");
                       }
                     }}
-                    className="px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-600 transition flex items-center gap-2 text-sm font-medium cursor-pointer whitespace-nowrap"
+                    className="px-6 py-3 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition flex items-center gap-2 text-sm font-medium cursor-pointer whitespace-nowrap"
                   >
                     <Plus className="w-4 h-4" />
                     Add Brand SKUs
                   </button>
                 </div>
                 {hasError("productSkus") && (
-                  <p className="mt-1 text-sm text-red-500">{getErrorMessage("productSkus")}</p>
+                  <p className="mt-1 text-sm text-(--destructive-foreground)">
+                    {getErrorMessage("productSkus")}
+                  </p>
                 )}
 
                 {/* SKU Chips Display */}
@@ -447,7 +459,7 @@ export default function AddProductForm() {
                     .map((sku, index) => (
                       <div
                         key={index}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-full text-sm font-medium flex items-center gap-2 hover:bg-blue-600 transition"
+                        className="px-4 py-2 bg-(--primary) text-(--light) rounded-full text-sm font-medium flex items-center gap-2 hover:bg-(--primary-2) transition"
                       >
                         {sku}
                         <button onClick={() => removeSku(index)} className="cursor-pointer">
@@ -460,17 +472,17 @@ export default function AddProductForm() {
 
               {/* FOOTER ACTIONS */}
               <div className="flex justify-end gap-4 pt-6">
-                <button className="px-8 py-3 border border-blue-500 text-blue-500 font-medium rounded-full hover:bg-blue-50 transition cursor-pointer">
+                <button className="px-8 py-3 border border-(--primary) text-(--primary) font-medium rounded-full hover:bg-(--primary-0) transition cursor-pointer">
                   Discard
                 </button>
                 <button
                   onClick={handleSubmit}
                   disabled={productLoading || imageUploading}
-                  className="px-10 py-3 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition flex items-center gap-3 shadow-lg cursor-pointer disabled:bg-blue-400 disabled:cursor-not-allowed"
+                  className="px-10 py-3 bg-(--primary) text-(--light) font-medium rounded-full hover:bg-(--primary-2) transition flex items-center gap-3 shadow-lg cursor-pointer disabled:bg-(--primary-1) disabled:cursor-not-allowed"
                 >
                   {productLoading || imageUploading ? (
                     <>
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <div className="w-5 h-5 border-2 border-(--light) border-t-transparent rounded-full animate-spin" />
                       {imageUploading ? "Uploading Image..." : "Creating..."}
                     </>
                   ) : (

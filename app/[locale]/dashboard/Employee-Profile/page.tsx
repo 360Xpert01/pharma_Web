@@ -15,7 +15,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className=" bg-[#F9FAFB] mt-16">
+    <div className=" bg-(--page-background) mt-16">
       <DashboardContent
         sample={"User Profile"}
         descrip={"Unlock the potential of your candidates"}

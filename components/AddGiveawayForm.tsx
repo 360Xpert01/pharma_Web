@@ -106,9 +106,9 @@ export default function AddGiveawayForm() {
   const getInputClasses = (fieldName: string) => {
     const baseClasses = "w-full px-5 py-3.5 border rounded-xl outline-none transition";
     if (hasError(fieldName)) {
-      return `${baseClasses} border-red-500 focus:ring-2 focus:ring-red-500 focus:border-red-500`;
+      return `${baseClasses} border-(--destructive) focus:ring-2 focus:ring-(--destructive) focus:border-(--destructive)`;
     }
-    return `${baseClasses} border-gray-300 focus:ring-2 focus:ring-blue-500`;
+    return `${baseClasses} border-(--gray-3) focus:ring-2 focus:ring-(--primary)`;
   };
 
   const handleImageClick = () => fileInputRef.current?.click();
@@ -211,20 +211,20 @@ export default function AddGiveawayForm() {
           {/* Main Image */}
           <div
             onClick={handleImageClick}
-            className="relative w-full h-92 bg-gray-200 border-2 border-dashed border-gray-300 rounded-2xl cursor-pointer overflow-hidden group hover:border-gray-400 transition-all"
+            className="relative w-full h-92 bg-(--gray-2) border-2 border-dashed border-(--gray-3) rounded-2xl cursor-pointer overflow-hidden group hover:border-(--gray-4) transition-all"
           >
             {image ? (
               <div className="relative w-full h-full">
                 <Image src={image} alt="Giveaway" fill className="object-cover" />
                 <button
                   onClick={removeImage}
-                  className="absolute top-4 right-4 bg-red-500 text-white p-2.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-lg cursor-pointer"
+                  className="absolute top-4 right-4 bg-(--destructive) text-(--light) p-2.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-lg cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center h-full text-gray-500">
+              <div className="flex flex-col items-center justify-center h-full text-(--gray-5)">
                 <Upload className="w-14 h-14 mb-4" />
                 <p className="text-base font-medium">Click to upload image</p>
                 <p className="text-sm">or drag and drop</p>
@@ -233,7 +233,7 @@ export default function AddGiveawayForm() {
           </div>
 
           {/* Small Thumbnail */}
-          <div className="w-20 h-20 bg-gray-200 border-2 border-dashed border-gray-300 rounded-xl " />
+          <div className="w-20 h-20 bg-(--gray-2) border-2 border-dashed border-(--gray-3) rounded-xl " />
         </div>
 
         {/* Right: Form Fields */}
@@ -241,18 +241,18 @@ export default function AddGiveawayForm() {
           {/* Pulse Code and Legacy Code Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Pulse Code</label>
+              <label className="block text-sm font-medium text-(--gray-7) mb-2">Pulse Code</label>
               <input
                 type="text"
                 value={generatedPrefix || ""}
                 placeholder={prefixLoading ? "Generating..." : "PLS_GIV_000001"}
                 readOnly
-                className="w-full px-5 py-3.5 border border-gray-300 rounded-xl bg-gray-50 text-gray-700 cursor-not-allowed outline-none"
+                className="w-full px-5 py-3.5 border border-(--gray-3) rounded-xl bg-(--gray-0) text-(--gray-7) cursor-not-allowed outline-none"
                 title={prefixError || "Auto-generated pulse code (read-only)"}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Legacy Code</label>
+              <label className="block text-sm font-medium text-(--gray-7) mb-2">Legacy Code</label>
               <input
                 type="text"
                 value={legacyCode}
@@ -264,7 +264,7 @@ export default function AddGiveawayForm() {
                 className={getInputClasses("legacyCode")}
               />
               {hasError("legacyCode") && (
-                <p className="mt-1 text-sm text-red-600">{getErrorMessage("legacyCode")}</p>
+                <p className="mt-1 text-sm text-(--destructive)">{getErrorMessage("legacyCode")}</p>
               )}
             </div>
           </div>
@@ -272,8 +272,8 @@ export default function AddGiveawayForm() {
           {/* Row 2: Item Name and Category */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Item Name <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium text-(--gray-7) mb-2">
+                Item Name <span className="text-(--destructive)">*</span>
               </label>
               <input
                 type="text"
@@ -286,13 +286,13 @@ export default function AddGiveawayForm() {
                 className={getInputClasses("name")}
               />
               {hasError("name") && (
-                <p className="mt-1 text-sm text-red-600">{getErrorMessage("name")}</p>
+                <p className="mt-1 text-sm text-(--destructive)">{getErrorMessage("name")}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Item Category <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium text-(--gray-7) mb-2">
+                Item Category <span className="text-(--destructive)">*</span>
               </label>
               <input
                 type="text"
@@ -305,7 +305,7 @@ export default function AddGiveawayForm() {
                 className={getInputClasses("category")}
               />
               {hasError("category") && (
-                <p className="mt-1 text-sm text-red-600">{getErrorMessage("category")}</p>
+                <p className="mt-1 text-sm text-(--destructive)">{getErrorMessage("category")}</p>
               )}
             </div>
           </div>
@@ -313,7 +313,7 @@ export default function AddGiveawayForm() {
           {/* Row 3: Product Name and Units */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-(--gray-7) mb-2">
                 Brand / Product Linked To
               </label>
               <input
@@ -327,13 +327,15 @@ export default function AddGiveawayForm() {
                 className={getInputClasses("productName")}
               />
               {hasError("productName") && (
-                <p className="mt-1 text-sm text-red-600">{getErrorMessage("productName")}</p>
+                <p className="mt-1 text-sm text-(--destructive)">
+                  {getErrorMessage("productName")}
+                </p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Units <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium text-(--gray-7) mb-2">
+                Units <span className="text-(--destructive)">*</span>
               </label>
               <input
                 type="number"
@@ -347,14 +349,14 @@ export default function AddGiveawayForm() {
                 className={getInputClasses("units")}
               />
               {hasError("units") && (
-                <p className="mt-1 text-sm text-red-600">{getErrorMessage("units")}</p>
+                <p className="mt-1 text-sm text-(--destructive)">{getErrorMessage("units")}</p>
               )}
             </div>
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-(--gray-7) mb-2">
               Sample Description
             </label>
             <textarea
@@ -368,7 +370,7 @@ export default function AddGiveawayForm() {
               className={`${getInputClasses("description")} resize-none`}
             />
             {hasError("description") && (
-              <p className="mt-1 text-sm text-red-600">{getErrorMessage("description")}</p>
+              <p className="mt-1 text-sm text-(--destructive)">{getErrorMessage("description")}</p>
             )}
           </div>
 
@@ -377,7 +379,7 @@ export default function AddGiveawayForm() {
             <button
               type="button"
               onClick={handleDiscard}
-              className="px-8 py-3.5 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition font-medium cursor-pointer"
+              className="px-8 py-3.5 border border-(--gray-3) text-(--gray-7) rounded-full hover:bg-(--gray-0) transition font-medium cursor-pointer"
             >
               Discard
             </button>
@@ -385,7 +387,7 @@ export default function AddGiveawayForm() {
               type="button"
               onClick={handleSubmit}
               disabled={createLoading || prefixLoading}
-              className={`px-10 py-3.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition font-medium flex items-center gap-3 shadow-lg cursor-pointer ${
+              className={`px-10 py-3.5 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition font-medium flex items-center gap-3 shadow-lg cursor-pointer ${
                 createLoading || prefixLoading ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >

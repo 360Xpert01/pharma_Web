@@ -220,10 +220,10 @@ export default function SetTargetPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-(--gray-0)">
       {/* Centered Content Container */}
       {/* Main White Card */}
-      <div className="bg-white rounded-xl shadow-[0px_5px_10px_rgba(0,0,0,0.20)] p-8 overflow-hidden">
+      <div className="bg-(--background) rounded-xl shadow-[0px_5px_10px_rgba(0,0,0,0.20)] p-8 overflow-hidden">
         {/* Target Configuration Form */}
         <TargetConfigForm
           selectedTeam={selectedTeam}
@@ -239,13 +239,13 @@ export default function SetTargetPage() {
         {/* Members Info Section */}
         <div className="space-y-6 pt-6">
           <div>
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Members Info</h2>
+            <h2 className="text-xl font-bold text-(--gray-9) mb-6">Members Info</h2>
 
             {/* Manager Selection Input Fields */}
             <div className="grid grid-cols-4 gap-4 mb-8">
               {/* First Manager Input */}
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-2">
+                <label className="block text-xs font-medium text-(--gray-5) mb-2">
                   Head of Sales
                 </label>
                 <div className="relative">
@@ -253,12 +253,12 @@ export default function SetTargetPage() {
                     type="text"
                     value={managers.find((m) => m.id === selectedManager1)?.name || ""}
                     readOnly
-                    className="w-full px-4 py-2.5 pr-10 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-700 cursor-default"
+                    className="w-full px-4 py-2.5 pr-10 bg-(--gray-0) border border-(--gray-3) rounded-lg text-sm text-(--gray-7) cursor-default"
                   />
                   {selectedManager1 && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                      <div className="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
-                        <span className="text-xs text-white font-medium">
+                      <div className="w-5 h-5 rounded-full bg-(--gray-4) flex items-center justify-center">
+                        <span className="text-xs text-(--light) font-medium">
                           {managers.findIndex((m) => m.id === selectedManager1) + 1}
                         </span>
                       </div>
@@ -269,7 +269,7 @@ export default function SetTargetPage() {
 
               {/* Second Manager Input */}
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-2">
+                <label className="block text-xs font-medium text-(--gray-5) mb-2">
                   Sales Manager
                 </label>
                 <div className="relative">
@@ -277,12 +277,12 @@ export default function SetTargetPage() {
                     type="text"
                     value={managers.find((m) => m.id === selectedManager2)?.name || ""}
                     readOnly
-                    className="w-full px-4 py-2.5 pr-10 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-700 cursor-default"
+                    className="w-full px-4 py-2.5 pr-10 bg-(--gray-0) border border-(--gray-3) rounded-lg text-sm text-(--gray-7) cursor-default"
                   />
                   {selectedManager2 && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                      <div className="w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center">
-                        <span className="text-xs text-white font-medium">
+                      <div className="w-5 h-5 rounded-full bg-(--gray-4) flex items-center justify-center">
+                        <span className="text-xs text-(--light) font-medium">
                           {managers.findIndex((m) => m.id === selectedManager2) + 1}
                         </span>
                       </div>
@@ -317,13 +317,13 @@ export default function SetTargetPage() {
         </div>
 
         {/* Footer Action Buttons */}
-        <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
-          <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition cursor-pointer font-medium">
+        <div className="flex justify-end gap-4 pt-6 border-t border-(--gray-2)">
+          <button className="px-6 py-3 border border-(--gray-3) text-(--gray-7) rounded-full hover:bg-(--gray-0) transition cursor-pointer font-medium">
             Discard
           </button>
           <button
             onClick={handleSetTarget}
-            className="px-8 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition shadow-lg cursor-pointer font-medium"
+            className="px-8 py-3 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition shadow-lg cursor-pointer font-medium"
           >
             Set Target
           </button>

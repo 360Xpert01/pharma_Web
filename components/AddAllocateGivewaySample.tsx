@@ -168,20 +168,20 @@ export default function AddAllocateGivewaySample() {
   };
 
   return (
-    <div className="bg-gray-50">
-      <div className="bg-white rounded-2xl shadow-lg p-8">
+    <div className="bg-(--gray-0)">
+      <div className="bg-(--background) rounded-2xl shadow-lg p-8">
         {/* Select Employee Section */}
         <div className="mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Select Employee</h2>
+          <h2 className="text-xl font-bold text-(--gray-9) mb-4">Select Employee</h2>
 
           <div className="flex gap-6 items-start">
             {/* Search Input */}
             <div className="flex-1 max-w-md relative" ref={dropdownRef}>
-              <label className="block text-xs font-medium text-gray-600 mb-2">
-                Search Employee Name<span className="text-red-500">*</span>
+              <label className="block text-xs font-medium text-(--gray-6) mb-2">
+                Search Employee Name<span className="text-(--destructive)">*</span>
               </label>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-(--gray-4)" />
                 <input
                   type="text"
                   placeholder="Search Employee Name"
@@ -192,7 +192,7 @@ export default function AddAllocateGivewaySample() {
                     setSelectedEmployee(null); // Clear selection when typing
                   }}
                   onFocus={() => setShowEmployeeDropdown(true)}
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                  className="w-full pl-10 pr-4 py-2.5 border border-(--gray-3) rounded-lg focus:ring-2 focus:ring-(--primary) outline-none text-sm"
                 />
               </div>
 
@@ -201,15 +201,15 @@ export default function AddAllocateGivewaySample() {
                 employeeSearch &&
                 !selectedEmployee &&
                 filteredEmployees.length > 0 && (
-                  <div className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-64 overflow-y-auto">
+                  <div className="absolute z-50 w-full mt-2 bg-(--background) border border-(--gray-2) rounded-lg shadow-lg max-h-64 overflow-y-auto">
                     {filteredEmployees.slice(0, 5).map((employee) => (
                       <div
                         key={employee.id}
                         onClick={() => handleSelectEmployee(employee)}
-                        className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0"
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-(--gray-0) cursor-pointer border-b border-(--gray-1) last:border-b-0"
                       >
                         {/* Avatar */}
-                        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-(--gray-2) flex items-center justify-center overflow-hidden flex-shrink-0">
                           {employee.profilePicture ? (
                             <img
                               src={employee.profilePicture}
@@ -217,7 +217,7 @@ export default function AddAllocateGivewaySample() {
                               className="w-full h-full object-cover"
                             />
                           ) : (
-                            <span className="text-gray-600 font-medium text-sm">
+                            <span className="text-(--gray-6) font-medium text-sm">
                               {employee.firstName[0]}
                               {employee.lastName[0]}
                             </span>
@@ -226,10 +226,10 @@ export default function AddAllocateGivewaySample() {
 
                         {/* Employee Info */}
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate">
+                          <p className="text-sm font-medium text-(--gray-9) truncate">
                             {employee.firstName} {employee.lastName}
                           </p>
-                          <p className="text-xs text-gray-500 truncate">{employee.email}</p>
+                          <p className="text-xs text-(--gray-0)0 truncate">{employee.email}</p>
                         </div>
                       </div>
                     ))}
@@ -239,7 +239,7 @@ export default function AddAllocateGivewaySample() {
 
             {/* Helper Text */}
             <div className="flex-1">
-              <p className="text-sm text-gray-500 mt-6">
+              <p className="text-sm text-(--gray-0)0 mt-6">
                 You can easily search the assignee you want and
                 <br />
                 take on different responsibilities.
@@ -256,21 +256,21 @@ export default function AddAllocateGivewaySample() {
               <div className="grid grid-cols-4 gap-4">
                 {/* Team Pulse Code */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-2">
-                    Team Pulse Code<span className="text-red-500">*</span>
+                  <label className="block text-xs font-medium text-(--gray-6) mb-2">
+                    Team Pulse Code<span className="text-(--destructive)">*</span>
                   </label>
-                  <div className="flex items-center px-4 py-2.5 bg-gray-50 rounded-lg text-sm">
-                    <span className="text-gray-900 ml-1">{selectedEmployee.pulseCode}</span>
+                  <div className="flex items-center px-4 py-2.5 bg-(--gray-0) rounded-lg text-sm">
+                    <span className="text-(--gray-9) ml-1">{selectedEmployee.pulseCode}</span>
                   </div>
                 </div>
 
                 {/* Employee Name */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-2">
+                  <label className="block text-xs font-medium text-(--gray-6) mb-2">
                     Employee Name
                   </label>
-                  <div className="flex items-center px-4 py-2.5 bg-gray-50 rounded-lg text-sm">
-                    <span className="text-gray-900">
+                  <div className="flex items-center px-4 py-2.5 bg-(--gray-0) rounded-lg text-sm">
+                    <span className="text-(--gray-9)">
                       {selectedEmployee.firstName} {selectedEmployee.lastName}
                     </span>
                   </div>
@@ -278,17 +278,17 @@ export default function AddAllocateGivewaySample() {
 
                 {/* Role */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-2">Role</label>
-                  <div className="flex items-center px-4 py-2.5 bg-gray-50 rounded-lg text-sm">
-                    <span className="text-gray-900">Sales Representative</span>
+                  <label className="block text-xs font-medium text-(--gray-6) mb-2">Role</label>
+                  <div className="flex items-center px-4 py-2.5 bg-(--gray-0) rounded-lg text-sm">
+                    <span className="text-(--gray-9)">Sales Representative</span>
                   </div>
                 </div>
 
                 {/* Manager */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-2">Manager</label>
-                  <div className="flex items-center px-4 py-2.5 bg-gray-50 rounded-lg text-sm">
-                    <span className="text-gray-900">Abdul Aziz Warsi</span>
+                  <label className="block text-xs font-medium text-(--gray-6) mb-2">Manager</label>
+                  <div className="flex items-center px-4 py-2.5 bg-(--gray-0) rounded-lg text-sm">
+                    <span className="text-(--gray-9)">Abdul Aziz Warsi</span>
                   </div>
                 </div>
               </div>
@@ -296,27 +296,27 @@ export default function AddAllocateGivewaySample() {
 
             {/* Select Giveaway Section */}
             <div>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Select Giveaway</h2>
+              <h2 className="text-xl font-bold text-(--gray-9) mb-4">Select Giveaway</h2>
 
               {/* Search & Add Row */}
               <div className="flex gap-3 mb-4 w-1/3">
                 <div className="flex-1 relative">
-                  <label className="block text-xs font-medium text-gray-600 mb-2">
-                    Search Giveaway Name<span className="text-red-500">*</span>
+                  <label className="block text-xs font-medium text-(--gray-6) mb-2">
+                    Search Giveaway Name<span className="text-(--destructive)">*</span>
                   </label>
-                  <Search className="absolute left-3 bottom-3 w-4 h-4 text-gray-400" />
+                  <Search className="absolute left-3 bottom-3 w-4 h-4 text-(--gray-4)" />
                   <input
                     type="text"
                     placeholder="Search Product Name"
                     value={giveawaySearch}
                     onChange={(e) => setGiveawaySearch(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                    className="w-full pl-10 pr-4 py-2.5 border border-(--gray-3) rounded-lg focus:ring-2 focus:ring-(--primary) outline-none text-sm"
                   />
                 </div>
                 <div className="flex items-end">
                   <button
                     onClick={handleAddGiveaway}
-                    className="px-5 py-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition flex items-center gap-2 text-sm font-medium cursor-pointer whitespace-nowrap"
+                    className="px-5 py-2.5 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition flex items-center gap-2 text-sm font-medium cursor-pointer whitespace-nowrap"
                   >
                     <Plus className="w-4 h-4" />
                     Add Giveaway
@@ -326,28 +326,30 @@ export default function AddAllocateGivewaySample() {
 
               {/* Giveaway Cards Grid */}
               {filteredGiveaways.length > 0 && (
-                <div className="bg-gray-50 rounded-lg p-4">
+                <div className="bg-(--gray-0) rounded-lg p-4">
                   <div className="grid grid-cols-4 gap-3">
                     {filteredGiveaways.map((item) => (
                       <div
                         key={item.id}
-                        className="flex items-center justify-between px-4 py-3 bg-white border border-gray-200 rounded-lg hover:shadow-sm transition"
+                        className="flex items-center justify-between px-4 py-3 (--background) border border-(--gray-2) rounded-lg hover:shadow-sm transition"
                       >
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate">{item.name}</p>
-                          <p className="text-xs text-gray-500 mt-0.5">QTY: {item.quantity}</p>
+                          <p className="text-sm font-medium text-(--gray-9) truncate">
+                            {item.name}
+                          </p>
+                          <p className="text-xs text-(--gray-0)0 mt-0.5">QTY: {item.quantity}</p>
                         </div>
                         <div className="flex items-center gap-2 ml-2">
                           <button
                             onClick={() => handleEditGiveaway(item.id)}
-                            className="p-1.5 text-blue-600 hover:bg-blue-50 rounded cursor-pointer"
+                            className="p-1.5 text-(--primary) hover:bg-(--primary-0) rounded cursor-pointer"
                             title="Edit quantity"
                           >
                             <Edit2 className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleDeleteGiveaway(item.id)}
-                            className="p-1.5 text-red-600 hover:bg-red-50 rounded cursor-pointer"
+                            className="p-1.5 text-(--destructive) hover:bg-(--destructive-0) rounded cursor-pointer"
                             title="Delete"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -362,27 +364,27 @@ export default function AddAllocateGivewaySample() {
 
             {/* Select Sample Section */}
             <div>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Select Sample</h2>
+              <h2 className="text-xl font-bold text-(--gray-9) mb-4">Select Sample</h2>
 
               {/* Search & Add Row */}
               <div className="flex gap-3 mb-4 w-1/3">
                 <div className="flex-1 relative">
-                  <label className="block text-xs font-medium text-gray-600 mb-2">
-                    Search Sample Name<span className="text-red-500">*</span>
+                  <label className="block text-xs font-medium text-(--gray-6) mb-2">
+                    Search Sample Name<span className="text-(--destructive)">*</span>
                   </label>
-                  <Search className="absolute left-3 bottom-3 w-4 h-4 text-gray-400" />
+                  <Search className="absolute left-3 bottom-3 w-4 h-4 text-(--gray-4)" />
                   <input
                     type="text"
                     placeholder="Search Sample Name"
                     value={sampleSearch}
                     onChange={(e) => setSampleSearch(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                    className="w-full pl-10 pr-4 py-2.5 border border-(--gray-3) rounded-lg focus:ring-2 focus:ring-(--primary) outline-none text-sm"
                   />
                 </div>
                 <div className="flex items-end">
                   <button
                     onClick={handleAddSample}
-                    className="px-5 py-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition flex items-center gap-2 text-sm font-medium cursor-pointer whitespace-nowrap"
+                    className="px-5 py-2.5 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition flex items-center gap-2 text-sm font-medium cursor-pointer whitespace-nowrap"
                   >
                     <Plus className="w-4 h-4" />
                     Add Sample
@@ -392,28 +394,30 @@ export default function AddAllocateGivewaySample() {
 
               {/* Sample Cards Grid */}
               {filteredSamples.length > 0 && (
-                <div className="bg-gray-50 rounded-lg p-4">
+                <div className="bg-(--gray-0) rounded-lg p-4">
                   <div className="grid grid-cols-4 gap-3">
                     {filteredSamples.map((item) => (
                       <div
                         key={item.id}
-                        className="flex items-center justify-between px-4 py-3 bg-white border border-gray-200 rounded-lg hover:shadow-sm transition"
+                        className="flex items-center justify-between px-4 py-3 (--background) border border-(--gray-2) rounded-lg hover:shadow-sm transition"
                       >
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate">{item.name}</p>
-                          <p className="text-xs text-gray-500 mt-0.5">QTY: {item.quantity}</p>
+                          <p className="text-sm font-medium text-(--gray-9) truncate">
+                            {item.name}
+                          </p>
+                          <p className="text-xs text-(--gray-0)0 mt-0.5">QTY: {item.quantity}</p>
                         </div>
                         <div className="flex items-center gap-2 ml-2">
                           <button
                             onClick={() => handleEditSample(item.id)}
-                            className="p-1.5 text-blue-600 hover:bg-blue-50 rounded cursor-pointer"
+                            className="p-1.5 text-(--primary) hover:bg-(--primary-0) rounded cursor-pointer"
                             title="Edit quantity"
                           >
                             <Edit2 className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleDeleteSample(item.id)}
-                            className="p-1.5 text-red-600 hover:bg-red-50 rounded cursor-pointer"
+                            className="p-1.5 text-(--destructive) hover:bg-(--destructive-0) rounded cursor-pointer"
                             title="Delete"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -432,14 +436,14 @@ export default function AddAllocateGivewaySample() {
         <div className="flex justify-end gap-4 pt-6 mt-8">
           <button
             onClick={handleDiscard}
-            className="px-8 py-3 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition cursor-pointer"
+            className="px-8 py-3 border border-(--gray-3) text-(--gray-7) rounded-full hover:bg-(--gray-0) transition cursor-pointer"
           >
             Discard
           </button>
           <button
             onClick={handleAllocate}
             disabled={!selectedEmployee}
-            className={`px-10 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition flex items-center gap-2 shadow-lg cursor-pointer ${
+            className={`px-10 py-3 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition flex items-center gap-2 shadow-lg cursor-pointer ${
               !selectedEmployee ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >

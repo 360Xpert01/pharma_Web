@@ -94,36 +94,36 @@ export default function CampaignApprovalTable() {
     <div className="w-full ">
       {campaignData.map((item) => (
         <div key={item.id} className="px-4 py-1">
-          <div className="w-full bg-white rounded-2xl p-3  border border-gray-200">
+          <div className="w-full bg-(--background) rounded-2xl p-3  border border-(--gray-2)">
             <div className="flex items-center justify-between text-sm">
               {/* Name */}
-              <div className="w-48 font-bold text-gray-900">{item.name}</div>
+              <div className="w-48 font-bold text-(--gray-9)">{item.name}</div>
 
               {/* Month */}
-              <div className="flex-1 font-bold min-w-40 text-gray-600">{item.month}</div>
+              <div className="flex-1 font-bold min-w-40 text-(--gray-6)">{item.month}</div>
 
               {/* Date */}
-              <div className="w-36 text-gray-500 text-center">{item.date}</div>
+              <div className="w-36 text-(--gray-5) text-center">{item.date}</div>
 
               {/* Condition */}
-              <div className="flex-1 min-w-32 font-medium text-gray-900 text-center">
+              <div className="flex-1 min-w-32 font-medium text-(--gray-9) text-center">
                 {item.condition}
               </div>
 
               {/* Channel */}
-              <div className="flex-1 min-w-40 font-bold text-gray-700 text-center">
+              <div className="flex-1 min-w-40 font-bold text-(--gray-7) text-center">
                 {item.channel}
               </div>
 
               {/* Status Badge */}
               <div className="w-40 flex justify-center">
                 <span
-                  className={`px-6 py-1 rounded-full text-xs text-white shadow-sm ${
+                  className={`px-6 py-1 rounded-full text-xs text-(--light) shadow-sm ${
                     item.status === "Approved"
-                      ? "bg-green-500"
+                      ? "bg-(--success)"
                       : item.status === "Rejected"
-                        ? "bg-red-500"
-                        : "bg-amber-500"
+                        ? "bg-(--destructive)"
+                        : "bg-(--warning)"
                   }`}
                 >
                   {item.status}
@@ -135,10 +135,10 @@ export default function CampaignApprovalTable() {
                 href={`/dashboard/plan-Request`}
                 className="w-40 flex justify-end items-center gap-2"
               >
-                <span className="text-blue-600 font-medium cursor-pointer hover:text-gray-700">
+                <span className="text-(--primary) font-medium cursor-pointer hover:text-(--gray-7)">
                   View Details
                 </span>
-                <ChevronRight className="w-5 h-8 text-blue-600" />
+                <ChevronRight className="w-5 h-8 text-(--primary)" />
               </Link>
             </div>
           </div>

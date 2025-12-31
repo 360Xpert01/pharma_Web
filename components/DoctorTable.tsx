@@ -102,27 +102,27 @@ export default function DoctorsTable() {
       {doctorsData.map((doctor, index) => (
         <div
           key={doctor.id}
-          className={`px-3 py-1 hover:bg-gray-50 transition-colors flex items-center ${
+          className={`px-3 py-1 hover:bg-(--gray-0) transition-colors flex items-center ${
             index !== doctorsData.length - 1 ? "" : ""
           }`}
         >
-          <div className="w-full bg-white rounded-lg p-3 border border-gray-200 grid grid-cols-12 gap-4 text-sm">
+          <div className="w-full bg-(--background) rounded-lg p-3 border border-(--gray-2) grid grid-cols-12 gap-4 text-sm">
             {/* Name */}
-            <div className="col-span-2 font-bold text-gray-900">{doctor.name}</div>
+            <div className="col-span-2 font-bold text-(--gray-9)">{doctor.name}</div>
 
             {/* Specialty */}
-            <div className="col-span-2 text-gray-600">{doctor.specialty}</div>
+            <div className="col-span-2 text-(--gray-6)">{doctor.specialty}</div>
 
             {/* Email */}
-            <div className="col-span-2 font-bold text-gray-900 flex items-center gap-2">
+            <div className="col-span-2 font-bold text-(--gray-9) flex items-center gap-2">
               {doctor.email}
             </div>
 
             {/* Phone */}
-            <div className="col-span-2 text-gray-900 flex items-center gap-2">{doctor.phone}</div>
+            <div className="col-span-2 text-(--gray-9) flex items-center gap-2">{doctor.phone}</div>
 
             {/* City */}
-            <div className="col-span-1 font-bold text-gray-900 flex items-center gap-2">
+            <div className="col-span-1 font-bold text-(--gray-9) flex items-center gap-2">
               {doctor.city}
             </div>
 
@@ -131,8 +131,8 @@ export default function DoctorsTable() {
               <span
                 className={`px-12 py-1 rounded-full text-sm font-medium ${
                   doctor.status === "Active"
-                    ? "bg-green-100 text-green-700"
-                    : "bg-gray-100 text-gray-600"
+                    ? "bg-green-100 text-(--success)"
+                    : "bg-(--gray-1) text-(--gray-6)"
                 }`}
               >
                 {doctor.status}
@@ -144,10 +144,10 @@ export default function DoctorsTable() {
               href={`/dashboard/doctor-profile`}
               className="col-span-1 flex items-center justify-end gap-2"
             >
-              <button className="text-gray-400 text-sm   flex items-center gap-1 whitespace-nowrap">
+              <button className="text-(--gray-4) text-sm   flex items-center gap-1 whitespace-nowrap">
                 View Details
               </button>
-              <ChevronRight className="w-6 h-6 text-blue-400" />
+              <ChevronRight className="w-6 h-6 text-(--primary)" />
             </Link>
           </div>
         </div>

@@ -41,7 +41,7 @@ export default function CampaignsTable() {
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-            <p className="mt-4 text-(--gray-5)">Loading teams...</p>
+            <p className="mt-4 text-(--gray-6)">Loading teams...</p>
           </div>
         </div>
       </div>
@@ -57,8 +57,8 @@ export default function CampaignsTable() {
         </div>
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
-            <p className="font-medium text-(--destructive)">Error loading teams</p>
-            <p className="mt-2 text-(--gray-5)">{error}</p>
+            <p className="text-(--destructive) font-medium">Error loading teams</p>
+            <p className="text-(--gray-6) mt-2">{error}</p>
             <button
               onClick={() => dispatch(getAllTeams())}
               className="mt-4 px-4 py-2 bg-primary text-(--light) rounded-md hover:bg-primary/90 transition cursor-pointer"
@@ -79,7 +79,7 @@ export default function CampaignsTable() {
           <TableColumnHeader columns={campaignColumns} gridCols={12} />
         </div>
         <div className="flex items-center justify-center py-12">
-          <p className="text-(--gray-5)">No teams found</p>
+          <p className="text-(--gray-6)">No teams found</p>
         </div>
       </div>
     );
@@ -97,7 +97,7 @@ export default function CampaignsTable() {
         {teams.map((team) => (
           <div
             key={team.id}
-            className="px-3 py-1 transition-colors duration-200 relative hover:bg-(--gray-0)"
+            className="px-3 py-1 hover:bg-(--gray-0) transition-colors duration-200 relative"
             onClick={() => setOpenId(null)}
           >
             {/* Grid with all columns including actions */}
@@ -106,7 +106,6 @@ export default function CampaignsTable() {
               <div className="col-span-2 font-semibold text-(--gray-9)">
                 {team.pulseCode || "N/A"}
               </div>
-
               {/* Name */}
               <div className="col-span-2 font-semibold">{team.name}</div>
 
@@ -138,7 +137,6 @@ export default function CampaignsTable() {
                         />
                       </div>
                     ))}
-
                     {team.users.length > 3 && (
                       <div className="w-7 h-7 rounded-full border-2 border-(--light) flex items-center justify-center text-xs font-medium text-(--gray-5) ring-2 ring-(--gray-1) bg-(--gray-1)">
                         +{team.users.length - 3}
@@ -170,7 +168,7 @@ export default function CampaignsTable() {
               >
                 <button
                   onClick={() => handleToggle(team.id)}
-                  className="transition cursor-pointer text-(--gray-4) hover:text-(--gray-6)"
+                  className="text-(--gray-4) hover:text-(--gray-6) transition cursor-pointer"
                 >
                   <MoreVertical className="w-5 h-5" />
                 </button>

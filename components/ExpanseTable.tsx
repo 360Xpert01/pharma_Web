@@ -90,10 +90,10 @@ const DEFAULT_AVATAR = "/girlPic.svg"; // ya apna placeholder use karo
 
 export default function ExpenseApprovalTable() {
   return (
-    <div className="w-full bg-gray-50/50">
+    <div className="w-full bg-(--gray-0)/50">
       <div className="space-y-1 p-4 ">
         {expenseData.map((row) => (
-          <div key={row.id} className="bg-white rounded-2xl border border-gray-200 ">
+          <div key={row.id} className="bg-(--background) rounded-2xl border border-(--gray-2) ">
             <div className="p-3">
               <div className="flex items-center justify-between gap-6 text-sm">
                 {/* Employee 1 */}
@@ -101,11 +101,11 @@ export default function ExpenseApprovalTable() {
                   <img
                     src={row.employee1.avatar || DEFAULT_AVATAR}
                     alt={row.employee1.name}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md"
+                    className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-md"
                   />
                   <div className="truncate">
-                    <div className="font-bold text-gray-900 truncate">{row.employee1.name}</div>
-                    <div className="text-xs text-gray-500 truncate">{row.employee1.role}</div>
+                    <div className="font-bold text-(--gray-9) truncate">{row.employee1.name}</div>
+                    <div className="text-xs text-(--gray-5) truncate">{row.employee1.role}</div>
                   </div>
                 </div>
 
@@ -114,47 +114,47 @@ export default function ExpenseApprovalTable() {
                   <img
                     src={row.employee2.avatar || DEFAULT_AVATAR}
                     alt={row.employee2.name}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md"
+                    className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-md"
                   />
                   <div className="truncate">
-                    <div className="font-bold text-gray-900 truncate">{row.employee2.name}</div>
-                    <div className="text-xs text-gray-500 truncate">{row.employee2.role}</div>
+                    <div className="font-bold text-(--gray-9) truncate">{row.employee2.name}</div>
+                    <div className="text-xs text-(--gray-5) truncate">{row.employee2.role}</div>
                   </div>
                 </div>
 
                 {/* Total Expense */}
                 <div className="text-center">
-                  <div className="text-xs text-gray-500">Total Expense</div>
-                  <div className="font-bold text-amber-600 text-lg">
+                  <div className="text-xs text-(--gray-5)">Total Expense</div>
+                  <div className="font-bold text-(--warning-2) text-lg">
                     {row.totalExpense.toLocaleString()}
-                    <span className="font-bold text-amber-600 pl-1 text-sm">PKR</span>
+                    <span className="font-bold text-(--warning-2) pl-1 text-sm">PKR</span>
                   </div>
                 </div>
 
                 {/* Approved */}
                 <div className="text-center">
-                  <div className="text-xs text-gray-500">Approved</div>
-                  <div className="font-bold text-green-600 text-lg">
+                  <div className="text-xs text-(--gray-5)">Approved</div>
+                  <div className="font-bold text-(--success) text-lg">
                     {row.approved.toLocaleString()}
-                    <span className="font-bold text-green-600 pl-1 text-sm">PKR</span>
+                    <span className="font-bold text-(--success) pl-1 text-sm">PKR</span>
                   </div>
                 </div>
 
                 {/* Rejected */}
                 <div className="text-center">
-                  <div className="text-xs text-gray-500">Rejected</div>
-                  <div className="font-bold text-red-600 text-lg">
+                  <div className="text-xs text-(--gray-5)">Rejected</div>
+                  <div className="font-bold text-(--destructive) text-lg">
                     {row.rejected.toLocaleString()}
-                    <span className="font-bold text-red-600 pl-1 text-sm">PKR</span>
+                    <span className="font-bold text-(--destructive) pl-1 text-sm">PKR</span>
                   </div>
                 </div>
 
                 {/* Action Buttons */}
                 <div className="flex gap-3">
-                  <button className="px-6 py-1 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition shadow-sm">
+                  <button className="px-6 py-1 bg-(--primary) text-(--light) font-medium rounded-lg hover:bg-(--primary-2) transition shadow-sm">
                     Approve
                   </button>
-                  <button className="px-6 py-1 bg-white text-red-600 font-medium rounded-lg border border-red-600 hover:bg-red-50 transition shadow-sm">
+                  <button className="px-6 py-1 bg-(--light) text-(--destructive) font-medium rounded-lg border border-(--destructive) hover:bg-(--destructive-0) transition shadow-sm">
                     Reject
                   </button>
                 </div>

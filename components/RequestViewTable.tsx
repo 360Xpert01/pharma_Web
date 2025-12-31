@@ -104,8 +104,8 @@ export default function DoctorRequestTable() {
   return (
     <div className="w-full">
       {requestData.map((item) => (
-        <div key={item.id} className="px-2 py-1 hover:bg-gray-50 transition-colors duration-200">
-          <div className="bg-white rounded-2xl border border-gray-200 p-2">
+        <div key={item.id} className="px-2 py-1 hover:bg-(--gray-0) transition-colors duration-200">
+          <div className="bg-(--background) rounded-2xl border border-(--gray-2) p-2">
             <div className="flex items-center justify-between text-sm">
               {/* Left: Avatar + Name + Position */}
               <div className="flex items-center gap-4 flex-shrink-0">
@@ -114,36 +114,36 @@ export default function DoctorRequestTable() {
                   alt={item.name}
                   width={48}
                   height={48}
-                  className="rounded-full object-cover border-2 border-white shadow-md"
+                  className="rounded-full object-cover border-2 border-(--light) shadow-md"
                   onError={(e) => {
                     e.currentTarget.src = DEFAULT_AVATAR;
                   }}
                 />
                 <div>
-                  <div className="font-bold text-gray-900">{item.name}</div>
-                  <div className="text-xs text-gray-500">{item.position}</div>
+                  <div className="font-bold text-(--gray-9)">{item.name}</div>
+                  <div className="text-xs text-(--gray-5)">{item.position}</div>
                 </div>
               </div>
 
               {/* Doctor Name */}
               <div className="flex-1 text-center">
-                <div className="font-bold text-gray-900">{item.doctor}</div>
+                <div className="font-bold text-(--gray-9)">{item.doctor}</div>
               </div>
 
               {/* Specialty */}
               <div className="flex-1 text-center">
-                <div className="font-bold text-gray-800">{item.specialty}</div>
+                <div className="font-bold text-(--gray-8)">{item.specialty}</div>
               </div>
 
               {/* Area + Code */}
               <div className="flex-1 font-bold text-center">
-                <div className=" text-gray-700">{item.area}</div>
+                <div className=" text-(--gray-7)">{item.area}</div>
               </div>
 
               {/* See Request Button */}
-              <div className="flex items-center gap-1 text-gray-400  cursor-pointer">
+              <div className="flex items-center gap-1 text-(--gray-4)  cursor-pointer">
                 <span>See Request</span>
-                <ChevronRight className="w-7 h-7 text-blue-700" />
+                <ChevronRight className="w-7 h-7 text-(--primary)" />
               </div>
             </div>
           </div>

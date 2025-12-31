@@ -3,7 +3,7 @@ import { DashboardContent } from "../components/dashboard-content";
 
 export default function DashboardPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-(--page-background)">
       <DashboardContent
         sample={"User Profile"}
         descrip={"Unlock the potential of your candidates"}

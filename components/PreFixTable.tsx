@@ -19,7 +19,7 @@ export default function PrefixListComponent() {
   return (
     <div className="flex items-center justify-center p-8">
       <div className="w-full">
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+        <div className="bg-(--background) rounded-2xl shadow-lg border border-(--gray-1) overflow-hidden">
           <div className="px-6 py-4">
             <TableColumnHeader
               columns={[
@@ -35,17 +35,17 @@ export default function PrefixListComponent() {
             {prefixes.map((item, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between py-4 px-6  border border-gray-200 rounded-xl"
+                className="flex items-center justify-between py-4 px-6  border border-(--gray-2) rounded-xl"
               >
                 {/* Table Name */}
-                <div className="text-lg font-medium w-[20%] text-gray-800">{item.entity}</div>
+                <div className="text-lg font-medium w-[20%] text-(--gray-8)">{item.entity}</div>
 
-                <div className=" text-gray-700 w-[20%] flex justify-start font-semibold rounded-full text-sm">
+                <div className=" text-(--gray-7) w-[20%] flex justify-start font-semibold rounded-full text-sm">
                   {item.code}
                 </div>
 
                 <div className="flex items-center gap-12">
-                  <div className=" text-gray-600 font-medium rounded-full text-sm">
+                  <div className=" text-(--gray-6) font-medium rounded-full text-sm">
                     {item.code}01
                   </div>
                 </div>
