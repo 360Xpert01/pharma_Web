@@ -20,7 +20,7 @@ export default function SalesDashboard() {
             </div>
           </div>
 
-          <div className="w-[30%]">
+          <div className="w-[30%] mt-4">
             <MonthlyAttendance />
             <SaleAndCalls />
           </div>

@@ -80,7 +80,7 @@ export default function EmployeeProfileTabs({ candidate }: EmployeeProfileTabsPr
             </div> */}
 
       {/* Tab Content */}
-      <div className="transition-all bg-(--background) shadow-sm p-5 rounded-2xl duration-300">
+      <div className="transition-all bg-(--background) shadow-soft p-5 rounded-2xl duration-300">
         {/* Tab Navigation */}
         <div className="flex gap-2 bg-(--gray-2) rounded-full my-5 p-2 w-fit">
           {tabs.map((tab) => (

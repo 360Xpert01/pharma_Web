@@ -89,7 +89,7 @@ export default function TodaysAppointments() {
               {/* Doctor Info */}
               <div className="flex items-center gap-4">
                 <div className="relative">
-                  <div className="w-14 h-14 rounded-full overflow-hidden ring-4 ring-(--light) shadow-md">
+                  <div className="w-14 h-14 rounded-full overflow-hidden ring-4 ring-(--light) shadow-soft">
                     <Image
                       src={appt.avatar || "https://randomuser.me/api/portraits/women/44.jpg"}
                       alt={appt.doctorName}

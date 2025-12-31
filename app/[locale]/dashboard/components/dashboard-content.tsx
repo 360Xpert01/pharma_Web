@@ -316,7 +316,12 @@ export function DashboardContent({
           </div>
         )}
 
-        {proBar && <SalesTeamTable />}
+        {proBar && (
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
+            <TableHeader campHeading="All User's" filterT={filterT} />
+            <SalesTeamTable />
+          </div>
+        )}
 
         {employeeProfileBtn && showTabs && <EmployeeProfileTabs candidate={candidate} />}
 
@@ -345,7 +350,12 @@ export function DashboardContent({
 
         {teamFormTabel && <AddNewTeamForm />}
 
-        {targetListView && <TargetListView />}
+        {targetListView && (
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
+            <TableHeader campHeading="All Employees" filterT={filterT} />
+            <TargetListView />
+          </div>
+        )}
 
         {/* Quick Stats Footer */}
         {/* <PerformanceStats isLoading={combinedLoading} /> */}

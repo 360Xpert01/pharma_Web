@@ -57,7 +57,7 @@ export default function MonthlyTargets({
   };
 
   return (
-    <div className="w-full bg-(--light) rounded-lg  p-6 shadow-sm">
+    <div className="w-full bg-(--light) rounded-lg  p-6 shadow-soft">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold text-(--dark)">Monthly Targets</h2>

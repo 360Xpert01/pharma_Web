@@ -106,12 +106,12 @@ export default function ExpenseApprovalList() {
           {expensesData.map((item) => (
             <div
               key={item.id}
-              className="flex items-center justify-between rounded-2xl shadow-sm border border-gray-100 p-3"
+              className="flex items-center justify-between rounded-2xl shadow-soft border border-gray-100 p-3"
             >
               {/* Left: User Info */}
               <div className="flex items-center   gap-4">
                 <div className="relative">
-                  <div className="w-14 h-14 rounded-md overflow-hidden border-2 border-white shadow-sm">
+                  <div className="w-14 h-14 rounded-md overflow-hidden border-2 border-white shadow-soft">
                     <Image
                       src={`/capMan.svg`}
                       alt={item.name}
@@ -166,7 +166,7 @@ export default function ExpenseApprovalList() {
 
               {/* Right: Action Buttons */}
               <div className="flex items-center gap-3">
-                <button className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white font-sm rounded-xl hover:bg-blue-700 transition shadow-sm cursor-pointer">
+                <button className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white font-sm rounded-xl hover:bg-blue-700 transition shadow-soft cursor-pointer">
                   Approve
                 </button>
                 <button className="flex items-center gap-2 px-3 py-2 border border-red-300 text-red-600 font-sm rounded-xl hover:bg-red-50 transition cursor-pointer">
