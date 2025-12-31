@@ -93,7 +93,10 @@ export default function ExpenseApprovalTable() {
     <div className="w-full bg-(--gray-0)/50">
       <div className="space-y-1 p-4 ">
         {expenseData.map((row) => (
-          <div key={row.id} className="bg-(--background) rounded-2xl border border-(--gray-2) ">
+          <div
+            key={row.id}
+            className="bg-[var(--background)] rounded-2xl border border-(--gray-2) "
+          >
             <div className="p-3">
               <div className="flex items-center justify-between gap-6 text-sm">
                 {/* Employee 1 */}
@@ -154,7 +157,7 @@ export default function ExpenseApprovalTable() {
                   <button className="px-6 py-1 bg-(--primary) text-(--light) font-medium rounded-lg hover:bg-(--primary-2) transition shadow-sm">
                     Approve
                   </button>
-                  <button className="px-6 py-1 bg-(--light) text-(--destructive) font-medium rounded-lg border border-(--destructive) hover:bg-(--destructive-0) transition shadow-sm">
+                  <button className="px-6 py-1 bg-[var(--background)] text-(--destructive) font-medium rounded-lg border border-(--destructive) hover:bg-(--destructive-0) transition shadow-sm">
                     Reject
                   </button>
                 </div>

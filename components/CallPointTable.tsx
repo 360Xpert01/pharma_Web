@@ -29,7 +29,7 @@ export default function CallPointsList() {
   ];
 
   return (
-    <div className="w-full mt-3 bg-(--background) rounded-3xl shadow-lg border border-(--gray-1) overflow-hidden">
+    <div className="w-full mt-3 bg-[var(--background)] rounded-3xl shadow-lg border border-(--gray-1) overflow-hidden">
       <div className="p-8">
         <h2 className="text-2xl font-bold text-(--gray-9) mb-8">Call Points</h2>
 
@@ -50,7 +50,7 @@ export default function CallPointsList() {
             callPoints.map((point) => (
               <div
                 key={point.id}
-                className="flex items-center justify-between p-6 bg-(--gray-0)/50 rounded-2xl hover:bg-(--gray-1)/70 transition-all duration-200 border border-(--gray-2)"
+                className="flex items-center justify-between p-6 bg-[var(--background)] rounded-2xl hover:bg-(--gray-1)/70 transition-all duration-200 border border-(--gray-2)"
               >
                 {/* Pulse Code - First Column */}
                 <div className="flex-1 min-w-[200px]">

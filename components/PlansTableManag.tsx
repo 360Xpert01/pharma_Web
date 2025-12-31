@@ -94,7 +94,7 @@ export default function CampaignApprovalTable() {
     <div className="w-full ">
       {campaignData.map((item) => (
         <div key={item.id} className="px-4 py-1">
-          <div className="w-full bg-(--background) rounded-2xl p-3  border border-(--gray-2)">
+          <div className="w-full bg-[var(--background)] rounded-2xl p-3  border border-(--gray-2)">
             <div className="flex items-center justify-between text-sm">
               {/* Name */}
               <div className="w-48 font-bold text-(--gray-9)">{item.name}</div>

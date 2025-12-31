@@ -103,7 +103,7 @@ export default function DcrTable() {
         {tableData.map((row) => (
           <div
             key={row.id}
-            className="bg-(--background) rounded-2xl border border-(--gray-2) shadow-sm hover:shadow-md transition-shadow"
+            className="bg-[var(--background)] rounded-2xl border border-(--gray-2) shadow-sm hover:shadow-md transition-shadow"
           >
             <div className="px-6 py-5">
               {/* 12-column grid */}

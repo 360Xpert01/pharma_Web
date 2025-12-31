@@ -105,7 +105,7 @@ export default function DoctorRequestTable() {
     <div className="w-full">
       {requestData.map((item) => (
         <div key={item.id} className="px-2 py-1 hover:bg-(--gray-0) transition-colors duration-200">
-          <div className="bg-(--background) rounded-2xl border border-(--gray-2) p-2">
+          <div className="bg-[var(--background)] rounded-2xl border border-(--gray-2) p-2">
             <div className="flex items-center justify-between text-sm">
               {/* Left: Avatar + Name + Position */}
               <div className="flex items-center gap-4 flex-shrink-0">

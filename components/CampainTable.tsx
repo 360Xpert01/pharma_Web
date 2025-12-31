@@ -34,14 +34,14 @@ export default function CampaignsTable() {
   // Loading state
   if (loading) {
     return (
-      <div className="w-full overflow-hidden">
+      <div className="w-full overflow-hidden bg-[var(--background)]">
         <div className="px-3">
           <TableColumnHeader columns={campaignColumns} gridCols={12} />
         </div>
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-            <p className="mt-4 text-(--gray-6)">Loading teams...</p>
+            <p className="mt-4 text-[var(--gray-6)]">Loading teams...</p>
           </div>
         </div>
       </div>
@@ -51,17 +51,17 @@ export default function CampaignsTable() {
   // Error state
   if (error) {
     return (
-      <div className="w-full overflow-hidden">
+      <div className="w-full overflow-hidden bg-[var(--background)]">
         <div className="px-3">
           <TableColumnHeader columns={campaignColumns} gridCols={12} />
         </div>
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
-            <p className="text-(--destructive) font-medium">Error loading teams</p>
-            <p className="text-(--gray-6) mt-2">{error}</p>
+            <p className="text-[var(--destructive)] font-medium">Error loading teams</p>
+            <p className="text-[var(--gray-6)] mt-2">{error}</p>
             <button
               onClick={() => dispatch(getAllTeams())}
-              className="mt-4 px-4 py-2 bg-primary text-(--light) rounded-md hover:bg-primary/90 transition cursor-pointer"
+              className="mt-4 px-4 py-2 bg-primary text-[var(--light)] rounded-md hover:bg-primary/90 transition cursor-pointer"
             >
               Retry
             </button>
@@ -74,19 +74,19 @@ export default function CampaignsTable() {
   // Empty state
   if (!teams || teams.length === 0) {
     return (
-      <div className="w-full overflow-hidden">
+      <div className="w-full overflow-hidden bg-[var(--background)]">
         <div className="px-3">
           <TableColumnHeader columns={campaignColumns} gridCols={12} />
         </div>
         <div className="flex items-center justify-center py-12">
-          <p className="text-(--gray-6)">No teams found</p>
+          <p className="text-[var(--gray-6)]">No teams found</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full overflow-hidden">
+    <div className="w-full overflow-hidden  bg-white">
       {/* Header */}
       <div className="px-3">
         <TableColumnHeader columns={campaignColumns} gridCols={12} />
@@ -97,13 +97,13 @@ export default function CampaignsTable() {
         {teams.map((team) => (
           <div
             key={team.id}
-            className="px-3 py-1 hover:bg-(--gray-0) transition-colors duration-200 relative"
+            className="px-3 py-1 hover:bg-[var(--gray-0)] transition-colors duration-200 relative"
             onClick={() => setOpenId(null)}
           >
             {/* Grid with all columns including actions */}
-            <div className="rounded-md p-2 border border-(--gray-2) grid grid-cols-12 gap-3 text-sm">
+            <div className="rounded-md p-2 border border-[var(--gray-2)] grid grid-cols-12 gap-3 text-sm">
               {/* Pulse Code */}
-              <div className="col-span-2 font-semibold text-(--gray-9)">
+              <div className="col-span-2 font-semibold text-[var(--gray-9)]">
                 {team.pulseCode || "N/A"}
               </div>
               {/* Name */}
@@ -122,7 +122,7 @@ export default function CampaignsTable() {
                     {team.users.slice(0, 3).map((user, idx) => (
                       <div
                         key={user.id}
-                        className="w-7 h-7 rounded-full border-2 border-(--light) overflow-hidden ring-2 ring-(--gray-1)"
+                        className="w-7 h-7 rounded-full border-2 border-[var(--light)] overflow-hidden ring-2 ring-[var(--gray-1)]"
                       >
                         <img
                           src={
@@ -138,13 +138,13 @@ export default function CampaignsTable() {
                       </div>
                     ))}
                     {team.users.length > 3 && (
-                      <div className="w-7 h-7 rounded-full border-2 border-(--light) flex items-center justify-center text-xs font-medium text-(--gray-5) ring-2 ring-(--gray-1) bg-(--gray-1)">
+                      <div className="w-7 h-7 rounded-full border-2 border-[var(--light)] flex items-center justify-center text-xs font-medium text-[var(--gray-5)] ring-2 ring-[var(--gray-1)] bg-[var(--gray-1)]">
                         +{team.users.length - 3}
                       </div>
                     )}
                   </div>
                 ) : (
-                  <span className="text-xs text-center text-(--gray-4)">N/A</span>
+                  <span className="text-xs text-center text-[var(--gray-4)]">N/A</span>
                 )}
               </div>
 
@@ -153,8 +153,8 @@ export default function CampaignsTable() {
                 <span
                   className={`px-4 min-w-[90px] text-center py-1 rounded-full text-sm font-medium ${
                     team.isActive
-                      ? "bg-(--success)/10 text-(--success)"
-                      : "bg-(--gray-1) text-(--gray-5)"
+                      ? "bg-[var(--success)]/10 text-[var(--success)]"
+                      : "bg-[var(--gray-1)] text-[var(--gray-5)]"
                   }`}
                 >
                   {team.isActive ? "Active" : "Inactive"}
@@ -168,20 +168,20 @@ export default function CampaignsTable() {
               >
                 <button
                   onClick={() => handleToggle(team.id)}
-                  className="text-(--gray-4) hover:text-(--gray-6) transition cursor-pointer"
+                  className="text-[var(--gray-4)] hover:text-[var(--gray-6)] transition cursor-pointer"
                 >
                   <MoreVertical className="w-5 h-5" />
                 </button>
 
                 {/* Dropdown */}
                 {openId === team.id && (
-                  <div className="absolute right-0 top-6 mt-2 w-48 rounded-lg shadow-lg border border-(--gray-2) bg-(--light) z-50">
+                  <div className="absolute right-0 top-6 mt-2 w-48 rounded-lg shadow-lg border border-[var(--gray-2)] bg-[var(--light)] z-50">
                     <button
                       onClick={() => {
                         console.log("Edit", team.id);
                         setOpenId(null);
                       }}
-                      className="w-full text-left px-4 py-2 text-sm cursor-pointer hover:bg-(--gray-1)"
+                      className="w-full text-left px-4 py-2 text-sm cursor-pointer hover:bg-[var(--gray-1)]"
                     >
                       Edit
                     </button>
@@ -191,7 +191,7 @@ export default function CampaignsTable() {
                         console.log("Duplicate", team.id);
                         setOpenId(null);
                       }}
-                      className="w-full text-left px-4 py-2 text-sm cursor-pointer hover:bg-(--gray-1)"
+                      className="w-full text-left px-4 py-2 text-sm cursor-pointer hover:bg-[var(--gray-1)]"
                     >
                       Duplicate
                     </button>
@@ -201,7 +201,7 @@ export default function CampaignsTable() {
                         console.log("Delete", team.id);
                         setOpenId(null);
                       }}
-                      className="w-full text-left px-4 py-2 text-sm cursor-pointer text-(--destructive) hover:bg-(--gray-1)"
+                      className="w-full text-left px-4 py-2 text-sm cursor-pointer text-[var(--destructive)] hover:bg-[var(--gray-1)]"
                     >
                       Delete
                     </button>

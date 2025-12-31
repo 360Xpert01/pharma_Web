@@ -89,7 +89,7 @@ export default function RolesCardList() {
         {rolesData.map((role) => (
           <div
             key={role.id}
-            className="bg-(--background) border border-(--gray-2) rounded-xl p-3 transition-shadow duration-200"
+            className="bg-[var(--background)] border border-(--gray-2) rounded-xl p-3 transition-shadow duration-200"
           >
             <div className="flex items-center justify-between gap-6">
               {/* Left Section */}
