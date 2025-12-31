@@ -30,6 +30,8 @@ import allProductsReducer from "./slices/product/getAllProductsSlice";
 import productCategoriesReducer from "./slices/product/getProductCategoriesSlice";
 import createProductReducer from "./slices/product/createProductSlice";
 import allTeamsReducer from "./slices/team/getAllTeamsSlice";
+import createTeamReducer from "./slices/team/createTeamSlice";
+import brickListReducer from "./slices/brick/getBrickListSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -58,6 +60,8 @@ const rootReducer = combineReducers({
   productCategories: productCategoriesReducer,
   createProduct: createProductReducer,
   allTeams: allTeamsReducer,
+  createTeam: createTeamReducer,
+  brickList: brickListReducer,
 });
 
 const persistConfig = {
