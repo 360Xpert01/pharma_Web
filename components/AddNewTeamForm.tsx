@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Plus, Trash2, Search, ChevronDown, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -17,12 +17,23 @@ import {
   getUserHierarchy,
   resetUserHierarchyState,
 } from "@/store/slices/employee/getUserHierarchySlice";
+import axios from "axios";
 
 interface Product {
   id: string;
   code: string;
   name: string;
   skus?: string[];
+}
+
+// Selected Member type
+interface SelectedMemberType {
+  id: string;
+  firstName: string;
+  lastName: string;
+  pulseCode: string;
+  email: string;
+  profilePicture?: string;
 }
 
 // Hierarchy Node type (from API)
@@ -37,6 +48,65 @@ interface HierarchyNodeType {
   parentSalesRepId: string | null;
   isSalesRep: boolean;
   children: HierarchyNodeType[];
+}
+
+// Function to deep clone a hierarchy node
+function cloneHierarchyNode(node: HierarchyNodeType): HierarchyNodeType {
+  return {
+    ...node,
+    children: node.children.map(cloneHierarchyNode),
+  };
+}
+
+// Function to merge multiple hierarchies intelligently
+// If two sales reps share the same manager, they will be placed under the same manager node
+function mergeHierarchies(hierarchies: HierarchyNodeType[]): HierarchyNodeType[] {
+  if (hierarchies.length === 0) return [];
+  if (hierarchies.length === 1) return hierarchies;
+
+  const mergedMap = new Map<string, HierarchyNodeType>();
+
+  for (const hierarchy of hierarchies) {
+    const rootId = hierarchy.userId;
+
+    if (mergedMap.has(rootId)) {
+      // This root already exists, merge children
+      const existingNode = mergedMap.get(rootId)!;
+      existingNode.children = mergeHierarchyChildren(existingNode.children, hierarchy.children);
+    } else {
+      // Clone to avoid mutating original
+      mergedMap.set(rootId, cloneHierarchyNode(hierarchy));
+    }
+  }
+
+  return Array.from(mergedMap.values());
+}
+
+// Helper function to merge children arrays
+function mergeHierarchyChildren(
+  existingChildren: HierarchyNodeType[],
+  newChildren: HierarchyNodeType[]
+): HierarchyNodeType[] {
+  const childMap = new Map<string, HierarchyNodeType>();
+
+  // Add existing children to map
+  for (const child of existingChildren) {
+    childMap.set(child.userId, cloneHierarchyNode(child));
+  }
+
+  // Merge new children
+  for (const child of newChildren) {
+    if (childMap.has(child.userId)) {
+      // Child exists, merge their children recursively
+      const existingChild = childMap.get(child.userId)!;
+      existingChild.children = mergeHierarchyChildren(existingChild.children, child.children);
+    } else {
+      // New child, add it
+      childMap.set(child.userId, cloneHierarchyNode(child));
+    }
+  }
+
+  return Array.from(childMap.values());
 }
 
 // Recursive Hierarchy Node Component
@@ -139,7 +209,6 @@ export default function CreateCampaignForm() {
   const { users: salesRepUsers, loading: usersLoading } = useAppSelector(
     (state) => state.usersByRole
   );
-  const { hierarchy, loading: hierarchyLoading } = useAppSelector((state) => state.userHierarchy);
 
   // Form States
   const [status, setStatus] = useState<"Active" | "Inactive">("Active");
@@ -153,7 +222,15 @@ export default function CreateCampaignForm() {
   // Member search states
   const [memberSearchQuery, setMemberSearchQuery] = useState("");
   const [showMemberSearchResults, setShowMemberSearchResults] = useState(false);
-  const [selectedMember, setSelectedMember] = useState<any>(null);
+  const [selectedMembers, setSelectedMembers] = useState<SelectedMemberType[]>([]);
+  const [memberHierarchies, setMemberHierarchies] = useState<Map<string, HierarchyNodeType>>(
+    new Map()
+  );
+  const [mergedHierarchy, setMergedHierarchy] = useState<HierarchyNodeType[]>([]);
+  const [hierarchyLoading, setHierarchyLoading] = useState(false);
+
+  // Get base URL for API calls
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
   useEffect(() => {
     // Generate pulse code for "Team" entity
@@ -190,28 +267,107 @@ export default function CreateCampaignForm() {
     }
   }, [dispatch, roles]);
 
-  // Fetch hierarchy when member is selected
-  useEffect(() => {
-    if (selectedMember?.id) {
-      dispatch(getUserHierarchy(selectedMember.id));
-    }
-  }, [dispatch, selectedMember]);
+  // Fetch hierarchy for a specific member
+  const fetchMemberHierarchy = useCallback(
+    async (memberId: string): Promise<HierarchyNodeType | null> => {
+      try {
+        const sessionStr = localStorage.getItem("userSession");
+        if (!sessionStr) return null;
 
-  // Filter sales rep users by search query
-  const filteredMembers = salesRepUsers.filter(
-    (user) =>
-      `${user.firstName} ${user.lastName}`
-        .toLowerCase()
-        .includes(memberSearchQuery.toLowerCase()) ||
-      user.pulseCode.toLowerCase().includes(memberSearchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(memberSearchQuery.toLowerCase())
+        const response = await axios.get(
+          `${baseUrl}api/v1/users/hierarchy/sales-reps/${memberId}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${sessionStr}`,
+            },
+          }
+        );
+
+        if (response.data?.success && response.data?.data) {
+          return response.data.data;
+        }
+        return null;
+      } catch (error) {
+        console.error("Failed to fetch hierarchy for member:", memberId, error);
+        return null;
+      }
+    },
+    [baseUrl]
   );
 
-  // Handle member selection
+  // Fetch hierarchy when a new member is added
+  const handleAddMemberHierarchy = useCallback(
+    async (memberId: string) => {
+      setHierarchyLoading(true);
+      const hierarchy = await fetchMemberHierarchy(memberId);
+
+      if (hierarchy) {
+        setMemberHierarchies((prev) => {
+          const newMap = new Map(prev);
+          newMap.set(memberId, hierarchy);
+          return newMap;
+        });
+      }
+      setHierarchyLoading(false);
+    },
+    [fetchMemberHierarchy]
+  );
+
+  // Merge hierarchies whenever memberHierarchies changes
+  useEffect(() => {
+    if (memberHierarchies.size === 0) {
+      setMergedHierarchy([]);
+      return;
+    }
+
+    const hierarchiesArray = Array.from(memberHierarchies.values());
+    const merged = mergeHierarchies(hierarchiesArray);
+    setMergedHierarchy(merged);
+  }, [memberHierarchies]);
+
+  // Filter sales rep users by search query (exclude already selected members)
+  const filteredMembers = salesRepUsers.filter(
+    (user) =>
+      !selectedMembers.find((m) => m.id === user.id) &&
+      (`${user.firstName} ${user.lastName}`
+        .toLowerCase()
+        .includes(memberSearchQuery.toLowerCase()) ||
+        user.pulseCode.toLowerCase().includes(memberSearchQuery.toLowerCase()) ||
+        user.email.toLowerCase().includes(memberSearchQuery.toLowerCase()))
+  );
+
+  // Handle member selection (add to array)
   const handleSelectMember = (user: any) => {
-    setSelectedMember(user);
+    const newMember: SelectedMemberType = {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      pulseCode: user.pulseCode,
+      email: user.email,
+      profilePicture: user.profilePicture,
+    };
+
+    // Check if already selected
+    if (!selectedMembers.find((m) => m.id === user.id)) {
+      setSelectedMembers([...selectedMembers, newMember]);
+      // Fetch hierarchy for this new member
+      handleAddMemberHierarchy(user.id);
+    }
+
     setMemberSearchQuery("");
     setShowMemberSearchResults(false);
+  };
+
+  // Handle removing a member
+  const handleRemoveMember = (memberId: string) => {
+    setSelectedMembers(selectedMembers.filter((m) => m.id !== memberId));
+    // Also remove hierarchy for this member
+    setMemberHierarchies((prev) => {
+      const newMap = new Map(prev);
+      newMap.delete(memberId);
+      return newMap;
+    });
   };
 
   const removeProduct = (id: string) => {
@@ -469,47 +625,54 @@ export default function CreateCampaignForm() {
               )}
             </div>
 
-            {/* Selected Member Info */}
-            {selectedMember && (
-              <div className="mt-4 p-4 bg-[var(--gray-1)] rounded-xl flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-[var(--gray-3)] overflow-hidden flex-shrink-0">
-                    {selectedMember.profilePicture ? (
-                      <Image
-                        src={selectedMember.profilePicture}
-                        alt={`${selectedMember.firstName} ${selectedMember.lastName}`}
-                        width={48}
-                        height={48}
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-[var(--gray-5)] font-bold">
-                        {selectedMember.firstName?.charAt(0)}
-                        {selectedMember.lastName?.charAt(0)}
-                      </div>
-                    )}
+            {/* Selected Members Display */}
+            {selectedMembers.length > 0 && (
+              <div className="mt-4 flex flex-wrap gap-3">
+                {selectedMembers.map((member) => (
+                  <div
+                    key={member.id}
+                    className="p-3 bg-[var(--gray-1)] rounded-xl flex items-center gap-3"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-[var(--gray-3)] overflow-hidden flex-shrink-0">
+                      {member.profilePicture ? (
+                        <Image
+                          src={member.profilePicture}
+                          alt={`${member.firstName} ${member.lastName}`}
+                          width={40}
+                          height={40}
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-[var(--gray-5)] font-bold text-sm">
+                          {member.firstName?.charAt(0)}
+                          {member.lastName?.charAt(0)}
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-[var(--gray-9)] text-sm">
+                        {member.firstName} {member.lastName}
+                      </p>
+                      <p className="text-xs text-[var(--gray-5)]">{member.pulseCode}</p>
+                    </div>
+                    <button
+                      onClick={() => handleRemoveMember(member.id)}
+                      className="w-7 h-7 flex items-center justify-center bg-red-50 text-[var(--destructive)] rounded-lg hover:bg-red-100 transition-colors cursor-pointer ml-2"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
                   </div>
-                  <div>
-                    <p className="font-semibold text-[var(--gray-9)]">
-                      {selectedMember.firstName} {selectedMember.lastName}
-                    </p>
-                    <p className="text-sm text-[var(--gray-5)]">{selectedMember.pulseCode}</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setSelectedMember(null)}
-                  className="w-8 h-8 flex items-center justify-center bg-red-50 text-[var(--destructive)] rounded-lg hover:bg-red-100 transition-colors cursor-pointer"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                ))}
               </div>
             )}
           </div>
 
-          {/* Hierarchy Tree - Dynamic from API */}
-          {hierarchy && (
-            <div className="relative mt-6">
-              <HierarchyNode node={hierarchy} level={0} />
+          {/* Hierarchy Tree - Dynamic from API (Merged Hierarchies) */}
+          {mergedHierarchy.length > 0 && (
+            <div className="relative mt-6 space-y-4">
+              {mergedHierarchy.map((hierarchyRoot) => (
+                <HierarchyNode key={hierarchyRoot.userId} node={hierarchyRoot} level={0} />
+              ))}
             </div>
           )}
 
@@ -519,7 +682,7 @@ export default function CreateCampaignForm() {
             </div>
           )}
 
-          {!hierarchy && !hierarchyLoading && selectedMember && (
+          {mergedHierarchy.length === 0 && !hierarchyLoading && selectedMembers.length > 0 && (
             <div className="flex items-center justify-center py-8">
               <div className="text-[var(--gray-5)]">No hierarchy data found</div>
             </div>
