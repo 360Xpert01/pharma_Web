@@ -68,7 +68,7 @@ export default function SalesTeamTable() {
 
   return (
     <div className="mx-auto bg-(--gray-0) min-h-screen">
-      <div className="bg-[var(--background)] rounded-xl shadow-[0px_5px_10px_rgba(0,0,0,0.20)] overflow-hidden">
+      <div className="bg-[var(--background)] rounded-xl shadow-soft overflow-hidden">
         <div className="overflow-x-auto">
           <TableHeader title="Sales Team" campHeading="All User's" filterT searchT exportT />
 
