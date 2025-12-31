@@ -106,7 +106,7 @@ export default function DoctorsTable() {
             index !== doctorsData.length - 1 ? "" : ""
           }`}
         >
-          <div className="w-full bg-(--background) rounded-lg p-3 border border-(--gray-2) grid grid-cols-12 gap-4 text-sm">
+          <div className="w-full bg-[var(--background)] rounded-lg p-3 border border-(--gray-2) grid grid-cols-12 gap-4 text-sm">
             {/* Name */}
             <div className="col-span-2 font-bold text-(--gray-9)">{doctor.name}</div>
 

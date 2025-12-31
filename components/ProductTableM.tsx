@@ -124,7 +124,7 @@ export default function MedicineTable() {
                   {openId === product.id && (
                     <>
                       <div className="fixed inset-0 z-40" onClick={() => setOpenId(null)} />
-                      <div className="absolute right-0 top-10 mt-2 w-48 bg-(--light) rounded-lg shadow-lg border border-(--gray-2) z-50">
+                      <div className="absolute right-0 top-10 mt-2 w-48 bg-[var(--background)] rounded-lg shadow-lg border border-(--gray-2) z-50">
                         <div className="py-1">
                           <button className="w-full text-left px-4 py-2 text-sm text-(--gray-7) hover:bg-(--gray-1) cursor-pointer">
                             Edit Medicine

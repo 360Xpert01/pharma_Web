@@ -68,7 +68,7 @@ export default function SalesTeamTable() {
 
   return (
     <div className="mx-auto bg-(--gray-0) min-h-screen">
-      <div className="bg-(--background) rounded-xl shadow-[0px_5px_10px_rgba(0,0,0,0.20)] overflow-hidden">
+      <div className="bg-[var(--background)] rounded-xl shadow-[0px_5px_10px_rgba(0,0,0,0.20)] overflow-hidden">
         <div className="overflow-x-auto">
           <TableHeader title="Sales Team" campHeading="All User's" filterT searchT exportT />
 
@@ -87,7 +87,7 @@ export default function SalesTeamTable() {
               {teamMembers.map((member) => (
                 <div key={member.id}>
                   {/* Main Row */}
-                  <div className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-(--gray-0) transition-all cursor-pointer border border-(--gray-2) mx-4 my-3 rounded-2xl">
+                  <div className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-(--gray-0) transition-all cursor-pointer border border-(--gray-2) mx-4 my-3 rounded-2xl bg-[var(--background)]">
                     <div
                       onClick={() => toggleRow(member.id)}
                       className="w-[15%] text-sm font-bold text-(--gray-9)"
@@ -140,7 +140,7 @@ export default function SalesTeamTable() {
 
                   {/* Expanded Row */}
                   {openRowId === member.id && (
-                    <div className="bg-(--gray-0) -mt-3 mx-4 rounded-b-2xl border-t">
+                    <div className="bg-[var(--background)] -mt-3 mx-4 rounded-b-2xl border-t">
                       <div className="px-6 py-8">
                         <SalesDashboard1 member={member} />
                       </div>

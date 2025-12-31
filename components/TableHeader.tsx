@@ -17,23 +17,25 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
   };
 
   return (
-    <div className="">
+    <div className="bg-[var(--background)]">
       <div className="px-4 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
         {/* Left: Title + Description */}
         <div>
-          <h1 className="text-3xl font-bold text-(--gray-9)">{campHeading || "All Users"}</h1>
-          <p className="text-sm text-(--gray-5) mt-1">Unlock the potential of your candidates</p>
+          <h1 className="text-3xl font-bold text-[var(--gray-9)]">{campHeading || "All Users"}</h1>
+          <p className="text-sm text-[var(--gray-5)] mt-1">
+            Unlock the potential of your candidates
+          </p>
         </div>
 
         {/* Right: Actions */}
         <div className="flex items-center gap-3 flex-wrap">
           {/* Search Bar */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-(--gray-9) pointer-events-none" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--gray-9)] pointer-events-none" />
             <input
               type="text"
               placeholder="Search users..."
-              className="pl-10 pr-4 py-2.5 w-full sm:w-64 bg-(--gray-2) text-(--gray-9) rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-(--primary) focus:bg-(--light) transition-all duration-200"
+              className="pl-10 pr-4 py-2.5 w-full sm:w-64 bg-[var(--gray-2)] text-[var(--gray-9)] rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:bg-[var(--light)] transition-all duration-200"
             />
           </div>
 
@@ -41,7 +43,7 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
             <div className="relative">
               <button
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className="flex items-center justify-center p-3.5 bg-(--primary) text-(--light) rounded-full cursor-pointer transition-colors shadow-sm"
+                className="flex items-center justify-center p-3.5 bg-[var(--primary)] text-[var(--light)] rounded-full cursor-pointer transition-colors shadow-sm"
                 aria-label="Filter"
               >
                 <ListFilter className="w-4 h-4" />
@@ -49,14 +51,14 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
 
               {/* Filter Dropdown */}
               {isFilterOpen && (
-                <div className="absolute cursor-pointer right-0 mt-2 w-72 bg-(--background) rounded-xl shadow-xl border border-(--gray-2) z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute cursor-pointer right-0 mt-2 w-72 bg-[var(--background)] rounded-xl shadow-xl border border-[var(--gray-2)] z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="p-5 space-y-5">
                     {/* Header */}
                     <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-semibold text-(--gray-9)">Filter by</h3>
+                      <h3 className="text-lg font-semibold text-[var(--gray-9)]">Filter by</h3>
                       <button
                         onClick={() => setIsFilterOpen(false)}
-                        className="text-(--gray-4) hover:text-(--gray-6) transition"
+                        className="text-[var(--gray-4)] hover:text-[var(--gray-6)] transition"
                       >
                         <X className="w-5 h-5" />
                       </button>
@@ -64,10 +66,10 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
 
                     {/* Role Filter */}
                     <div>
-                      <label className="block text-sm font-medium text-(--gray-7) mb-1.5">
+                      <label className="block text-sm font-medium text-[var(--gray-7)] mb-1.5">
                         Role
                       </label>
-                      <select className="w-full px-3 py-2.5 border border-(--gray-3) rounded-lg text-sm focus:ring-2 focus:ring-(--primary) focus:border-(--primary) transition">
+                      <select className="w-full px-3 py-2.5 border border-[var(--gray-3)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] transition">
                         <option>All Roles</option>
                         <option>Admin</option>
                         <option>Manager</option>
@@ -79,10 +81,10 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
 
                     {/* Status Filter */}
                     <div>
-                      <label className="block text-sm font-medium text-(--gray-7) mb-1.5">
+                      <label className="block text-sm font-medium text-[var(--gray-7)] mb-1.5">
                         Status
                       </label>
-                      <select className="w-full px-3 py-2.5 border border-(--gray-3) rounded-lg text-sm focus:ring-2 focus:ring-(--primary) focus:border-(--primary) transition">
+                      <select className="w-full px-3 py-2.5 border border-[var(--gray-3)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] transition">
                         <option>All Status</option>
                         <option>Active</option>
                         <option>Inactive</option>
@@ -93,10 +95,10 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
 
                     {/* Date Range */}
                     <div>
-                      <label className="block text-sm font-medium text-(--gray-7) mb-1.5">
+                      <label className="block text-sm font-medium text-[var(--gray-7)] mb-1.5">
                         Date Range
                       </label>
-                      <select className="w-full px-3 py-2.5 border border-(--gray-3) Rounded-lg text-sm focus:ring-2 focus:ring-(--primary) focus:border-(--primary) transition">
+                      <select className="w-full px-3 py-2.5 border border-[var(--gray-3)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] transition">
                         <option>Last 30 Days</option>
                         <option>Last 7 Days</option>
                         <option>This Month</option>
@@ -107,10 +109,10 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
 
                     {/* Action Buttons */}
                     <div className="flex gap-3 pt-3">
-                      <button className="flex-1 px-4 py-2.5 border border-(--gray-3) text-(--gray-7) rounded-lg text-sm font-medium hover:bg-(--gray-0) transition">
+                      <button className="flex-1 px-4 py-2.5 border border-[var(--gray-3)] text-[var(--gray-7)] rounded-lg text-sm font-medium hover:bg-[var(--gray-0)] transition">
                         Clear All
                       </button>
-                      <button className="flex-1 px-4 py-2.5 bg-(--primary) text-(--light) rounded-lg text-sm font-medium hover:bg-(--primary-2) transition shadow-sm">
+                      <button className="flex-1 px-4 py-2.5 bg-[var(--primary)] text-[var(--light)] rounded-lg text-sm font-medium hover:bg-[var(--primary-2)] transition shadow-sm">
                         Apply Filters
                       </button>
                     </div>
@@ -120,14 +122,14 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
             </div>
           )}
 
-          <div className="border h-9 border-(--gray-3)"></div>
+          <div className="border h-9 border-[var(--gray-3)]"></div>
 
           {/* Export Button */}
           <div
             onClick={() => setOpenId(!openId)}
-            className="flex items-center cursor-pointer relative gap-2 border border-(--primary)  text-(--light) rounded-full text-sm font-medium  transition-colors shadow-sm"
+            className="flex items-center cursor-pointer relative gap-2 border border-[var(--primary)]  text-[var(--light)] rounded-full text-sm font-medium  transition-colors shadow-sm"
           >
-            <div className="flex relative items-center  gap-2 bg-(--primary) hover:bg-(--primary-2) px-3 py-3 overflow-hidden rounded-tl-full rounded-bl-full ">
+            <div className="flex relative items-center  gap-2 bg-[var(--primary)] hover:bg-[var(--primary-2)] px-3 py-3 overflow-hidden rounded-tl-full rounded-bl-full ">
               <Upload className="w-4 h-4" />
               <span>Export List</span>
             </div>
@@ -149,12 +151,12 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
                 <div className="fixed inset-0 z-40" onClick={() => setOpenId(false)} />
 
                 {/* Dropdown Menu */}
-                <div className="absolute right-0 top-14 mt-2 w-56 bg-(--background) rounded-lg shadow-xl border border-(--gray-2) z-50 overflow-hidden">
+                <div className="absolute right-0 top-14 mt-2 w-56 bg-[var(--background)] rounded-lg shadow-xl border border-[var(--gray-2)] z-50 overflow-hidden">
                   <div className="py-2">
-                    <button className="w-full text-left  px-5 py-3 text-sm text-(--gray-7) hover:bg-(--gray-1) flex items-center gap-3 transition">
+                    <button className="w-full text-left  px-5 py-3 text-sm text-[var(--gray-7)] hover:bg-[var(--gray-1)] flex items-center gap-3 transition">
                       <span>Export Format (.xls)</span>
                     </button>
-                    <button className="w-full text-left px-5 py-3 text-sm text-(--gray-7) hover:bg-(--gray-1) flex items-center gap-3 transition">
+                    <button className="w-full text-left px-5 py-3 text-sm text-[var(--gray-7)] hover:bg-[var(--gray-1)] flex items-center gap-3 transition">
                       <span>Import Data (.xls)</span>
                     </button>
                   </div>

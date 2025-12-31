@@ -19,7 +19,7 @@ export default function PrefixListComponent() {
   return (
     <div className="flex items-center justify-center p-8">
       <div className="w-full">
-        <div className="bg-(--background) rounded-2xl shadow-lg border border-(--gray-1) overflow-hidden">
+        <div className="bg-[var(--background)] rounded-2xl shadow-lg border border-(--gray-1) overflow-hidden">
           <div className="px-6 py-4">
             <TableColumnHeader
               columns={[

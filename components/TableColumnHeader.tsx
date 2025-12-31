@@ -45,12 +45,12 @@ export default function TableColumnHeader({
     : containerClassName;
 
   return (
-    <div className={showBackground ? "bg-(--gray-0) rounded-xl p-3 mb-3" : "mb-3"}>
+    <div className={showBackground ? "bg-[var(--background)] rounded-xl p-3 mb-3" : "mb-3"}>
       <div className={isGridLayout ? "flex items-center justify-between gap-6" : ""}>
         <div className={innerContainerClasses}>
           {columns.map((column, index) => (
             <div key={index} className={column.className || ""}>
-              <p className="font-semibold text-sm text-(--gray-6) capitalize tracking-wider">
+              <p className="font-semibold text-sm text-[var(--gray-6)] capitalize tracking-wider">
                 {column.label}
               </p>
             </div>
