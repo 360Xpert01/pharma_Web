@@ -37,7 +37,7 @@ export function TrustedBySection() {
     <section className="relative z-10 py-16 px-6">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <p className="text-gray-400 text-sm mb-8">{t("trusted.title")}</p>
+          <p className="text-[var(--gray-4)] text-sm mb-8">{t("trusted.title")}</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

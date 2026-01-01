@@ -100,7 +100,7 @@ const RoleNode: React.FC<RoleNodeProps> = ({
 
         {/* Role Icon Badge */}
         <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 bg-[var(--primary)]">
-          <RoleSvg width={18} height={18} className="text-white" />
+          <RoleSvg width={18} height={18} className="text-[var(--background)]" />
         </div>
 
         {/* Content Area */}
@@ -142,7 +142,7 @@ const RoleNode: React.FC<RoleNodeProps> = ({
         {/* Action Buttons */}
         <div className="flex items-center gap-2 flex-shrink-0">
           <button
-            className="w-9 h-9 rounded-lg bg-[var(--primary)] text-white flex items-center justify-center cursor-pointer"
+            className="w-9 h-9 rounded-lg bg-[var(--primary)] text-[var(--background)] flex items-center justify-center cursor-pointer"
             onClick={() => childType && onAddChild?.(item.id, childType)}
             title={childType ? `Add ${childType}` : "Add"}
           >

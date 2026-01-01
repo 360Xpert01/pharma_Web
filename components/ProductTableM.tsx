@@ -7,20 +7,25 @@ import TableColumnHeader from "@/components/TableColumnHeader";
 import TableLoadingState from "@/components/shared/table/TableLoadingState";
 import TableErrorState from "@/components/shared/table/TableErrorState";
 import TableEmptyState from "@/components/shared/table/TableEmptyState";
+import TablePagination from "@/components/TablePagination";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllProducts } from "@/store/slices/product/getAllProductsSlice";
 
 export default function MedicineTable() {
   const [openId, setOpenId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(20);
   const dispatch = useAppDispatch();
 
   // Get products from Redux store
-  const { products, loading, error } = useAppSelector((state) => state.allProducts);
+  const { products, loading, error, total, page, limit } = useAppSelector(
+    (state) => state.allProducts
+  );
 
-  // Fetch products on component mount
+  // Fetch products when page or items per page changes
   useEffect(() => {
-    dispatch(getAllProducts());
-  }, [dispatch]);
+    dispatch(getAllProducts({ page: currentPage, limit: itemsPerPage }));
+  }, [dispatch, currentPage, itemsPerPage]);
 
   // Define columns for the table header
   const productColumns = [
@@ -34,7 +39,16 @@ export default function MedicineTable() {
   ];
 
   const handleRetry = () => {
-    dispatch(getAllProducts());
+    dispatch(getAllProducts({ page: currentPage, limit: itemsPerPage }));
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1); // Reset to first page when changing items per page
   };
 
   return (
@@ -171,6 +185,20 @@ export default function MedicineTable() {
               </div>
             ))}
           </div>
+
+          {/* Pagination */}
+          {!loading && !error && products.length > 0 && (
+            <TablePagination
+              currentPage={currentPage}
+              totalItems={total}
+              itemsPerPage={itemsPerPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+              pageSizeOptions={[10, 20, 30, 50, 100]}
+              showPageInfo={true}
+              showItemsPerPageSelector={true}
+            />
+          )}
         </div>
       )}
     </div>

@@ -202,7 +202,7 @@ export function DataTable<T extends Record<string, any>>({
                     className={column.sortable ? "cursor-pointer select-none" : ""}
                     onClick={column.sortable ? () => handleSort(column.key) : undefined}
                   >
-                    <div className="flex text-black items-center gap-2">
+                    <div className="flex text-[var(--dark)] items-center gap-2">
                       {column.label}
                       {column.sortable && getSortIcon(column.key)}
                     </div>

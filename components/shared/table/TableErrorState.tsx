@@ -30,8 +30,8 @@ export default function TableErrorState({
   return (
     <div className="w-full flex items-center justify-center py-12">
       <div className="text-center max-w-md">
-        <div className="mx-auto w-12 h-12 rounded-full bg-(--destructive-0) flex items-center justify-center mb-4">
-          <AlertCircle className="w-6 h-6 text-(--destructive)" />
+        <div className="mx-auto w-12 h-12 rounded-full bg-[var(--destructive-0)] flex items-center justify-center mb-4">
+          <AlertCircle className="w-6 h-6 text-[var(--destructive)]" />
         </div>
 
         <h3 className="text-lg font-semibold text-[var(--gray-9)] mb-2">{title}</h3>
@@ -41,7 +41,7 @@ export default function TableErrorState({
         {onRetry && (
           <button
             onClick={onRetry}
-            className="px-4 py-2 bg-(--primary) text-[var(--light)] rounded-lg hover:bg-(--primary-2) transition cursor-pointer font-medium"
+            className="px-4 py-2 bg-[var(--primary)] text-[var(--light)] rounded-lg hover:bg-[var(--primary-2)] transition cursor-pointer font-medium"
           >
             {retryText}
           </button>

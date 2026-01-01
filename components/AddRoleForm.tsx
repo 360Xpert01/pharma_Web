@@ -178,16 +178,6 @@ export default function AddNewRoleForm() {
         </div>
         {/* Pules Code and Role Name Inputs */}
         <div>
-          {/* Labels Row */}
-          <div className="flex w-full mb-2">
-            <label className="block text-sm font-medium text-(--gray-7) w-[25%] mr-6">
-              Pules Code
-            </label>
-            <label className="block text-sm font-medium text-(--gray-7) w-[25%] mr-6">
-              Role Name <span className="text-(--destructive)">*</span>
-            </label>
-          </div>
-
           {/* Inputs Row */}
           <div className="flex w-full items-start">
             <div className="relative w-[25%] mr-6">
@@ -199,6 +189,7 @@ export default function AddNewRoleForm() {
                 onChange={() => {}}
                 placeholder={prefixLoading ? "Generating..." : "PLS_ROLE_000001"}
                 readOnly
+                required
                 error={prefixError || ""}
               />
             </div>
@@ -208,12 +199,13 @@ export default function AddNewRoleForm() {
                 name="roleName"
                 type="text"
                 value={roleName}
+                required
                 onChange={setRoleName}
                 placeholder="e.g. Sr. Sales Manager"
                 error={validationErrors.roleName}
               />
             </div>
-            <p className="text-xs text-(--gray-5) mt-2 w-[20%]">
+            <p className="text-xs text-(--gray-5) mt-8 w-[20%]">
               You can easily name the role you want and take on different responsibilities.
             </p>
           </div>

@@ -5,6 +5,9 @@ import { MoreVertical } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllRoles } from "@/store/slices/role/getAllRolesSlice";
 import TableColumnHeader from "@/components/TableColumnHeader";
+import TableLoadingState from "@/components/shared/table/TableLoadingState";
+import TableErrorState from "@/components/shared/table/TableErrorState";
+import TableEmptyState from "@/components/shared/table/TableEmptyState";
 
 interface Role {
   id: string;
@@ -35,110 +38,125 @@ export default function RolesCardList() {
     status: role.status || "active",
   }));
 
-  if (loading) {
-    return (
-      <div className="w-full flex items-center justify-center py-12">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-(--gray-9) mx-auto"></div>
-          <p className="mt-4 text-(--gray-6)">Loading roles...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="w-full flex items-center justify-center py-12">
-        <div className="text-center">
-          <p className="text-(--destructive) font-semibold">Error loading roles</p>
-          <p className="text-(--gray-6) mt-2">{error}</p>
-          <button
-            onClick={() => dispatch(getAllRoles())}
-            className="mt-4 px-4 py-2 bg-(--primary) text-(--light) rounded-lg hover:bg-(--primary-2) transition"
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (rolesData.length === 0) {
-    return (
-      <div className="w-full flex items-center justify-center py-12">
-        <p className="text-(--gray-6)">No roles found</p>
-      </div>
-    );
-  }
   // Define columns for the table header
   const columns = [
-    { label: "Role ID" },
-    { label: "Date" },
-    { label: "Role Title" },
-    { label: "Permissions" },
-    { label: "Status" },
+    { label: "Role ID", className: "w-[20%] ml-3" },
+    { label: "Date", className: "w-[22%]" },
+    { label: "Role Title", className: "w-[24%]" },
+    { label: "Permissions", className: "w-[24%]" },
+    { label: "Status", className: "w-[0%]" },
+    { label: "", className: "w-[0%]" },
   ];
 
+  const handleRetry = () => {
+    dispatch(getAllRoles());
+  };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="w-full overflow-hidden bg-[var(--background)]">
+        <TableColumnHeader
+          columns={columns}
+          containerClassName="flex w-[80%]"
+          showBackground={false}
+        />
+        <div className="px-3">
+          <TableLoadingState variant="skeleton" rows={5} columns={5} message="Loading roles..." />
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="w-full overflow-hidden bg-[var(--background)]">
+        <TableColumnHeader
+          columns={columns}
+          containerClassName="flex w-[80%]"
+          showBackground={false}
+        />
+        <TableErrorState error={error} onRetry={handleRetry} title="Failed to load roles" />
+      </div>
+    );
+  }
+
+  // Empty state
+  if (rolesData.length === 0) {
+    return (
+      <div className="w-full overflow-hidden bg-[var(--background)]">
+        <TableColumnHeader
+          columns={columns}
+          containerClassName="flex w-[80%]"
+          showBackground={false}
+        />
+        <TableEmptyState
+          message="No roles found"
+          description="There are currently no roles in the system."
+        />
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full ">
+    <div className="w-full overflow-hidden bg-[var(--background)]">
       {/* Table Header */}
-      <TableColumnHeader columns={columns} gridCols={5} />
+      <TableColumnHeader
+        columns={columns}
+        containerClassName="flex w-[80%]"
+        showBackground={false}
+      />
 
       {/* Card List */}
-      <div className="space-y-3">
+      <div>
         {rolesData.map((role) => (
           <div
             key={role.id}
-            className="bg-[var(--background)] border border-(--gray-2) rounded-xl p-3 transition-shadow duration-200"
+            className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-4 my-3 rounded-2xl bg-[var(--background)]"
           >
-            <div className="flex items-center justify-between gap-6">
-              {/* Left Section */}
-              <div className="flex-1 grid grid-cols-5 gap-6">
-                {/* Role ID */}
-                <div>
-                  <p className="mt-1 font-semibold text-md text-(--gray-9)">{role.roleId}</p>
-                </div>
+            {/* Role ID - 15% */}
+            <div className="w-[15%]">
+              <p className="font-semibold text-sm text-[var(--gray-9)] truncate">{role.roleId}</p>
+            </div>
 
-                {/* Created Date */}
-                <div>
-                  <p className="mt-1 text-sm text-(--gray-5)">{role.created}</p>
-                </div>
+            {/* Created Date - 18% */}
+            <div className="w-[18%]">
+              <p className="text-sm text-[var(--gray-5)] truncate">{role.created}</p>
+            </div>
 
-                {/* Title */}
-                <div>
-                  <p className="mt-1 font-semibold text-(--gray-9)">{role.title}</p>
-                </div>
+            {/* Title - 20% */}
+            <div className="w-[20%]">
+              <p className="font-semibold text-sm text-[var(--gray-9)] truncate" title={role.title}>
+                {role.title}
+              </p>
+            </div>
 
-                {/* Responsibilities */}
-                <div>
-                  <p className="mt-1 font-semibold text-(--gray-9)">
-                    {role.responsibilities} Responsibilities
-                  </p>
-                </div>
+            {/* Responsibilities - 20% */}
+            <div className="w-[20%]">
+              <p className="font-semibold text-sm text-[var(--gray-9)] truncate">
+                {role.responsibilities} Responsibilities
+              </p>
+            </div>
 
-                <div className="flex justify-start ">
-                  {/* Status Badge */}
-                  <span
-                    className={`inline-flex items-center gap-2 px-12 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${
-                      role.status === "active"
-                        ? "bg-(--success) text-(--light)"
-                        : "bg-(--gray-3) text-(--light)"
-                    }`}
-                  >
-                    {role.status === "active" ? "Active" : "Inactive"}
-                  </span>
+            {/* Status - 20% */}
+            <div className="w-[20%]">
+              <span
+                className={`inline-flex items-center gap-2 px-4 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${
+                  role.status === "active"
+                    ? "bg-[var(--success)] text-[var(--light)]"
+                    : "bg-[var(--gray-3)] text-[var(--light)]"
+                }`}
+              >
+                {role.status === "active" ? "Active" : "Inactive"}
+              </span>
+            </div>
 
-                  {/* More Options */}
-                </div>
-              </div>
-
-              {/* Right Section: Status + Actions */}
-
-              <div className="">
-                <button className="text-(--gray-4) hover:text-(--gray-7) transition">
-                  <MoreVertical className="w-5 h-5" />
-                </button>
-              </div>
+            {/* Actions - 7% */}
+            <div className="w-[7%] flex justify-end">
+              <button className="text-[var(--gray-4)] hover:text-[var(--gray-7)] transition">
+                <MoreVertical className="w-5 h-5" />
+              </button>
             </div>
           </div>
         ))}

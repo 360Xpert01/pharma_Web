@@ -30,11 +30,11 @@ export default function TableLoadingState({
         {Array.from({ length: rows }).map((_, rowIndex) => (
           <div
             key={rowIndex}
-            className="bg-[var(--background)] rounded-lg p-4 border border-(--gray-2)"
+            className="bg-[var(--background)] rounded-lg p-4 border border-[var(--gray-2)]"
           >
             <div className="flex gap-4">
               {Array.from({ length: columns }).map((_, colIndex) => (
-                <div key={colIndex} className="flex-1 h-4 bg-(--gray-2) rounded" />
+                <div key={colIndex} className="flex-1 h-4 bg-[var(--gray-2)] rounded" />
               ))}
             </div>
           </div>
@@ -46,7 +46,7 @@ export default function TableLoadingState({
   return (
     <div className="w-full flex items-center justify-center py-12">
       <div className="text-center">
-        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-(--primary) border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[var(--primary)] border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
         <p className="mt-4 text-[var(--gray-6)]">{message}</p>
       </div>
     </div>

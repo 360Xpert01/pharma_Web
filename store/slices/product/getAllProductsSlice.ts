@@ -44,39 +44,51 @@ const initialState: ProductsState = {
   products: [],
   total: 0,
   page: 1,
-  limit: 10,
+  limit: 20,
 };
 
+// Pagination Parameters Type
+interface PaginationParams {
+  page?: number;
+  limit?: number;
+}
+
 // Async Thunk: Get All Products (GET /api/v1/product)
-export const getAllProducts = createAsyncThunk<GetProductsResponse, void, { rejectValue: string }>(
-  "products/getAllProducts",
-  async (_, { rejectWithValue }) => {
-    try {
-      // Get token from localStorage
-      const sessionStr = localStorage.getItem("userSession");
-      if (!sessionStr) {
-        return rejectWithValue("No session found. Please login again.");
-      }
-
-      const response = await axios.get<GetProductsResponse>(`${baseUrl}api/v1/product`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionStr}`,
-        },
-      });
-
-      return response.data;
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.response?.data?.error ||
-        error.message ||
-        "Failed to fetch products. Please try again.";
-
-      return rejectWithValue(errorMessage);
+export const getAllProducts = createAsyncThunk<
+  GetProductsResponse,
+  PaginationParams | void,
+  { rejectValue: string }
+>("products/getAllProducts", async (params, { rejectWithValue }) => {
+  try {
+    // Get token from localStorage
+    const sessionStr = localStorage.getItem("userSession");
+    if (!sessionStr) {
+      return rejectWithValue("No session found. Please login again.");
     }
+
+    // Build query parameters
+    const page = params && typeof params === "object" ? params.page || 1 : 1;
+    const limit = params && typeof params === "object" ? params.limit || 20 : 20;
+
+    const response = await axios.get<GetProductsResponse>(`${baseUrl}api/v1/product`, {
+      params: { page, limit },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStr}`,
+      },
+    });
+
+    return response.data;
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.response?.data?.error ||
+      error.message ||
+      "Failed to fetch products. Please try again.";
+
+    return rejectWithValue(errorMessage);
   }
-);
+});
 
 // Slice
 const getAllProductsSlice = createSlice({
@@ -90,7 +102,7 @@ const getAllProductsSlice = createSlice({
       state.products = [];
       state.total = 0;
       state.page = 1;
-      state.limit = 10;
+      state.limit = 20;
     },
   },
   extraReducers: (builder) => {
