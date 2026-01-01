@@ -36,7 +36,7 @@ export default function CallPointsList() {
   };
 
   return (
-    <div className="w-full mt-3 bg-[var(--background)] rounded-3xl shadow-lg border border-(--gray-1) overflow-hidden">
+    <div className="w-full mt-3 bg-[var(--background)] rounded-3xl shadow-soft border border-(--gray-1) overflow-hidden">
       <div className="p-8">
         <h2 className="text-2xl font-bold text-(--gray-9) mb-8">Call Points</h2>
 

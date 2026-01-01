@@ -79,7 +79,7 @@ export function Sidebar({ className }: SidebarProps) {
           onClick={toggleSidebar}
           className={cn(
             "absolute -end-4 -bottom-1/2 -translate-y-1/2 h-9 w-9 p-0 rounded-full",
-            "border border-border/60 bg-background shadow-md ring-1 ring-border/50 hover:bg-accent/60 z-9999"
+            "border border-border/60 bg-background shadow-soft ring-1 ring-border/50 hover:bg-accent/60 z-9999"
           )}
           aria-label={t(isCollapsed ? "expandLabel" : "collapseLabel")}
         >
@@ -106,7 +106,7 @@ export function Sidebar({ className }: SidebarProps) {
                 "hover:bg-accent hover:text-accent-foreground",
                 "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
                 {
-                  "bg-accent text-accent-foreground shadow-sm": isActive,
+                  "bg-accent text-accent-foreground shadow-soft": isActive,
                   "text-muted-foreground hover:text-foreground": !isActive,
                   // Collapsed styles
                   "justify-center p-3 w-12 h-12 mx-auto": isCollapsed,

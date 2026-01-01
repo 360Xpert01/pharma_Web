@@ -177,7 +177,7 @@ export default function LoginScreen() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden">
+        <div className="bg-(--background) rounded-xl shadow-soft border border-gray-100 overflow-hidden">
           <div className="p-10 space-y-8">
             <div className="text-center">
               <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
@@ -212,7 +212,7 @@ export default function LoginScreen() {
                 <button
                   onClick={handleSendOTP}
                   disabled={loading || !email.includes("@")}
-                  className="w-full py-3.5 bg-blue-600 text-white cursor-pointer font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                  className="w-full py-3.5 bg-blue-600 text-white cursor-pointer font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 shadow-soft hover:shadow-soft flex items-center justify-center gap-2"
                 >
                   {loading ? (
                     <>

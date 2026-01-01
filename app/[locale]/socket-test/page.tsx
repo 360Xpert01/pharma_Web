@@ -245,7 +245,7 @@ export default function SocketDashboardPage() {
         </div>
 
         {/* Mode Display (read-only since from config) */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+        <div className="bg-(--background) rounded-lg shadow-soft border border-gray-200 p-6 mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Socket Mode (from Config)
           </label>
@@ -253,7 +253,7 @@ export default function SocketDashboardPage() {
         </div>
 
         {/* Status Card */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+        <div className="bg-(--background) rounded-lg shadow-soft border border-gray-200 p-6 mb-6">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-lg font-semibold text-gray-900">Singleton Connection Status</h2>
@@ -275,14 +275,14 @@ export default function SocketDashboardPage() {
           </div>
           <button
             onClick={toggleConnection}
-            className="mt-4 w-full sm:w-auto px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="mt-4 w-full sm:w-auto px-4 py-2 border border-transparent rounded-md shadow-soft text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             {connected ? "Close Singleton" : "Init Singleton"}
           </button>
         </div>
 
         {/* Message Sender */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+        <div className="bg-(--background) rounded-lg shadow-soft border border-gray-200 p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Send Message via Singleton</h2>
           <div className="flex gap-3">
             <input
@@ -290,13 +290,13 @@ export default function SocketDashboardPage() {
               value={messageInput}
               onChange={(e) => setMessageInput(e.target.value)}
               placeholder="Enter message..."
-              className="flex-1 px-3 py-2 border border-gray-300 text-black rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="flex-1 px-3 py-2 border border-gray-300 text-black rounded-md shadow-soft focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
             />
             <button
               onClick={sendMessage}
               disabled={!connected}
-              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 border border-transparent rounded-md shadow-soft text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Send
             </button>
@@ -304,7 +304,7 @@ export default function SocketDashboardPage() {
         </div>
 
         {/* Logs Section */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-(--background) rounded-lg shadow-soft border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900">Singleton Event Logs</h2>
             <div className="flex gap-2">

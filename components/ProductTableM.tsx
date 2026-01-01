@@ -63,7 +63,7 @@ export default function MedicineTable() {
 
           <div className="space-y-3 -mt-6">
             {products.map((product) => (
-              <div key={product.id} className="rounded-2xl shadow-sm border border-(--gray-2)">
+              <div key={product.id} className="rounded-2xl shadow-soft border border-(--gray-2)">
                 <div className="grid grid-cols-12 gap-4 px-8 py-3 items-center">
                   {/* Pulse Code */}
                   <div className="col-span-2">
@@ -125,7 +125,7 @@ export default function MedicineTable() {
                     {openId === product.id && (
                       <>
                         <div className="fixed inset-0 z-40" onClick={() => setOpenId(null)} />
-                        <div className="absolute right-0 top-10 mt-2 w-48 bg-[var(--background)] rounded-lg shadow-lg border border-(--gray-2) z-50">
+                        <div className="absolute right-0 top-10 mt-2 w-48 bg-[var(--background)] rounded-lg shadow-soft border border-(--gray-2) z-50">
                           <div className="py-1">
                             <button className="w-full text-left px-4 py-2 text-sm text-(--gray-7) hover:bg-(--gray-1) cursor-pointer">
                               Edit Medicine

@@ -66,7 +66,7 @@ export default function SampleManagTable() {
               key={item.id}
               className="px-3 py-1 transition-colors flex items-center hover:bg-(--gray-1)"
             >
-              <div className="w-full rounded-lg p-4 shadow-sm bg-[var(--background)]">
+              <div className="w-full rounded-lg p-4 shadow-soft bg-[var(--background)]">
                 {/* Perfectly Equal Columns using flex */}
                 <div className="flex items-center text-sm font-medium gap-4">
                   {/* Pulse Code */}
@@ -100,7 +100,7 @@ export default function SampleManagTable() {
                       {openId === item.id && (
                         <>
                           <div className="fixed inset-0 z-40" onClick={() => setOpenId(null)} />
-                          <div className="absolute right-0 top-10 mt-2 w-48 rounded-lg shadow-lg z-50 bg-[var(--background)] border border-(--gray-2)">
+                          <div className="absolute right-0 top-10 mt-2 w-48 rounded-lg shadow-soft z-50 bg-[var(--background)] border border-(--gray-2)">
                             <div className="py-1">
                               <button className="w-full text-left px-4 py-2 text-sm cursor-pointer transition text-(--gray-7) hover:bg-(--gray-1)">
                                 Edit

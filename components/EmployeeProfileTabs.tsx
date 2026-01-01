@@ -92,7 +92,7 @@ export default function EmployeeProfileTabs({ candidate }: EmployeeProfileTabsPr
               size="sm"
               rounded="full"
               className={`px-4 py-2.5 font-medium transition-all duration-200 ${
-                activeTab === tab ? "shadow-sm" : "text-gray-600 hover:bg-(--gray-1)"
+                activeTab === tab ? "shadow-soft" : "text-gray-600 hover:bg-(--gray-1)"
               }`}
             >
               {tab}

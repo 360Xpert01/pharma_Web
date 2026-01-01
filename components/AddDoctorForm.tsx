@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import { Trash2, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button/button";
+import { FormInput, FormSelect } from "@/components/form";
 
 interface Location {
   id: string;
@@ -15,6 +17,15 @@ interface Location {
 }
 
 export default function AddDoctorForm() {
+  // Form states
+  const [userName, setUserName] = useState("");
+  const [specialization, setSpecialization] = useState("");
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState("Active");
+  const [contactNumber, setContactNumber] = useState("");
+  const [licenseNumber, setLicenseNumber] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+
   const [locations, setLocations] = useState<Location[]>([
     {
       id: "1",
@@ -50,100 +61,103 @@ export default function AddDoctorForm() {
     }
   };
 
+  const updateLocation = (id: string, field: keyof Location, value: string) => {
+    setLocations(locations.map((loc) => (loc.id === id ? { ...loc, [field]: value } : loc)));
+  };
+
   return (
-    <div className=" bg-(--background) rounded-xl  p-9 ">
+    <div className="bg-[var(--background)] rounded-xl p-9">
       {/* Header */}
-      <h2 className="text-3xl font-bold text-(--gray-9) mb-8">Basic Info</h2>
+      <h2 className="text-3xl font-bold text-[var(--gray-9)] mb-8">Basic Info</h2>
 
       {/* Basic Info Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        <div>
-          <label className="block text-sm font-medium text-(--gray-7) mb-2">
-            User name <span className="text-(--destructive)">*</span>
-          </label>
-          <input
-            type="text"
-            placeholder="e.g. john doe"
-            className="w-full px-5 py-3.5 border border-(--gray-3) rounded-xl focus:ring-2 focus:ring-(--primary) outline-none transition"
-          />
-        </div>
+        <FormInput
+          label="User name"
+          name="userName"
+          type="text"
+          value={userName}
+          onChange={setUserName}
+          placeholder="e.g. john doe"
+          required
+        />
 
-        <div>
-          <label className="block text-sm font-medium text-(--gray-7) mb-2">
-            Specialization <span className="text-(--destructive)">*</span>
-          </label>
-          <input
-            type="text"
-            placeholder="e.g. Cardiologist"
-            className="w-full px-5 py-3.5 border border-(--gray-3) rounded-xl focus:ring-2 focus:ring-(--primary) outline-none"
-          />
-        </div>
+        <FormInput
+          label="Specialization"
+          name="specialization"
+          type="text"
+          value={specialization}
+          onChange={setSpecialization}
+          placeholder="e.g. Cardiologist"
+          required
+        />
 
-        <div>
-          <label className="block text-sm font-medium text-(--gray-7) mb-2">
-            Email Address <span className="text-(--destructive)">*</span>
-          </label>
-          <input
-            type="email"
-            placeholder="e.g. abc123@gmail.com"
-            className="w-full px-5 py-3.5 border border-(--gray-3) rounded-xl focus:ring-2 focus:ring-(--primary) outline-none"
-          />
-        </div>
+        <FormInput
+          label="Email Address"
+          name="email"
+          type="email"
+          value={email}
+          onChange={setEmail}
+          placeholder="e.g. abc123@gmail.com"
+          required
+        />
 
-        <div>
-          <label className="block text-sm font-medium text-(--gray-7) mb-2">
-            Status <span className="text-(--destructive)">*</span>
-          </label>
-          <select className="w-full px-5 py-3.5 border border-(--gray-3) rounded-xl focus:ring-2 focus:ring-(--primary) outline-none bg-white">
-            <option>Active</option>
-            <option>Inactive</option>
-          </select>
-        </div>
+        <FormSelect
+          label="Status"
+          name="status"
+          value={status}
+          onChange={setStatus}
+          options={[
+            { value: "Active", label: "Active" },
+            { value: "Inactive", label: "Inactive" },
+          ]}
+          required
+        />
 
-        <div>
-          <label className="block text-sm font-medium text-(--gray-7) mb-2">
-            Contact number <span className="text-(--destructive)">*</span>
-          </label>
-          <input
-            type="text"
-            placeholder="e.g. +92345678910"
-            className="w-full px-5 py-3.5 border border-(--gray-3) rounded-xl focus:ring-2 focus:ring-(--primary) outline-none"
-          />
-        </div>
+        <FormInput
+          label="Contact number"
+          name="contactNumber"
+          type="tel"
+          value={contactNumber}
+          onChange={setContactNumber}
+          placeholder="e.g. +92345678910"
+          required
+        />
 
-        <div>
-          <label className="block text-sm font-medium text-(--gray-7) mb-2">
-            License number <span className="text-(--destructive)">*</span>
-          </label>
-          <input
-            type="text"
-            placeholder="e.g. SA-25615-EETG"
-            className="w-full px-5 py-3.5 border border-(--gray-3) rounded-xl focus:ring-2 focus:ring-(--primary) outline-none"
-          />
-        </div>
+        <FormInput
+          label="License number"
+          name="licenseNumber"
+          type="text"
+          value={licenseNumber}
+          onChange={setLicenseNumber}
+          placeholder="e.g. SA-25615-EETG"
+          required
+        />
 
-        <div>
-          <label className="block text-sm font-medium text-(--gray-7) mb-2">
-            Date Of Birth <span className="text-(--destructive)">*</span>
-          </label>
-          <input
-            type="date"
-            placeholder="e.g. 5/10/2001"
-            className="w-full px-5 py-3.5 border border-(--gray-3) rounded-xl focus:ring-2 focus:ring-(--primary) outline-none"
-          />
-        </div>
+        <FormInput
+          label="Date Of Birth"
+          name="dateOfBirth"
+          type="date"
+          value={dateOfBirth}
+          onChange={setDateOfBirth}
+          placeholder="e.g. 5/10/2001"
+          required
+        />
       </div>
 
       {/* Location Section */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-(--gray-9)">Location</h2>
-        <button
+        <h2 className="text-2xl font-bold text-[var(--gray-9)]">Location</h2>
+        <Button
           onClick={addLocation}
-          className="px-6 py-3 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition flex items-center gap-2 shadow-md font-medium"
+          variant="primary"
+          size="lg"
+          icon={Plus}
+          rounded="full"
+          className="shadow-soft"
         >
-          <Plus className="w-5 h-5" />
           Add New Location
-        </button>
+        </Button>
       </div>
 
       {/* Locations */}
@@ -152,97 +166,104 @@ export default function AddDoctorForm() {
           <div key={location.id} className="relative mt-6">
             {/* Location Title */}
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-lg font-semibold text-(--gray-9)">Location {index + 1}</h3>
+              <h3 className="text-lg font-semibold text-[var(--gray-9)]">Location {index + 1}</h3>
               {locations.length > 1 && (
-                <button
+                <Button
                   onClick={() => removeLocation(location.id)}
-                  className="text-(--destructive) hover:bg-(--destructive-0) p-2 rounded-lg transition"
+                  variant="ghost"
+                  size="icon"
+                  className="text-[var(--destructive)] hover:text-[var(--destructive)] hover:bg-[var(---bg-transparent)]"
                 >
                   <Trash2 className="w-5 h-5" />
-                </button>
+                </Button>
               )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-(--gray-7) mb-2">
-                  City <span className="text-(--destructive)">*</span>
-                </label>
-                <select className="w-full px-5 py-3.5 border border-(--gray-3) rounded-xl focus:ring-2 focus:ring-(--primary) outline-none bg-white">
-                  <option>Select your region</option>
-                  <option>Karachi</option>
-                  <option>Lahore</option>
-                  <option>Islamabad</option>
-                </select>
-              </div>
+              <FormSelect
+                label="City"
+                name={`city-${location.id}`}
+                value={location.city}
+                onChange={(value) => updateLocation(location.id, "city", value)}
+                options={[
+                  { value: "", label: "Select your region" },
+                  { value: "Karachi", label: "Karachi" },
+                  { value: "Lahore", label: "Lahore" },
+                  { value: "Islamabad", label: "Islamabad" },
+                ]}
+                required
+              />
 
-              <div>
-                <label className="block text-sm font-medium text-(--gray-7) mb-2">
-                  Country <span className="text-(--destructive)">*</span>
-                </label>
-                <select className="w-full px-5 py-3.5 border border-(--gray-3) rounded-xl focus:ring-2 focus:ring-(--primary) outline-none bg-white">
-                  <option>Enter your country</option>
-                  <option>Pakistan</option>
-                  <option>India</option>
-                </select>
-              </div>
+              <FormSelect
+                label="Country"
+                name={`country-${location.id}`}
+                value={location.country}
+                onChange={(value) => updateLocation(location.id, "country", value)}
+                options={[
+                  { value: "", label: "Enter your country" },
+                  { value: "Pakistan", label: "Pakistan" },
+                  { value: "India", label: "India" },
+                ]}
+                required
+              />
 
-              <div>
-                <label className="block text-sm font-medium text-(--gray-7) mb-2">
-                  Area <span className="text-(--destructive)">*</span>
-                </label>
-                <select className="w-full px-5 py-3.5 border border-(--gray-3) rounded-xl focus:ring-2 focus:ring-(--primary) outline-none bg-white">
-                  <option>Enter your Area</option>
-                  <option>North Nazimabad</option>
-                  <option>Gulshan-e-Iqbal</option>
-                </select>
-              </div>
+              <FormSelect
+                label="Area"
+                name={`area-${location.id}`}
+                value={location.area}
+                onChange={(value) => updateLocation(location.id, "area", value)}
+                options={[
+                  { value: "", label: "Enter your Area" },
+                  { value: "North Nazimabad", label: "North Nazimabad" },
+                  { value: "Gulshan-e-Iqbal", label: "Gulshan-e-Iqbal" },
+                ]}
+                required
+              />
 
-              <div>
-                <label className="block text-sm font-medium text-(--gray-7) mb-2">
-                  Bricks <span className="text-(--destructive)">*</span>
-                </label>
-                <select className="w-full px-5 py-3.5 border border-(--gray-3) rounded-xl focus:ring-2 focus:ring-(--primary) outline-none bg-white">
-                  <option>Enter your bricks</option>
-                  <option>Brick A-12</option>
-                  <option>Brick B-05</option>
-                </select>
-              </div>
+              <FormSelect
+                label="Bricks"
+                name={`bricks-${location.id}`}
+                value={location.bricks}
+                onChange={(value) => updateLocation(location.id, "bricks", value)}
+                options={[
+                  { value: "", label: "Enter your bricks" },
+                  { value: "Brick A-12", label: "Brick A-12" },
+                  { value: "Brick B-05", label: "Brick B-05" },
+                ]}
+                required
+              />
 
-              <div>
-                <label className="block text-sm font-medium text-(--gray-7) mb-2">
-                  Clinic name <span className="text-(--destructive)">*</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. SA-25615-EETG"
-                  className="w-full px-5 py-3.5 border border-(--gray-3) rounded-xl focus:ring-2 focus:ring-(--primary) outline-none"
-                />
-              </div>
+              <FormInput
+                label="Clinic name"
+                name={`clinicName-${location.id}`}
+                type="text"
+                value={location.clinicName}
+                onChange={(value) => updateLocation(location.id, "clinicName", value)}
+                placeholder="e.g. SA-25615-EETG"
+                required
+              />
 
-              <div>
-                <label className="block text-sm font-medium text-(--gray-7) mb-2">
-                  Visiting days <span className="text-(--destructive)">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={location.visitingDays}
-                  readOnly
-                  className="w-full px-5 py-3.5 border border-(--gray-3) rounded-xl bg-(--gray-1) text-(--gray-6)"
-                />
-              </div>
+              <FormInput
+                label="Visiting days"
+                name={`visitingDays-${location.id}`}
+                type="text"
+                value={location.visitingDays}
+                onChange={(value) => updateLocation(location.id, "visitingDays", value)}
+                readOnly
+                className="text-[var(--gray-6)]"
+                required
+              />
 
-              <div className="md:col-span-1">
-                <label className="block text-sm font-medium text-(--gray-7) mb-2">
-                  Visiting Hours <span className="text-(--destructive)">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={location.visitingHours}
-                  readOnly
-                  className="w-full px-5 py-3.5 border border-(--gray-3) rounded-xl bg-(--gray-1) text-(--gray-6)"
-                />
-              </div>
+              <FormInput
+                label="Visiting Hours"
+                name={`visitingHours-${location.id}`}
+                type="text"
+                value={location.visitingHours}
+                onChange={(value) => updateLocation(location.id, "visitingHours", value)}
+                readOnly
+                className="text-[var(--gray-6)]"
+                required
+              />
             </div>
           </div>
         ))}
@@ -250,13 +271,12 @@ export default function AddDoctorForm() {
 
       {/* Bottom Buttons */}
       <div className="flex justify-end gap-4 mt-10">
-        <button className="px-8 py-3.5 border border-(--gray-3) text-(--gray-7) rounded-full hover:bg-(--gray-0) transition font-medium">
+        <Button variant="outline" size="lg" rounded="full">
           Discard
-        </button>
-        <button className="px-10 py-3.5 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition font-medium flex items-center gap-3 shadow-lg">
-          <Plus className="w-5 h-5" />
+        </Button>
+        <Button variant="primary" size="lg" icon={Plus} rounded="full" className="shadow-soft">
           Add Doctor
-        </button>
+        </Button>
       </div>
     </div>
   );

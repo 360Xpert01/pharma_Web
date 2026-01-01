@@ -41,7 +41,7 @@ export default function PrefixListComponent() {
             description="There are currently no prefix codes in the system."
           />
         ) : (
-          <div className="bg-[var(--background)] rounded-2xl shadow-lg border border-(--gray-1) overflow-hidden">
+          <div className="bg-[var(--background)] rounded-2xl shadow-soft border border-(--gray-1) overflow-hidden">
             <div className="px-6 py-4">
               <TableColumnHeader
                 columns={[

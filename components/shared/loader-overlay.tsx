@@ -43,7 +43,7 @@ const SpinnerVariants = {
           key={i}
           className={cn(
             "animate-bounce rounded-full",
-            mounted ? "bg-white dark:bg-white" : "bg-white",
+            mounted ? "bg-(--background) dark:bg-(--background)" : "bg-(--background)",
             size === "h-8 w-8" ? "h-2 w-2" : size === "h-12 w-12" ? "h-3 w-3" : "h-4 w-4"
           )}
           style={{ animationDelay: `${i * 0.1}s` }}
@@ -93,7 +93,7 @@ const LoaderOverlay: React.FC<LoaderOverlayProps> = ({
     <div
       className={cn(
         "fixed inset-0 z-[1000] flex items-center justify-center backdrop-blur-sm transition-all duration-300",
-        "bg-white/90"
+        "bg-(--background)/90"
       )}
       role="dialog"
       aria-modal="true"
@@ -122,7 +122,7 @@ const LoaderOverlay: React.FC<LoaderOverlayProps> = ({
             {[0, 1, 2].map((i) => (
               <div
                 key={i}
-                className={cn("h-1 w-1 rounded-full animate-pulse", "bg-white/60")}
+                className={cn("h-1 w-1 rounded-full animate-pulse", "bg-(--background)/60")}
                 style={{ animationDelay: `${i * 0.2}s` }}
               />
             ))}

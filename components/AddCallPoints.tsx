@@ -83,7 +83,7 @@ export default function AddCallPointForm() {
 
   return (
     <div className="w-full">
-      <div className="bg-(-background) rounded-3xl shadow-lg border border-(--gray-1) overflow-hidden">
+      <div className="bg-(-background) rounded-3xl shadow-soft border border-(--gray-1) overflow-hidden">
         <div className="px-8 py-6">
           {/* Header */}
           <div className="mb-6">

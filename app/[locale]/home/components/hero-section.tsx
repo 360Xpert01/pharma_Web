@@ -59,7 +59,7 @@ export function HeroSection({ isUrdu }: HeroSectionProps) {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
             <Button
               size="lg"
-              className="bg-white text-black hover:bg-gray-200 px-8 py-3 text-md font-regular"
+              className="bg-(--background) text-black hover:bg-gray-200 px-8 py-3 text-md font-regular"
               asChild
             >
               <Link href="/dashboard" aria-label={t("hero.primaryButtonLabel")}>

@@ -5,7 +5,7 @@ interface ByBrandsProps {
 }
 export default function ByBrands({ height }: ByBrandsProps) {
   return (
-    <div className="bg-white  rounded-xl shadow-sm p-4">
+    <div className="bg-(--background)  rounded-xl shadow-soft p-4">
       <h2 className="text-lg font-semibold mb-4">By Brands</h2>
       <ResponsiveContainer width="100%" height={height}>
         <PieChart>

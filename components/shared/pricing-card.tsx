@@ -9,7 +9,7 @@ interface PricingCardProps {
 export function PricingCard({ plan }: PricingCardProps) {
   return (
     <div
-      className={`relative flex flex-col rounded-lg border transition-all duration-300 hover:shadow-lg ${
+      className={`relative flex flex-col rounded-lg border transition-all duration-300 hover:shadow-soft ${
         plan.isPopular
           ? "border-primary/30 bg-primary/5 ring-2 ring-primary/20 md:scale-105"
           : "border-border bg-background"

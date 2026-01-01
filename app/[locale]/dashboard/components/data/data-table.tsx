@@ -143,7 +143,7 @@ export function DataTable<T extends Record<string, any>>({
 
             <div className="flex items-center gap-4 ">
               {searchKey && (
-                <div className="relative bg-white flex-1 max-w-sm">
+                <div className="relative bg-(--background) flex-1 max-w-sm">
                   <SearchInputIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <Input
                     placeholder={t("placeholders.search")}
@@ -190,7 +190,7 @@ export function DataTable<T extends Record<string, any>>({
         </div>
       </CardHeader>
       <CardContent>
-        <div className="rounded-md shadow-md ">
+        <div className="rounded-md shadow-soft ">
           <Table>
             <TableHeader>
               <TableRow>

@@ -120,7 +120,7 @@ export default function DoctorsTable() {
         />
       ) : (
         <>
-          <div className="px-7 py-4">
+          <div className="px-7 pt-4">
             <TableColumnHeader columns={doctorColumns} gridCols={12} />
           </div>
 

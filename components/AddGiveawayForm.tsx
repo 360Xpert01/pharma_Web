@@ -218,7 +218,7 @@ export default function AddGiveawayForm() {
                 <Image src={image} alt="Giveaway" fill className="object-cover" />
                 <button
                   onClick={removeImage}
-                  className="absolute top-4 right-4 bg-(--destructive) text-(--light) p-2.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-lg cursor-pointer"
+                  className="absolute top-4 right-4 bg-(--destructive) text-(--light) p-2.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-soft cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -387,7 +387,7 @@ export default function AddGiveawayForm() {
               type="button"
               onClick={handleSubmit}
               disabled={createLoading || prefixLoading}
-              className={`px-10 py-3.5 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition font-medium flex items-center gap-3 shadow-lg cursor-pointer ${
+              className={`px-10 py-3.5 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition font-medium flex items-center gap-3 shadow-soft cursor-pointer ${
                 createLoading || prefixLoading ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >

@@ -66,7 +66,7 @@ export function FeaturesSection() {
   ];
 
   return (
-    <section className="relative z-10 py-20 px-6 bg-white dark:bg-black transition-colors duration-300">
+    <section className="relative z-10 py-20 px-6 bg-(--background) dark:bg-black transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4 text-balance">

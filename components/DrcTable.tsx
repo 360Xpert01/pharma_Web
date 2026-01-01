@@ -125,7 +125,7 @@ export default function DcrTable() {
           {tableData.map((row) => (
             <div
               key={row.id}
-              className="bg-[var(--background)] rounded-2xl border border-(--gray-2) shadow-sm hover:shadow-md transition-shadow"
+              className="bg-[var(--background)] rounded-2xl border border-(--gray-2) shadow-soft hover:shadow-soft transition-shadow"
             >
               <div className="px-6 py-5">
                 {/* 12-column grid */}
@@ -135,7 +135,7 @@ export default function DcrTable() {
                     <img
                       src={DEFAULT_AVATAR}
                       alt={row.employee1.name}
-                      className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-md flex-shrink-0"
+                      className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
                     />
                     <div>
                       <p className="font-bold text-(--gray-9)">{row.employee1.name}</p>
@@ -148,7 +148,7 @@ export default function DcrTable() {
                     <img
                       src={DEFAULT_AVATAR}
                       alt={row.employee2.name}
-                      className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-md flex-shrink-0"
+                      className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
                     />
                     <div>
                       <p className="font-bold text-(--gray-9)">{row.employee2.name}</p>

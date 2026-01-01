@@ -45,7 +45,7 @@ const meetings = [
 
 export default function PlanRequestMeetings() {
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6 h-fit sticky top-6">
+    <div className="bg-(--background) rounded-lg shadow-soft p-6 h-fit sticky top-6">
       <div className="mb-6 pb-6 ">
         <p className="font-bold text-3xl">September, 11 2025</p>
         <p className="text-sm text-slate-600 mt-1">Sunday, 12 Call schedule for today</p>

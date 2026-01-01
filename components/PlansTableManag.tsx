@@ -148,7 +148,7 @@ export default function CampaignApprovalTable() {
                   {/* Status Badge */}
                   <div className="w-40 flex justify-center">
                     <span
-                      className={`px-6 py-1 rounded-full text-xs text-(--light) shadow-sm ${
+                      className={`px-6 py-1 rounded-full text-xs text-(--light) shadow-soft ${
                         item.status === "Approved"
                           ? "bg-(--success)"
                           : item.status === "Rejected"

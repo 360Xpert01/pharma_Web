@@ -103,7 +103,7 @@ export default function TableActionDropdown({
           {/* Dropdown Menu */}
           <div
             className={cn(
-              "absolute top-10 mt-2 w-48 rounded-lg shadow-lg z-50 bg-[var(--background)] border border-(--gray-2)",
+              "absolute top-10 mt-2 w-48 rounded-lg shadow-soft z-50 bg-[var(--background)] border border-(--gray-2)",
               position === "right" ? "right-0" : "left-0"
             )}
             role="menu"

@@ -133,7 +133,7 @@ export default function ExpenseApprovalTable() {
                     <img
                       src={row.employee1.avatar || DEFAULT_AVATAR}
                       alt={row.employee1.name}
-                      className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-md"
+                      className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-soft"
                     />
                     <div className="truncate">
                       <div className="font-bold text-(--gray-9) truncate">{row.employee1.name}</div>
@@ -146,7 +146,7 @@ export default function ExpenseApprovalTable() {
                     <img
                       src={row.employee2.avatar || DEFAULT_AVATAR}
                       alt={row.employee2.name}
-                      className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-md"
+                      className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-soft"
                     />
                     <div className="truncate">
                       <div className="font-bold text-(--gray-9) truncate">{row.employee2.name}</div>
@@ -183,10 +183,10 @@ export default function ExpenseApprovalTable() {
 
                   {/* Action Buttons */}
                   <div className="flex gap-3">
-                    <button className="px-6 py-1 bg-(--primary) text-(--light) font-medium rounded-lg hover:bg-(--primary-2) transition shadow-sm">
+                    <button className="px-6 py-1 bg-(--primary) text-(--light) font-medium rounded-lg hover:bg-(--primary-2) transition shadow-soft">
                       Approve
                     </button>
-                    <button className="px-6 py-1 bg-[var(--background)] text-(--destructive) font-medium rounded-lg border border-(--destructive) hover:bg-(--destructive-0) transition shadow-sm">
+                    <button className="px-6 py-1 bg-[var(--background)] text-(--destructive) font-medium rounded-lg border border-(--destructive) hover:bg-(--destructive-0) transition shadow-soft">
                       Reject
                     </button>
                   </div>

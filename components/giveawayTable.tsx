@@ -86,7 +86,7 @@ export default function GiveawayTable() {
               key={item.id}
               className="px-3 py-1 hover:bg-(--gray-0) transition-colors flex items-center"
             >
-              <div className="w-full bg-[var(--background)] rounded-lg p-4 shadow-sm">
+              <div className="w-full bg-[var(--background)] rounded-lg p-4 shadow-soft">
                 {/* Perfectly Equal Columns using flex */}
                 <div className="flex items-center text-sm font-medium gap-4">
                   {/* Pulse Code */}
@@ -116,7 +116,7 @@ export default function GiveawayTable() {
                       {openId === item.id && (
                         <>
                           <div className="fixed inset-0 z-40" onClick={() => setOpenId(null)} />
-                          <div className="absolute right-0 top-10 mt-2 w-48 bg-[var(--background)] rounded-lg shadow-lg border border-(--gray-2) z-50">
+                          <div className="absolute right-0 top-10 mt-2 w-48 bg-[var(--background)] rounded-lg shadow-soft border border-(--gray-2) z-50">
                             <div className="py-1">
                               <button className="w-full text-left px-4 py-2 text-sm text-(--gray-7) hover:bg-(--gray-1) cursor-pointer">
                                 Edit

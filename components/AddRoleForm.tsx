@@ -167,7 +167,7 @@ export default function AddNewRoleForm() {
   };
 
   return (
-    <div className="w-full mt-24 bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+    <div className="w-full mt-24 bg-(--background) rounded-3xl shadow-soft border border-gray-100 overflow-hidden">
       <div className="p-8 space-y-10">
         {/* Header */}
         <div>
@@ -338,7 +338,7 @@ export default function AddNewRoleForm() {
                   {responsibilities.product.map((item) => (
                     <label
                       key={item.id}
-                      className="flex items-center justify-between py-3 cursor-pointer hover:bg-white rounded-lg px-3 -mx-3"
+                      className="flex items-center justify-between py-3 cursor-pointer hover:bg-(--background) rounded-lg px-3 -mx-3"
                     >
                       <span className="text-gray-700">{item.name}</span>
                       <input
@@ -403,7 +403,7 @@ export default function AddNewRoleForm() {
             type="button"
             onClick={handleSubmit}
             disabled={loading || prefixLoading}
-            className={`px-8 py-3 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition flex items-center gap-2 shadow-lg ${
+            className={`px-8 py-3 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition flex items-center gap-2 shadow-soft ${
               loading || prefixLoading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >

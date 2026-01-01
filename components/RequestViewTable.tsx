@@ -147,7 +147,7 @@ export default function DoctorRequestTable() {
                       alt={item.name}
                       width={48}
                       height={48}
-                      className="rounded-full object-cover border-2 border-(--light) shadow-md"
+                      className="rounded-full object-cover border-2 border-(--light) shadow-soft"
                       onError={(e) => {
                         e.currentTarget.src = DEFAULT_AVATAR;
                       }}

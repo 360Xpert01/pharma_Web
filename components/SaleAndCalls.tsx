@@ -6,7 +6,7 @@ export default function SaleAndCalls() {
     <div className="w-full  ">
       <div className="flex justify-between mt-3 mb-2  my-auto  items-center">
         <h2 className="text-lg font-semibold">Sale & Calls</h2>
-        <div className="flex items-center   gap-1 text-xs text-blue-600 bg-white px-3 py-1 rounded-md">
+        <div className="flex items-center   gap-1 text-xs text-blue-600 bg-(--background) px-3 py-1 rounded-md">
           <ChevronLeft className="w-4 h-4" />
           <span>September 2025</span>
           <ChevronRight className="w-4 h-4" />
@@ -15,7 +15,7 @@ export default function SaleAndCalls() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* Today Sales */}
-        <div className="bg-white rounded-xl shadow-sm p-4">
+        <div className="bg-(--background) rounded-xl shadow-soft p-4">
           <p className="text-sm text-gray-600">Today sales</p>
           <div className="mt-2 ">
             <span className="text-2xl font-semibold">27</span>
@@ -39,7 +39,7 @@ export default function SaleAndCalls() {
         </div>
 
         {/* Total Calls */}
-        <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="bg-(--background) rounded-xl shadow-soft p-6">
           <h3 className="text-lg font-semibold mb-4">Total Calls</h3>
           <div className="">
             <div className="flex justify-between">

@@ -33,7 +33,7 @@ export default function SalesPersonCard({
   status = "Under Review",
 }: SalesPersonCardProps) {
   return (
-    <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 p-5 hover:shadow-md transition-shadow">
+    <div className="w-full bg-(--background) rounded-lg shadow-soft border border-gray-200 p-5 hover:shadow-soft transition-shadow">
       <div className="flex items-start justify-between">
         {/* Left Section - Profile */}
         <div className="flex items-center gap-5">

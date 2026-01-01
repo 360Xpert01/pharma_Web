@@ -43,7 +43,7 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
             <div className="relative">
               <button
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className="flex items-center justify-center p-3.5 bg-[var(--primary)] text-[var(--light)] rounded-full cursor-pointer transition-colors shadow-sm"
+                className="flex items-center justify-center p-3.5 bg-[var(--primary)] text-[var(--light)] rounded-full cursor-pointer transition-colors shadow-soft"
                 aria-label="Filter"
               >
                 <ListFilter className="w-4 h-4" />
@@ -51,7 +51,7 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
 
               {/* Filter Dropdown */}
               {isFilterOpen && (
-                <div className="absolute cursor-pointer right-0 mt-2 w-72 bg-[var(--background)] rounded-xl shadow-xl border border-[var(--gray-2)] z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute cursor-pointer right-0 mt-2 w-72 bg-[var(--background)] rounded-xl shadow-soft border border-[var(--gray-2)] z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="p-5 space-y-5">
                     {/* Header */}
                     <div className="flex items-center justify-between">
@@ -112,7 +112,7 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
                       <button className="flex-1 px-4 py-2.5 border border-[var(--gray-3)] text-[var(--gray-7)] rounded-lg text-sm font-medium hover:bg-[var(--gray-0)] transition">
                         Clear All
                       </button>
-                      <button className="flex-1 px-4 py-2.5 bg-[var(--primary)] text-[var(--light)] rounded-lg text-sm font-medium hover:bg-[var(--primary-2)] transition shadow-sm">
+                      <button className="flex-1 px-4 py-2.5 bg-[var(--primary)] text-[var(--light)] rounded-lg text-sm font-medium hover:bg-[var(--primary-2)] transition shadow-soft">
                         Apply Filters
                       </button>
                     </div>
@@ -127,7 +127,7 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
           {/* Export Button */}
           <div
             onClick={() => setOpenId(!openId)}
-            className="flex items-center cursor-pointer relative gap-2 border border-[var(--primary)]  text-[var(--light)] rounded-full text-sm font-medium  transition-colors shadow-sm"
+            className="flex items-center cursor-pointer relative gap-2 border border-[var(--primary)]  text-[var(--light)] rounded-full text-sm font-medium  transition-colors shadow-soft"
           >
             <div className="flex relative items-center  gap-2 bg-[var(--primary)] hover:bg-[var(--primary-2)] px-3 py-3 overflow-hidden rounded-tl-full rounded-bl-full ">
               <Upload className="w-4 h-4" />
@@ -151,7 +151,7 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
                 <div className="fixed inset-0 z-40" onClick={() => setOpenId(false)} />
 
                 {/* Dropdown Menu */}
-                <div className="absolute right-0 top-14 mt-2 w-56 bg-[var(--background)] rounded-lg shadow-xl border border-[var(--gray-2)] z-50 overflow-hidden">
+                <div className="absolute right-0 top-14 mt-2 w-56 bg-[var(--background)] rounded-lg shadow-soft border border-[var(--gray-2)] z-50 overflow-hidden">
                   <div className="py-2">
                     <button className="w-full text-left  px-5 py-3 text-sm text-[var(--gray-7)] hover:bg-[var(--gray-1)] flex items-center gap-3 transition">
                       <span>Export Format (.xls)</span>

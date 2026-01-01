@@ -42,7 +42,7 @@ export default function CampaignsTable() {
   // Loading state
   if (loading) {
     return (
-      <div className="w-full overflow-hidden bg-white">
+      <div className="w-full overflow-hidden bg-(--background)">
         <div className="px-3">
           <TableColumnHeader columns={campaignColumns} gridCols={12} />
         </div>
@@ -56,7 +56,7 @@ export default function CampaignsTable() {
   // Error state
   if (error) {
     return (
-      <div className="w-full overflow-hidden bg-white">
+      <div className="w-full overflow-hidden bg-(--background)">
         <div className="px-3">
           <TableColumnHeader columns={campaignColumns} gridCols={12} />
         </div>
@@ -68,7 +68,7 @@ export default function CampaignsTable() {
   // Empty state
   if (!teams || teams.length === 0) {
     return (
-      <div className="w-full overflow-hidden bg-white">
+      <div className="w-full overflow-hidden bg-(--background)">
         <div className="px-3">
           <TableColumnHeader columns={campaignColumns} gridCols={12} />
         </div>
@@ -81,7 +81,7 @@ export default function CampaignsTable() {
   }
 
   return (
-    <div className="w-full overflow-hidden  bg-white">
+    <div className="w-full overflow-hidden  bg-(--background)">
       {/* Header */}
       <div className="px-3">
         <TableColumnHeader columns={campaignColumns} gridCols={12} />
@@ -170,7 +170,7 @@ export default function CampaignsTable() {
 
                 {/* Dropdown */}
                 {openId === team.id && (
-                  <div className="absolute right-0 top-6 mt-2 w-48 rounded-lg shadow-lg border border-[var(--gray-2)] bg-[var(--light)] z-50">
+                  <div className="absolute right-0 top-6 mt-2 w-48 rounded-lg shadow-soft border border-[var(--gray-2)] bg-[var(--light)] z-50">
                     <button
                       onClick={() => {
                         console.log("Edit", team.id);

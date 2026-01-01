@@ -94,7 +94,7 @@ export default function ConflictModal({ isOpen, onClose }: ConflictModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      <div className="bg-(--background) rounded-3xl w-full max-w-4xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300">
+      <div className="bg-(--background) rounded-3xl w-full max-w-4xl overflow-hidden shadow-soft animate-in fade-in zoom-in duration-300">
         {/* Header */}
         <div className="p-8 pb-4">
           <div className="flex justify-between items-start mb-2">
@@ -190,7 +190,7 @@ export default function ConflictModal({ isOpen, onClose }: ConflictModalProps) {
           </button>
           <button
             onClick={onClose}
-            className="px-8 py-3.5 bg-(--primary) text-(--light) rounded-full font-bold hover:bg-(--primary-2) transition shadow-lg shadow-(--primary-1) flex items-center gap-2 cursor-pointer"
+            className="px-8 py-3.5 bg-(--primary) text-(--light) rounded-full font-bold hover:bg-(--primary-2) transition shadow-soft shadow-(--primary-1) flex items-center gap-2 cursor-pointer"
           >
             <Plus className="w-5 h-5" />
             Save Conflicts

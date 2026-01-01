@@ -23,7 +23,7 @@ export const TABLE_STYLES = {
   DROPDOWN_TRIGGER:
     "p-2 rounded-full transition cursor-pointer text-(--gray-4) hover:text-(--gray-7) hover:bg-(--gray-1)",
   DROPDOWN_MENU:
-    "absolute right-0 top-10 mt-2 w-48 rounded-lg shadow-lg z-50 bg-[var(--background)] border border-(--gray-2)",
+    "absolute right-0 top-10 mt-2 w-48 rounded-lg shadow-soft z-50 bg-[var(--background)] border border-(--gray-2)",
   DROPDOWN_ITEM:
     "w-full text-left px-4 py-2 text-sm cursor-pointer transition text-(--gray-7) hover:bg-(--gray-1)",
   DROPDOWN_ITEM_DANGER:
@@ -31,7 +31,7 @@ export const TABLE_STYLES = {
 
   // Container styles
   TABLE_CONTAINER: "w-full overflow-hidden bg-[var(--background)]",
-  TABLE_WRAPPER: "rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] bg-[var(--background)]",
+  TABLE_WRAPPER: "rounded-md p-3 shadow-soft bg-[var(--background)]",
 
   // Status badges
   STATUS_ACTIVE: "px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-(--success)",

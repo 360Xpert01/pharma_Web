@@ -88,7 +88,7 @@ export default function AddChannelsCard() {
 
   return (
     <div className="w-full ">
-      <div className="bg-(--background) rounded-3xl shadow-lg border border-(--gray-1) overflow-hidden">
+      <div className="bg-(--background) rounded-3xl shadow-soft border border-(--gray-1) overflow-hidden">
         <div className="px-8 py-10 space-y-8">
           {/* Header */}
           <div>
@@ -146,7 +146,7 @@ export default function AddChannelsCard() {
               <button
                 onClick={handleAddChannel}
                 disabled={!channelName.trim() || loading}
-                className="px-10 py-4 bg-(--primary) text-(--light) font-medium rounded-full hover:bg-(--primary-2) disabled:bg-(--gray-3) disabled:cursor-not-allowed transition-all duration-200 shadow-lg flex items-center gap-2"
+                className="px-10 py-4 bg-(--primary) text-(--light) font-medium rounded-full hover:bg-(--primary-2) disabled:bg-(--gray-3) disabled:cursor-not-allowed transition-all duration-200 shadow-soft flex items-center gap-2"
               >
                 <Plus className="w-5 h-5" />
                 {loading ? "Adding..." : "Add to list"}

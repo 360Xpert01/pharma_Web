@@ -46,7 +46,7 @@ export default function SalesRepCard({
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+    <div className="bg-(--background) border border-gray-200 rounded-2xl overflow-hidden">
       {/* Header Row: Avatar, Name, Role, Search, Menu */}
       <div className="flex items-center justify-between gap-4 p-5 pb-4">
         <div className="flex items-center gap-4">
@@ -75,7 +75,7 @@ export default function SalesRepCard({
             <input
               type="text"
               placeholder="Select SKU's"
-              className="w-52 px-4 py-2.5 pl-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white"
+              className="w-52 px-4 py-2.5 pl-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-(--background)"
             />
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           </div>
@@ -98,7 +98,7 @@ export default function SalesRepCard({
               className={`px-3 py-1.5 text-sm font-medium rounded-full ${
                 isFilled
                   ? "bg-gray-800 text-white"
-                  : "bg-white border border-gray-300 text-gray-700"
+                  : "bg-(--background) border border-gray-300 text-gray-700"
               }`}
             >
               {tag}
@@ -150,7 +150,7 @@ export default function SalesRepCard({
               {/* Right Product Card - Input Style */}
               {rightProduct && (
                 <div
-                  className={`rounded-xl p-4 bg-white ${getRowBorderStyle(false)} flex items-center gap-3`}
+                  className={`rounded-xl p-4 bg-(--background) ${getRowBorderStyle(false)} flex items-center gap-3`}
                 >
                   {/* Product Name Input */}
                   <div className="flex-1">
@@ -168,13 +168,13 @@ export default function SalesRepCard({
                   <input
                     type="text"
                     placeholder="Set Monthly Target"
-                    className="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-400 w-36 bg-white"
+                    className="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-400 w-36 bg-(--background)"
                   />
                   {/* Share % Input */}
                   <input
                     type="text"
                     placeholder="Share (%)"
-                    className="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-400 w-24 bg-white"
+                    className="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-400 w-24 bg-(--background)"
                   />
                 </div>
               )}

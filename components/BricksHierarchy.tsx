@@ -143,7 +143,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
         />
       )}
 
-      <div className="flex items-center gap-3 group border border-gray-200 rounded-lg p-4 bg-white hover:bg-gray-50 transition-colors">
+      <div className="flex items-center gap-3 group border border-gray-200 rounded-lg p-4 bg-(--background) hover:bg-gray-50 transition-colors">
         {/* Expand/Collapse Button */}
         <div className="flex items-center">
           {hasChildren ? (
@@ -194,7 +194,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
             <Button
               size="icon"
               variant="outline"
-              className="h-10 w-10 rounded-md bg-blue-500 hover:bg-blue-600 text-white border-none shadow-sm cursor-pointer"
+              className="h-10 w-10 rounded-md bg-blue-500 hover:bg-blue-600 text-white border-none shadow-soft cursor-pointer"
               onClick={() => childType && onAddChild?.(item.id, childType)}
               title={`Add ${childType}`}
             >
@@ -333,7 +333,7 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
   // Loading state
   if (loading) {
     return (
-      <div className="w-full bg-white rounded-lg border border-gray-200 shadow-sm">
+      <div className="w-full bg-(--background) rounded-lg border border-gray-200 shadow-soft">
         <div className="px-6 py-16 flex flex-col items-center justify-center">
           <Loader2 className="w-8 h-8 text-blue-500 animate-spin mb-4" />
           <p className="text-gray-500">Loading bricks hierarchy...</p>
@@ -345,7 +345,7 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
   // Error state
   if (error) {
     return (
-      <div className="w-full bg-white rounded-lg border border-gray-200 shadow-sm">
+      <div className="w-full bg-(--background) rounded-lg border border-gray-200 shadow-soft">
         <div className="px-6 py-16 flex flex-col items-center justify-center">
           <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mb-4">
             <MapPin className="w-6 h-6 text-red-500" />
@@ -360,7 +360,7 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
   // Empty state
   if (hierarchyData.length === 0) {
     return (
-      <div className="w-full bg-white rounded-lg border border-gray-200 shadow-sm">
+      <div className="w-full bg-(--background) rounded-lg border border-gray-200 shadow-soft">
         <div className="px-6 py-16 flex flex-col items-center justify-center">
           <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-4">
             <Globe className="w-6 h-6 text-gray-400" />
@@ -375,7 +375,7 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
   }
 
   return (
-    <div className="w-full bg-white rounded-lg border border-gray-200 shadow-sm">
+    <div className="w-full bg-(--background) rounded-lg border border-gray-200 shadow-soft">
       {/* Hierarchy Tree */}
       <div className="px-6 py-8 space-y-6">
         {hierarchyData.map((item) => (

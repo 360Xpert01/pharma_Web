@@ -169,7 +169,7 @@ export default function AddAllocateGivewaySample() {
 
   return (
     <div className="bg-(--gray-0)">
-      <div className="bg-(--background) rounded-2xl shadow-lg p-8">
+      <div className="bg-(--background) rounded-2xl shadow-soft p-8">
         {/* Select Employee Section */}
         <div className="mb-8">
           <h2 className="text-xl font-bold text-(--gray-9) mb-4">Select Employee</h2>
@@ -201,7 +201,7 @@ export default function AddAllocateGivewaySample() {
                 employeeSearch &&
                 !selectedEmployee &&
                 filteredEmployees.length > 0 && (
-                  <div className="absolute z-50 w-full mt-2 bg-(--background) border border-(--gray-2) rounded-lg shadow-lg max-h-64 overflow-y-auto">
+                  <div className="absolute z-50 w-full mt-2 bg-(--background) border border-(--gray-2) rounded-lg shadow-soft max-h-64 overflow-y-auto">
                     {filteredEmployees.slice(0, 5).map((employee) => (
                       <div
                         key={employee.id}
@@ -331,7 +331,7 @@ export default function AddAllocateGivewaySample() {
                     {filteredGiveaways.map((item) => (
                       <div
                         key={item.id}
-                        className="flex items-center justify-between px-4 py-3 (--background) border border-(--gray-2) rounded-lg hover:shadow-sm transition"
+                        className="flex items-center justify-between px-4 py-3 (--background) border border-(--gray-2) rounded-lg hover:shadow-soft transition"
                       >
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-(--gray-9) truncate">
@@ -399,7 +399,7 @@ export default function AddAllocateGivewaySample() {
                     {filteredSamples.map((item) => (
                       <div
                         key={item.id}
-                        className="flex items-center justify-between px-4 py-3 (--background) border border-(--gray-2) rounded-lg hover:shadow-sm transition"
+                        className="flex items-center justify-between px-4 py-3 (--background) border border-(--gray-2) rounded-lg hover:shadow-soft transition"
                       >
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-(--gray-9) truncate">
@@ -443,7 +443,7 @@ export default function AddAllocateGivewaySample() {
           <button
             onClick={handleAllocate}
             disabled={!selectedEmployee}
-            className={`px-10 py-3 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition flex items-center gap-2 shadow-lg cursor-pointer ${
+            className={`px-10 py-3 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition flex items-center gap-2 shadow-soft cursor-pointer ${
               !selectedEmployee ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >

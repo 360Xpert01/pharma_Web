@@ -10,22 +10,22 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow-xs hover:bg-[var(--primary-2)] focus-visible:ring-primary/20",
+          "bg-primary text-primary-foreground shadow-soft hover:bg-[var(--primary-2)] focus-visible:ring-primary/20",
         destructive:
-          "bg-[var(--destructive)] text-[var(--light)] shadow-xs hover:bg-[var(--destructive-2)] focus-visible:ring-destructive/20",
+          "bg-[var(--destructive)] text-[var(--light)] shadow-soft hover:bg-[var(--destructive-2)] focus-visible:ring-destructive/20",
         outline:
           "border border-[var(--gray-3)] bg-background text-[var(--gray-7)] hover:bg-[var(--gray-0)] hover:text-[var(--gray-9)] focus-visible:ring-primary/20",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80 focus-visible:ring-secondary/20",
+          "bg-secondary text-secondary-foreground shadow-soft hover:bg-secondary/80 focus-visible:ring-secondary/20",
         ghost: "hover:bg-[var(--gray-1)] hover:text-[var(--gray-9)]",
         link: "text-primary underline-offset-4 hover:underline",
         success:
-          "bg-[var(--success)] text-[var(--light)] shadow-xs hover:opacity-90 focus-visible:ring-[var(--success)]/20",
+          "bg-[var(--success)] text-[var(--light)] shadow-soft hover:opacity-90 focus-visible:ring-[var(--success)]/20",
         warning:
-          "bg-[var(--warning)] text-[var(--dark)] shadow-xs hover:bg-[var(--warning-2)] focus-visible:ring-[var(--warning)]/20",
-        info: "bg-[var(--primary-1)] text-[var(--light)] shadow-xs hover:bg-[var(--primary)] focus-visible:ring-[var(--primary)]/20",
+          "bg-[var(--warning)] text-[var(--dark)] shadow-soft hover:bg-[var(--warning-2)] focus-visible:ring-[var(--warning)]/20",
+        info: "bg-[var(--primary-1)] text-[var(--light)] shadow-soft hover:bg-[var(--primary)] focus-visible:ring-[var(--primary)]/20",
         primary:
-          "bg-[var(--primary)] text-[var(--light)] shadow-xs hover:bg-[var(--primary-2)] focus-visible:ring-[var(--primary)]/20",
+          "bg-[var(--primary)] text-[var(--light)] shadow-soft hover:bg-[var(--primary-2)] focus-visible:ring-[var(--primary)]/20",
       },
       size: {
         default: "h-9 px-4 py-2",

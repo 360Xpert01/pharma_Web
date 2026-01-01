@@ -56,7 +56,7 @@ export default function TargetEmployeeCard({ target, month }: TargetEmployeeCard
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:bg-gray-50 transition-colors">
+    <div className="bg-(--background) rounded-2xl border border-gray-200 overflow-hidden hover:bg-gray-50 transition-colors">
       {/* Employee Header - Always Visible */}
       <div className="px-6 py-4">
         <div className="flex items-center">
@@ -146,7 +146,10 @@ export default function TargetEmployeeCard({ target, month }: TargetEmployeeCard
         {/* Product Cards Grid - 3 per row */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {target.products.map((product) => (
-            <div key={product.id} className="bg-white rounded-lg px-4 py-3 border border-gray-200">
+            <div
+              key={product.id}
+              className="bg-(--background) rounded-lg px-4 py-3 border border-gray-200"
+            >
               {editingProduct === product.id ? (
                 /* Edit Mode */
                 <div className="space-y-2">

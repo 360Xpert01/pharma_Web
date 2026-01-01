@@ -2,7 +2,7 @@ import { ChevronRight } from "lucide-react";
 
 export default function Header() {
   return (
-    <div className="bg-white w-full rounded-xl shadow-sm p-4 mb-4 flex flex-wrap items-center justify-between gap-4">
+    <div className="bg-(--background) w-full rounded-xl shadow-soft p-4 mb-4 flex flex-wrap items-center justify-between gap-4">
       <div className="flex gap-3 items-center">
         <div className="w-16 h-16 rounded-full bg-gray-200 border-2 border-dashed" />
         <div>

@@ -4,7 +4,7 @@ import { MapPin, Clock } from "lucide-react";
 
 export default function DoctorProfileCard() {
   return (
-    <div className="space-y-6 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] h-[100%]  rounded-2xl p-6">
+    <div className="space-y-6 shadow-soft h-[100%]  rounded-2xl p-6">
       {/* Photo + Name */}
 
       <div className="text-2xl border-b font-bold text-gray-800">Doctor Profile</div>

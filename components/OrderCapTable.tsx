@@ -174,7 +174,7 @@ export default function BookingTable() {
                       alt={item.name}
                       width={52}
                       height={52}
-                      className="rounded-full border-2 border-(--light) shadow-md object-cover"
+                      className="rounded-full border-2 border-(--light) shadow-soft object-cover"
                       onError={(e) => {
                         e.currentTarget.src = "/girlPic.svg";
                       }}
