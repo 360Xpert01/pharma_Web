@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   AreaChart,
@@ -26,7 +26,7 @@ const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-(--light) px-4 py-2 rounded-lg shadow-soft border border-(--gray-1)">
-        <p className="text-lg font-bold text-gray-900">{payload[0].value.toLocaleString()}</p>
+        <p className="text-lg font-bold text-(--gray-9)">{payload[0].value.toLocaleString()}</p>
         <p className="text-xs text-(--gray-5)">SEP, {payload[0].payload.date} 2025</p>
       </div>
     );
@@ -35,15 +35,39 @@ const CustomTooltip = ({ active, payload }: any) => {
 };
 
 export default function WeeklyExpensesChart() {
+  const [displayDate, setDisplayDate] = useState("September, 27 2025");
+
+  const handlePreviousMonth = () => {
+    setDisplayDate("August, 27 2025");
+  };
+
+  const handleNextMonth = () => {
+    setDisplayDate("October, 27 2025");
+  };
+
   return (
     <div className="w-full bg-(--light) rounded-2xl shadow-soft border border-(--gray-1) p-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-(--gray-9)">Weekly Expenses</h2>
-        <div className="flex items-center gap-3 bg-blue-50 text-(--primary) px-5 py-3 rounded-full text-sm font-medium hover:bg-blue-100 transition cursor-pointer">
-          <ChevronLeft className="w-4 h-4" />
-          September, 27 2025
-          <ChevronRight className="w-4 h-4" />
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handlePreviousMonth}
+            className="p-1 hover:bg-(--light) rounded-md transition-colors cursor-pointer"
+            aria-label="Previous month"
+          >
+            <ChevronLeft className="w-5 h-5 text-(--primary)" />
+          </button>
+          <span className="text-sm font-medium text-(--primary) min-w-[140px] text-center">
+            {displayDate}
+          </span>
+          <button
+            onClick={handleNextMonth}
+            className="p-1 hover:bg-(--light) rounded-md transition-colors cursor-pointer"
+            aria-label="Next month"
+          >
+            <ChevronRight className="w-5 h-5 text-(--primary)" />
+          </button>
         </div>
       </div>
 
@@ -54,8 +78,8 @@ export default function WeeklyExpensesChart() {
             {/* Gradient Fill */}
             <defs>
               <linearGradient id="gradientFill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#3B82F6" stopOpacity={0.4} />
-                <stop offset="100%" stopColor="#DBEAFE" stopOpacity={0.1} />
+                <stop offset="0%" stopColor="var(--primary)" stopOpacity={0.4} />
+                <stop offset="100%" stopColor="var(--primary-0)" stopOpacity={0.1} />
               </linearGradient>
             </defs>
 
@@ -76,16 +100,19 @@ export default function WeeklyExpensesChart() {
             />
 
             {/* Tooltip */}
-            <Tooltip content={<CustomTooltip />} cursor={{ stroke: "#93C5FD", strokeWidth: 2 }} />
+            <Tooltip
+              content={<CustomTooltip />}
+              cursor={{ stroke: "var(--primary-1)", strokeWidth: 2 }}
+            />
 
             {/* Area */}
             <Area
               type="monotone"
               dataKey="value"
-              stroke="#3B82F6"
+              stroke="var(--primary)"
               strokeWidth={3}
               fill="url(#gradientFill)"
-              //   dot={{ fill: "#3B82F6", r: 5, strokeWidth: 2, stroke: "#fff" }}
+              //   dot={{ fill: "var(--primary)", r: 5, strokeWidth: 2, stroke: "#fff" }}
               activeDot={{ r: 7 }}
             />
           </AreaChart>
