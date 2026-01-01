@@ -24,13 +24,13 @@ export default function MedicineTable() {
 
   // Define columns for the table header
   const productColumns = [
-    { label: "Pulse Code", className: "col-span-2" },
-    { label: "Name", className: "col-span-2" },
-    { label: "Category", className: "col-span-2" },
-    { label: "SKU", className: "col-span-2 text-center" },
-    { label: "Image", className: "col-span-2 text-center" },
-    { label: "Formula", className: "col-span-2" },
-    { label: "", className: "col-span-1" },
+    { label: "Pulse Code", className: "w-[20%] ml-3" },
+    { label: "Name", className: "w-[22%]" },
+    { label: "Category", className: "w-[22%]" },
+    { label: "SKU", className: "w-[13%]" },
+    { label: "Image", className: "w-[10%]" },
+    { label: "Formula", className: "w-[0%]" },
+    { label: "", className: "w-[0%]" },
   ];
 
   const handleRetry = () => {
@@ -40,7 +40,7 @@ export default function MedicineTable() {
   return (
     <div>
       {loading ? (
-        <div className="px-8">
+        <div className="px-4">
           <TableLoadingState
             variant="skeleton"
             rows={5}
@@ -56,96 +56,122 @@ export default function MedicineTable() {
           description="There are currently no products in the system."
         />
       ) : (
-        <>
-          <div className="px-8">
-            <TableColumnHeader columns={productColumns} gridCols={12} />
-          </div>
+        <div>
+          <TableColumnHeader
+            columns={productColumns}
+            containerClassName="flex w-[80%]"
+            showBackground={false}
+          />
 
-          <div className="space-y-3 -mt-6">
+          <div>
             {products.map((product) => (
-              <div key={product.id} className="rounded-2xl shadow-soft border border-(--gray-2)">
-                <div className="grid grid-cols-12 gap-4 px-8 py-3 items-center">
-                  {/* Pulse Code */}
-                  <div className="col-span-2">
-                    <span className="font-mono text-sm text-(--gray-6)">{product.pulseCode}</span>
-                  </div>
+              <div
+                key={product.id}
+                className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-4 my-3 rounded-2xl bg-[var(--background)]"
+              >
+                {/* Pulse Code */}
+                <div
+                  className="w-[15%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  title={product.pulseCode}
+                >
+                  {product.pulseCode}
+                </div>
 
-                  {/* Name */}
-                  <div className="col-span-2">
-                    <span className="font-semibold text-(--gray-9)">{product.name}</span>
-                  </div>
+                {/* Name */}
+                <div
+                  className="w-[18%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  title={product.name}
+                >
+                  {product.name}
+                </div>
 
-                  {/* Category */}
-                  <div className="col-span-2">
-                    <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-(--primary-0) text-(--primary-2)">
-                      {product.productCategory}
-                    </span>
-                  </div>
+                {/* Category */}
+                <div className="w-[15%]">
+                  <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-[var(--primary)]/10 text-[var(--primary)]">
+                    {product.productCategory}
+                  </span>
+                </div>
 
-                  {/* SKU Count */}
-                  <div className="col-span-2 text-center">
-                    <span className="text-lg font-bold text-(--gray-9)">{product.skuCount}</span>
-                  </div>
+                {/* SKU Count */}
+                <div className="w-[10%] flex items-center justify-center">
+                  <span className="text-lg font-bold text-[var(--gray-9)]">{product.skuCount}</span>
+                </div>
 
-                  {/* Image */}
-                  <div className="col-span-2 flex justify-center">
-                    <div className="w-12 h-12 rounded-xl overflow-hidden ring-2 ring-(--gray-2)">
-                      {product.imageUrl ? (
-                        <Image
-                          src={product.imageUrl}
-                          alt={product.name}
-                          width={48}
-                          height={48}
-                          className="object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-(--gray-2) flex items-center justify-center">
-                          <span className="text-xs text-(--gray-4)">No Image</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Formula */}
-                  <div className="col-span-1">
-                    <span className="font-mono text-sm text-(--gray-7)">
-                      {product.productFormula}
-                    </span>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="col-span-1 relative text-right">
-                    <button
-                      onClick={() => setOpenId(openId === product.id ? null : product.id)}
-                      className="p-2 text-(--gray-4) hover:text-(--gray-7) hover:bg-(--gray-1) rounded-full transition cursor-pointer"
-                    >
-                      <MoreVertical className="w-5 h-5" />
-                    </button>
-
-                    {openId === product.id && (
-                      <>
-                        <div className="fixed inset-0 z-40" onClick={() => setOpenId(null)} />
-                        <div className="absolute right-0 top-10 mt-2 w-48 bg-[var(--background)] rounded-lg shadow-soft border border-(--gray-2) z-50">
-                          <div className="py-1">
-                            <button className="w-full text-left px-4 py-2 text-sm text-(--gray-7) hover:bg-(--gray-1) cursor-pointer">
-                              Edit Medicine
-                            </button>
-                            <button className="w-full text-left px-4 py-2 text-sm text-(--gray-7) hover:bg-(--gray-1) cursor-pointer">
-                              View Details
-                            </button>
-                            <button className="w-full text-left px-4 py-2 text-sm text-(--destructive) hover:bg-(--destructive-0) cursor-pointer">
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      </>
+                {/* Image */}
+                <div className="w-[12%] flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-xl overflow-hidden ring-2 ring-[var(--gray-2)]">
+                    {product.imageUrl ? (
+                      <Image
+                        src={product.imageUrl}
+                        alt={product.name}
+                        width={48}
+                        height={48}
+                        className="object-cover w-full h-full"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-[var(--gray-2)] flex items-center justify-center">
+                        <span className="text-xs text-[var(--gray-5)]">No Image</span>
+                      </div>
                     )}
                   </div>
+                </div>
+
+                {/* Formula */}
+                <div
+                  className="w-[22%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  title={product.productFormula}
+                >
+                  {product.productFormula}
+                </div>
+
+                {/* Actions */}
+                <div className="w-[8%] flex items-center justify-end relative">
+                  <button
+                    onClick={() => setOpenId(openId === product.id ? null : product.id)}
+                    className="p-2 text-[var(--gray-4)] hover:text-[var(--gray-6)] hover:bg-[var(--gray-1)] rounded-md transition cursor-pointer"
+                  >
+                    <MoreVertical className="w-5 h-5" />
+                  </button>
+
+                  {openId === product.id && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setOpenId(null)} />
+                      <div className="absolute right-0 top-10 mt-2 w-48 bg-[var(--light)] rounded-lg shadow-soft border border-[var(--gray-2)] z-50">
+                        <button
+                          onClick={() => {
+                            console.log("Edit", product.id);
+                            setOpenId(null);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm hover:bg-[var(--gray-1)] cursor-pointer transition"
+                        >
+                          Edit Medicine
+                        </button>
+                        <button
+                          onClick={() => {
+                            console.log("View Details", product.id);
+                            setOpenId(null);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm hover:bg-[var(--gray-1)] cursor-pointer transition"
+                        >
+                          View Details
+                        </button>
+                        <button
+                          onClick={() => {
+                            console.log("Delete", product.id);
+                            setOpenId(null);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-[var(--destructive)] hover:bg-[var(--gray-1)] cursor-pointer transition"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             ))}
           </div>
-        </>
+        </div>
       )}
     </div>
   );

@@ -22,11 +22,11 @@ export default function SampleManagTable() {
 
   // Define columns for the table header
   const sampleColumns = [
-    { label: "Pulse Code", className: "flex-1" },
-    { label: "Date", className: "flex-1" },
-    { label: "Product Name", className: "flex-1" },
-    { label: "SKUS", className: "flex-1" },
-    { label: "", className: "w-12" }, // Actions
+    { label: "Pulse Code", className: "w-[25%] ml-3" },
+    { label: "Date", className: "w-[25%]" },
+    { label: "Product Name", className: "w-[31%]" },
+    { label: "Category", className: "w-[0%]" },
+    { label: "", className: "w-[0%]" }, // Actions
   ];
 
   const handleRetry = () => {
@@ -36,11 +36,11 @@ export default function SampleManagTable() {
   return (
     <div className="w-full overflow-hidden">
       {loading ? (
-        <div className="px-3">
+        <div className="px-4">
           <TableLoadingState
             variant="skeleton"
             rows={5}
-            columns={4}
+            columns={5}
             message="Loading products..."
           />
         </div>
@@ -52,74 +52,99 @@ export default function SampleManagTable() {
           description="There are currently no products in the system."
         />
       ) : (
-        <>
+        <div>
           <TableColumnHeader
             columns={sampleColumns}
-            containerClassName="flex text-sm font-medium gap-4"
+            containerClassName="flex w-[80%]"
+            showBackground={false}
           />
 
-          {/* Products List */}
-          {products.map((item: any) => (
-            <div
-              key={item.id}
-              className="px-3 py-3 transition-colors flex items-center hover:bg-(--gray-1)"
-            >
-              <div className="w-full rounded-lg p-4 shadow-soft bg-[var(--background)]">
-                {/* Perfectly Equal Columns using flex */}
-                <div className="flex items-center text-sm font-medium gap-4">
-                  {/* Pulse Code */}
-                  <div className="flex-1 font-bold font-mono text-(--gray-6)">
-                    {item.pulseCode || "N/A"}
-                  </div>
+          <div>
+            {products.map((item: any) => (
+              <div
+                key={item.id}
+                className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-4 my-3 rounded-2xl bg-[var(--background)]"
+              >
+                {/* Pulse Code */}
+                <div
+                  className="w-[20%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  title={item.pulseCode || "N/A"}
+                >
+                  {item.pulseCode || "N/A"}
+                </div>
 
-                  {/* Date */}
-                  <div className="flex-1 font-medium text-(--gray-4)">
-                    {formatDate(item.createdAt)}
-                  </div>
+                {/* Date */}
+                <div
+                  className="w-[20%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  title={formatDate(item.createdAt)}
+                >
+                  {formatDate(item.createdAt)}
+                </div>
 
-                  {/* Product Name */}
-                  <div className="flex-1 font-semibold text-(--gray-9)">{item.name || "N/A"}</div>
+                {/* Product Name */}
+                <div
+                  className="w-[25%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  title={item.name || "N/A"}
+                >
+                  {item.name || "N/A"}
+                </div>
 
-                  {/* Category */}
-                  <div className="flex-1 font-medium text-(--gray-4)">
-                    {item.productCategory || "N/A"}
-                  </div>
+                {/* Category */}
+                <div
+                  className="w-[27%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  title={item.productCategory || "N/A"}
+                >
+                  {item.productCategory || "N/A"}
+                </div>
 
-                  {/* More Options */}
-                  <div className="w-12 flex justify-end flex-shrink-0">
-                    <div className="relative">
-                      <button
-                        onClick={() => setOpenId(openId === item.id ? null : item.id)}
-                        className="p-2 rounded-full transition cursor-pointer text-(--gray-4) hover:text-(--gray-7) hover:bg-(--gray-1)"
-                      >
-                        <MoreVertical className="w-5 h-5" />
-                      </button>
+                {/* More Options */}
+                <div className="w-[8%] flex items-center justify-end relative">
+                  <button
+                    onClick={() => setOpenId(openId === item.id ? null : item.id)}
+                    className="p-2 text-[var(--gray-4)] hover:text-[var(--gray-6)] hover:bg-[var(--gray-1)] rounded-md transition cursor-pointer"
+                  >
+                    <MoreVertical className="w-5 h-5" />
+                  </button>
 
-                      {openId === item.id && (
-                        <>
-                          <div className="fixed inset-0 z-40" onClick={() => setOpenId(null)} />
-                          <div className="absolute right-0 top-10 mt-2 w-48 rounded-lg shadow-soft z-50 bg-[var(--background)] border border-(--gray-2)">
-                            <div className="py-1">
-                              <button className="w-full text-left px-4 py-2 text-sm cursor-pointer transition text-(--gray-7) hover:bg-(--gray-1)">
-                                Edit
-                              </button>
-                              <button className="w-full text-left px-4 py-2 text-sm cursor-pointer transition text-(--gray-7) hover:bg-(--gray-1)">
-                                Duplicate
-                              </button>
-                              <button className="w-full text-left px-4 py-2 text-sm cursor-pointer transition text-(--destructive) hover:bg-(--gray-1)">
-                                Delete
-                              </button>
-                            </div>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
+                  {openId === item.id && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setOpenId(null)} />
+                      <div className="absolute right-0 top-10 mt-2 w-48 bg-[var(--light)] rounded-lg shadow-soft border border-[var(--gray-2)] z-50">
+                        <button
+                          onClick={() => {
+                            console.log("Edit", item.id);
+                            setOpenId(null);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm hover:bg-[var(--gray-1)] cursor-pointer transition"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => {
+                            console.log("Duplicate", item.id);
+                            setOpenId(null);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm hover:bg-[var(--gray-1)] cursor-pointer transition"
+                        >
+                          Duplicate
+                        </button>
+                        <button
+                          onClick={() => {
+                            console.log("Delete", item.id);
+                            setOpenId(null);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-[var(--destructive)] hover:bg-[var(--gray-1)] cursor-pointer transition"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
-            </div>
-          ))}
-        </>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );

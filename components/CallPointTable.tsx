@@ -22,13 +22,13 @@ export default function CallPointsList() {
     }
   }, [dispatch]);
 
-  // Define columns for the table header
+  // Define columns for the table header - matching EmploySection/CampainTable pattern
   const callPointColumns = [
-    { label: "Pulse Code", className: "flex-1 min-w-[200px]" },
-    { label: "Location Title", className: "flex-1 min-w-[250px]" },
-    { label: "Latitude", className: "flex-1" },
-    { label: "Longitude", className: "flex-1" },
-    { label: "", className: "w-10" }, // Empty for action button
+    { label: "Pulse Code", className: "w-[28%] ml-3" },
+    { label: "Location Title", className: "w-[32%]" },
+    { label: "Latitude", className: "w-[24%]" },
+    { label: "Longitude", className: "w-[0%]" },
+    { label: "", className: "w-[0%]" },
   ];
 
   const handleRetry = () => {
@@ -36,72 +36,82 @@ export default function CallPointsList() {
   };
 
   return (
-    <div className="w-full mt-3 bg-[var(--background)] rounded-3xl shadow-soft border border-(--gray-1) overflow-hidden">
-      <div className="p-8">
-        <h2 className="text-2xl font-bold text-(--gray-9) mb-8">Call Points</h2>
-
-        {loading ? (
+    <div className="w-full overflow-hidden bg-(--background)">
+      {loading ? (
+        <div className="px-4">
           <TableLoadingState
             variant="skeleton"
             rows={5}
             columns={4}
             message="Loading call points..."
           />
-        ) : error ? (
-          <TableErrorState error={error} onRetry={handleRetry} title="Failed to load call points" />
-        ) : callPoints.length === 0 ? (
-          <TableEmptyState
-            message="No call points found"
-            description="There are currently no call points in the system."
+        </div>
+      ) : error ? (
+        <TableErrorState error={error} onRetry={handleRetry} title="Failed to load call points" />
+      ) : callPoints.length === 0 ? (
+        <TableEmptyState
+          message="No call points found"
+          description="There are currently no call points in the system."
+        />
+      ) : (
+        <div>
+          {/* Column Headers */}
+          <TableColumnHeader
+            columns={callPointColumns}
+            containerClassName="flex w-[80%]"
+            showBackground={false}
           />
-        ) : (
-          <>
-            {/* Column Headers */}
-            <TableColumnHeader
-              columns={callPointColumns}
-              containerClassName="flex items-center justify-between"
-              showBackground={false}
-            />
 
-            {/* List */}
-            <div className="space-y-4">
-              {callPoints.map((point) => (
+          {/* List */}
+          <div>
+            {callPoints.map((point) => (
+              <div
+                key={point.id}
+                className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-4 my-3 rounded-2xl bg-[var(--background)]"
+              >
+                {/* Pulse Code */}
                 <div
-                  key={point.id}
-                  className="flex items-center justify-between px-3 py-3 bg-[var(--background)] rounded-2xl hover:bg-(--gray-1)/70 transition-all duration-200 border border-(--gray-2)"
+                  className="w-[20%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  title={point.pulseCode || "N/A"}
                 >
-                  {/* Pulse Code - First Column */}
-                  <div className="flex-1 min-w-[200px]">
-                    <h3 className="font-semibold text-(--dark) text-base">
-                      {point.pulseCode || "N/A"}
-                    </h3>
-                  </div>
+                  {point.pulseCode || "N/A"}
+                </div>
 
-                  {/* Name */}
-                  <div className="flex-1 min-w-[250px]">
-                    <h3 className="font-semibold text-(--gray-9) text-lg">{point.name}</h3>
-                  </div>
+                {/* Location Title */}
+                <div
+                  className="w-[25%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  title={point.name}
+                >
+                  {point.name}
+                </div>
 
-                  {/* Latitude */}
-                  <div className="flex-1 text-sm text-(--gray-6)">
-                    <span>{point.latitude}</span>
-                  </div>
+                {/* Latitude */}
+                <div
+                  className="w-[18%] text-sm text-[var(--gray-6)] truncate"
+                  title={String(point.latitude)}
+                >
+                  {point.latitude}
+                </div>
 
-                  {/* Longitude */}
-                  <div className="flex-1 text-sm text-(--gray-6)">
-                    <span>{point.longitude}</span>
-                  </div>
+                {/* Longitude */}
+                <div
+                  className="w-[18%] text-sm text-[var(--gray-6)] truncate"
+                  title={String(point.longitude)}
+                >
+                  {point.longitude}
+                </div>
 
-                  {/* More Options */}
-                  <button className="text-(--gray-4) hover:text-(--gray-7) transition ml-4 cursor-pointer">
+                {/* More Options */}
+                <div className="w-[8%] flex items-center justify-end">
+                  <button className="p-2 text-[var(--gray-4)] hover:text-[var(--gray-6)] hover:bg-[var(--gray-1)] rounded-md transition cursor-pointer">
                     <MoreVertical className="w-5 h-5" />
                   </button>
                 </div>
-              ))}
-            </div>
-          </>
-        )}
-      </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

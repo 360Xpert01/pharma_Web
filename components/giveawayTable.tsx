@@ -43,11 +43,11 @@ export default function GiveawayTable() {
 
   // Define columns for the table header
   const giveawayColumns = [
-    { label: "Pulse Code", className: "flex-1" },
-    { label: "Name", className: "flex-1" },
-    { label: "Category", className: "flex-1" },
-    { label: "Product Name", className: "flex-1" },
-    { label: "", className: "w-48" }, // Actions
+    { label: "Pulse Code", className: "w-[28%] ml-3" },
+    { label: "Name", className: "w-[28%]" },
+    { label: "Category", className: "w-[22%]" },
+    { label: "Product Name", className: "w-[20%]" },
+    { label: "", className: "w-[0%]" }, // Actions
   ];
 
   const handleRetry = () => {
@@ -57,11 +57,11 @@ export default function GiveawayTable() {
   return (
     <div className="w-full overflow-hidden">
       {loading ? (
-        <div className="px-3">
+        <div className="px-4">
           <TableLoadingState
             variant="skeleton"
             rows={5}
-            columns={4}
+            columns={5}
             message="Loading giveaways..."
           />
         </div>
@@ -73,69 +73,99 @@ export default function GiveawayTable() {
           description="There are currently no giveaways in the system."
         />
       ) : (
-        <>
+        <div>
           <TableColumnHeader
             columns={giveawayColumns}
-            containerClassName="flex text-sm font-medium gap-4"
+            containerClassName="flex w-[80%]"
+            showBackground={false}
           />
 
-          {sortedGiveaways.map((item) => (
-            <div
-              key={item.id}
-              className="px-3 py-3 hover:bg-(--gray-0) transition-colors flex items-center"
-            >
-              <div className="w-full bg-[var(--background)] rounded-lg p-4 shadow-soft">
-                {/* Perfectly Equal Columns using flex */}
-                <div className="flex items-center text-sm font-medium gap-4">
-                  {/* Pulse Code */}
-                  <div className="flex-1 font-bold text-(--gray-6) font-mono">
-                    {item.pulseCode || "N/A"}
-                  </div>
+          <div>
+            {sortedGiveaways.map((item) => (
+              <div
+                key={item.id}
+                className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-4 my-3 rounded-2xl bg-[var(--background)]"
+              >
+                {/* Pulse Code */}
+                <div
+                  className="w-[20%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  title={item.pulseCode || "N/A"}
+                >
+                  {item.pulseCode || "N/A"}
+                </div>
 
-                  {/* Name */}
-                  <div className="flex-1 font-semibold text-(--gray-9)">{item.name}</div>
+                {/* Name */}
+                <div
+                  className="w-[25%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  title={item.name}
+                >
+                  {item.name}
+                </div>
 
-                  {/* Category */}
-                  <div className="flex-1 font-medium text-(--gray-6)">{item.category}</div>
+                {/* Category */}
+                <div
+                  className="w-[20%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  title={item.category}
+                >
+                  {item.category}
+                </div>
 
-                  {/* Product Name */}
-                  <div className="flex-1 font-medium text-(--gray-4)">{item.productName}</div>
+                {/* Product Name */}
+                <div
+                  className="w-[27%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  title={item.productName}
+                >
+                  {item.productName}
+                </div>
 
-                  {/* More Options */}
-                  <div className="w-44 flex justify-end flex-shrink-0">
-                    <div className="relative">
-                      <button
-                        onClick={() => setOpenId(openId === item.id ? null : item.id)}
-                        className="p-2 text-(--gray-4) hover:text-(--gray-7) hover:bg-(--gray-1) rounded-full transition cursor-pointer"
-                      >
-                        <MoreVertical className="w-5 h-5" />
-                      </button>
+                {/* More Options */}
+                <div className="w-[8%] flex items-center justify-end relative">
+                  <button
+                    onClick={() => setOpenId(openId === item.id ? null : item.id)}
+                    className="p-2 text-[var(--gray-4)] hover:text-[var(--gray-6)] hover:bg-[var(--gray-1)] rounded-md transition cursor-pointer"
+                  >
+                    <MoreVertical className="w-5 h-5" />
+                  </button>
 
-                      {openId === item.id && (
-                        <>
-                          <div className="fixed inset-0 z-40" onClick={() => setOpenId(null)} />
-                          <div className="absolute right-0 top-10 mt-2 w-48 bg-[var(--background)] rounded-lg shadow-soft border border-(--gray-2) z-50">
-                            <div className="py-1">
-                              <button className="w-full text-left px-4 py-2 text-sm text-(--gray-7) hover:bg-(--gray-1) cursor-pointer">
-                                Edit
-                              </button>
-                              <button className="w-full text-left px-4 py-2 text-sm text-(--gray-7) hover:bg-(--gray-1) cursor-pointer">
-                                View Details
-                              </button>
-                              <button className="w-full text-left px-4 py-2 text-sm text-(--destructive) hover:bg-(--gray-1) cursor-pointer">
-                                Delete
-                              </button>
-                            </div>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
+                  {openId === item.id && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setOpenId(null)} />
+                      <div className="absolute right-0 top-10 mt-2 w-48 bg-[var(--light)] rounded-lg shadow-soft border border-[var(--gray-2)] z-50">
+                        <button
+                          onClick={() => {
+                            console.log("Edit", item.id);
+                            setOpenId(null);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm hover:bg-[var(--gray-1)] cursor-pointer transition"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => {
+                            console.log("View Details", item.id);
+                            setOpenId(null);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm hover:bg-[var(--gray-1)] cursor-pointer transition"
+                        >
+                          View Details
+                        </button>
+                        <button
+                          onClick={() => {
+                            console.log("Delete", item.id);
+                            setOpenId(null);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-[var(--destructive)] hover:bg-[var(--gray-1)] cursor-pointer transition"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
-            </div>
-          ))}
-        </>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );

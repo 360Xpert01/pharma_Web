@@ -698,7 +698,7 @@ export default function CreateCampaignForm() {
                 setSelectedMembers(members);
               }}
               loading={usersLoading}
-              placeholder="Search sales representative by name or pulse code..."
+              placeholder="Search sales representative"
               label=""
             />
           </div>
