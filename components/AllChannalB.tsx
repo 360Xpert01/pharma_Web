@@ -79,7 +79,7 @@ export default function ChannelsManager() {
 
           <button
             onClick={handleAddChannel}
-            className="px-8 py-3.5 bg-blue-600 text-(--light) font-medium text-sm rounded-full hover:bg-blue-700 hover:shadow-lg transition-all duration-200 shadow-md"
+            className="px-8 py-3.5 bg-blue-600 text-(--light) font-medium text-sm rounded-full hover:bg-blue-700 hover:shadow-soft transition-all duration-200 shadow-soft"
           >
             Add to list
           </button>
@@ -168,7 +168,7 @@ export default function ChannelsManager() {
                   {openMenuId === channel.id && (
                     <>
                       <div className="fixed inset-0 z-40" onClick={() => setOpenMenuId(null)} />
-                      <div className="absolute right-3 top-7 mt-2 w-48 py-2 bg-(--background) rounded-lg shadow-xl border border-(--gray-2) z-50">
+                      <div className="absolute right-3 top-7 mt-2 w-48 py-2 bg-(--background) rounded-lg shadow-soft border border-(--gray-2) z-50">
                         <button className="w-full flex items-center gap-3 px-4 py-1 text-sm hover:bg-(--gray-0) cursor-pointer">
                           Add New Campaign
                         </button>

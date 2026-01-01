@@ -183,7 +183,7 @@ export function DashboardContent({
         {channalD && (
           <div>
             <Channals />
-            <div className=" shadow-[0px_5px_10px_rgba(0,0,0,0.20)] rounded-md p-3 mt-10 bg-[var(--background)]">
+            <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
               <TableHeader campHeading={campHeading} filterT={filterT} />
               <AllChannalB />
             </div>
@@ -193,7 +193,7 @@ export function DashboardContent({
         {prefixPro && (
           <div>
             <AddPrefixNameComponent />
-            <div className=" shadow-[0px_5px_10px_rgba(0,0,0,0.20)] rounded-md p-3 mt-10 bg-[var(--background)]">
+            <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
               <TableHeader campHeading={campHeading} filterT={filterT} />
               <PreFixTable />
             </div>
@@ -201,27 +201,27 @@ export function DashboardContent({
         )}
 
         {campTabel && (
-          <div className=" rounded-md p-3 shadow-[0px_0.63px_5.5px_0px_rgba(0,0,0,0.1)] bg-[var(--background)] ">
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <CampaignsTable />
           </div>
         )}
 
         {prodTabel && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] bg-[var(--background)]">
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <ProductTableM />
           </div>
         )}
 
         {productForm && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] bg-[var(--background)]">
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
             <AddProductForm />
           </div>
         )}
 
         {doctorTable && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] bg-[var(--background)]">
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <DoctorsTable />
           </div>
@@ -231,7 +231,7 @@ export function DashboardContent({
         {allocateGiveaways && (
           <div className="">
             {" "}
-            {/* rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)]  */}
+            {/* rounded-md p-3 shadow-[0px_0.63px_5.5px_0px_rgba(0,0,0,0.1)]  */}
             <AddAllocateGivewaySample />
           </div>
         )}
@@ -243,80 +243,85 @@ export function DashboardContent({
         )}
 
         {doctorForm && (
-          <div className=" rounded-md  shadow-[0px_5px_10px_rgba(0,0,0,0.20)] bg-[var(--background)]">
+          <div className="rounded-md shadow-soft bg-[var(--background)]">
             <AddDoctorForm />
           </div>
         )}
 
         {sampleTable && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] bg-[var(--background)]">
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <SampleManagTable />
           </div>
         )}
 
         {sampleForm && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] bg-[var(--background)]">
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
             <AddSampleForm />
           </div>
         )}
 
         {giveawayTable && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] bg-[var(--background)]">
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <GiveawayTable />
           </div>
         )}
 
         {GivawayForm && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] bg-[var(--background)]">
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
             <AddGiveawayForm />
           </div>
         )}
 
         {OrderCap && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] bg-[var(--background)]">
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <OrderCapTable />
           </div>
         )}
 
         {DCRTable && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] bg-[var(--background)]">
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <DcrTable />
           </div>
         )}
 
         {UserRoleTable && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] bg-[var(--background)]">
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <UserRoles />
           </div>
         )}
 
         {PlanTable && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] bg-[var(--background)]">
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <PlansTableManag />
           </div>
         )}
 
         {ExpansTable && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] bg-[var(--background)]">
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <ExpanseTable />
           </div>
         )}
 
         {ReqTabel && (
-          <div className=" rounded-md p-3 shadow-[0px_5px_10px_rgba(0,0,0,0.20)] bg-[var(--background)]">
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
             <TableHeader campHeading={campHeading} filterT={filterT} />
             <RequestViewTable />
           </div>
         )}
 
-        {proBar && <SalesTeamTable />}
+        {proBar && (
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
+            <TableHeader campHeading="All User's" filterT={filterT} />
+            <SalesTeamTable />
+          </div>
+        )}
 
         {employeeProfileBtn && showTabs && <EmployeeProfileTabs candidate={candidate} />}
 
@@ -345,7 +350,12 @@ export function DashboardContent({
 
         {teamFormTabel && <AddNewTeamForm />}
 
-        {targetListView && <TargetListView />}
+        {targetListView && (
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
+            <TableHeader campHeading="All Employees" filterT={filterT} />
+            <TargetListView />
+          </div>
+        )}
 
         {/* Quick Stats Footer */}
         {/* <PerformanceStats isLoading={combinedLoading} /> */}

@@ -106,7 +106,7 @@ export default function MobileHamburgerMenu({ className, onClose }: MobileHambur
                   "hover:bg-accent hover:text-accent-foreground",
                   "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
                   {
-                    "bg-accent text-accent-foreground shadow-sm": isActive,
+                    "bg-accent text-accent-foreground shadow-soft": isActive,
                     "text-muted-foreground hover:text-foreground": !isActive,
                     "justify-start gap-3 px-3 py-2.5": true,
                   }

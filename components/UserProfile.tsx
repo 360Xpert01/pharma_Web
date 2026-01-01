@@ -3,6 +3,7 @@ import Image from "next/image";
 import { FC } from "react";
 import { Edit, Plus, PencilLine } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button/button";
 
 interface Candidate {
   name: string;
@@ -31,9 +32,9 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
     <div className=" ">
       <div className="flex justify-between w-[100%]   gap-3">
         {/* Left - Avatar + Basic Info */}
-        <div className="flex justify-between gap-6 w-[39%] bg-(--background) rounded-lg shadow-sm p-4 border border-(--gray-1) ">
+        <div className="flex justify-between gap-6 w-[39%] bg-(--background) rounded-lg shadow-soft p-4 border border-(--gray-1) ">
           <div className="flex gap-3 justify-center">
-            <div className="relative w-38 h-38 rounded-lg overflow-hidden  shadow-lg">
+            <div className="relative w-38 h-38 rounded-lg overflow-hidden  shadow-soft">
               <Image
                 src="/capMan.svg"
                 alt={candidate.name}
@@ -45,10 +46,11 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
 
             <div>
               <div className="flex item-center gap-3 mb-2 ">
-                <div className="bg-(--primary) w-[60%] text-(--light) text-[10px] font-bold px-3 py-1.5 rounded-full">
+                <div className="bg-(--primary) w-[60%] text-(--light) text-[10px] font-regular px-3 py-1.5 rounded-full">
                   PLS_EMP-000124
                 </div>
-                |<span className="text-[12px] my-auto"> 000124</span>
+                <span className="text-[12px] bg-(--light) my-auto">|</span>
+                <span className="text-[12px] my-auto"> 000124</span>
               </div>
               <h2 className="text-2xl font-bold text-(--gray-9)">{candidate.name}</h2>
               <p className="text-(--gray-9) mt-1 mb-2 font-semibold text-[13px]">
@@ -62,13 +64,16 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
           </div>
           <div className="flex flex-col justify-between h-full">
             <div className="flex justify-end">
-              <button
+              <Button
                 onClick={handlePush}
-                className="bg-(--primary) w-[50%] cursor-pointer p-2 gap-2 text-[13px] flex  rounded-full text-(--light)"
+                icon={PencilLine}
+                variant="primary"
+                size="sm"
+                rounded="full"
+                className="w-[50%] text-[13px]"
               >
-                <PencilLine className="h-4 w-4 mr-1" />
                 Edit Employee
-              </button>
+              </Button>
             </div>
             <div>
               <p className="font-semibold text-[15px]">Full Address</p>
@@ -79,7 +84,7 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
 
         {/* Middle Left */}
 
-        <div className="flex justify-between gap-15 w-[60%] bg-(--background) rounded-lg shadow-sm p-4 border border-(--gray-2) ">
+        <div className="flex justify-between gap-15 w-[60%] bg-(--background) rounded-lg shadow-soft p-4 border border-(--gray-2) ">
           <div className="space-y-14">
             <div>
               <p className="text-[10px] text-(--gray-5) uppercase tracking-wider">Campaign</p>

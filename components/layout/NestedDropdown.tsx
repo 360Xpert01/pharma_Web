@@ -57,7 +57,7 @@ export function NestedDropdown({ item, depth = 0, openDropdown, setOpenDropdown 
         <div
           className={`
             ${depth === 0 ? "absolute top-full left-0 mt-1 w-56" : "left-full top-0 ml-1 w-56"}
-            bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50
+            bg-(--background) rounded-lg shadow-soft border border-gray-200 py-1 z-50
           `}
         >
           {item.children!.map((child, idx) => (

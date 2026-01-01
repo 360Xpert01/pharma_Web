@@ -67,52 +67,57 @@ const appointments: Appointment[] = [
 
 export default function TodaysAppointments() {
   return (
-    <div className="w-full overflow-hidden">
+    <div className="w-full">
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-(--gray-1)">
-        <h2 className="text-2xl font-bold text-(--gray-9)">Todays Appointments</h2>
-        <div className="flex items-center gap-3 bg-blue-50 text-(--primary) px-5 py-2.5 rounded-full text-sm font-medium hover:bg-blue-100 transition cursor-pointer">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold text-(--employee-detail-tab-heading)">
+          Weekly Appointments
+        </h2>
+        <div className="flex items-center gap-2 text-(--primary) text-sm font-medium cursor-pointer">
           <ChevronLeft className="w-4 h-4" />
-          01 - 07 Sept, 2025
+          <span>01 - 07 Sept, 2025</span>
           <ChevronRight className="w-4 h-4" />
         </div>
       </div>
 
       {/* Appointments List */}
-      <div className="divide-y divide-(--gray-1)">
+      <div className="space-y-4">
         {appointments.map((appt) => (
-          <div key={appt.id} className="p-6 hover:bg-gray-50/50 transition-all duration-200">
+          <div
+            key={appt.id}
+            className="bg-(--background) rounded-lg shadow-soft px-6 py-5 transition-all duration-200"
+          >
             {/* Appointment Title */}
-            <h3 className="text-lg font-semibold text-(--gray-9) mb-4">{appt.title}</h3>
+            <h3 className="text-base font-semibold text-(--gray-9) mb-3">{appt.title}</h3>
 
-            <div className="flex items-start justify-between gap-6">
+            <div className="flex items-center justify-between">
               {/* Doctor Info */}
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <div className="w-14 h-14 rounded-full overflow-hidden ring-4 ring-(--light) shadow-md">
-                    <Image
-                      src={appt.avatar || "https://randomuser.me/api/portraits/women/44.jpg"}
-                      alt={appt.doctorName}
-                      width={56}
-                      height={56}
-                      className="object-cover"
-                    />
-                  </div>
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full overflow-hidden">
+                  <Image
+                    src={appt.avatar || "https://randomuser.me/api/portraits/women/44.jpg"}
+                    alt={appt.doctorName}
+                    width={48}
+                    height={48}
+                    className="object-cover w-full h-full"
+                  />
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-(--gray-9)">{appt.doctorName}</h4>
-                  <p className="text-sm text-(--gray-6)">{appt.specialty}</p>
+                  <h4 className="text-sm font-semibold text-(--gray-9)">{appt.doctorName}</h4>
+                  <p className="text-xs text-(--gray-5)">{appt.specialty}</p>
                 </div>
               </div>
 
               {/* Clinic & Location */}
-              <div className="text-right">
-                <div className="flex items-center gap-2 text-(--primary) mb-1">
-                  <MapPin className="w-4 h-4" />
-                  <span className="font-medium">{appt.clinic}</span>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0">
+                  <MapPin className="w-5 h-5 text-(--primary)" />
                 </div>
-                <p className="text-sm text-(--gray-5) max-w-xs">{appt.address}</p>
+                <div>
+                  <h4 className="text-sm font-semibold text-(--gray-9)">{appt.clinic}</h4>
+                  <p className="text-xs text-(--gray-5)">{appt.address}</p>
+                </div>
               </div>
             </div>
           </div>

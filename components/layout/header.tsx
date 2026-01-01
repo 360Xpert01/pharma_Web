@@ -457,7 +457,7 @@ const Navbar = () => {
 
               {/* Profile Dropdown */}
               {showProfileDropdown && (
-                <div className="absolute right-0 top-full mt-2 w-64 bg-(--background) rounded-lg shadow-lg border border-(--gray-2) py-2 z-50">
+                <div className="absolute right-0 top-full mt-2 w-64 bg-(--background) rounded-lg shadow-soft border border-(--gray-2) py-2 z-50">
                   {/* Profile Info */}
                   <div className="px-4 py-3 border-b border-(--gray-2)">
                     <div className="flex items-center gap-3">
@@ -541,7 +541,7 @@ const Navbar = () => {
             {/* Mega Menu Dropdown */}
             {item.items && activeDropdown === item.label && (
               <div
-                className="absolute shadow-[0px_5px_10px_rgba(0,0,0,0.20)]  top-full left-1/2 -translate-x-1/2 mt-1  w-60 bg-(--background) py-3 z-50"
+                className="absolute shadow-soft  top-full left-1/2 -translate-x-1/2 mt-1  w-60 bg-(--background) py-3 z-50"
                 onMouseEnter={() => hoveredItem && handleMouseEnter(item.label)}
                 onMouseLeave={handleMouseLeave}
               >

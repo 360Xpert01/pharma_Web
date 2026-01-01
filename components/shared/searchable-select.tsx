@@ -147,7 +147,7 @@ const SearchableSelectBase = ({
       <PopoverTrigger className={cn("w-full", className)} asChild>
         <div
           className={cn(
-            "relative flex min-h-[36px] w-full cursor-pointer items-center justify-between rounded-sm border bg-white p-2 dark:bg-gray-800",
+            "relative flex min-h-[36px] w-full cursor-pointer items-center justify-between rounded-sm border bg-(--background) p-2 dark:bg-gray-800",
             invalid && "border-red-500"
           )}
         >
@@ -165,7 +165,7 @@ const SearchableSelectBase = ({
         </div>
       </PopoverTrigger>
       <PopoverContent
-        className="w-[var(--radix-popover-trigger-width)] rounded-lg border bg-white p-0 shadow-md dark:border-gray-700 dark:bg-gray-900"
+        className="w-[var(--radix-popover-trigger-width)] rounded-lg border bg-(--background) p-0 shadow-soft dark:border-gray-700 dark:bg-gray-900"
         align="start"
       >
         <Command className="w-full">

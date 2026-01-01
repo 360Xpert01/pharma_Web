@@ -3,8 +3,12 @@
 import React, { useState, useEffect } from "react";
 import { MoreVertical } from "lucide-react";
 import TableColumnHeader from "@/components/TableColumnHeader";
+import TableLoadingState from "@/components/shared/table/TableLoadingState";
+import TableErrorState from "@/components/shared/table/TableErrorState";
+import TableEmptyState from "@/components/shared/table/TableEmptyState";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllTeams } from "@/store/slices/team/getAllTeamsSlice";
+
 export default function CampaignsTable() {
   const dispatch = useAppDispatch();
   const { teams, loading, error } = useAppSelector((state) => state.allTeams);
@@ -31,18 +35,19 @@ export default function CampaignsTable() {
     { label: "", className: "col-span-1" },
   ];
 
+  const handleRetry = () => {
+    dispatch(getAllTeams());
+  };
+
   // Loading state
   if (loading) {
     return (
-      <div className="w-full overflow-hidden bg-[var(--background)]">
+      <div className="w-full overflow-hidden bg-(--background)">
         <div className="px-3">
           <TableColumnHeader columns={campaignColumns} gridCols={12} />
         </div>
-        <div className="flex items-center justify-center py-12">
-          <div className="text-center">
-            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-            <p className="mt-4 text-[var(--gray-6)]">Loading teams...</p>
-          </div>
+        <div className="px-3">
+          <TableLoadingState variant="skeleton" rows={5} columns={7} message="Loading teams..." />
         </div>
       </div>
     );
@@ -51,22 +56,11 @@ export default function CampaignsTable() {
   // Error state
   if (error) {
     return (
-      <div className="w-full overflow-hidden bg-[var(--background)]">
+      <div className="w-full overflow-hidden bg-(--background)">
         <div className="px-3">
           <TableColumnHeader columns={campaignColumns} gridCols={12} />
         </div>
-        <div className="flex items-center justify-center py-12">
-          <div className="text-center">
-            <p className="text-[var(--destructive)] font-medium">Error loading teams</p>
-            <p className="text-[var(--gray-6)] mt-2">{error}</p>
-            <button
-              onClick={() => dispatch(getAllTeams())}
-              className="mt-4 px-4 py-2 bg-primary text-[var(--light)] rounded-md hover:bg-primary/90 transition cursor-pointer"
-            >
-              Retry
-            </button>
-          </div>
-        </div>
+        <TableErrorState error={error} onRetry={handleRetry} title="Failed to load teams" />
       </div>
     );
   }
@@ -74,19 +68,20 @@ export default function CampaignsTable() {
   // Empty state
   if (!teams || teams.length === 0) {
     return (
-      <div className="w-full overflow-hidden bg-[var(--background)]">
+      <div className="w-full overflow-hidden bg-(--background)">
         <div className="px-3">
           <TableColumnHeader columns={campaignColumns} gridCols={12} />
         </div>
-        <div className="flex items-center justify-center py-12">
-          <p className="text-[var(--gray-6)]">No teams found</p>
-        </div>
+        <TableEmptyState
+          message="No teams found"
+          description="There are currently no teams in the system."
+        />
       </div>
     );
   }
 
   return (
-    <div className="w-full overflow-hidden  bg-white">
+    <div className="w-full overflow-hidden  bg-(--background)">
       {/* Header */}
       <div className="px-3">
         <TableColumnHeader columns={campaignColumns} gridCols={12} />
@@ -168,20 +163,20 @@ export default function CampaignsTable() {
               >
                 <button
                   onClick={() => handleToggle(team.id)}
-                  className="text-[var(--gray-4)] hover:text-[var(--gray-6)] transition cursor-pointer"
+                  className="p-2 text-[var(--gray-4)] hover:text-[var(--gray-6)] hover:bg-(--gray-1) rounded-md transition cursor-pointer"
                 >
                   <MoreVertical className="w-5 h-5" />
                 </button>
 
                 {/* Dropdown */}
                 {openId === team.id && (
-                  <div className="absolute right-0 top-6 mt-2 w-48 rounded-lg shadow-lg border border-[var(--gray-2)] bg-[var(--light)] z-50">
+                  <div className="absolute right-0 top-6 mt-2 w-48 rounded-lg shadow-soft border border-[var(--gray-2)] bg-[var(--light)] z-50">
                     <button
                       onClick={() => {
                         console.log("Edit", team.id);
                         setOpenId(null);
                       }}
-                      className="w-full text-left px-4 py-2 text-sm cursor-pointer hover:bg-[var(--gray-1)]"
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-[var(--gray-1)] cursor-pointer transition"
                     >
                       Edit
                     </button>
@@ -191,7 +186,7 @@ export default function CampaignsTable() {
                         console.log("Duplicate", team.id);
                         setOpenId(null);
                       }}
-                      className="w-full text-left px-4 py-2 text-sm cursor-pointer hover:bg-[var(--gray-1)]"
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-[var(--gray-1)] cursor-pointer transition"
                     >
                       Duplicate
                     </button>
@@ -201,7 +196,7 @@ export default function CampaignsTable() {
                         console.log("Delete", team.id);
                         setOpenId(null);
                       }}
-                      className="w-full text-left px-4 py-2 text-sm cursor-pointer text-[var(--destructive)] hover:bg-[var(--gray-1)]"
+                      className="w-full text-left px-4 py-2 text-sm text-[var(--destructive)] hover:bg-[var(--gray-1)] cursor-pointer transition"
                     >
                       Delete
                     </button>

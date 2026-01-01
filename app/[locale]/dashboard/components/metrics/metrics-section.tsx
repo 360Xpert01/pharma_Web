@@ -41,7 +41,7 @@ export function MetricsSection({
   className,
 }: MetricsSectionProps) {
   return (
-    <Card className={cn("shadow-[0px_5px_10px_rgba(0,0,0,0.20)]", className)}>
+    <Card className={cn("shadow-soft", className)}>
       <CardHeader className="">
         <h3 className="text-1.5xl 2xl:text-2xl font-bold text-(--dark)">{title}</h3>
       </CardHeader>

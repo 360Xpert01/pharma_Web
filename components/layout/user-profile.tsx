@@ -128,7 +128,7 @@ export function UserProfile({ className }: UserProfileProps) {
                   )}
                   aria-label={t("clickForOptions")}
                 >
-                  <Avatar className="h-9 w-9 border-2 border-border/50 shadow-sm">
+                  <Avatar className="h-9 w-9 border-2 border-border/50 shadow-soft">
                     {activeUser?.avatar && (
                       <AvatarImage
                         src={activeUser.avatar}

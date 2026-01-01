@@ -4,7 +4,7 @@ import { attendanceData } from "../app/data/mockData";
 
 export default function MonthlyAttendance() {
   return (
-    <div className="w-full bg-white rounded-2xl shadow-sm border border-gray-100 py-4 -mt-4 px-8">
+    <div className="w-full bg-(--background) rounded-2xl shadow-soft border border-gray-100 py-4 -mt-4 px-8">
       {/* Header */}
       <div>
         <h2 className="text-xl font-semibold mt-2 text-gray-900">Monthly Attendance</h2>

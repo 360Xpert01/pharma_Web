@@ -49,21 +49,21 @@ export function MetricCard({
   const getCardColor = () => {
     switch (color) {
       case "success":
-        return "bg-white ";
+        return "bg-(--background) ";
       case "warning":
-        return "border-yellow-200 text-black bg-white dark:border-yellow-800/30 ";
+        return "border-yellow-200 text-black bg-(--background) dark:border-yellow-800/30 ";
       case "danger":
-        return "border-red-200 bg-white text-black dark:border-red-800/30 ";
+        return "border-red-200 bg-(--background) text-black dark:border-red-800/30 ";
       case "info":
-        return "border-blue-200 bg-white text-black dark:border-blue-800/30 ";
+        return "border-blue-200 bg-(--background) text-black dark:border-blue-800/30 ";
       default:
-        return " dark:border-white bg-white";
+        return " dark:border-white bg-(--background)";
     }
   };
 
   return (
     <Card
-      className={cn("transition-all text-black border hover:shadow-lg shadow  ", getCardColor())}
+      className={cn("transition-all text-black border hover:shadow-soft shadow  ", getCardColor())}
     >
       <CardHeader className="flex text-black flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium text-black  ">{title}</CardTitle>

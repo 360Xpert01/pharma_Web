@@ -28,7 +28,7 @@ export default function FileUpload({ onChange, value }: TFileUploadProps) {
   };
   return (
     <div className="flex items-center justify-center">
-      <div className="relative h-36 w-36 overflow-hidden rounded-full bg-gray-200 shadow-2xl">
+      <div className="relative h-36 w-36 overflow-hidden rounded-full bg-gray-200 shadow-soft">
         {/* <LoaderOverlay isLoading={isLoading} /> */}
         <div {...getRootProps({ className: "dropzone cursor-pointer" })}>
           <input {...getInputProps()} disabled={isLoading} />

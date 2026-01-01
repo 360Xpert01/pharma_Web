@@ -142,7 +142,7 @@ export default function AddSampleForm() {
             <button className="px-6 py-3 border border-(--gray-3) text-(--gray-7) rounded-full hover:bg-(--gray-0) transition">
               Discard
             </button>
-            <button className="px-8 py-3 bg-(--primary) text-(--light) rounded-full hover:bg-(--primar-2) transition flex items-center gap-2 shadow-lg">
+            <button className="px-8 py-3 bg-(--primary) text-(--light) rounded-full hover:bg-(--primar-2) transition flex items-center gap-2 shadow-soft">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"

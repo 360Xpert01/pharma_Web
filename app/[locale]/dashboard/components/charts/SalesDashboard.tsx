@@ -87,7 +87,7 @@ export default function SalesDashboard() {
     change?: string;
     trend?: "up" | "down";
   }) => (
-    <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+    <div className="bg-(--background) rounded-lg p-4 shadow-soft border border-gray-100">
       <p className="text-sm text-gray-600">{title}</p>
       <div className="flex items-end gap-2 mt-1">
         <p className="text-2xl font-semibold">{value}</p>
@@ -107,7 +107,7 @@ export default function SalesDashboard() {
     <>
       <div className=" text-black">
         {/* Header */}
-        <div className="bg-white w-full  rounded-xl shadow-sm p-2 mb-2 flex justify-between ">
+        <div className="bg-(--background) w-full  rounded-xl shadow-soft p-2 mb-2 flex justify-between ">
           <div className="flex gap-2 items-center">
             <div className="w-16 h-16 rounded-full bg-gray-200 border-2 border-dashed" />
             <div className="items-center">
@@ -138,7 +138,7 @@ export default function SalesDashboard() {
 
         <div className="grid bg-gray-100 rounded-lg p-3  grid-cols-1 lg:grid-cols-4 gap-2">
           {/* Monthly Targets */}
-          <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="bg-(--background) rounded-xl shadow-soft p-6">
             <h2 className="text-lg font-semibold mb-4">Monthly Targets</h2>
             <div className="flex justify-around mb-6">
               <div className="text-center">
@@ -165,7 +165,7 @@ export default function SalesDashboard() {
 
           {/* Most Sold Products */}
 
-          <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="bg-(--background) rounded-xl shadow-soft p-6">
             <h2 className="text-lg font-semibold mb-4">Most Sold Products</h2>
 
             <div className="space-y-5">
@@ -206,7 +206,7 @@ export default function SalesDashboard() {
           </div>
 
           {/* By Brands */}
-          <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="bg-(--background) rounded-xl shadow-soft p-6">
             <h2 className="text-lg font-semibold ">By Brands</h2>
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
@@ -241,8 +241,8 @@ export default function SalesDashboard() {
 
           <div className="grid grid-cols-1 lg:grid-cols-1 gap-2 ">
             {/* Monthly Attendance */}
-            <div className="bg-white flex  rounded-xl shadow-sm p-3">
-              <div className=" w-[50%] h-full flex flex-col justify-between bg-white ">
+            <div className="bg-(--background) flex  rounded-xl shadow-soft p-3">
+              <div className=" w-[50%] h-full flex flex-col justify-between bg-(--background) ">
                 <div>
                   <h2 className="text-lg font-bold">Monthly Attendance</h2>
                 </div>
@@ -291,7 +291,7 @@ export default function SalesDashboard() {
               <div>
                 <h2 className="text-lg font-semibold">Sale & Calls</h2>
               </div>
-              <div className="flex items-center gap-1 text-xs text-blue-600 bg-white  rounded-md ">
+              <div className="flex items-center gap-1 text-xs text-blue-600 bg-(--background)  rounded-md ">
                 <ChevronLeft className="w-4 h-4" />
                 <span>September 2025</span>
                 <ChevronRight className="w-4 h-4" />
@@ -300,7 +300,7 @@ export default function SalesDashboard() {
 
             {/* Sale & Calls */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-              <div className="bg-white rounded-xl shadow-sm p-2">
+              <div className="bg-(--background) rounded-xl shadow-soft p-2">
                 <div className="space-y-4">
                   <div>
                     <p className="text-sm text-gray-600">Today sales</p>
@@ -327,7 +327,7 @@ export default function SalesDashboard() {
               </div>
 
               {/* Total Calls */}
-              <div className="bg-white rounded-xl shadow-sm p-2">
+              <div className="bg-(--background) rounded-xl shadow-soft p-2">
                 <h2 className="text-lg font-semibold mb-4">Total Calls</h2>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">

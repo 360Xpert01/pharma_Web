@@ -4,7 +4,6 @@ import React, { useState, useMemo } from "react";
 import { Search, SlidersHorizontal, ChevronDown } from "lucide-react";
 import { EmployeeTarget, GroupedTargets } from "@/types/target";
 import TargetEmployeeCard from "./TargetEmployeeCard";
-import TableHeader from "./TableHeader";
 import TableColumnHeader from "@/components/TableColumnHeader";
 
 // Mock data for demonstration
@@ -236,46 +235,38 @@ export default function TargetListView() {
   }, [searchQuery]);
 
   return (
-    <div className="mx-auto bg-[var(--background)] min-h-screen">
-      <div className="bg-[var(--background)] rounded-xl border border-[var(--gray-2)] overflow-hidden">
-        <div className="overflow-x-auto">
-          <TableHeader campHeading="All Employees" filterT />
+    <div>
+      {/* Column Headers */}
+      <div className="px-6 mx-6">
+        <TableColumnHeader
+          columns={[
+            { label: "Month", className: "w-[12%]" },
+            { label: "Employee", className: "w-[16%]" },
+            { label: "Team Name", className: "w-[18%]" },
+            { label: "Channel", className: "w-[18%]" },
+            { label: "Supervisor", className: "w-[16%]" },
+            { label: "", className: "w-[10%]" }, // View Details
+          ]}
+          containerClassName="flex items-center"
+          showBackground={false}
+        />
+      </div>
 
-          {/* Column Headers */}
-          <div className="px-6 mx-6">
-            <TableColumnHeader
-              columns={[
-                { label: "Month", className: "w-[12%]" },
-                { label: "Employee", className: "w-[16%]" },
-                { label: "Team Name", className: "w-[18%]" },
-                { label: "Channel", className: "w-[18%]" },
-                { label: "Supervisor", className: "w-[16%]" },
-                { label: "", className: "w-[10%]" }, // View Details
-              ]}
-              containerClassName="flex items-center"
-              showBackground={false}
-            />
+      {/* Employee Cards Grouped by Month */}
+      <div className="px-6 py-2">
+        {Object.keys(groupedTargets).length === 0 ? (
+          <div className="bg-[var(--gray-0)] rounded-2xl p-12 text-center">
+            <p className="text-[var(--gray-5)] text-lg">No targets found matching your criteria</p>
           </div>
-
-          {/* Employee Cards Grouped by Month */}
-          <div className="px-6 py-2">
-            {Object.keys(groupedTargets).length === 0 ? (
-              <div className="bg-[var(--gray-0)] rounded-2xl p-12 text-center">
-                <p className="text-[var(--gray-5)] text-lg">
-                  No targets found matching your criteria
-                </p>
-              </div>
-            ) : (
-              Object.entries(groupedTargets).map(([month, targets]) => (
-                <div key={month} className="space-y-4 mb-6">
-                  {targets.map((target) => (
-                    <TargetEmployeeCard key={target.id} target={target} month={month} />
-                  ))}
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+        ) : (
+          Object.entries(groupedTargets).map(([month, targets]) => (
+            <div key={month} className="space-y-4 mb-6">
+              {targets.map((target) => (
+                <TargetEmployeeCard key={target.id} target={target} month={month} />
+              ))}
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

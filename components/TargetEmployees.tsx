@@ -57,7 +57,7 @@ export default function MonthlyTargets({
   };
 
   return (
-    <div className="w-full bg-(--light) rounded-lg  p-6 shadow-sm">
+    <div className="w-full bg-(--light) rounded-lg  p-6 shadow-soft">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold text-(--dark)">Monthly Targets</h2>
@@ -101,8 +101,8 @@ export default function MonthlyTargets({
             {/* Gradient ko yahan define karo, Bar ke BAHAR */}
             <defs>
               <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#60A5FA" stopOpacity={1} />
-                <stop offset="100%" stopColor="#93C5FD" stopOpacity={0.6} />
+                <stop offset="0%" stopColor="var(--primary-1)" stopOpacity={1} />
+                <stop offset="100%" stopColor="var(--primary-0)" stopOpacity={0.6} />
               </linearGradient>
             </defs>
 

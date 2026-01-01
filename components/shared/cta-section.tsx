@@ -13,7 +13,7 @@ export function CTASection() {
   const isUrdu = params.locale === "ur";
 
   return (
-    <section className="relative w-full py-32 md:py-52 overflow-hidden bg-white dark:bg-black transition-colors duration-300">
+    <section className="relative w-full py-32 md:py-52 overflow-hidden bg-(--background) dark:bg-black transition-colors duration-300">
       <div className="absolute inset-0 pointer-events-none">
         <CTASvg />
       </div>

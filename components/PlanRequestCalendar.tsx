@@ -77,7 +77,7 @@ export default function PlanRequestCalendar() {
   return (
     <>
       {/* Candidate Info Card */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
+      <div className="bg-(--background) rounded-lg shadow-soft p-6">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-6">
             <Image width={100} height={100} src="/capMan.svg" alt="Candidate" />
@@ -124,7 +124,7 @@ export default function PlanRequestCalendar() {
       </div>
 
       {/* Calendar */}
-      <div className="bg-white rounded-lg shadow-sm p-6 mt-6">
+      <div className="bg-(--background) rounded-lg shadow-soft p-6 mt-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-3xl font-bold text-gray-900">{monthName}</h3>
           <div className="flex items-center bg-gray-100 rounded-full border border-slate-200">

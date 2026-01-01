@@ -13,8 +13,8 @@ export function FeatureCard({ feature }: FeatureCardProps) {
     <div className="group relative h-full">
       <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-300"></div>
       <div
-        className="relative bg-card border border-border rounded-xl p-8 transition h-full flex flex-col shadow-sm
-        hover:shadow-lg hover:border-primary/60 focus-within:shadow-lg focus-within:border-primary/80 active:scale-[0.98] active:shadow-md
+        className="relative bg-card border border-border rounded-xl p-8 transition h-full flex flex-col shadow-soft
+        hover:shadow-soft hover:border-primary/60 focus-within:shadow-soft focus-within:border-primary/80 active:scale-[0.98] active:shadow-soft
         dark:bg-card dark:border-border"
         tabIndex={0}
       >

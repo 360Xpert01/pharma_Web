@@ -28,7 +28,7 @@ export function Header() {
         // Full-width fixed header overlaying the hero; becomes solid on scroll
         "fixed top-0 left-0 right-0 z-40 w-full border-b transition-all",
         scrolled
-          ? "bg-background/95 supports-[backdrop-filter]:bg-background/80 backdrop-blur border-border/60 shadow-sm"
+          ? "bg-background/95 supports-[backdrop-filter]:bg-background/80 backdrop-blur border-border/60 shadow-soft"
           : "bg-transparent border-transparent text-white"
       )}
     >

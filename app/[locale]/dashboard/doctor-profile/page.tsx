@@ -21,7 +21,7 @@ export default function DoctorDetailPage() {
           <DoctorStatsCard />
         </div>
       </div>
-      <div className="bg-white rounded-2xl px-3 py-1 shadow-sm mt-7 border border-gray-200">
+      <div className="bg-(--background) rounded-2xl px-3 py-1 shadow-soft mt-7 border border-gray-200">
         <TableHeader campHeading={"plan"} filterT={false} />
         <DoctordetailDrop />
       </div>

@@ -25,7 +25,7 @@ export function ShowcaseSection() {
   ];
 
   return (
-    <section className="py-20 px-6 bg-white dark:bg-black transition-colors duration-300">
+    <section className="py-20 px-6 bg-(--background) dark:bg-black transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Column - Text and Features */}
@@ -41,7 +41,7 @@ export function ShowcaseSection() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {features.map((feature) => (
                 <div key={feature.key} className="flex items-center gap-3">
-                  <span className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-900 border border-blue-300 dark:border-blue-700 shadow-sm">
+                  <span className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-900 border border-blue-300 dark:border-blue-700 shadow-soft">
                     <Check className="w-6 h-6 text-blue-600 dark:text-blue-400" strokeWidth={2.5} />
                   </span>
                   <span className="text-gray-800 dark:text-gray-200 font-medium transition-colors duration-300">

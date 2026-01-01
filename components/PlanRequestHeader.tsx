@@ -34,7 +34,7 @@ export default function PlanRequestHeader() {
       </div>
       <div className="flex mt-5 gap-8">
         <div className="flex gap-3">
-          <button className="text-red-500 border border-red-500 rounded-xl flex items-center gap-2 px-4 py-2 bg-white hover:bg-red-50">
+          <button className="text-red-500 border border-red-500 rounded-xl flex items-center gap-2 px-4 py-2 bg-(--background) hover:bg-red-50">
             <X className="w-4" />
             Reject
           </button>

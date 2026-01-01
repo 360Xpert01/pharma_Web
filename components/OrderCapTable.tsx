@@ -1,8 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
+import TableLoadingState from "@/components/shared/table/TableLoadingState";
+import TableErrorState from "@/components/shared/table/TableErrorState";
+import TableEmptyState from "@/components/shared/table/TableEmptyState";
 
 interface BookingItem {
   id: string;
@@ -130,62 +133,91 @@ const bookingData: BookingItem[] = [
 ];
 
 export default function BookingTable() {
+  // Simulate loading and error states (replace with actual API call state)
+  const [loading] = useState(false);
+  const [error] = useState<string | null>(null);
+
+  const handleRetry = () => {
+    // Add retry logic here when connected to API
+    window.location.reload();
+  };
+
   return (
     <div className="w-full overflow-hidden">
-      {bookingData.map((item) => (
-        <div key={item.id} className="px-4 py-1 hover:bg-(--gray-0) transition-colors ">
-          <div className="w-full bg-[var(--background)] rounded-xl p-2 border border-(--gray-2) ">
-            {/* Pure Flex with Equal Spacing */}
-            <div className="flex items-center gap-6 w-full text-sm">
-              {/* Avatar + Name + Position */}
-              <div className="flex items-center gap-3 flex-shrink-0 w-[16%]">
-                <Image
-                  src={item.avatar}
-                  alt={item.name}
-                  width={52}
-                  height={52}
-                  className="rounded-full border-2 border-(--light) shadow-md object-cover"
-                  onError={(e) => {
-                    e.currentTarget.src = "/girlPic.svg";
-                  }}
-                />
-                <div>
-                  <div className="font-bold text-(--gray-9)">{item.name}</div>
-                  <div className="text-xs text-(--gray-5)">{item.position}</div>
+      {loading ? (
+        <div className="px-4">
+          <TableLoadingState
+            variant="skeleton"
+            rows={5}
+            columns={5}
+            message="Loading bookings..."
+          />
+        </div>
+      ) : error ? (
+        <TableErrorState error={error} onRetry={handleRetry} title="Failed to load bookings" />
+      ) : bookingData.length === 0 ? (
+        <TableEmptyState
+          message="No bookings found"
+          description="There are currently no order capture records to display."
+        />
+      ) : (
+        <>
+          {bookingData.map((item) => (
+            <div key={item.id} className="px-4 py-1 hover:bg-(--gray-0) transition-colors ">
+              <div className="w-full bg-[var(--background)] rounded-xl p-2 border border-(--gray-2) ">
+                {/* Pure Flex with Equal Spacing */}
+                <div className="flex items-center gap-6 w-full text-sm">
+                  {/* Avatar + Name + Position */}
+                  <div className="flex items-center gap-3 flex-shrink-0 w-[16%]">
+                    <Image
+                      src={item.avatar}
+                      alt={item.name}
+                      width={52}
+                      height={52}
+                      className="rounded-full border-2 border-(--light) shadow-soft object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = "/girlPic.svg";
+                      }}
+                    />
+                    <div>
+                      <div className="font-bold text-(--gray-9)">{item.name}</div>
+                      <div className="text-xs text-(--gray-5)">{item.position}</div>
+                    </div>
+                  </div>
+
+                  {/* Company */}
+                  <div className="flex w-[10%] font-bold text-(--gray-8)">{item.company}</div>
+
+                  {/* Date */}
+                  <div className="w-[16%] text-(--gray-4) text-center">{item.date}</div>
+
+                  {/* Medicine */}
+                  <div className="w-[16%] font-semibold text-(--gray-9) text-center">
+                    {item.medicine}
+                  </div>
+
+                  {/* Dosages */}
+                  <div className=" w-[16%]  flex-1 flex-wrap gap-3 items-center justify-center">
+                    {item.dosages.map((dose, idx) => (
+                      <span
+                        key={idx}
+                        className="px-4 py-2  text-(--gray-4) rounded-full text-xs font-medium whitespace-nowrap"
+                      >
+                        {dose}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Customer */}
+                  <div className="w-[16%] flex-1 text-(--gray-8) font-medium text-center">
+                    {item.customer}
+                  </div>
                 </div>
               </div>
-
-              {/* Company */}
-              <div className="flex w-[10%] font-bold text-(--gray-8)">{item.company}</div>
-
-              {/* Date */}
-              <div className="w-[16%] text-(--gray-4) text-center">{item.date}</div>
-
-              {/* Medicine */}
-              <div className="w-[16%] font-semibold text-(--gray-9) text-center">
-                {item.medicine}
-              </div>
-
-              {/* Dosages */}
-              <div className=" w-[16%]  flex-1 flex-wrap gap-3 items-center justify-center">
-                {item.dosages.map((dose, idx) => (
-                  <span
-                    key={idx}
-                    className="px-4 py-2  text-(--gray-4) rounded-full text-xs font-medium whitespace-nowrap"
-                  >
-                    {dose}
-                  </span>
-                ))}
-              </div>
-
-              {/* Customer */}
-              <div className="w-[16%] flex-1 text-(--gray-8) font-medium text-center">
-                {item.customer}
-              </div>
             </div>
-          </div>
-        </div>
-      ))}
+          ))}
+        </>
+      )}
     </div>
   );
 }

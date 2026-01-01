@@ -22,7 +22,7 @@ const lastMonthData = [
 
 export default function MonthlyTargetCard() {
   return (
-    <div className="w-full h-full bg-(--background) rounded-2xl shadow-sm border border-(--gray-1) p-6 space-y-8">
+    <div className="w-full h-full bg-(--background) rounded-2xl shadow-soft border border-(--gray-1) p-6 space-y-8">
       {/* This Month */}
       <div className="space-y-3">
         <p className="text-sm font-medium text-(--gray-5)">Monthly target</p>

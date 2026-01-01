@@ -223,7 +223,7 @@ export default function SetTargetPage() {
     <div className="min-h-screen bg-(--gray-0)">
       {/* Centered Content Container */}
       {/* Main White Card */}
-      <div className="bg-(--background) rounded-xl shadow-[0px_5px_10px_rgba(0,0,0,0.20)] p-8 overflow-hidden">
+      <div className="bg-(--background) rounded-xl shadow-soft p-8 overflow-hidden">
         {/* Target Configuration Form */}
         <TargetConfigForm
           selectedTeam={selectedTeam}
@@ -323,7 +323,7 @@ export default function SetTargetPage() {
           </button>
           <button
             onClick={handleSetTarget}
-            className="px-8 py-3 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition shadow-lg cursor-pointer font-medium"
+            className="px-8 py-3 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition shadow-soft cursor-pointer font-medium"
           >
             Set Target
           </button>

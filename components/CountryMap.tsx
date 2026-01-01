@@ -40,7 +40,7 @@ const getFillColor = (geo: any) => {
 
 export default function TopSalesMap() {
   return (
-    <div className="w-full bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+    <div className="w-full bg-(--background) rounded-2xl shadow-soft border border-gray-100 p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -56,9 +56,9 @@ export default function TopSalesMap() {
         <div className="space-y-1 w-[10%]">
           <div className="space-y-4">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-7 rounded-sm overflow-hidden shadow-sm">
+              <div className="w-10 h-7 rounded-sm overflow-hidden shadow-soft">
                 <div className="w-full h-full bg-green-600"></div>
-                <div className="w-full h-1.5 bg-white"></div>
+                <div className="w-full h-1.5 bg-(--background)"></div>
                 <div className="w-full h-1.5 bg-red-600"></div>
               </div>
               <div>
@@ -68,9 +68,9 @@ export default function TopSalesMap() {
             </div>
 
             <div className="flex items-center gap-4">
-              <div className="w-10 h-7 rounded-sm overflow-hidden shadow-sm">
+              <div className="w-10 h-7 rounded-sm overflow-hidden shadow-soft">
                 <div className="w-full h-2 bg-red-600"></div>
-                <div className="w-full h-2 bg-white"></div>
+                <div className="w-full h-2 bg-(--background)"></div>
                 <div className="w-full h-3 bg-green-600"></div>
               </div>
               <div>
@@ -81,7 +81,7 @@ export default function TopSalesMap() {
 
             <div className="flex items-center gap-4">
               <div
-                className="w-10 h-7 rounded-sm shadow-sm bg-cover bg-center"
+                className="w-10 h-7 rounded-sm shadow-soft bg-cover bg-center"
                 style={{ backgroundImage: "url('https://flagcdn.com/gb.svg')" }}
               />
               <div>
@@ -92,7 +92,7 @@ export default function TopSalesMap() {
 
             <div className="flex items-center gap-4">
               <div
-                className="w-10 h-7 rounded-sm shadow-sm bg-cover bg-center"
+                className="w-10 h-7 rounded-sm shadow-soft bg-cover bg-center"
                 style={{ backgroundImage: "url('https://flagcdn.com/us.svg')" }}
               />
               <div>

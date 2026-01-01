@@ -59,7 +59,7 @@ export default function AddEmployeeForm() {
   return (
     <>
       <div className=" mx-auto text-black p-6 bg-gray-50 min-h-screen ">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-(--background) rounded-2xl shadow-soft border border-gray-200 overflow-hidden">
           <div className="px-8 py-6 border-b border-gray-200">
             <h2 className="text-2xl font-bold text-gray-900">Add Employees</h2>
             <p className="text-sm text-gray-500 mt-1">Create New Employee</p>
@@ -278,7 +278,7 @@ export default function AddEmployeeForm() {
                       className={`flex items-center gap-2 px-4 py-3 rounded-xl border ${
                         brick.name === "Nazimabad No.4"
                           ? "border-red-500 bg-red-50"
-                          : "border-gray-300 bg-white"
+                          : "border-gray-300 bg-(--background)"
                       }`}
                     >
                       <input

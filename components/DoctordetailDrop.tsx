@@ -144,7 +144,7 @@ export default function VisitHistoryAccordion() {
         <div className="w-full max-w-md  my-6 mx-4">
           <div className="relative bg-gray-100 rounded-full p-1 shadow-inner">
             <div
-              className="absolute top-1 left-1 h-[calc(100%-8px)] w-[calc(33.333%-8px)] bg-blue-600 rounded-full transition-all duration-300 ease-out shadow-lg"
+              className="absolute top-1 left-1 h-[calc(100%-8px)] w-[calc(33.333%-8px)] bg-blue-600 rounded-full transition-all duration-300 ease-out shadow-soft"
               style={{
                 transform:
                   activeTab === "plans"
@@ -218,7 +218,7 @@ export default function VisitHistoryAccordion() {
                             {visit.sampleItems.map((item, i) => (
                               <div
                                 key={i}
-                                className="flex justify-between items-center bg-white rounded-xl px-5 py-4"
+                                className="flex justify-between items-center bg-(--background) rounded-xl px-5 py-4"
                               >
                                 <span className="font-medium text-gray-800">{item.name}</span>
                                 <span className="text-sm text-gray-500">{item.date}</span>
@@ -239,7 +239,7 @@ export default function VisitHistoryAccordion() {
                             {visit.giveawayItems.map((item, i) => (
                               <div
                                 key={i}
-                                className="flex justify-between items-center bg-white rounded-xl px-5 py-4"
+                                className="flex justify-between items-center bg-(--background) rounded-xl px-5 py-4"
                               >
                                 <span className="font-medium text-gray-800">{item.name}</span>
                                 <span className="text-sm text-gray-500">{item.date}</span>
@@ -259,7 +259,7 @@ export default function VisitHistoryAccordion() {
                       {/* Remarks */}
                       <div className="w-[49%]">
                         <h4 className="text-sm font-bold text-gray-800 mb-3">Remarks</h4>
-                        <p className="text-sm leading-relaxed text-gray-600 bg-white rounded-xl p-5 border shadow-sm">
+                        <p className="text-sm leading-relaxed text-gray-600 bg-(--background) rounded-xl p-5 border shadow-soft">
                           {visit.remarks}
                         </p>
                       </div>
@@ -288,7 +288,7 @@ export default function VisitHistoryAccordion() {
                         {selectedFiles[visit.id]?.length > 0 ? (
                           <div
                             onClick={() => openFilePicker(visit.id)}
-                            className="flex items-center gap-4 bg-white rounded-xl p-3 border shadow-sm cursor-pointer hover:bg-gray-50 transition"
+                            className="flex items-center gap-4 bg-(--background) rounded-xl p-3 border shadow-soft cursor-pointer hover:bg-gray-50 transition"
                           >
                             <Paperclip className="w-6 h-6 text-gray-500" />
                             <div className="flex gap-3 flex-wrap">
@@ -322,7 +322,7 @@ export default function VisitHistoryAccordion() {
                         ) : (
                           <div
                             onClick={() => openFilePicker(visit.id)}
-                            className="text-sm text-gray-400 italic cursor-pointer hover:text-gray-600 transition bg-white rounded-xl p-5 border text-center shadow-sm"
+                            className="text-sm text-gray-400 italic cursor-pointer hover:text-gray-600 transition bg-(--background) rounded-xl p-5 border text-center shadow-soft"
                           >
                             Click to add attachments
                           </div>

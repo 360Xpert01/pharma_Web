@@ -107,7 +107,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
         />
       )}
 
-      <div className="flex items-center gap-3 group border border-gray-200 rounded-lg p-3 sm:p-4 bg-white hover:bg-gray-50 transition-colors">
+      <div className="flex items-center gap-3 group border border-gray-200 rounded-lg p-3 sm:p-4 bg-(--background) hover:bg-gray-50 transition-colors">
         {/* Expand/Collapse Button */}
         <div className="flex items-center flex-shrink-0">
           {hasChildren ? (
@@ -146,12 +146,12 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
                 type="text"
                 placeholder="Enter Tree Name"
                 defaultValue={item.name}
-                className="px-3 py-4 border border-gray-200 rounded-xl text-sm bg-white text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-400 w-full sm:w-80"
+                className="px-3 py-4 border border-gray-200 rounded-xl text-sm bg-(--background) text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-400 w-full sm:w-80"
               />
               <div className="relative w-full sm:w-auto">
                 <select
                   defaultValue={item.responsibilities || ""}
-                  className="px-3 py-4 pr-8 border border-gray-200 rounded-xl text-sm bg-white text-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 w-full sm:w-auto appearance-none"
+                  className="px-3 py-4 pr-8 border border-gray-200 rounded-xl text-sm bg-(--background) text-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 w-full sm:w-auto appearance-none"
                 >
                   <option value="">Choose Role Responsibilities</option>
                 </select>
@@ -176,7 +176,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
           {canHaveChildren && (
             <Button
               size="icon"
-              className="h-8 w-8 sm:h-9 sm:w-9 rounded-md bg-blue-500 hover:bg-blue-600 text-white border-none shadow-sm flex items-center justify-center flex-shrink-0"
+              className="h-8 w-8 sm:h-9 sm:w-9 rounded-md bg-blue-500 hover:bg-blue-600 text-white border-none shadow-soft flex items-center justify-center flex-shrink-0"
               onClick={() => childType && onAddChild?.(item.id, childType)}
               title={`Add ${childType}`}
             >
@@ -224,7 +224,7 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
   onMoreOptions,
 }) => {
   return (
-    <div className="w-full bg-white rounded-lg border border-gray-200 shadow-sm">
+    <div className="w-full bg-(--background) rounded-lg border border-gray-200 shadow-soft">
       {/* Hierarchy Tree */}
       <div className="px-6 py-8 space-y-6">
         {data.map((item) => (

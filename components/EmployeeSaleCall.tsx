@@ -8,7 +8,7 @@ export default function SalesAndCallsCard() {
       {/* Header */}
       <div className="flex  justify-between p-3 pb-4">
         <h2 className="text-3xl font-semibold text-gray-500">Sale & Calls</h2>
-        <div className="flex items-center gap-2 text-sm font-medium text-blue-600 bg-white px-4 py-2 rounded-md  transition-colors cursor-pointer">
+        <div className="flex items-center gap-2 text-sm font-medium text-blue-600 bg-(--background) px-4 py-2 rounded-md  transition-colors cursor-pointer">
           <ChevronLeft className="w-4 h-4 text-gray-400 " />
           <span>September, 27 2025</span>
           <ChevronRight className="w-4 h-4 text-gray-400" />
@@ -17,7 +17,7 @@ export default function SalesAndCallsCard() {
 
       <div className="flex justify-between gap-6  pb-6 w-[100%]">
         {/* Today Sales */}
-        <div className="p-8 border bg-white w-[49%] border-gray-100 rounded-lg shadow-sm">
+        <div className="p-8 border bg-(--background) w-[49%] border-gray-100 rounded-lg shadow-soft">
           <h3 className="text-3xl font-semibold text-gray-900 mb-6">Today sales</h3>
 
           <div className="flex items-baseline gap-3 mb-8">
@@ -49,7 +49,10 @@ export default function SalesAndCallsCard() {
               {/* White overlay dots for time markers */}
               <div className="absolute inset-0 flex justify-between px-1">
                 {[0, 1, 2, 3].map((i) => (
-                  <div key={i} className="w-1.5 h-1.5 bg-white rounded-full shadow-sm"></div>
+                  <div
+                    key={i}
+                    className="w-1.5 h-1.5 bg-(--background) rounded-full shadow-soft"
+                  ></div>
                 ))}
               </div>
             </div>
@@ -57,7 +60,7 @@ export default function SalesAndCallsCard() {
         </div>
 
         {/* Total Calls */}
-        <div className="p-8 border bg-white w-[49%] border-gray-100 rounded-lg shadow-md">
+        <div className="p-8 border bg-(--background) w-[49%] border-gray-100 rounded-lg shadow-soft">
           <h3 className="text-3xl font-semibold text-gray-900 mb-6">Total Calls</h3>
 
           <div className="space-y-5">

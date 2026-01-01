@@ -228,7 +228,7 @@ export default function AddProductForm() {
                     <Image src={image} alt="Product" fill className="object-cover" />
                     <button
                       onClick={removeImage}
-                      className="absolute top-4 right-4 bg-(--destructive) text-(--light) p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-red-600 shadow-xl"
+                      className="absolute top-4 right-4 bg-(--destructive) text-(--light) p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-red-600 shadow-soft"
                     >
                       <X className="w-6 h-6" />
                     </button>
@@ -478,7 +478,7 @@ export default function AddProductForm() {
                 <button
                   onClick={handleSubmit}
                   disabled={productLoading || imageUploading}
-                  className="px-10 py-3 bg-(--primary) text-(--light) font-medium rounded-full hover:bg-(--primary-2) transition flex items-center gap-3 shadow-lg cursor-pointer disabled:bg-(--primary-1) disabled:cursor-not-allowed"
+                  className="px-10 py-3 bg-(--primary) text-(--light) font-medium rounded-full hover:bg-(--primary-2) transition flex items-center gap-3 shadow-soft cursor-pointer disabled:bg-(--primary-1) disabled:cursor-not-allowed"
                 >
                   {productLoading || imageUploading ? (
                     <>
