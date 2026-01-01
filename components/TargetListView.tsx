@@ -237,32 +237,32 @@ export default function TargetListView() {
   return (
     <div>
       {/* Column Headers */}
-      <div className="px-6 mx-6">
-        <TableColumnHeader
-          columns={[
-            { label: "Month", className: "w-[12%]" },
-            { label: "Employee", className: "w-[16%]" },
-            { label: "Team Name", className: "w-[18%]" },
-            { label: "Channel", className: "w-[18%]" },
-            { label: "Supervisor", className: "w-[16%]" },
-            { label: "", className: "w-[10%]" }, // View Details
-          ]}
-          containerClassName="flex items-center"
-          showBackground={false}
-        />
-      </div>
+      <TableColumnHeader
+        columns={[
+          { label: "Month", className: "w-[20%] ml-3" },
+          { label: "Employee", className: "w-[18%]" },
+          { label: "Team Name", className: "w-[24%]" },
+          { label: "Channel", className: "w-[24%]" },
+          { label: "Supervisor", className: "w-[0%]" },
+          { label: "", className: "w-[0%]" }, // View Details
+        ]}
+        containerClassName="flex w-[80%]"
+        showBackground={false}
+      />
 
       {/* Employee Cards Grouped by Month */}
-      <div className="px-6 py-2">
+      <div>
         {Object.keys(groupedTargets).length === 0 ? (
-          <div className="bg-[var(--gray-0)] rounded-2xl p-12 text-center">
+          <div className="bg-[var(--gray-0)] rounded-2xl p-12 text-center mx-4 my-3">
             <p className="text-[var(--gray-5)] text-lg">No targets found matching your criteria</p>
           </div>
         ) : (
           Object.entries(groupedTargets).map(([month, targets]) => (
-            <div key={month} className="space-y-4 mb-6">
+            <div key={month} className="space-y-0 mb-3">
               {targets.map((target) => (
-                <TargetEmployeeCard key={target.id} target={target} month={month} />
+                <div key={target.id} className="mx-4 my-3">
+                  <TargetEmployeeCard target={target} month={month} />
+                </div>
               ))}
             </div>
           ))

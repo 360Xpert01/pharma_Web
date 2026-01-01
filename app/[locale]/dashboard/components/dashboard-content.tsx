@@ -57,6 +57,8 @@ import TargetListView from "@/components/TargetListView";
 import { useState } from "react";
 import EmployeeProfileTabs from "@/components/EmployeeProfileTabs";
 import AddAllocateGivewaySample from "@/components/AddAllocateGivewaySample";
+import BricksHierarchyWrapper from "@/components/BricksHierarchyWrapper";
+import RoleHierarchyWrapper from "@/components/RoleHierarchyWrapper";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -108,6 +110,8 @@ export function DashboardContent({
   showTabs,
   allocateGiveaways,
   AddAllocateGiveaway,
+  bricksHierarchy,
+  roleHierarchy,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -331,7 +335,10 @@ export function DashboardContent({
         {AddCallPointTrue && (
           <div>
             <AddCallPoints />
-            <CallPointTable />
+            <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
+              <TableHeader campHeading="Call Points" filterT={filterT} />
+              <CallPointTable />
+            </div>
           </div>
         )}
 
@@ -356,6 +363,14 @@ export function DashboardContent({
             <TargetListView />
           </div>
         )}
+
+        {bricksHierarchy && (
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
+            <BricksHierarchyWrapper />
+          </div>
+        )}
+
+        {roleHierarchy && <RoleHierarchyWrapper />}
 
         {/* Quick Stats Footer */}
         {/* <PerformanceStats isLoading={combinedLoading} /> */}

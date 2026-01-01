@@ -42,7 +42,7 @@ export function MetricCard({
       case "decrease":
         return "text-red-600 dark:text-red-400";
       default:
-        return "text-gray-600 dark:text-gray-400";
+        return "text-[var(--gray-6)] dark:text-[var(--gray-4)]";
     }
   };
 
@@ -51,11 +51,11 @@ export function MetricCard({
       case "success":
         return "bg-(--background) ";
       case "warning":
-        return "border-yellow-200 text-black bg-(--background) dark:border-yellow-800/30 ";
+        return "border-yellow-200 text-[var(--dark)] bg-(--background) dark:border-yellow-800/30 ";
       case "danger":
-        return "border-red-200 bg-(--background) text-black dark:border-red-800/30 ";
+        return "border-red-200 bg-(--background) text-[var(--dark)] dark:border-red-800/30 ";
       case "info":
-        return "border-blue-200 bg-(--background) text-black dark:border-blue-800/30 ";
+        return "border-blue-200 bg-(--background) text-[var(--dark)] dark:border-blue-800/30 ";
       default:
         return " dark:border-white bg-(--background)";
     }
@@ -63,20 +63,23 @@ export function MetricCard({
 
   return (
     <Card
-      className={cn("transition-all text-black border hover:shadow-soft shadow  ", getCardColor())}
+      className={cn(
+        "transition-all text-[var(--dark)] border hover:shadow-soft shadow  ",
+        getCardColor()
+      )}
     >
-      <CardHeader className="flex text-black flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-black  ">{title}</CardTitle>
+      <CardHeader className="flex text-[var(--dark)] flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium text-[var(--dark)]  ">{title}</CardTitle>
         {Icon && <Icon className="h-4 w-4 " />}
       </CardHeader>
       <CardContent>
-        <div className="text-2xl text-black font-bold ">
+        <div className="text-2xl text-[var(--dark)] font-bold ">
           {/* {prefix} */}
           {formatValue(value)}
           {/* {suffix} */}
         </div>
         {change !== undefined && (
-          <p className={cn("text-xs flex text-black items-center mt-1", getChangeColor())}>
+          <p className={cn("text-xs flex text-[var(--dark)] items-center mt-1", getChangeColor())}>
             {changeType === "increase" ? (
               <TrendingUp className="h-3 w-3 mr-1" />
             ) : changeType === "decrease" ? (
@@ -86,7 +89,7 @@ export function MetricCard({
           </p>
         )}
         {/* {description && (
-          <p className="text-xs text-black mt-1">{description}</p>
+          <p className="text-xs text-[var(--dark)] mt-1">{description}</p>
         )} */}
       </CardContent>
     </Card>

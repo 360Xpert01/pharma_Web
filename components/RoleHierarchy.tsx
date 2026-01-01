@@ -1,9 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronDown, ChevronRight, Plus, MoreVertical } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button/button";
+import { ChevronUp, Plus, MoreVertical } from "lucide-react";
 import RoleSvg from "@/components/svgs/role-svg";
 
 type RoleLevel = "company" | "department" | "position" | "role";
@@ -15,182 +13,160 @@ interface RoleItem {
   type: RoleLevel;
   responsibilities?: string;
   children?: RoleItem[];
+  isNew?: boolean;
 }
 
-// Define the hierarchy: what can be added under each type
 const CHILD_TYPE_MAP: Record<RoleLevel, RoleLevel | null> = {
   company: "department",
   department: "position",
   position: "role",
-  role: null, // Roles cannot have children
+  role: null,
 };
 
-interface BrickNodeProps {
+interface RoleNodeProps {
   item: RoleItem;
   level: number;
+  isLastChild?: boolean;
   onAddChild?: (parentId: string, childType: RoleLevel) => void;
   onMoreOptions?: (itemId: string, itemType: RoleLevel) => void;
 }
 
-const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOptions }) => {
+const RoleNode: React.FC<RoleNodeProps> = ({
+  item,
+  level,
+  isLastChild = false,
+  onAddChild,
+  onMoreOptions,
+}) => {
   const [isExpanded, setIsExpanded] = useState(true);
 
   const hasChildren = item.children && item.children.length > 0;
   const canHaveChildren = CHILD_TYPE_MAP[item.type] !== null;
   const childType = CHILD_TYPE_MAP[item.type];
 
-  // Determine colors based on type - using theme variables
-  const getTypeStyles = (type: RoleLevel) => {
-    return "bg-(--primary) text-(--light)";
-  };
-
-  const getTypeLabel = (type: RoleLevel) => {
-    switch (type) {
-      case "company":
-        return "Company";
-      case "department":
-        return "Department";
-      case "position":
-        return "Position";
-      case "role":
-        return "Role";
-      default:
-        return type;
-    }
-  };
+  // Calculate left offset for connector lines
+  const connectorOffset = 24;
+  const nodeIndent = level * 48;
 
   return (
-    <div className="relative" style={{ marginLeft: level > 0 ? "48px" : "0" }}>
-      {/* Vertical line from parent */}
+    <div className="relative">
+      {/* Connector lines for nested items */}
       {level > 0 && (
         <>
+          {/* Vertical line from parent */}
           <div
-            className="absolute border-l-2 border-dashed border-(--gray-3)"
+            className="absolute border-l-2 border-dashed"
             style={{
-              left: "-24px",
-              top: "0",
-              height: "36px",
+              borderColor: "var(--gray-3)",
+              left: `${nodeIndent - connectorOffset}px`,
+              top: 0,
+              height: isLastChild ? "28px" : "100%",
             }}
           />
           {/* Horizontal line to node */}
           <div
-            className="absolute border-t-2 border-dashed border-(--gray-3)"
+            className="absolute border-t-2 border-dashed"
             style={{
-              left: "-24px",
-              top: "36px",
-              width: "24px",
+              borderColor: "var(--gray-3)",
+              left: `${nodeIndent - connectorOffset}px`,
+              top: "28px",
+              width: `${connectorOffset - 4}px`,
             }}
           />
         </>
       )}
 
-      {/* Vertical line to children - extends to connect all children */}
-      {hasChildren && isExpanded && (
-        <div
-          className="absolute border-l-2 border-dashed border-(--gray-3)"
-          style={{
-            left: level === 0 ? "24px" : "-24px",
-            top: level === 0 ? "72px" : "36px",
-            bottom: "0",
-          }}
-        />
-      )}
-
-      <div className="flex items-center gap-3 group border border-(--gray-2) rounded-lg p-3 sm:p-4 bg-(--background) hover:bg-(--gray-0) transition-colors">
+      {/* Main node card */}
+      <div
+        className="relative flex items-center gap-3 shadow-soft bg-[var(--background)] rounded-xl py-3 px-4"
+        style={{ marginLeft: `${nodeIndent}px` }}
+      >
         {/* Expand/Collapse Button */}
-        <div className="flex items-center flex-shrink-0">
-          {hasChildren ? (
-            <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="w-6 h-6 flex items-center justify-center hover:bg-(--gray-2) rounded transition-colors z-10 cursor-pointer"
-              aria-label={isExpanded ? "Collapse" : "Expand"}
-            >
-              {isExpanded ? (
-                <ChevronDown className="w-4 h-4 text-(--gray-6)" />
-              ) : (
-                <ChevronRight className="w-4 h-4 text-(--gray-6)" />
-              )}
-            </button>
-          ) : (
-            <div className="w-6" />
-          )}
-        </div>
-
-        {/* Avatar Badge - Always use Role SVG */}
-        <div
-          className={cn(
-            "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0",
-            getTypeStyles(item.type)
-          )}
+        <button
+          onClick={() => hasChildren && setIsExpanded(!isExpanded)}
+          className={`w-7 h-7 flex items-center justify-center rounded-md transition-colors flex-shrink-0 ${
+            hasChildren
+              ? "hover:bg-[var(--gray-1)] cursor-pointer text-[var(--gray-6)]"
+              : "text-transparent cursor-default"
+          }`}
+          aria-label={isExpanded ? "Collapse" : "Expand"}
         >
-          <RoleSvg width={20} height={20} className="text-(--light)" />
+          <ChevronUp
+            className={`w-5 h-5 transition-transform duration-200 ${
+              !isExpanded ? "rotate-180" : ""
+            }`}
+          />
+        </button>
+
+        {/* Role Icon Badge */}
+        <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 bg-[var(--primary)]">
+          <RoleSvg width={18} height={18} className="text-[var(--background)]" />
         </div>
 
-        {/* Name and Type / Input and Dropdown - Responsive */}
+        {/* Content Area */}
         <div className="flex-1 min-w-0">
-          {item.type === "role" ? (
-            // For role type: show input field and dropdown with inline buttons
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2 w-full">
+          {item.isNew ? (
+            <div className="flex items-center gap-3">
               <input
                 type="text"
                 placeholder="Enter Tree Name"
                 defaultValue={item.name}
-                className="px-3 py-4 border border-(--gray-2) rounded-xl text-sm bg-(--background) text-(--gray-7) placeholder-(--gray-5) focus:outline-none focus:ring-1 focus:ring-(--primary) w-full sm:w-80"
+                className="px-3 py-2 border border-[var(--gray-3)] rounded-lg text-sm bg-[var(--background)] text-[var(--gray-7)] placeholder-[var(--gray-4)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] w-40"
               />
-              <div className="relative w-full sm:w-auto">
+              <div className="relative">
                 <select
                   defaultValue={item.responsibilities || ""}
-                  className="px-3 py-4 pr-8 border border-(--gray-2) rounded-xl text-sm bg-(--background) text-(--gray-6) focus:outline-none focus:ring-1 focus:ring-(--primary) w-full sm:w-auto appearance-none"
+                  className="px-3 py-2 pr-8 border border-[var(--gray-3)] rounded-lg text-sm bg-[var(--background)] text-[var(--gray-5)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] appearance-none cursor-pointer min-w-[200px]"
                 >
                   <option value="">Choose Role Responsibilities</option>
+                  <option value="sales">Sales & Marketing</option>
+                  <option value="operations">Operations</option>
+                  <option value="finance">Finance</option>
+                  <option value="hr">Human Resources</option>
                 </select>
-                <div className="pointer-events-none absolute right-2 top-1/2 transform -translate-y-1/2">
-                  <ChevronDown className="w-4 h-4 text-(--gray-6)" />
-                </div>
+                <ChevronUp className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--gray-5)] pointer-events-none rotate-180" />
               </div>
             </div>
           ) : (
-            // For company, department, position: show standard display (NO INPUTS)
             <>
-              <div className="font-semibold text-(--gray-9) text-sm sm:text-base">{item.name}</div>
-              <div className="text-xs text-(--gray-4)">
-                {item.subtitle || getTypeLabel(item.type)}
+              <div className="font-semibold text-[var(--gray-9)] text-sm leading-tight">
+                {item.name}
               </div>
+              {item.subtitle && (
+                <div className="text-xs text-[var(--gray-5)] mt-0.5">{item.subtitle}</div>
+              )}
             </>
           )}
         </div>
 
-        {/* Action Buttons - Always Visible */}
-        <div className="flex items-center gap-1 flex-shrink-0">
-          {canHaveChildren && (
-            <Button
-              size="icon"
-              className="h-8 w-8 sm:h-9 sm:w-9 rounded-md bg-(--primary) hover:bg-(--primary-2) text-(--light) border-none shadow-soft flex items-center justify-center flex-shrink-0"
-              onClick={() => childType && onAddChild?.(item.id, childType)}
-              title={`Add ${childType}`}
-            >
-              <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
-            </Button>
-          )}
-
+        {/* Action Buttons */}
+        <div className="flex items-center gap-2 flex-shrink-0">
           <button
-            className="h-8 w-8 sm:h-9 sm:w-9 flex items-center justify-center hover:bg-(--gray-2) rounded-full transition-colors text-(--gray-5) flex-shrink-0 cursor-pointer"
+            className="w-9 h-9 rounded-lg bg-[var(--primary)] text-[var(--background)] flex items-center justify-center cursor-pointer"
+            onClick={() => childType && onAddChild?.(item.id, childType)}
+            title={childType ? `Add ${childType}` : "Add"}
+          >
+            <Plus className="w-5 h-5" />
+          </button>
+          <button
+            className="w-9 h-9 flex items-center justify-center hover:bg-[var(--gray-1)] rounded-lg transition-colors text-[var(--gray-5)] cursor-pointer"
             onClick={() => onMoreOptions?.(item.id, item.type)}
             aria-label="More options"
           >
-            <MoreVertical className="w-4 h-4 sm:w-5 sm:h-5 text-(--gray-6)" />
+            <MoreVertical className="w-5 h-5" />
           </button>
         </div>
       </div>
 
-      {/* Children */}
+      {/* Child nodes */}
       {hasChildren && isExpanded && (
-        <div className="relative mt-4 space-y-4">
+        <div className="mt-3 space-y-3">
           {item.children!.map((child, index) => (
-            <BrickNode
+            <RoleNode
               key={child.id}
               item={child}
               level={level + 1}
+              isLastChild={index === item.children!.length - 1}
               onAddChild={onAddChild}
               onMoreOptions={onMoreOptions}
             />
@@ -201,26 +177,26 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
   );
 };
 
-interface BricksHierarchyProps {
+interface RoleHierarchyProps {
   data: RoleItem[];
   onAddChild?: (parentId: string, childType: RoleLevel) => void;
   onMoreOptions?: (itemId: string, itemType: RoleLevel) => void;
 }
 
-export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
+export const RoleHierarchy: React.FC<RoleHierarchyProps> = ({
   data,
   onAddChild,
   onMoreOptions,
 }) => {
   return (
-    <div className="w-full bg-(--background) rounded-lg border border-(--gray-2) shadow-soft">
-      {/* Hierarchy Tree */}
-      <div className="px-6 py-8 space-y-6">
-        {data.map((item) => (
-          <BrickNode
+    <div className="w-full bg-[var(--background)] rounded-xl p-6">
+      <div className="space-y-3">
+        {data.map((item, index) => (
+          <RoleNode
             key={item.id}
             item={item}
             level={0}
+            isLastChild={index === data.length - 1}
             onAddChild={onAddChild}
             onMoreOptions={onMoreOptions}
           />
@@ -230,4 +206,4 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
   );
 };
 
-export default BricksHierarchy;
+export default RoleHierarchy;

@@ -37,7 +37,7 @@ export default function HomePage() {
     <LazyDynamicLayout>
       <div
         className={
-          "min-h-screen flex flex-col relative overflow-hidden w-full bg-(--background) dark:bg-black text-gray-900 dark:text-gray-100 transition-colors duration-300"
+          "min-h-screen flex flex-col relative overflow-hidden w-full bg-(--background) dark:bg-black text-gray-900 dark:text-[var(--gray-1)] transition-colors duration-300"
         }
       >
         {/* <SectionBorder /> */}

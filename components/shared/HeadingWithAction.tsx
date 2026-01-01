@@ -62,9 +62,11 @@ export const HeadingWithAction: React.FC<HeadingWithActionProps> = ({
     <div className={cn("px-6 py-4 flex items-center justify-between", className)}>
       {/* Left side - Title and Description */}
       <div className="flex-1 min-w-0">
-        <h2 className={cn("text-3xl font-bold text-(--gray-9)", titleClassName)}>{title}</h2>
+        <h2 className={cn("text-3xl font-bold text-[var(--gray-9)]", titleClassName)}>{title}</h2>
         {description && (
-          <p className={cn("text-sm text-(--gray-5) mt-1", descriptionClassName)}>{description}</p>
+          <p className={cn("text-sm text-[var(--gray-5)] mt-1", descriptionClassName)}>
+            {description}
+          </p>
         )}
       </div>
 
@@ -85,19 +87,19 @@ export const HeadingWithAction: React.FC<HeadingWithActionProps> = ({
                 size={buttonSize}
                 variant={buttonVariant}
                 className={cn(
-                  "bg-(--primary) hover:bg-(--primary-2) text-(--light) flex items-center gap-2 rounded-full h-11 px-6",
+                  "bg-[var(--primary)] hover:bg-[var(--primary)]/80 text-[var(--light)] inline-flex items-center justify-center gap-2 rounded-full h-11 px-6 whitespace-nowrap w-auto",
                   buttonClassName
                 )}
               >
                 {loading ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-(--light) border-t-transparent rounded-full animate-spin" />
-                    {buttonText && <span>Loading...</span>}
+                    <div className="w-4 h-4 border-2 border-[var(--light)] border-t-transparent rounded-full animate-spin" />
+                    <span>Loading...</span>
                   </>
                 ) : (
                   <>
-                    {ButtonIcon && <ButtonIcon className="w-4 h-4" />}
-                    {buttonText && <span>{buttonText}</span>}
+                    {ButtonIcon && <ButtonIcon className="w-4 h-4 flex-shrink-0" />}
+                    <span>{buttonText}</span>
                   </>
                 )}
               </Button>
