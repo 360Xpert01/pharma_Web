@@ -18,10 +18,10 @@ export default function MostSoldProducts({ weight }: MostSoldProductsProps) {
           return (
             <div key={p.name} className="flex flex-col gap-1">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-blue-500">{p.name}</span>
-                <span className="font-medium text-sm text-gray-900">{p.value.toFixed(1)}K</span>
+                <span className="text-sm font-medium text-(--primary)">{p.name}</span>
+                <span className="font-medium text-sm text-(--gray-9)">{p.value.toFixed(1)}K</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+              <div className="w-full bg-(--gray-2) rounded-full h-2 overflow-hidden">
                 <div
                   className="h-full transition-all duration-500"
                   style={{ width: `${capped}%`, backgroundColor: p.color }}

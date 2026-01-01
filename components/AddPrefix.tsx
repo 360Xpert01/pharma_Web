@@ -1,12 +1,14 @@
 "use client";
 
 import React, { useState, useEffect, use } from "react";
-import { ChevronDown } from "lucide-react";
+import { Plus } from "lucide-react";
 import { fetchPrefixes } from "@/store/slices/preFix/allPreFixTable";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "./ui/use-toast";
 import { createPrefix } from "@/store/slices/preFix/postPrefix";
 import { prefixCreationSchema } from "@/validations/prefixValidation";
+import { FormInput, FormSelect } from "@/components/form";
+import { Button } from "@/components/ui/button/button";
 
 export default function AddPrefixNameComponent() {
   const [selectedTable, setSelectedTable] = useState("");
@@ -155,57 +157,43 @@ export default function AddPrefixNameComponent() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
               {/* Select Data Table Dropdown */}
               <div>
-                <label className="block text-sm font-medium text-(--gray-7) mb-2">
-                  Select Data Table <span className="text-(--destructive)">*</span>
-                </label>
-                <div className="relative">
-                  <select
-                    value={selectedTable}
-                    onChange={(e) => {
-                      setSelectedTable(e.target.value);
-                      clearFieldError("entity");
-                    }}
-                    disabled={loading || !tables || tables.length === 0}
-                    className={getInputClasses("entity")}
-                  >
-                    <option value="">{loading ? "Loading tables..." : "Select a table..."}</option>
-                    {tables?.map((tableName: string, index: number) => (
-                      <option className="h-10" key={index} value={tableName}>
-                        {tableName.replace(/-/g, "")}
-                      </option>
-                    ))}
-                  </select>
-                  {/* <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-(--gray-4) pointer-events-none" /> */}
-                </div>
-                {/* Reserve space for error message */}
-                <div className="h-5 mt-1">
-                  {hasError("entity") && (
-                    <p className="text-sm text-(--destructive)">{getErrorMessage("entity")}</p>
-                  )}
-                </div>
+                <FormSelect
+                  label="Select Data Table"
+                  name="entity"
+                  value={selectedTable}
+                  onChange={setSelectedTable}
+                  options={
+                    tables?.map((tableName: string) => ({
+                      value: tableName,
+                      label: tableName.replace(/-/g, ""),
+                    })) || []
+                  }
+                  placeholder={loading ? "Loading tables..." : "Select a table..."}
+                  loading={loading}
+                  required
+                  error={validationErrors.entity}
+                  disabled={!tables || tables.length === 0}
+                />
               </div>
 
               {/* Prefix Input */}
               <div>
-                <label className="block text-sm font-medium text-(--gray-7) mb-2">
-                  Prefix <span className="text-(--destructive)">*</span>
-                </label>
-                <input
+                <FormInput
+                  label="Prefix"
+                  name="code"
                   type="text"
                   value={prefix}
-                  onChange={handlePrefixChange}
+                  onChange={(value) => {
+                    const validPattern = /^[a-z0-9]*$/;
+                    if (!validPattern.test(value)) return;
+                    if (value.length > 5) return;
+                    setPrefix(value.toLowerCase());
+                  }}
                   placeholder="e.g. EMP, max 5 characters"
+                  required
+                  error={validationErrors.code || validationError}
                   disabled={!selectedTable}
-                  className={`${getInputClasses("code")} ${!selectedTable ? "opacity-50 cursor-not-allowed" : ""}`}
                 />
-                {/* Reserve space for error message to prevent layout shift */}
-                <div className="h-5 mt-1">
-                  {(hasError("code") || validationError) && (
-                    <p className="text-sm text-(--destructive)">
-                      {getErrorMessage("code") || validationError}
-                    </p>
-                  )}
-                </div>
               </div>
 
               {/* Preview Box */}
@@ -221,13 +209,17 @@ export default function AddPrefixNameComponent() {
 
             {/* Add Prefix Button */}
             <div className="flex justify-end">
-              <button
+              <Button
+                variant="primary"
+                size="lg"
+                icon={Plus}
+                rounded="default"
                 onClick={handleAddPrefix}
-                disabled={createLoading || !selectedTable || !prefix}
-                className="px-8 py-3 bg-(--primary) (--light) font-medium rounded-xl hover:bg-(--primary-2) transition shadow-soft flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                loading={createLoading}
+                disabled={!selectedTable || !prefix}
               >
                 {createLoading ? "Adding..." : "Add Prefix"}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

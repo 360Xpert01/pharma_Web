@@ -91,7 +91,7 @@ export default function SalesTeamTable() {
         <div>
           <TableColumnHeader
             columns={employeeColumns}
-            containerClassName="flex w-[80%] px-5"
+            containerClassName="flex w-[80%]"
             showBackground={false}
           />
 

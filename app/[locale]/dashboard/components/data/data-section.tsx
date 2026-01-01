@@ -208,17 +208,19 @@ export function DataSection({ data, isLoading = false, table, description }: Dat
 
   const getStatusBadge = (status: string) => {
     const statusColors = {
-      active: "bg-green-100 text-green-800",
-      inactive: "bg-red-100 text-red-800",
-      pending: "bg-yellow-100 text-yellow-800",
-      completed: "bg-green-100 text-green-800",
-      processing: "bg-blue-100 text-blue-800",
-      cancelled: "bg-red-100 text-red-800",
+      active: "bg-(--success-0) text-(--success)",
+      inactive: "bg-(--destructive-0) text-(--destructive)",
+      pending: "bg-(--warning-0) text-(--warning)",
+      completed: "bg-(--success-0) text-(--success)",
+      processing: "bg-(--primary-0) text-(--primary)",
+      cancelled: "bg-(--destructive-0) text-(--destructive)",
     };
 
     return (
       <Badge
-        className={statusColors[status as keyof typeof statusColors] || "bg-gray-100 text-gray-800"}
+        className={
+          statusColors[status as keyof typeof statusColors] || "bg-(--gray-1) text-(--gray-8)"
+        }
       >
         {status}
       </Badge>

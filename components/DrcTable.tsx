@@ -127,7 +127,7 @@ export default function DcrTable() {
               key={row.id}
               className="bg-[var(--background)] rounded-2xl border border-(--gray-2) shadow-soft hover:shadow-soft transition-shadow"
             >
-              <div className="px-6 py-5">
+              <div className="px-3 py-3">
                 {/* 12-column grid */}
                 <div className="w-[100%] flex justify-between items-center text-sm">
                   {/* Employee 1 – Left aligned */}

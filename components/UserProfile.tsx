@@ -55,11 +55,11 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
               <h2 className="text-2xl font-bold text-(--gray-9)">{candidate.name}</h2>
               <p className="text-(--gray-9) mt-1 mb-2 font-semibold text-[13px]">
                 Repoting Manager
-                <span className="text-slate-400 text-[13px] font-normal"> Saboor raza</span>
+                <span className="text-(--gray-4) text-[13px] font-normal"> Saboor raza</span>
               </p>
-              <p className="text-slate-600 text-[13px]">{candidate.email}</p>
-              <p className="text-slate-600 text-[13px]">{candidate.phone}</p>
-              <p className="text-slate-600 text-[13px] ">19th January 97</p>
+              <p className="text-(--gray-6) text-[13px]">{candidate.email}</p>
+              <p className="text-(--gray-6) text-[13px]">{candidate.phone}</p>
+              <p className="text-(--gray-6) text-[13px] ">19th January 97</p>
             </div>
           </div>
           <div className="flex flex-col justify-between h-full">
@@ -105,7 +105,7 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
               <p className="font-semibold text-xl text-(--gray-9)">{candidate.requestedMonth}</p>
             </div>
             <div>
-              <p className="text-[10px]text-(--gray-5) uppercase tracking-wider">Total Call</p>
+              <p className="text-[10px] text-(--gray-5) uppercase tracking-wider">Total Call</p>
               <p className="font-semibold text-xl text-(--gray-9)">{candidate.totalCalls}</p>
             </div>
           </div>
@@ -132,10 +132,10 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
                 className={`inline-block px-4 py-1.5 rounded-full text-xs font-medium text-(--light) mt-1 ${
                   candidate.status.toLowerCase() === "active" ||
                   candidate.status.toLowerCase() === "approved"
-                    ? "bg-green-500"
+                    ? "bg-(--success)"
                     : candidate.status.toLowerCase().includes("pending") ||
                         candidate.status.toLowerCase().includes("review")
-                      ? "bg-yellow-500"
+                      ? "bg-(--warning)"
                       : "bg-(--gray-5)"
                 }`}
               >

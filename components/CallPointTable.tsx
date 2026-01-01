@@ -59,7 +59,7 @@ export default function CallPointsList() {
             {/* Column Headers */}
             <TableColumnHeader
               columns={callPointColumns}
-              containerClassName="flex items-center justify-between px-6 py-3"
+              containerClassName="flex items-center justify-between"
               showBackground={false}
             />
 
@@ -68,7 +68,7 @@ export default function CallPointsList() {
               {callPoints.map((point) => (
                 <div
                   key={point.id}
-                  className="flex items-center justify-between p-6 bg-[var(--background)] rounded-2xl hover:bg-(--gray-1)/70 transition-all duration-200 border border-(--gray-2)"
+                  className="flex items-center justify-between px-3 py-3 bg-[var(--background)] rounded-2xl hover:bg-(--gray-1)/70 transition-all duration-200 border border-(--gray-2)"
                 >
                   {/* Pulse Code - First Column */}
                   <div className="flex-1 min-w-[200px]">

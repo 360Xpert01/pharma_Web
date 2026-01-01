@@ -163,7 +163,7 @@ export default function BookingTable() {
       ) : (
         <>
           {bookingData.map((item) => (
-            <div key={item.id} className="px-4 py-1 hover:bg-(--gray-0) transition-colors ">
+            <div key={item.id} className="px-3 py-3 hover:bg-(--gray-0) transition-colors ">
               <div className="w-full bg-[var(--background)] rounded-xl p-2 border border-(--gray-2) ">
                 {/* Pure Flex with Equal Spacing */}
                 <div className="flex items-center gap-6 w-full text-sm">

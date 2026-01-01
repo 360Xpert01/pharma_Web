@@ -62,9 +62,9 @@ export const HeadingWithAction: React.FC<HeadingWithActionProps> = ({
     <div className={cn("px-6 py-4 flex items-center justify-between", className)}>
       {/* Left side - Title and Description */}
       <div className="flex-1 min-w-0">
-        <h2 className={cn("text-3xl font-bold text-gray-900", titleClassName)}>{title}</h2>
+        <h2 className={cn("text-3xl font-bold text-(--gray-9)", titleClassName)}>{title}</h2>
         {description && (
-          <p className={cn("text-sm text-gray-500 mt-1", descriptionClassName)}>{description}</p>
+          <p className={cn("text-sm text-(--gray-5) mt-1", descriptionClassName)}>{description}</p>
         )}
       </div>
 
@@ -85,13 +85,13 @@ export const HeadingWithAction: React.FC<HeadingWithActionProps> = ({
                 size={buttonSize}
                 variant={buttonVariant}
                 className={cn(
-                  "bg-blue-500 hover:bg-blue-600 text-white flex items-center gap-2 rounded-full h-11 px-6",
+                  "bg-(--primary) hover:bg-(--primary-2) text-(--light) flex items-center gap-2 rounded-full h-11 px-6",
                   buttonClassName
                 )}
               >
                 {loading ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-(--light) border-t-transparent rounded-full animate-spin" />
                     {buttonText && <span>Loading...</span>}
                   </>
                 ) : (

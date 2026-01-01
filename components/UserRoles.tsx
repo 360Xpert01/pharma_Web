@@ -50,7 +50,7 @@ export default function RolesCardList() {
     return (
       <div className="w-full flex items-center justify-center py-12">
         <div className="text-center">
-          <p className="text-red-600 font-semibold">Error loading roles</p>
+          <p className="text-(--destructive) font-semibold">Error loading roles</p>
           <p className="text-(--gray-6) mt-2">{error}</p>
           <button
             onClick={() => dispatch(getAllRoles())}

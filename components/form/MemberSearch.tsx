@@ -153,7 +153,7 @@ export default function MemberSearch({
                   size="icon-sm"
                   variant="ghost"
                   onClick={() => handleRemoveMember(member.id)}
-                  className="bg-red-50 text-(--destructive) hover:bg-red-100 ml-2"
+                  className="bg-(--destructive-0) text-(--destructive) hover:bg-(--destructive-1) ml-2"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </Button>

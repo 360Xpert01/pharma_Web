@@ -15,9 +15,9 @@ interface SalesPersonCardProps {
 }
 
 const statusColors = {
-  "Under Review": "bg-yellow-100 text-yellow-800",
-  Approved: "bg-green-100 text-green-800",
-  Rejected: "bg-red-100 text-red-800",
+  "Under Review": "bg-(--warning-0) text-(--warning)",
+  Approved: "bg-(--success-0) text-(--success)",
+  Rejected: "bg-(--destructive-0) text-(--destructive)",
 };
 
 export default function SalesPersonCard({
@@ -33,7 +33,7 @@ export default function SalesPersonCard({
   status = "Under Review",
 }: SalesPersonCardProps) {
   return (
-    <div className="w-full bg-(--background) rounded-lg shadow-soft border border-gray-200 p-5 hover:shadow-soft transition-shadow">
+    <div className="w-full bg-(--background) rounded-lg shadow-soft border border-(--gray-2) p-5 hover:shadow-soft transition-shadow">
       <div className="flex items-start justify-between">
         {/* Left Section - Profile */}
         <div className="flex items-center gap-5">
@@ -42,28 +42,28 @@ export default function SalesPersonCard({
               <img
                 src={photoUrl}
                 alt={name}
-                className="w-40 h-50 rounded-sm object-cover border-2 border-gray-200"
+                className="w-40 h-50 rounded-sm object-cover border-2 border-(--gray-2)"
               />
             ) : (
-              <div className="w-20 h-60 bg-gray-200 border-2 border-dashed border-gray-400 rounded-full flex items-center justify-center">
-                <User className="w-10 h-10 text-gray-400" />
+              <div className="w-20 h-60 bg-(--gray-2) border-2 border-dashed border-(--gray-4) rounded-full flex items-center justify-center">
+                <User className="w-10 h-10 text-(--gray-4)" />
               </div>
             )}
           </div>
 
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">{name}</h2>
-            <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
+            <h2 className="text-xl font-semibold text-(--gray-9)">{name}</h2>
+            <div className="flex items-center gap-2 text-sm text-(--gray-6) mt-1">
               <span>{email}</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
+            <div className="flex items-center gap-2 text-sm text-(--gray-6) mt-1">
               <span>{phone}</span>
             </div>
           </div>
         </div>
 
         {/* Right Section - Details */}
-        <div className=" text-sm items-center mt-6 text-gray-600 space-y-3">
+        <div className=" text-sm items-center mt-6 text-(--gray-6) space-y-3">
           <div className="flex justify-between gap-5 ">
             <div>
               <span>Campaign</span>
@@ -91,17 +91,17 @@ export default function SalesPersonCard({
               </span>
             </div>
           </div>
-          <div className="flex justify-start gap-8 mt-8 text-lg font-semibold text-gray-800">
+          <div className="flex justify-start gap-8 mt-8 text-lg font-semibold text-(--gray-8)">
             <div>
-              <div className="text-gray-500 text-xs font-normal">Total Calls</div>
+              <div className="text-(--gray-5) text-xs font-normal">Total Calls</div>
               <div>{totalCalls.toLocaleString()}</div>
             </div>
             <div>
-              <div className="text-gray-500 text-xs font-normal">Total Calls</div>
+              <div className="text-(--gray-5) text-xs font-normal">Total Calls</div>
               <div>{totalCalls.toLocaleString()}</div>
             </div>
             <div>
-              <div className="text-gray-500 text-xs font-normal">Total Calls</div>
+              <div className="text-(--gray-5) text-xs font-normal">Total Calls</div>
               <div>{totalCalls.toLocaleString()}</div>
             </div>
           </div>

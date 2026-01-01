@@ -13,6 +13,8 @@ import {
 import toast from "react-hot-toast";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { roleCreationSchema } from "@/validations/roleValidation";
+import { FormInput } from "@/components/form";
+import { Button } from "@/components/ui/button/button";
 
 interface Responsibility {
   id: string;
@@ -68,9 +70,9 @@ export default function AddNewRoleForm() {
   const getInputClasses = (fieldName: string) => {
     const baseClasses = "w-full px-4 py-3 border rounded-xl outline-none";
     if (hasError(fieldName)) {
-      return `${baseClasses} border-red-500 focus:ring-2 focus:ring-red-500 focus:border-red-500`;
+      return `${baseClasses} border-(--destructive) focus:ring-2 focus:ring-(--destructive) focus:border-(--destructive)`;
     }
-    return `${baseClasses} border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent`;
+    return `${baseClasses} border-(--gray-2) focus:ring-2 focus:ring-(--primary) focus:border-transparent`;
   };
 
   const toggleSection = (section: keyof typeof expandedSections) => {
@@ -167,82 +169,80 @@ export default function AddNewRoleForm() {
   };
 
   return (
-    <div className="w-full mt-24 bg-(--background) rounded-3xl shadow-soft border border-gray-100 overflow-hidden">
+    <div className="w-full mt-24 bg-(--background) rounded-3xl shadow-soft border border-(--gray-1) overflow-hidden">
       <div className="p-8 space-y-10">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Add New Role</h1>
-          <p className="text-sm text-gray-500 mt-2">Unlock the potential of your candidates</p>
+          <h1 className="text-3xl font-bold text-(--gray-9)">Add New Role</h1>
+          <p className="text-sm text-(--gray-5) mt-2">Unlock the potential of your candidates</p>
         </div>
         {/* Pules Code and Role Name Inputs */}
         <div>
           {/* Labels Row */}
           <div className="flex w-full mb-2">
-            <label className="block text-sm font-medium text-gray-700 w-[25%] mr-6">
+            <label className="block text-sm font-medium text-(--gray-7) w-[25%] mr-6">
               Pules Code
             </label>
-            <label className="block text-sm font-medium text-gray-700 w-[25%] mr-6">
-              Role Name <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium text-(--gray-7) w-[25%] mr-6">
+              Role Name <span className="text-(--destructive)">*</span>
             </label>
           </div>
 
           {/* Inputs Row */}
           <div className="flex w-full items-start">
             <div className="relative w-[25%] mr-6">
-              <input
+              <FormInput
+                label="Pulse Code"
+                name="pulseCode"
                 type="text"
                 value={generatedPrefix || ""}
+                onChange={() => {}}
                 placeholder={prefixLoading ? "Generating..." : "PLS_ROLE_000001"}
                 readOnly
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 text-gray-700 cursor-not-allowed outline-none"
-                title={prefixError || "Auto-generated pulse code (read-only)"}
+                error={prefixError || ""}
               />
             </div>
             <div className="relative w-[25%] mr-6">
-              <input
+              <FormInput
+                label="Role Name"
+                name="roleName"
                 type="text"
                 value={roleName}
-                onChange={(e) => {
-                  setRoleName(e.target.value);
-                  clearFieldError("roleName");
-                }}
+                onChange={setRoleName}
                 placeholder="e.g. Sr. Sales Manager"
-                className={getInputClasses("roleName")}
+                error={validationErrors.roleName}
               />
-              {hasError("roleName") && (
-                <p className="mt-1 text-sm text-red-600">{getErrorMessage("roleName")}</p>
-              )}
             </div>
-            <p className="text-xs text-gray-500 mt-2 w-[20%]">
+            <p className="text-xs text-(--gray-5) mt-2 w-[20%]">
               You can easily name the role you want and take on different responsibilities.
             </p>
           </div>
         </div>
 
-        <hr className="border-gray-200" />
+        <hr className="border-(--gray-2)" />
 
         {/* Assign Responsibilities */}
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Assign Responsibilities</h2>
-          <p className="text-sm text-gray-500 mb-8">Unlock the potential of your candidates</p>
+          <h2 className="text-2xl font-bold text-(--gray-9) mb-6">Assign Responsibilities</h2>
+          <p className="text-sm text-(--gray-5) mb-8">Unlock the potential of your candidates</p>
 
           <div className="space-y-6">
             {/* Plan Scheduling */}
-            <div className="bg-gray-50/50 rounded-2xl overflow-hidden border border-gray-200">
+            <div className="bg-(--gray-0) rounded-2xl overflow-hidden border border-(--gray-2)">
               <button
                 onClick={() => toggleSection("plan")}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-100 transition cursor-pointer"
+                className="w-full px-6 py-4 flex items-center justify-between hover:bg-(--gray-1) transition cursor-pointer"
               >
                 <div>
-                  <h3 className="font-semibold text-gray-900">
+                  <h3 className="font-semibold text-(--gray-9)">
                     Plan Scheduling{" "}
-                    <span className="text-gray-500">
+                    <span className="text-(--gray-5)">
                       ({responsibilities.plan.length} Responsibilities)
                     </span>
                   </h3>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                  <span className="text-sm font-medium text-(--primary) bg-(--primary-0) px-3 py-1 rounded-full">
                     {getSelectedCount("plan")} Selected
                   </span>
                   {expandedSections.plan ? (
@@ -259,11 +259,11 @@ export default function AddNewRoleForm() {
                       key={item.id}
                       className="flex items-center justify-between py-3 cursor-pointer"
                     >
-                      <span className="text-gray-700">{item.name}</span>
+                      <span className="text-(--gray-7)">{item.name}</span>
                       <input
                         type="checkbox"
                         defaultChecked={item.checked}
-                        className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500"
+                        className="w-5 h-5 text-(--primary) rounded focus:ring-(--primary) accent-(--primary)"
                       />
                     </label>
                   ))}
@@ -272,14 +272,14 @@ export default function AddNewRoleForm() {
             </div>
 
             {/* Channel Managements */}
-            <div className="bg-gray-50/50 rounded-2xl overflow-hidden border border-gray-200">
+            <div className="bg-(--gray-0) rounded-2xl overflow-hidden border border-(--gray-2)">
               <button
                 onClick={() => toggleSection("channel")}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-100 transition cursor-pointer"
+                className="w-full px-6 py-4 flex items-center justify-between hover:bg-(--gray-1) transition cursor-pointer"
               >
-                <h3 className="font-semibold text-gray-900">
+                <h3 className="font-semibold text-(--gray-9)">
                   Channel Managements{" "}
-                  <span className="text-gray-500">
+                  <span className="text-(--gray-5)">
                     ({responsibilities.channel.length} Responsibilities)
                   </span>
                 </h3>
@@ -296,11 +296,11 @@ export default function AddNewRoleForm() {
                       key={item.id}
                       className="flex items-center justify-between py-3 cursor-pointer"
                     >
-                      <span className="text-gray-700">{item.name}</span>
+                      <span className="text-(--gray-7)">{item.name}</span>
                       <input
                         type="checkbox"
                         defaultChecked={item.checked}
-                        className="w-5 h-5 text-blue-600 rounded"
+                        className="w-5 h-5 text-(--primary) rounded accent-(--primary)"
                       />
                     </label>
                   ))}
@@ -309,20 +309,20 @@ export default function AddNewRoleForm() {
             </div>
 
             {/* Product Managements */}
-            <div className="bg-gray-50/50 rounded-2xl overflow-hidden border border-gray-200">
+            <div className="bg-(--gray-0) rounded-2xl overflow-hidden border border-(--gray-2)">
               <button
                 onClick={() => toggleSection("product")}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-100 transition cursor-pointer"
+                className="w-full px-6 py-4 flex items-center justify-between hover:bg-(--gray-1) transition cursor-pointer"
               >
                 <div className="flex items-center justify-between w-full">
-                  <h3 className="font-semibold text-gray-900">
+                  <h3 className="font-semibold text-(--gray-9)">
                     Product Managements{" "}
-                    <span className="text-gray-500">
+                    <span className="text-(--gray-5)">
                       ({responsibilities.product.length} Responsibilities)
                     </span>
                   </h3>
                   <div className="flex items-center gap-3">
-                    <span className="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                    <span className="text-sm font-medium text-(--primary) bg-(--primary-0) px-3 py-1 rounded-full">
                       {getSelectedCount("product")} Selected
                     </span>
                     {expandedSections.product ? (
@@ -340,11 +340,11 @@ export default function AddNewRoleForm() {
                       key={item.id}
                       className="flex items-center justify-between py-3 cursor-pointer hover:bg-(--background) rounded-lg px-3 -mx-3"
                     >
-                      <span className="text-gray-700">{item.name}</span>
+                      <span className="text-(--gray-7)">{item.name}</span>
                       <input
                         type="checkbox"
                         defaultChecked={item.checked}
-                        className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500"
+                        className="w-5 h-5 text-(--primary) rounded focus:ring-(--primary) accent-(--primary)"
                       />
                     </label>
                   ))}
@@ -353,14 +353,14 @@ export default function AddNewRoleForm() {
             </div>
 
             {/* Team Management */}
-            <div className="bg-gray-50/50 rounded-2xl overflow-hidden border border-gray-200">
+            <div className="bg-(--gray-0) rounded-2xl overflow-hidden border border-(--gray-2)">
               <button
                 onClick={() => toggleSection("team")}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-100 transition cursor-pointer"
+                className="w-full px-6 py-4 flex items-center justify-between hover:bg-(--gray-1) transition cursor-pointer"
               >
-                <h3 className="font-semibold text-gray-900">
+                <h3 className="font-semibold text-(--gray-9)">
                   Team Management{" "}
-                  <span className="text-gray-500">
+                  <span className="text-(--gray-5)">
                     ({responsibilities.team.length} Responsibilities)
                   </span>
                 </h3>
@@ -377,11 +377,11 @@ export default function AddNewRoleForm() {
                       key={item.id}
                       className="flex items-center justify-between py-3 cursor-pointer"
                     >
-                      <span className="text-gray-700">{item.name}</span>
+                      <span className="text-(--gray-7)">{item.name}</span>
                       <input
                         type="checkbox"
                         defaultChecked={item.checked}
-                        className="w-5 h-5 text-blue-600 rounded"
+                        className="w-5 h-5 text-(--primary) rounded accent-(--primary)"
                       />
                     </label>
                   ))}
@@ -393,23 +393,19 @@ export default function AddNewRoleForm() {
 
         {/* Footer Buttons */}
         <div className="flex justify-end gap-4 pt-8">
-          <button
-            type="button"
-            className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-full hover:bg-gray-50 transition cursor-pointer"
-          >
+          <Button variant="outline" size="lg" rounded="full">
             Discard
-          </button>
-          <button
-            type="button"
+          </Button>
+          <Button
+            variant="primary"
+            size="lg"
+            icon={Plus}
+            rounded="full"
             onClick={handleSubmit}
-            disabled={loading || prefixLoading}
-            className={`px-8 py-3 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition flex items-center gap-2 shadow-soft ${
-              loading || prefixLoading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            loading={loading || prefixLoading}
           >
-            <Plus className="w-5 h-5" />
             {loading ? "Creating..." : "Add Role"}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

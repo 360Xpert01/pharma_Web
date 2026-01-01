@@ -112,17 +112,19 @@ export function DataTable<T extends Record<string, any>>({
 
   const getStatusBadge = (status: string) => {
     const statusColors = {
-      active: "bg-green-100 text-green-800",
-      inactive: "bg-red-100 text-red-800",
-      pending: "bg-yellow-100 text-yellow-800",
-      completed: "bg-green-100 text-green-800",
-      processing: "bg-blue-100 text-blue-800",
-      cancelled: "bg-red-100 text-red-800",
+      active: "bg-(--success-0) text-(--success)",
+      inactive: "bg-(--destructive-0) text-(--destructive)",
+      pending: "bg-(--warning-0) text-(--warning)",
+      completed: "bg-(--success-0) text-(--success)",
+      processing: "bg-(--primary-0) text-(--primary)",
+      cancelled: "bg-(--destructive-0) text-(--destructive)",
     };
 
     return (
       <Badge
-        className={statusColors[status as keyof typeof statusColors] || "bg-gray-100 text-gray-800"}
+        className={
+          statusColors[status as keyof typeof statusColors] || "bg-(--gray-1) text-(--gray-8)"
+        }
       >
         {status}
       </Badge>
@@ -144,7 +146,7 @@ export function DataTable<T extends Record<string, any>>({
             <div className="flex items-center gap-4 ">
               {searchKey && (
                 <div className="relative bg-(--background) flex-1 max-w-sm">
-                  <SearchInputIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <SearchInputIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-(--gray-4)" />
                   <Input
                     placeholder={t("placeholders.search")}
                     value={searchTerm}
@@ -186,7 +188,7 @@ export function DataTable<T extends Record<string, any>>({
           </div>
 
           {/* Add description here */}
-          {description && <p className="text-sm text-gray-600">{description}</p>}
+          {description && <p className="text-sm text-(--gray-6)">{description}</p>}
         </div>
       </CardHeader>
       <CardContent>
@@ -235,7 +237,7 @@ export function DataTable<T extends Record<string, any>>({
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                           <DropdownMenuItem>{tShared("actions.edit")}</DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-600">
+                          <DropdownMenuItem className="text-(--destructive)">
                             {tShared("actions.delete")}
                           </DropdownMenuItem>
                         </DropdownMenuContent>

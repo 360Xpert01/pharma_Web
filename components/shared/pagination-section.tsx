@@ -62,7 +62,7 @@ export default function PaginationSection({
     const renderedPages = activePages.map((page, idx) => (
       <PaginationItem
         key={idx}
-        className={currentPage === page ? "rounded-md bg-primary text-white" : ""}
+        className={currentPage === page ? "rounded-md bg-primary text-(--light)" : ""}
       >
         <PaginationLink onClick={() => setCurrentPage(page)}>{page}</PaginationLink>
       </PaginationItem>

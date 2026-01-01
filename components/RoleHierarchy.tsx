@@ -39,20 +39,9 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
   const canHaveChildren = CHILD_TYPE_MAP[item.type] !== null;
   const childType = CHILD_TYPE_MAP[item.type];
 
-  // Determine colors based on type
+  // Determine colors based on type - using theme variables
   const getTypeStyles = (type: RoleLevel) => {
-    switch (type) {
-      case "company":
-        return "bg-blue-600 text-white";
-      case "department":
-        return "bg-blue-600 text-white";
-      case "position":
-        return "bg-blue-600 text-white";
-      case "role":
-        return "bg-blue-600 text-white";
-      default:
-        return "bg-blue-600 text-white";
-    }
+    return "bg-(--primary) text-(--light)";
   };
 
   const getTypeLabel = (type: RoleLevel) => {
@@ -76,7 +65,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
       {level > 0 && (
         <>
           <div
-            className="absolute border-l-2 border-dashed border-gray-300"
+            className="absolute border-l-2 border-dashed border-(--gray-3)"
             style={{
               left: "-24px",
               top: "0",
@@ -85,7 +74,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
           />
           {/* Horizontal line to node */}
           <div
-            className="absolute border-t-2 border-dashed border-gray-300"
+            className="absolute border-t-2 border-dashed border-(--gray-3)"
             style={{
               left: "-24px",
               top: "36px",
@@ -98,7 +87,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
       {/* Vertical line to children - extends to connect all children */}
       {hasChildren && isExpanded && (
         <div
-          className="absolute border-l-2 border-dashed border-gray-300"
+          className="absolute border-l-2 border-dashed border-(--gray-3)"
           style={{
             left: level === 0 ? "24px" : "-24px",
             top: level === 0 ? "72px" : "36px",
@@ -107,19 +96,19 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
         />
       )}
 
-      <div className="flex items-center gap-3 group border border-gray-200 rounded-lg p-3 sm:p-4 bg-(--background) hover:bg-gray-50 transition-colors">
+      <div className="flex items-center gap-3 group border border-(--gray-2) rounded-lg p-3 sm:p-4 bg-(--background) hover:bg-(--gray-0) transition-colors">
         {/* Expand/Collapse Button */}
         <div className="flex items-center flex-shrink-0">
           {hasChildren ? (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="w-6 h-6 flex items-center justify-center hover:bg-gray-200 rounded transition-colors z-10 cursor-pointer"
+              className="w-6 h-6 flex items-center justify-center hover:bg-(--gray-2) rounded transition-colors z-10 cursor-pointer"
               aria-label={isExpanded ? "Collapse" : "Expand"}
             >
               {isExpanded ? (
-                <ChevronDown className="w-4 h-4 text-gray-600" />
+                <ChevronDown className="w-4 h-4 text-(--gray-6)" />
               ) : (
-                <ChevronRight className="w-4 h-4 text-gray-600" />
+                <ChevronRight className="w-4 h-4 text-(--gray-6)" />
               )}
             </button>
           ) : (
@@ -134,7 +123,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
             getTypeStyles(item.type)
           )}
         >
-          <RoleSvg width={20} height={20} className="text-white" />
+          <RoleSvg width={20} height={20} className="text-(--light)" />
         </div>
 
         {/* Name and Type / Input and Dropdown - Responsive */}
@@ -146,25 +135,25 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
                 type="text"
                 placeholder="Enter Tree Name"
                 defaultValue={item.name}
-                className="px-3 py-4 border border-gray-200 rounded-xl text-sm bg-(--background) text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-400 w-full sm:w-80"
+                className="px-3 py-4 border border-(--gray-2) rounded-xl text-sm bg-(--background) text-(--gray-7) placeholder-(--gray-5) focus:outline-none focus:ring-1 focus:ring-(--primary) w-full sm:w-80"
               />
               <div className="relative w-full sm:w-auto">
                 <select
                   defaultValue={item.responsibilities || ""}
-                  className="px-3 py-4 pr-8 border border-gray-200 rounded-xl text-sm bg-(--background) text-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 w-full sm:w-auto appearance-none"
+                  className="px-3 py-4 pr-8 border border-(--gray-2) rounded-xl text-sm bg-(--background) text-(--gray-6) focus:outline-none focus:ring-1 focus:ring-(--primary) w-full sm:w-auto appearance-none"
                 >
                   <option value="">Choose Role Responsibilities</option>
                 </select>
                 <div className="pointer-events-none absolute right-2 top-1/2 transform -translate-y-1/2">
-                  <ChevronDown className="w-4 h-4 text-gray-600" />
+                  <ChevronDown className="w-4 h-4 text-(--gray-6)" />
                 </div>
               </div>
             </div>
           ) : (
             // For company, department, position: show standard display (NO INPUTS)
             <>
-              <div className="font-semibold text-gray-900 text-sm sm:text-base">{item.name}</div>
-              <div className="text-xs text-gray-400">
+              <div className="font-semibold text-(--gray-9) text-sm sm:text-base">{item.name}</div>
+              <div className="text-xs text-(--gray-4)">
                 {item.subtitle || getTypeLabel(item.type)}
               </div>
             </>
@@ -176,7 +165,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
           {canHaveChildren && (
             <Button
               size="icon"
-              className="h-8 w-8 sm:h-9 sm:w-9 rounded-md bg-blue-500 hover:bg-blue-600 text-white border-none shadow-soft flex items-center justify-center flex-shrink-0"
+              className="h-8 w-8 sm:h-9 sm:w-9 rounded-md bg-(--primary) hover:bg-(--primary-2) text-(--light) border-none shadow-soft flex items-center justify-center flex-shrink-0"
               onClick={() => childType && onAddChild?.(item.id, childType)}
               title={`Add ${childType}`}
             >
@@ -185,11 +174,11 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
           )}
 
           <button
-            className="h-8 w-8 sm:h-9 sm:w-9 flex items-center justify-center hover:bg-gray-200 rounded-full transition-colors text-gray-500 flex-shrink-0 cursor-pointer"
+            className="h-8 w-8 sm:h-9 sm:w-9 flex items-center justify-center hover:bg-(--gray-2) rounded-full transition-colors text-(--gray-5) flex-shrink-0 cursor-pointer"
             onClick={() => onMoreOptions?.(item.id, item.type)}
             aria-label="More options"
           >
-            <MoreVertical className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
+            <MoreVertical className="w-4 h-4 sm:w-5 sm:h-5 text-(--gray-6)" />
           </button>
         </div>
       </div>
@@ -224,7 +213,7 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
   onMoreOptions,
 }) => {
   return (
-    <div className="w-full bg-(--background) rounded-lg border border-gray-200 shadow-soft">
+    <div className="w-full bg-(--background) rounded-lg border border-(--gray-2) shadow-soft">
       {/* Hierarchy Tree */}
       <div className="px-6 py-8 space-y-6">
         {data.map((item) => (

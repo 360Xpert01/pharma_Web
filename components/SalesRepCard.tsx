@@ -32,26 +32,26 @@ export default function SalesRepCard({
 
   // Get percentage color
   const getPercentageColor = (percentage: number) => {
-    if (percentage === 100) return "text-gray-600";
-    if (percentage >= 50) return "text-orange-500";
-    return "text-red-500";
+    if (percentage === 100) return "text-(--gray-6)";
+    if (percentage >= 50) return "text-(--warning)";
+    return "text-(--destructive)";
   };
 
   // Get row border style based on conflict
   const getRowBorderStyle = (hasConflict: boolean) => {
     if (hasConflict) {
-      return "border-2 border-red-400";
+      return "border-2 border-(--destructive-1)";
     }
-    return "border border-gray-200";
+    return "border border-(--gray-2)";
   };
 
   return (
-    <div className="bg-(--background) border border-gray-200 rounded-2xl overflow-hidden">
+    <div className="bg-(--background) border border-(--gray-2) rounded-2xl overflow-hidden">
       {/* Header Row: Avatar, Name, Role, Search, Menu */}
       <div className="flex items-center justify-between gap-4 p-5 pb-4">
         <div className="flex items-center gap-4">
           {/* Avatar */}
-          <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
+          <div className="w-12 h-12 rounded-full bg-(--gray-2) overflow-hidden flex-shrink-0">
             <Image
               src={rep.avatar}
               alt={rep.name}
@@ -63,8 +63,8 @@ export default function SalesRepCard({
 
           {/* Name and Role */}
           <div>
-            <p className="font-bold text-gray-900 text-lg">{rep.name}</p>
-            <p className="text-sm text-gray-500">{rep.role}</p>
+            <p className="font-bold text-(--gray-9) text-lg">{rep.name}</p>
+            <p className="text-sm text-(--gray-5)">{rep.role}</p>
           </div>
         </div>
 
@@ -75,13 +75,13 @@ export default function SalesRepCard({
             <input
               type="text"
               placeholder="Select SKU's"
-              className="w-52 px-4 py-2.5 pl-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-(--background)"
+              className="w-52 px-4 py-2.5 pl-10 border border-(--gray-3) rounded-xl focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none text-sm bg-(--background)"
             />
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-(--gray-4)" />
           </div>
 
           {/* Three Dots Menu */}
-          <button className="text-gray-400 hover:text-gray-600 p-2 hover:bg-gray-100 rounded-lg transition cursor-pointer">
+          <button className="text-(--gray-4) hover:text-(--gray-6) p-2 hover:bg-(--gray-1) rounded-lg transition cursor-pointer">
             <MoreVertical className="w-5 h-5" />
           </button>
         </div>
@@ -97,8 +97,8 @@ export default function SalesRepCard({
               key={index}
               className={`px-3 py-1.5 text-sm font-medium rounded-full ${
                 isFilled
-                  ? "bg-gray-800 text-white"
-                  : "bg-(--background) border border-gray-300 text-gray-700"
+                  ? "bg-(--gray-8) text-(--light)"
+                  : "bg-(--background) border border-(--gray-3) text-(--gray-7)"
               }`}
             >
               {tag}
@@ -119,16 +119,16 @@ export default function SalesRepCard({
               {/* Left Product Card */}
               {leftProduct && (
                 <div
-                  className={`rounded-xl p-4 bg-gray-50 ${getRowBorderStyle(leftProduct.hasConflict || false)}`}
+                  className={`rounded-xl p-4 bg-(--gray-0) ${getRowBorderStyle(leftProduct.hasConflict || false)}`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4 flex-1">
                       {/* Product Name */}
-                      <span className="font-semibold text-gray-900 text-sm min-w-[120px]">
+                      <span className="font-semibold text-(--gray-9) text-sm min-w-[120px]">
                         {leftProduct.name}
                       </span>
                       {/* Target Quantity */}
-                      <span className="text-sm text-gray-500">{leftProduct.targetQuantity}</span>
+                      <span className="text-sm text-(--gray-5)">{leftProduct.targetQuantity}</span>
                       {/* Percentage */}
                       <span
                         className={`text-sm font-bold ${getPercentageColor(leftProduct.completionPercentage)}`}
@@ -139,7 +139,7 @@ export default function SalesRepCard({
                     {/* Delete Button */}
                     <button
                       onClick={() => onDeleteProduct(rep.id, leftProduct.id)}
-                      className="text-red-400 hover:text-red-600 p-2 hover:bg-red-50 rounded-lg transition cursor-pointer"
+                      className="text-(--destructive-1) hover:text-(--destructive) p-2 hover:bg-(--destructive-0) rounded-lg transition cursor-pointer"
                     >
                       <Trash2 className="w-5 h-5" />
                     </button>
@@ -161,20 +161,20 @@ export default function SalesRepCard({
                         onProductInputChange(rep.id, rightProduct.id, e.target.value)
                       }
                       placeholder="Product name"
-                      className="w-full font-semibold text-blue-600 text-sm bg-transparent outline-none"
+                      className="w-full font-semibold text-(--primary) text-sm bg-transparent outline-none"
                     />
                   </div>
                   {/* Set Monthly Target Input */}
                   <input
                     type="text"
                     placeholder="Set Monthly Target"
-                    className="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-400 w-36 bg-(--background)"
+                    className="px-3 py-2 border border-(--gray-2) rounded-lg text-sm text-(--gray-4) w-36 bg-(--background)"
                   />
                   {/* Share % Input */}
                   <input
                     type="text"
                     placeholder="Share (%)"
-                    className="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-400 w-24 bg-(--background)"
+                    className="px-3 py-2 border border-(--gray-2) rounded-lg text-sm text-(--gray-4) w-24 bg-(--background)"
                   />
                 </div>
               )}
@@ -190,10 +190,10 @@ export default function SalesRepCard({
       {hasAnyConflict && (
         <div
           onClick={onConflictClick}
-          className="flex items-center gap-2 px-5 py-3 bg-red-50 cursor-pointer hover:bg-red-100 transition-colors"
+          className="flex items-center gap-2 px-5 py-3 bg-(--destructive-0) cursor-pointer hover:bg-(--destructive-0) transition-colors"
         >
-          <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />
-          <p className="text-sm text-red-600 font-medium">Conflicts In Sales Allocation</p>
+          <AlertTriangle className="w-4 h-4 text-(--destructive) flex-shrink-0" />
+          <p className="text-sm text-(--destructive) font-medium">Conflicts In Sales Allocation</p>
         </div>
       )}
     </div>

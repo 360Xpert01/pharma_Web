@@ -120,11 +120,11 @@ function NetworkDiagnostics() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "success":
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return <CheckCircle className="h-4 w-4 text-(--success)" />;
       case "failed":
-        return <XCircle className="h-4 w-4 text-red-500" />;
+        return <XCircle className="h-4 w-4 text-(--destructive)" />;
       default:
-        return <RefreshIcon className="h-4 w-4 animate-spin text-blue-500" />;
+        return <RefreshIcon className="h-4 w-4 animate-spin text-(--primary)" />;
     }
   };
 

@@ -73,7 +73,7 @@ export function DynamicLayout({ children, className }: DynamicLayoutProps) {
     <div className="">
       <Header />
       <div>
-        <div className="bg-gray-50 h-[100vh] ">
+        <div className="bg-(--gray-0) h-[100vh] ">
           <main className={actualContentClasses}>{children}</main>
           {/* {showFooter && <Footer className={cn({ relative: !config.footer.fixed })} />} */}
         </div>

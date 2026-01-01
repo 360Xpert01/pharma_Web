@@ -30,22 +30,23 @@ const getFillColor = (geo: any) => {
     (code === "JPN" && countryData.JPN) ||
     0;
 
-  if (value >= 40) return "#1E40AF"; // Darkest blue
-  if (value >= 30) return "#2563EB";
-  if (value >= 20) return "#3B82F6";
+  // Using CSS variables via getComputedStyle isn't possible here, so using primary color variants
+  if (value >= 40) return "#0f72f4"; // --primary
+  if (value >= 30) return "#0261dc"; // --primary-2
+  if (value >= 20) return "#358afb"; // --primary-1
   if (value >= 10) return "#60A5FA";
   if (value > 0) return "#93BBFC";
-  return "#E5E7EB"; // Default gray
+  return "#f3f4f6"; // --gray-1
 };
 
 export default function TopSalesMap() {
   return (
-    <div className="w-full bg-(--background) rounded-2xl shadow-soft border border-gray-100 p-6">
+    <div className="w-full bg-(--background) rounded-2xl shadow-soft border border-(--gray-1) p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Top Sales From</h2>
-          <p className="text-sm text-green-600 font-medium flex items-center gap-1 mt-1">
+          <h2 className="text-2xl font-bold text-(--gray-9)">Top Sales From</h2>
+          <p className="text-sm text-(--success) font-medium flex items-center gap-1 mt-1">
             <TrendingUp className="w-4 h-4" />
             +24% Vs. Previous month
           </p>
@@ -57,25 +58,25 @@ export default function TopSalesMap() {
           <div className="space-y-4">
             <div className="flex items-center gap-4">
               <div className="w-10 h-7 rounded-sm overflow-hidden shadow-soft">
-                <div className="w-full h-full bg-green-600"></div>
+                <div className="w-full h-full bg-(--success)"></div>
                 <div className="w-full h-1.5 bg-(--background)"></div>
-                <div className="w-full h-1.5 bg-red-600"></div>
+                <div className="w-full h-1.5 bg-(--destructive)"></div>
               </div>
               <div>
-                <p className="font-semibold text-gray-900">PAK</p>
-                <p className="text-2xl font-bold text-blue-600">48%</p>
+                <p className="font-semibold text-(--gray-9)">PAK</p>
+                <p className="text-2xl font-bold text-(--primary)">48%</p>
               </div>
             </div>
 
             <div className="flex items-center gap-4">
               <div className="w-10 h-7 rounded-sm overflow-hidden shadow-soft">
-                <div className="w-full h-2 bg-red-600"></div>
+                <div className="w-full h-2 bg-(--destructive)"></div>
                 <div className="w-full h-2 bg-(--background)"></div>
-                <div className="w-full h-3 bg-green-600"></div>
+                <div className="w-full h-3 bg-(--success)"></div>
               </div>
               <div>
-                <p className="font-semibold text-gray-900">UAE</p>
-                <p className="text-2xl font-bold text-blue-600">27%</p>
+                <p className="font-semibold text-(--gray-9)">UAE</p>
+                <p className="text-2xl font-bold text-(--primary)">27%</p>
               </div>
             </div>
 
@@ -85,8 +86,8 @@ export default function TopSalesMap() {
                 style={{ backgroundImage: "url('https://flagcdn.com/gb.svg')" }}
               />
               <div>
-                <p className="font-semibold text-gray-900">UK</p>
-                <p className="text-2xl font-bold text-blue-600">18%</p>
+                <p className="font-semibold text-(--gray-9)">UK</p>
+                <p className="text-2xl font-bold text-(--primary)">18%</p>
               </div>
             </div>
 
@@ -96,8 +97,8 @@ export default function TopSalesMap() {
                 style={{ backgroundImage: "url('https://flagcdn.com/us.svg')" }}
               />
               <div>
-                <p className="font-semibold text-gray-900">US</p>
-                <p className="text-xl font-bold text-blue-600">07%</p>
+                <p className="font-semibold text-(--gray-9)">US</p>
+                <p className="text-xl font-bold text-(--primary)">07%</p>
               </div>
             </div>
           </div>
@@ -125,7 +126,7 @@ export default function TopSalesMap() {
                       strokeWidth={0.5}
                       style={{
                         default: { outline: "none" },
-                        hover: { outline: "none", fill: "#2563EB" },
+                        hover: { outline: "none", fill: "#0f72f4" }, // --primary
                         pressed: { outline: "none" },
                       }}
                     />

@@ -43,9 +43,7 @@ export default function CampaignsTable() {
   if (loading) {
     return (
       <div className="w-full overflow-hidden bg-(--background)">
-        <div className="px-3">
-          <TableColumnHeader columns={campaignColumns} gridCols={12} />
-        </div>
+        <TableColumnHeader columns={campaignColumns} gridCols={12} />
         <div className="px-3">
           <TableLoadingState variant="skeleton" rows={5} columns={7} message="Loading teams..." />
         </div>
@@ -57,9 +55,7 @@ export default function CampaignsTable() {
   if (error) {
     return (
       <div className="w-full overflow-hidden bg-(--background)">
-        <div className="px-3">
-          <TableColumnHeader columns={campaignColumns} gridCols={12} />
-        </div>
+        <TableColumnHeader columns={campaignColumns} gridCols={12} />
         <TableErrorState error={error} onRetry={handleRetry} title="Failed to load teams" />
       </div>
     );
@@ -69,9 +65,7 @@ export default function CampaignsTable() {
   if (!teams || teams.length === 0) {
     return (
       <div className="w-full overflow-hidden bg-(--background)">
-        <div className="px-3">
-          <TableColumnHeader columns={campaignColumns} gridCols={12} />
-        </div>
+        <TableColumnHeader columns={campaignColumns} gridCols={12} />
         <TableEmptyState
           message="No teams found"
           description="There are currently no teams in the system."
@@ -83,16 +77,14 @@ export default function CampaignsTable() {
   return (
     <div className="w-full overflow-hidden  bg-(--background)">
       {/* Header */}
-      <div className="px-3">
-        <TableColumnHeader columns={campaignColumns} gridCols={12} />
-      </div>
+      <TableColumnHeader columns={campaignColumns} gridCols={12} />
 
       {/* Rows */}
       <div>
         {teams.map((team) => (
           <div
             key={team.id}
-            className="px-3 py-1 hover:bg-[var(--gray-0)] transition-colors duration-200 relative"
+            className="px-3 py-3 hover:bg-[var(--gray-0)] transition-colors duration-200 relative"
             onClick={() => setOpenId(null)}
           >
             {/* Grid with all columns including actions */}

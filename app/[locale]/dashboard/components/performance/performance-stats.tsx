@@ -45,22 +45,22 @@ export function PerformanceStats({ data, isLoading = false }: PerformanceStatsPr
     {
       value: performanceData.uptime,
       label: t("performance.uptime"),
-      color: "text-blue-600",
+      color: "text-(--primary)",
     },
     {
       value: performanceData.avgResponse,
       label: t("performance.avgResponse"),
-      color: "text-green-600",
+      color: "text-(--success)",
     },
     {
       value: performanceData.apiCalls,
       label: t("performance.apiCalls"),
-      color: "text-purple-600",
+      color: "text-(--secondary)",
     },
     {
       value: performanceData.dataTransfer,
       label: t("performance.dataTransfer"),
-      color: "text-orange-600",
+      color: "text-(--warning)",
     },
   ];
 

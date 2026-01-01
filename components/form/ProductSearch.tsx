@@ -134,7 +134,7 @@ export default function ProductSearch({
                 size="icon"
                 variant="ghost"
                 onClick={() => handleRemoveProduct(product.id)}
-                className="bg-red-50 text-(--destructive) hover:bg-red-100"
+                className="bg-(--destructive-0) text-(--destructive) hover:bg-(--destructive-1)"
               >
                 <Trash2 className="w-4 h-4" />
               </Button>

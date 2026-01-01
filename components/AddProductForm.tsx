@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
-import { Upload, X, Plus, Loader2 } from "lucide-react";
-import Image from "next/image";
+import React, { useState, useEffect, useRef } from "react";
+import { Plus, Loader2, X } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   generatePrefix,
@@ -12,9 +11,11 @@ import { getProductCategories } from "@/store/slices/product/getProductCategorie
 import { createProduct, resetProductState } from "@/store/slices/product/createProductSlice";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { productSchema, ProductFormValues } from "@/validations";
+import { productSchema } from "@/validations";
 import ConflictModal from "./ConflictModal";
 import { uploadImageFile } from "@/utils/uploadImage";
+import { ProfileImageUpload, FormInput, FormSelect } from "@/components/form";
+import { Button } from "@/components/ui/button/button";
 
 export default function AddProductForm() {
   const dispatch = useAppDispatch();
@@ -73,7 +74,7 @@ export default function AddProductForm() {
       setDescription("");
       setSkus(["Capsule 500mg"]);
       setImage(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
+      setImageFile(null);
 
       // Generate new prefix for next product
       dispatch(generatePrefix({ entity: "Product" }));
@@ -95,23 +96,20 @@ export default function AddProductForm() {
     }
   }, [productError, productStatus]);
 
-  const handleImageClick = () => fileInputRef.current?.click();
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => setImage(reader.result as string);
-      reader.readAsDataURL(file);
+  const handleImageChange = (imageData: string | null) => {
+    setImage(imageData);
+    // If we have image data (base64), we need to convert it to File for upload
+    if (imageData && imageData.startsWith("data:image")) {
+      // Convert base64 to File
+      fetch(imageData)
+        .then((res) => res.blob())
+        .then((blob) => {
+          const file = new File([blob], "product-image.png", { type: blob.type });
+          setImageFile(file);
+        });
+    } else {
+      setImageFile(null);
     }
-  };
-
-  const removeImage = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setImage(null);
-    setImageFile(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const addSkuField = () => setSkus([...skus, ""]);
@@ -208,222 +206,134 @@ export default function AddProductForm() {
 
   return (
     <div className="">
-      <div className=" ">
+      <div className="">
         <div className="p-10 space-y-12">
-          {/* Header */}
-          <div>
-            <h1 className="text-3xl font-bold text-(--gray-9)">Add New Product</h1>
-            <p className="text-sm text-(--gray-5) mt-2">Unlock the potential of your candidates</p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-[30%_70%] gap-12 pr-12">
+          <div className="grid grid-cols-1 lg:grid-cols-[25%_75%] gap-12 pr-12">
             {/* Left: Image Upload */}
             <div className="space-y-4">
-              <div
-                onClick={handleImageClick}
-                className="relative w-full aspect-square bg-(--gray-1) border-2 border-dashed border-(--gray-3) rounded-2xl cursor-pointer overflow-hidden group hover:border-(--gray-4) transition-all"
-              >
-                {image ? (
-                  <div className="relative w-full h-full">
-                    <Image src={image} alt="Product" fill className="object-cover" />
-                    <button
-                      onClick={removeImage}
-                      className="absolute top-4 right-4 bg-(--destructive) text-(--light) p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-red-600 shadow-soft"
-                    >
-                      <X className="w-6 h-6" />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center h-full text-(--gray-4)">
-                    <Upload className="w-16 h-16 mb-4" />
-                    <p className="text-lg font-medium">Click to upload image</p>
-                    <p className="text-sm">PNG, JPG up to 5MB</p>
-                  </div>
-                )}
-              </div>
+              <ProfileImageUpload
+                imagePreview={image}
+                onImageChange={handleImageChange}
+                maxSizeMB={5}
+              />
 
               {/* Image Upload Status */}
               {imageUploading && (
-                <div className="flex items-center gap-2 text-sm text-(--primary)">
+                <div className="flex items-center gap-2 text-sm text-[var(--primary)]">
                   <Loader2 className="w-4 h-4 animate-spin" />
                   <span>Uploading image to cloud...</span>
                 </div>
               )}
-
-              {/* Small Thumbnail */}
-              <div
-                onClick={handleImageClick}
-                className="w-24 h-24 bg-(--gray-1) border-2 border-dashed border-(--gray-3) rounded-lg cursor-pointer hover:border-(--gray-4) transition-all flex items-center justify-center"
-              >
-                {image ? (
-                  <Image
-                    src={image}
-                    alt="Thumbnail"
-                    width={96}
-                    height={96}
-                    className="object-cover rounded-lg"
-                  />
-                ) : (
-                  <Upload className="w-8 h-8 text-(--gray-4)" />
-                )}
-              </div>
             </div>
 
             {/* Right: Form Fields */}
             <div className="space-y-6">
               {/* FIRST ROW: Pulse Code + Product code (2 columns) */}
               <div className="grid grid-cols-2 gap-4">
-                {/* Pulse Code */}
-                <div>
-                  <label className="block text-sm font-medium text-(--gray-7) mb-2">
-                    Pules Code<span className="text-(--destructive-foreground)">*</span>
-                  </label>
-                  <div
-                    className={`px-3 py-3 bg-(--gray-0) border rounded-lg font-mono text-(--gray-6) text-sm ${hasError("pulseCode") ? "border-(--destructive)" : "border-(--gray-2)"}`}
-                  >
-                    {generatedPrefix || "PLS_PRD_001247"}
-                  </div>
-                  {hasError("pulseCode") && (
-                    <p className="mt-1 text-sm text-(--destructive-foreground)">
-                      {getErrorMessage("pulseCode")}
-                    </p>
-                  )}
-                </div>
+                <FormInput
+                  label="Pulse Code"
+                  name="pulseCode"
+                  type="text"
+                  value={generatedPrefix || ""}
+                  onChange={() => {}}
+                  placeholder="PLS_PRD_001247"
+                  required
+                  readOnly
+                  error={getErrorMessage("pulseCode")}
+                />
 
-                {/* Product code */}
-                <div>
-                  <label className="block text-sm font-medium text-(--gray-7) mb-2">
-                    Product code<span className="text-(--destructive-foreground)">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={legacyCode}
-                    onChange={(e) => {
-                      setLegacyCode(e.target.value);
-                      clearFieldError("productCode");
-                    }}
-                    placeholder="001247"
-                    className={getInputClasses("productCode")}
-                  />
-                  {hasError("productCode") && (
-                    <p className="mt-1 text-sm text-(--destructive-foreground)">
-                      {getErrorMessage("productCode")}
-                    </p>
-                  )}
-                </div>
+                <FormInput
+                  label="Product code"
+                  name="productCode"
+                  type="text"
+                  value={legacyCode}
+                  onChange={(value) => {
+                    setLegacyCode(value);
+                    clearFieldError("productCode");
+                  }}
+                  placeholder="001247"
+                  required
+                  error={getErrorMessage("productCode")}
+                />
               </div>
 
               {/* SECOND ROW: Category + Name + Formula (3 columns) */}
               <div className="grid grid-cols-3 gap-4">
-                {/* Product Category */}
-                <div>
-                  <label className="block text-sm font-medium text-(--gray-7) mb-2">
-                    Product Category<span className="text-(--destructive-foreground)">*</span>
-                  </label>
-                  <select
-                    value={categoryId}
-                    onChange={(e) => {
-                      setCategoryId(e.target.value);
-                      clearFieldError("productCategoryId");
-                    }}
-                    className={getInputClasses("productCategoryId")}
-                  >
-                    <option value="">
-                      {categoriesLoading ? "Loading..." : "e.g. Doctor, Heart..."}
-                    </option>
-                    {categories.map((cat) => (
-                      <option key={cat.id} value={cat.id}>
-                        {cat.productCategory}
-                      </option>
-                    ))}
-                  </select>
-                  {hasError("productCategoryId") && (
-                    <p className="mt-1 text-sm text-(--destructive-foreground)">
-                      {getErrorMessage("productCategoryId")}
-                    </p>
-                  )}
-                </div>
+                <FormSelect
+                  label="Product Category"
+                  name="productCategoryId"
+                  value={categoryId}
+                  onChange={(value) => {
+                    setCategoryId(value);
+                    clearFieldError("productCategoryId");
+                  }}
+                  options={categories.map((cat) => ({
+                    value: cat.id,
+                    label: cat.productCategory,
+                  }))}
+                  placeholder="e.g. Doctor, Heart..."
+                  required
+                  loading={categoriesLoading}
+                  error={getErrorMessage("productCategoryId")}
+                />
 
-                {/* Product Name */}
-                <div>
-                  <label className="block text-sm font-medium text-(--gray-7) mb-2">
-                    Product Name<span className="text-(--destructive-foreground)">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={productName}
-                    onChange={(e) => {
-                      setProductName(e.target.value);
-                      clearFieldError("name");
-                    }}
-                    placeholder="e.g. Panadol"
-                    className={getInputClasses("name")}
-                  />
-                  {hasError("name") && (
-                    <p className="mt-1 text-sm text-(--destructive-foreground)">
-                      {getErrorMessage("name")}
-                    </p>
-                  )}
-                </div>
+                <FormInput
+                  label="Product Name"
+                  name="name"
+                  type="text"
+                  value={productName}
+                  onChange={(value) => {
+                    setProductName(value);
+                    clearFieldError("name");
+                  }}
+                  placeholder="e.g. Panadol"
+                  required
+                  error={getErrorMessage("name")}
+                />
 
-                {/* Product Formula */}
-                <div>
-                  <label className="block text-sm font-medium text-(--gray-7) mb-2">
-                    Product Formula<span className="text-(--destructive-foreground)">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={chemicalFormula}
-                    onChange={(e) => {
-                      setChemicalFormula(e.target.value);
-                      clearFieldError("productFormula");
-                    }}
-                    placeholder="e.g. divalproex sodium"
-                    className={getInputClasses("productFormula")}
-                  />
-                  {hasError("productFormula") && (
-                    <p className="mt-1 text-sm text-(--destructive-foreground)">
-                      {getErrorMessage("productFormula")}
-                    </p>
-                  )}
-                </div>
+                <FormInput
+                  label="Product Formula"
+                  name="productFormula"
+                  type="text"
+                  value={chemicalFormula}
+                  onChange={(value) => {
+                    setChemicalFormula(value);
+                    clearFieldError("productFormula");
+                  }}
+                  placeholder="e.g. divalproex sodium"
+                  required
+                  error={getErrorMessage("productFormula")}
+                />
               </div>
 
               {/* THIRD ROW: Product Description (full width) */}
-              <div>
-                <label className="block text-sm font-medium text-(--gray-7) mb-2">
-                  Product Description<span className="text-(--destructive-foreground)">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={description}
-                  onChange={(e) => {
-                    setDescription(e.target.value);
-                    clearFieldError("description");
-                  }}
-                  placeholder="e.g. Panadol"
-                  className={getInputClasses("description")}
-                />
-                {hasError("description") && (
-                  <p className="mt-1 text-sm text-(--destructive-foreground)">
-                    {getErrorMessage("description")}
-                  </p>
-                )}
-              </div>
+              <FormInput
+                label="Product Description"
+                name="description"
+                type="text"
+                value={description}
+                onChange={(value) => {
+                  setDescription(value);
+                  clearFieldError("description");
+                }}
+                placeholder="e.g. Panadol"
+                required
+                error={getErrorMessage("description")}
+              />
 
               {/* SKU SECTION */}
               <div>
-                <label className="block text-sm font-medium text-(--gray-7) mb-2">
-                  Add Product SKU's<span className="text-(--destructive-foreground)">*</span>
+                <label className="block text-sm font-medium text-[var(--gray-7)] mb-2">
+                  Add Product SKU's<span className="text-[var(--destructive)]">*</span>
                 </label>
 
                 {/* Input + Button side by side */}
-                <div className="flex gap-3">
+                <div className="flex gap-3 w-[60%]">
                   <input
                     type="text"
                     id="sku-input"
                     placeholder="e.g. Capsule 500Mg"
-                    className="flex-1 px-3 py-3 border border-(--gray-3) rounded-lg focus:ring-2 focus:ring-(--primary) outline-none text-sm"
+                    className="flex-1 px-3 py-3 border border-[var(--gray-3)] rounded-xl focus:ring-2 focus:ring-[var(--primary)] outline-none text-sm"
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && e.currentTarget.value.trim()) {
                         setSkus([...skus, e.currentTarget.value.trim()]);
@@ -431,7 +341,7 @@ export default function AddProductForm() {
                       }
                     }}
                   />
-                  <button
+                  <Button
                     onClick={() => {
                       const input = document.getElementById("sku-input") as HTMLInputElement;
                       if (input && input.value.trim()) {
@@ -440,14 +350,16 @@ export default function AddProductForm() {
                         clearFieldError("productSkus");
                       }
                     }}
-                    className="px-6 py-3 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition flex items-center gap-2 text-sm font-medium cursor-pointer whitespace-nowrap"
+                    variant="primary"
+                    size="lg"
+                    icon={Plus}
+                    rounded="full"
                   >
-                    <Plus className="w-4 h-4" />
                     Add Brand SKUs
-                  </button>
+                  </Button>
                 </div>
                 {hasError("productSkus") && (
-                  <p className="mt-1 text-sm text-(--destructive-foreground)">
+                  <p className="mt-1 text-sm text-[var(--destructive)]">
                     {getErrorMessage("productSkus")}
                   </p>
                 )}
@@ -459,7 +371,7 @@ export default function AddProductForm() {
                     .map((sku, index) => (
                       <div
                         key={index}
-                        className="px-4 py-2 bg-(--primary) text-(--light) rounded-full text-sm font-medium flex items-center gap-2 hover:bg-(--primary-2) transition"
+                        className="px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-full text-sm font-medium flex items-center gap-2 hover:bg-[var(--primary)]/90 transition"
                       >
                         {sku}
                         <button onClick={() => removeSku(index)} className="cursor-pointer">
@@ -472,39 +384,26 @@ export default function AddProductForm() {
 
               {/* FOOTER ACTIONS */}
               <div className="flex justify-end gap-4 pt-6">
-                <button className="px-8 py-3 border border-(--primary) text-(--primary) font-medium rounded-full hover:bg-(--primary-0) transition cursor-pointer">
+                <Button variant="outline" size="lg" rounded="full">
                   Discard
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={handleSubmit}
                   disabled={productLoading || imageUploading}
-                  className="px-10 py-3 bg-(--primary) text-(--light) font-medium rounded-full hover:bg-(--primary-2) transition flex items-center gap-3 shadow-soft cursor-pointer disabled:bg-(--primary-1) disabled:cursor-not-allowed"
+                  loading={productLoading || imageUploading}
+                  variant="primary"
+                  size="lg"
+                  icon={Plus}
+                  rounded="full"
+                  className="shadow-lg"
                 >
-                  {productLoading || imageUploading ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-(--light) border-t-transparent rounded-full animate-spin" />
-                      {imageUploading ? "Uploading Image..." : "Creating..."}
-                    </>
-                  ) : (
-                    <>
-                      <Plus className="w-5 h-5" />
-                      Add Product
-                    </>
-                  )}
-                </button>
+                  {imageUploading ? "Uploading Image..." : "Add Product"}
+                </Button>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        onChange={handleFileChange}
-        className="hidden"
-      />
 
       <ConflictModal
         isOpen={isConflictModalOpen}

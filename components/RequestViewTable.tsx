@@ -136,7 +136,7 @@ export default function DoctorRequestTable() {
           {requestData.map((item) => (
             <div
               key={item.id}
-              className="px-2 py-1 hover:bg-(--gray-0) transition-colors duration-200"
+              className="px-3 py-3 hover:bg-(--gray-0) transition-colors duration-200"
             >
               <div className="bg-[var(--background)] rounded-2xl border border-(--gray-2) p-2">
                 <div className="flex items-center justify-between text-sm">

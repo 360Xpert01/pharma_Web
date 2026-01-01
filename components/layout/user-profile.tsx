@@ -136,7 +136,7 @@ export function UserProfile({ className }: UserProfileProps) {
                         className="object-cover"
                       />
                     )}
-                    <AvatarFallback className="text-sm font-semibold bg-gradient-to-br from-slate-700 to-slate-600 text-white dark:from-slate-600 dark:to-slate-500 border-0">
+                    <AvatarFallback className="text-sm font-semibold bg-gradient-to-br from-(--gray-7) to-(--gray-6) text-(--light) dark:from-(--gray-6) dark:to-(--gray-5) border-0">
                       {userInitials}
                     </AvatarFallback>
                   </Avatar>
@@ -163,7 +163,7 @@ export function UserProfile({ className }: UserProfileProps) {
                     className="object-cover"
                   />
                 )}
-                <AvatarFallback className="text-sm font-semibold bg-gradient-to-br from-slate-700 to-slate-600 text-white dark:from-slate-600 dark:to-slate-500">
+                <AvatarFallback className="text-sm font-semibold bg-gradient-to-br from-slate-700 to-slate-600 text-(--light) dark:from-slate-600 dark:to-slate-500">
                   {userInitials}
                 </AvatarFallback>
               </Avatar>
@@ -209,7 +209,7 @@ export function UserProfile({ className }: UserProfileProps) {
           <DropdownMenuItem
             onClick={handleLogout}
             disabled={isLoggingOut}
-            className="cursor-pointer rounded-md mx-1 py-2.5 px-3 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 focus:text-red-700 focus:bg-red-50 dark:focus:bg-red-900/20 transition-colors"
+            className="cursor-pointer rounded-md mx-1 py-2.5 px-3 text-(--destructive) hover:text-(--destructive) hover:bg-(--destructive-0) dark:hover:bg-(--destructive-0) focus:text-(--destructive) focus:bg-(--destructive-0) dark:focus:bg-(--destructive-0) transition-colors"
           >
             <LogoutIcon className="mr-3 h-4 w-4" />
             <span className="font-medium">{isLoggingOut ? t("loggingOut") : t("logout")}</span>

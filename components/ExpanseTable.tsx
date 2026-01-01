@@ -126,7 +126,7 @@ export default function ExpenseApprovalTable() {
               key={row.id}
               className="bg-[var(--background)] rounded-2xl border border-(--gray-2) "
             >
-              <div className="p-3">
+              <div className="px-3 py-3">
                 <div className="flex items-center justify-between gap-6 text-sm">
                   {/* Employee 1 */}
                   <div className="flex w-40 items-center gap-3 ">
