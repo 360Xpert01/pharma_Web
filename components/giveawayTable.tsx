@@ -74,17 +74,15 @@ export default function GiveawayTable() {
         />
       ) : (
         <>
-          <div className="px-3">
-            <TableColumnHeader
-              columns={giveawayColumns}
-              containerClassName="flex text-sm font-medium gap-4"
-            />
-          </div>
+          <TableColumnHeader
+            columns={giveawayColumns}
+            containerClassName="flex text-sm font-medium gap-4"
+          />
 
           {sortedGiveaways.map((item) => (
             <div
               key={item.id}
-              className="px-3 py-1 hover:bg-(--gray-0) transition-colors flex items-center"
+              className="px-3 py-3 hover:bg-(--gray-0) transition-colors flex items-center"
             >
               <div className="w-full bg-[var(--background)] rounded-lg p-4 shadow-soft">
                 {/* Perfectly Equal Columns using flex */}

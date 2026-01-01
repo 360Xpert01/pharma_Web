@@ -43,7 +43,7 @@ export function DoctorCardDetails({
   return (
     <Card className={cn("shadow-soft", className)}>
       <CardHeader className="">
-        <h3 className="text-1.5xl 2xl:text-2xl font-bold text-black">{title}</h3>
+        <h3 className="text-1.5xl 2xl:text-2xl font-bold text-(--dark)">{title}</h3>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex items-baseline gap-2">
@@ -64,14 +64,14 @@ export function DoctorCardDetails({
         </div>
 
         {detailLabel && detailValue && (
-          <div className="flex items-center text-black justify-between text-sm">
+          <div className="flex items-center text-(--dark) justify-between text-sm">
             <span className="text-muted-foreground">{detailLabel}</span>
             <span className="font-medium">{detailValue}</span>
           </div>
         )}
 
         <div className="relative">
-          <Progress value={progress} className="h-3 bg-gray-200" />
+          <Progress value={progress} className="h-3 bg-(--gray-2)" />
           <div
             className={cn(
               "absolute inset-0 h-3 rounded-full transition-all",

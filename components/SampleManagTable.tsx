@@ -53,18 +53,16 @@ export default function SampleManagTable() {
         />
       ) : (
         <>
-          <div className="px-3">
-            <TableColumnHeader
-              columns={sampleColumns}
-              containerClassName="flex text-sm font-medium gap-4"
-            />
-          </div>
+          <TableColumnHeader
+            columns={sampleColumns}
+            containerClassName="flex text-sm font-medium gap-4"
+          />
 
           {/* Products List */}
           {products.map((item: any) => (
             <div
               key={item.id}
-              className="px-3 py-1 transition-colors flex items-center hover:bg-(--gray-1)"
+              className="px-3 py-3 transition-colors flex items-center hover:bg-(--gray-1)"
             >
               <div className="w-full rounded-lg p-4 shadow-soft bg-[var(--background)]">
                 {/* Perfectly Equal Columns using flex */}

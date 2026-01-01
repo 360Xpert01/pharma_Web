@@ -82,42 +82,42 @@ export default function PlanRequestCalendar() {
           <div className="flex items-center gap-6">
             <Image width={100} height={100} src="/capMan.svg" alt="Candidate" />
             <div>
-              <h2 className="text-2xl font-bold text-slate-900">{candidate.name}</h2>
-              <p className="text-slate-600">{candidate.email}</p>
-              <p className="text-slate-600">{candidate.phone}</p>
+              <h2 className="text-2xl font-bold text-(--gray-9)">{candidate.name}</h2>
+              <p className="text-(--gray-6)">{candidate.email}</p>
+              <p className="text-(--gray-6)">{candidate.phone}</p>
             </div>
           </div>
 
           <div className=" space-y-4">
             <div>
-              <p className="text-xs text-slate-500">Reporting Manager</p>
+              <p className="text-xs text-(--gray-5)">Reporting Manager</p>
               <p className="font-semibold text-xl">{candidate.reportingManager}</p>
             </div>
             <div>
-              <p className="text-xs text-slate-500">Campaign</p>
+              <p className="text-xs text-(--gray-5)">Campaign</p>
               <p className="font-semibold text-xl">{candidate.campaign}</p>
             </div>
           </div>
 
           <div className=" space-y-4">
             <div>
-              <p className="text-xs text-slate-500">Requested Month</p>
+              <p className="text-xs text-(--gray-5)">Requested Month</p>
               <p className="font-semibold text-xl">{candidate.requestedMonth}</p>
             </div>
             <div>
-              <p className="text-xs text-slate-500">Channel</p>
+              <p className="text-xs text-(--gray-5)">Channel</p>
               <p className="font-semibold text-xl">{candidate.channel}</p>
             </div>
           </div>
 
           <div className="">
             <div>
-              <p className="text-xs text-slate-500">Status</p>
-              <span className="inline-block bg-yellow-300 text-white px-4 py-1 rounded-full text-xs">
+              <p className="text-xs text-(--gray-5)">Status</p>
+              <span className="inline-block bg-(--warning) text-(--light) px-4 py-1 rounded-full text-xs">
                 {candidate.status}
               </span>
             </div>
-            <p className="text-xs text-slate-500 mt-3">Total Calls</p>
+            <p className="text-xs text-(--gray-5) mt-3">Total Calls</p>
             <p className="text-xl font-bold">{candidate.totalCalls}</p>
           </div>
         </div>
@@ -126,13 +126,13 @@ export default function PlanRequestCalendar() {
       {/* Calendar */}
       <div className="bg-(--background) rounded-lg shadow-soft p-6 mt-6">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-3xl font-bold text-gray-900">{monthName}</h3>
-          <div className="flex items-center bg-gray-100 rounded-full border border-slate-200">
-            <button onClick={previousMonth} className="p-3 hover:bg-slate-200 rounded-lg">
+          <h3 className="text-3xl font-bold text-(--gray-9)">{monthName}</h3>
+          <div className="flex items-center bg-(--gray-1) rounded-full border border-(--gray-2)">
+            <button onClick={previousMonth} className="p-3 hover:bg-(--gray-2) rounded-lg">
               <ChevronLeft className="w-5 h-5" />
             </button>
             <span className="px-6 font-medium">{monthName}</span>
-            <button onClick={nextMonth} className="p-3 hover:bg-slate-200 rounded-lg">
+            <button onClick={nextMonth} className="p-3 hover:bg-(--gray-2) rounded-lg">
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
@@ -140,7 +140,7 @@ export default function PlanRequestCalendar() {
 
         <div className="grid grid-cols-7 gap-2 text-center">
           {["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"].map((d) => (
-            <div key={d} className="font-bold text-slate-500 py-3 text-lg">
+            <div key={d} className="font-bold text-(--gray-5) py-3 text-lg">
               {d}
             </div>
           ))}
@@ -155,14 +155,14 @@ export default function PlanRequestCalendar() {
                 key={i}
                 className={`
                   aspect-square rounded-lg p-3 flex flex-col justify-between text-left
-                  ${!day ? "bg-transparent" : isZero ? "bg-red-600 text-white" : isSelected ? "bg-blue-600 text-white" : "bg-gray-50"}
+                  ${!day ? "bg-transparent" : isZero ? "bg-(--destructive) text-(--light)" : isSelected ? "bg-(--primary) text-(--light)" : "bg-(--gray-0)"}
                 `}
               >
                 {day && (
                   <>
                     <span className="text-3xl font-medium">{day}</span>
                     {calls !== null ? (
-                      <span className={`text-sm ${isZero ? "text-white" : "text-slate-500"}`}>
+                      <span className={`text-sm ${isZero ? "text-(--light)" : "text-(--gray-5)"}`}>
                         {isZero ? "0 Calls" : `${calls} Calls`}
                       </span>
                     ) : null}

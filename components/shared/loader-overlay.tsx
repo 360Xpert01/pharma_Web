@@ -86,8 +86,8 @@ const LoaderOverlay: React.FC<LoaderOverlayProps> = ({
   const SpinnerComponent = SpinnerVariants[variant];
 
   // Color for spinner and text
-  const loaderColor = "text-white";
-  const textColor = "text-black";
+  const loaderColor = "text-(--light)";
+  const textColor = "text-(--dark)";
 
   return (
     <div

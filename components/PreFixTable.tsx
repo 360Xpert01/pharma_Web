@@ -42,22 +42,20 @@ export default function PrefixListComponent() {
           />
         ) : (
           <div className="bg-[var(--background)] rounded-2xl shadow-soft border border-(--gray-1) overflow-hidden">
-            <div className="px-6 py-4">
-              <TableColumnHeader
-                columns={[
-                  { label: "Entity Name", className: "flex-1" },
-                  { label: "Prefix Code", className: "flex-1" },
-                  { label: "Example", className: "" },
-                ]}
-                containerClassName="flex items-center px-6 py-2"
-                showBackground={false}
-              />
-            </div>
-            <div className="px-8  space-y-6">
+            <TableColumnHeader
+              columns={[
+                { label: "Entity Name", className: "flex-1" },
+                { label: "Prefix Code", className: "flex-1" },
+                { label: "Example", className: "" },
+              ]}
+              containerClassName="flex items-center"
+              showBackground={false}
+            />
+            <div className="px-3 space-y-6">
               {prefixes.map((item: any, index: number) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between py-4 px-6  border border-(--gray-2) rounded-xl"
+                  className="flex items-center justify-between py-3 px-3 border border-(--gray-2) rounded-xl"
                 >
                   {/* Table Name */}
                   <div className="text-lg font-medium w-[20%] text-(--gray-8)">{item.entity}</div>

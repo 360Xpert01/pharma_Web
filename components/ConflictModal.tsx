@@ -117,7 +117,7 @@ export default function ConflictModal({ isOpen, onClose }: ConflictModalProps) {
             <div
               key={product.id}
               className={`border border-(--gray-1) rounded-2xl transition-all duration-200 ${
-                product.isExpanded ? "bg-gray-50/50" : "bg-(--light)"
+                product.isExpanded ? "bg-(--gray-0)" : "bg-(--light)"
               }`}
             >
               {/* Product Header */}
@@ -126,7 +126,7 @@ export default function ConflictModal({ isOpen, onClose }: ConflictModalProps) {
                 onClick={() => toggleExpand(product.id)}
               >
                 <div className="flex items-center gap-4">
-                  <span className="font-bold text-gray-900 text-lg">{product.name}</span>
+                  <span className="font-bold text-(--gray-9) text-lg">{product.name}</span>
                   <div className="flex items-center gap-2">
                     {product.isExpanded && (
                       <div className="flex -space-x-2">

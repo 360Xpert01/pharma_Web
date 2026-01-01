@@ -175,18 +175,18 @@ export default function LoginScreen() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-(--primary-0) to-(--primary-1) flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="bg-(--background) rounded-xl shadow-soft border border-gray-100 overflow-hidden">
+        <div className="bg-(--background) rounded-xl shadow-soft border border-(--gray-1) overflow-hidden">
           <div className="p-10 space-y-8">
             <div className="text-center">
-              <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
-              <p className="text-gray-500 mt-2">Login with your email</p>
+              <h1 className="text-3xl font-bold text-(--gray-9)">Welcome Back</h1>
+              <p className="text-(--gray-5) mt-2">Login with your email</p>
             </div>
 
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-(--gray-7) mb-2">
                   Enter your Email
                 </label>
                 <input
@@ -199,20 +199,22 @@ export default function LoginScreen() {
                     }
                   }}
                   placeholder="user@example.com"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-base"
+                  className="w-full px-4 py-3 border border-(--gray-3) rounded-lg focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none transition-all text-base"
                   disabled={isOtpSent}
                 />
               </div>
-              {userNotFound && <p className="text-red-600 text-sm">User not found</p>}
+              {userNotFound && <p className="text-(--destructive) text-sm">User not found</p>}
               {otpSentState && (
-                <p className="text-red-600 text-sm">An OTP has already been sent to this email.</p>
+                <p className="text-(--destructive) text-sm">
+                  An OTP has already been sent to this email.
+                </p>
               )}
 
               {!isOtpSent ? (
                 <button
                   onClick={handleSendOTP}
                   disabled={loading || !email.includes("@")}
-                  className="w-full py-3.5 bg-blue-600 text-white cursor-pointer font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 shadow-soft hover:shadow-soft flex items-center justify-center gap-2"
+                  className="w-full py-3.5 bg-(--primary) text-(--light) cursor-pointer font-semibold rounded-lg hover:bg-(--primary-2) disabled:bg-(--gray-3) disabled:cursor-not-allowed transition-all duration-200 shadow-soft hover:shadow-soft flex items-center justify-center gap-2"
                 >
                   {loading ? (
                     <>
@@ -226,7 +228,7 @@ export default function LoginScreen() {
               ) : (
                 <>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-4 text-center">
+                    <label className="block text-sm font-medium text-(--gray-7) mb-4 text-center">
                       Enter 4-Digit OTP
                     </label>
                     <div className="flex justify-center gap-4">
@@ -240,14 +242,14 @@ export default function LoginScreen() {
                           onChange={(e) => handleOtpChange(index, e.target.value)}
                           onKeyDown={(e) => handleKeyDown(index, e)}
                           disabled={isVerifying}
-                          className="w-16 h-16 text-center text-2xl font-bold border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 outline-none transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+                          className="w-16 h-16 text-center text-2xl font-bold border-2 border-(--gray-3) rounded-xl focus:border-(--primary) focus:ring-4 focus:ring-(--primary)/20 outline-none transition-all disabled:bg-(--gray-1) disabled:cursor-not-allowed"
                         />
                       ))}
                     </div>
 
                     {/* Verification Status */}
                     {isVerifying && (
-                      <div className="mt-4 flex items-center justify-center gap-2 text-blue-600">
+                      <div className="mt-4 flex items-center justify-center gap-2 text-(--primary)">
                         <RotateCw className="w-5 h-5 animate-spin" />
                         <span className="text-sm font-medium">Verifying OTP...</span>
                       </div>
@@ -255,7 +257,7 @@ export default function LoginScreen() {
                   </div>
 
                   {InvalidOtp && (
-                    <p className="text-red-600 text-sm text-center">
+                    <p className="text-(--destructive) text-sm text-center">
                       Invalid OTP. Please try again.
                     </p>
                   )}
@@ -265,7 +267,7 @@ export default function LoginScreen() {
                     <button
                       onClick={handleResendOTP}
                       disabled={loading || countdown > 0 || isVerifying}
-                      className="text-sm text-blue-600 hover:text-blue-700 disabled:text-gray-400 disabled:cursor-not-allowed underline cursor-pointer transition"
+                      className="text-sm text-(--primary) hover:text-(--primary-2) disabled:text-(--gray-4) disabled:cursor-not-allowed underline cursor-pointer transition"
                     >
                       {countdown > 0 ? `Resend OTP in ${countdown}s` : "Resend OTP"}
                     </button>
@@ -276,7 +278,7 @@ export default function LoginScreen() {
           </div>
         </div>
 
-        <div className="text-center py-6 text-sm text-gray-500">Pulse by CRM • © 2025</div>
+        <div className="text-center py-6 text-sm text-(--gray-5)">Pulse by CRM • © 2025</div>
       </div>
     </div>
   );

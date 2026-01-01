@@ -120,14 +120,12 @@ export default function DoctorsTable() {
         />
       ) : (
         <>
-          <div className="px-7 pt-4">
-            <TableColumnHeader columns={doctorColumns} gridCols={12} />
-          </div>
+          <TableColumnHeader columns={doctorColumns} gridCols={12} />
 
           {doctorsData.map((doctor, index) => (
             <div
               key={doctor.id}
-              className={`px-3 py-1 hover:bg-(--gray-0) transition-colors flex items-center ${
+              className={`px-3 py-3 hover:bg-(--gray-0) transition-colors flex items-center ${
                 index !== doctorsData.length - 1 ? "" : ""
               }`}
             >
@@ -158,7 +156,7 @@ export default function DoctorsTable() {
                   <span
                     className={`px-12 py-1 rounded-full text-sm font-medium ${
                       doctor.status === "Active"
-                        ? "bg-green-100 text-(--success)"
+                        ? "bg-(--success-0) text-(--success)"
                         : "bg-(--gray-1) text-(--gray-6)"
                     }`}
                   >

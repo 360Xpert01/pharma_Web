@@ -48,13 +48,13 @@ export default function PlanRequestMeetings() {
     <div className="bg-(--background) rounded-lg shadow-soft p-6 h-fit sticky top-6">
       <div className="mb-6 pb-6 ">
         <p className="font-bold text-3xl">September, 11 2025</p>
-        <p className="text-sm text-slate-600 mt-1">Sunday, 12 Call schedule for today</p>
+        <p className="text-sm text-(--gray-6) mt-1">Sunday, 12 Call schedule for today</p>
       </div>
 
       <div className="space-y-3">
         {meetings.map((m) => (
-          <div key={m.id} className="border border-gray-200 rounded-xl p-2 ">
-            <h4 className="font-bold text-slate-900 mb-3">{m.type}</h4>
+          <div key={m.id} className="border border-(--gray-2) rounded-xl p-2 ">
+            <h4 className="font-bold text-(--gray-9) mb-3">{m.type}</h4>
             <div className="flex items-start gap-4">
               <Avatar className="h-12 w-12 mt-1">
                 <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${m.doctor}`} />
@@ -62,12 +62,12 @@ export default function PlanRequestMeetings() {
               </Avatar>
               <div className="flex  items-center gap-5 justify-between text-sm">
                 <div>
-                  <p className="font-semibold text-slate-900">{m.doctor}</p>
-                  <p className="text-slate-600">{m.specialty}</p>
+                  <p className="font-semibold text-(--gray-9)">{m.doctor}</p>
+                  <p className="text-(--gray-6)">{m.specialty}</p>
                 </div>
                 <div className="">
-                  <p className="font-semibold text-slate-800">{m.location}</p>
-                  <p className="text-slate-600 text-xs">{m.address}</p>
+                  <p className="font-semibold text-(--gray-8)">{m.location}</p>
+                  <p className="text-(--gray-6) text-xs">{m.address}</p>
                 </div>
               </div>
             </div>

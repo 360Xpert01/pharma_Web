@@ -4,10 +4,10 @@ import { attendanceData } from "../app/data/mockData";
 
 export default function MonthlyAttendance() {
   return (
-    <div className="w-full bg-(--background) rounded-2xl shadow-soft border border-gray-100 py-4 -mt-4 px-8">
+    <div className="w-full bg-(--background) rounded-2xl shadow-soft border border-(--gray-1) py-4 -mt-4 px-8">
       {/* Header */}
       <div>
-        <h2 className="text-xl font-semibold mt-2 text-gray-900">Monthly Attendance</h2>
+        <h2 className="text-xl font-semibold mt-2 text-(--gray-9)">Monthly Attendance</h2>
       </div>
 
       {/* Content: Left side (date navigator + badges) and Right side (chart) */}
@@ -15,7 +15,7 @@ export default function MonthlyAttendance() {
         {/* Left Side Content */}
         <div className="flex flex-col gap-8">
           {/* Date Navigator */}
-          <div className="flex items-center gap-3 bg-gray-100 text-gray-700 px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-200 transition cursor-pointer w-fit">
+          <div className="flex items-center gap-3 bg-(--gray-1) text-(--gray-7) px-5 py-2.5 rounded-full text-sm font-medium hover:bg-(--gray-2) transition cursor-pointer w-fit">
             <ChevronLeft className="w-4 h-4" />
             <span>September 2025</span>
             <ChevronRight className="w-4 h-4" />
@@ -23,13 +23,13 @@ export default function MonthlyAttendance() {
 
           {/* Status Badges */}
           <div className="flex gap-3">
-            <button className="bg-[#FF6B6B] text-white text-xs px-4 py-1.5 rounded-md font-semibold uppercase cursor-pointer">
+            <button className="bg-(--destructive) text-(--light) text-xs px-4 py-1.5 rounded-md font-semibold uppercase cursor-pointer">
               Absent
             </button>
-            <button className="bg-[#4E9FFF] text-white text-xs px-4 py-1.5 rounded-md font-semibold uppercase cursor-pointer">
+            <button className="bg-(--primary-1) text-(--light) text-xs px-4 py-1.5 rounded-md font-semibold uppercase cursor-pointer">
               Offsite
             </button>
-            <button className="bg-[#00D4AA] text-white text-xs px-4 py-1.5 rounded-md font-semibold uppercase cursor-pointer">
+            <button className="bg-(--success) text-(--light) text-xs px-4 py-1.5 rounded-md font-semibold uppercase cursor-pointer">
               Onsite
             </button>
           </div>
@@ -57,8 +57,8 @@ export default function MonthlyAttendance() {
           </ResponsiveContainer>
           {/* Center Label */}
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
-            <div className="text-3xl font-bold text-gray-900">31</div>
-            <div className="text-xs text-gray-500 font-medium">DAYS</div>
+            <div className="text-3xl font-bold text-(--gray-9)">31</div>
+            <div className="text-xs text-(--gray-5) font-medium">DAYS</div>
           </div>
         </div>
       </div>

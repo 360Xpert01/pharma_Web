@@ -438,7 +438,7 @@ const Navbar = () => {
             <div className="relative" ref={profileRef}>
               <div
                 onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                className="flex items-center gap-2 p-2 text-(--gray-7) hover:text-(--gray-9) hover:bg-gray-50 rounded-lg transition-colors cursor-pointer"
+                className="flex items-center gap-2 p-2 text-(--gray-7) hover:text-(--gray-9) hover:bg-(--gray-0) rounded-lg transition-colors cursor-pointer"
               >
                 <div className="w-8 h-8 bg-(--gray-2) rounded-full flex items-center justify-center">
                   <Image
@@ -480,7 +480,7 @@ const Navbar = () => {
                   {/* Logout Button */}
                   <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                    className="w-full flex items-center gap-3 px-4 py-3 text-sm text-(--destructive) hover:bg-(--destructive-0) transition-colors cursor-pointer"
                   >
                     <LogOut className="w-4 h-4" />
                     <span className="font-medium">Logout</span>
@@ -508,7 +508,7 @@ const Navbar = () => {
                   e.stopPropagation();
                   item.items && toggleClick(item.label);
                 }}
-                className={`flex items-center  gap-1 cursor-pointer px-2 py-3 text-sm font-medium transition-all duration-200 hover:bg-gray-50 ${
+                className={`flex items-center  gap-1 cursor-pointer px-2 py-3 text-sm font-medium transition-all duration-200 hover:bg-(--gray-0) ${
                   activeDropdown === item.label ? "text-(--primary)" : "text-(--gray-6)"
                 }`}
               >
@@ -532,7 +532,7 @@ const Navbar = () => {
             ) : (
               <Link
                 href={item.href || "#"}
-                className="px-4 py-3 text-sm font-medium hover:text-(--primary) hover:bg-gray-50 transition-all"
+                className="px-4 py-3 text-sm font-medium hover:text-(--primary) hover:bg-(--gray-0) transition-all"
               >
                 {item.label}
               </Link>

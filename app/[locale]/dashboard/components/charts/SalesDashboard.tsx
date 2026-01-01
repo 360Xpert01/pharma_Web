@@ -87,13 +87,13 @@ export default function SalesDashboard() {
     change?: string;
     trend?: "up" | "down";
   }) => (
-    <div className="bg-(--background) rounded-lg p-4 shadow-soft border border-gray-100">
-      <p className="text-sm text-gray-600">{title}</p>
+    <div className="bg-(--background) rounded-lg p-4 shadow-soft border border-(--gray-1)">
+      <p className="text-sm text-(--gray-6)">{title}</p>
       <div className="flex items-end gap-2 mt-1">
         <p className="text-2xl font-semibold">{value}</p>
         {change && (
           <p
-            className={`text-sm flex items-center ${trend === "up" ? "text-green-600" : "text-red-600"}`}
+            className={`text-sm flex items-center ${trend === "up" ? "text-(--success)" : "text-(--destructive)"}`}
           >
             {trend === "up" ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
             {change}
@@ -105,49 +105,51 @@ export default function SalesDashboard() {
 
   return (
     <>
-      <div className=" text-black">
+      <div className=" text-(--dark)">
         {/* Header */}
         <div className="bg-(--background) w-full  rounded-xl shadow-soft p-2 mb-2 flex justify-between ">
           <div className="flex gap-2 items-center">
-            <div className="w-16 h-16 rounded-full bg-gray-200 border-2 border-dashed" />
+            <div className="w-16 h-16 rounded-full bg-(--gray-2) border-2 border-dashed" />
             <div className="items-center">
               <h1 className="text-xl font-semibold">Mohammad Amir</h1>
-              <p className="text-sm text-gray-600">Sales Representative</p>
+              <p className="text-sm text-(--gray-6)">Sales Representative</p>
             </div>
           </div>
 
-          <p className="flex text-medium items-center text-gray-500">m.amir2002@gmail.com</p>
-          <p className="flex text-xl font-bold text-black items-center ">
+          <p className="flex text-medium items-center text-(--gray-5)">m.amir2002@gmail.com</p>
+          <p className="flex text-xl font-bold text-(--dark) items-center ">
             358 Calls
-            <span className="text-medium items-center text-gray-400">/Month</span>
+            <span className="text-medium items-center text-(--gray-4)">/Month</span>
           </p>
-          <p className="flex text-xl font-bold text-black items-center">Diabatics</p>
-          <p className="flex text-xl font-bold text-black items-center">Doctor</p>
-          <p className="flex text-xl font-bold text-black items-center">75.08k</p>
-          <p className="flex text-xl font-bold text-black items-center">445.k</p>
+          <p className="flex text-xl font-bold text-(--dark) items-center">Diabatics</p>
+          <p className="flex text-xl font-bold text-(--dark) items-center">Doctor</p>
+          <p className="flex text-xl font-bold text-(--dark) items-center">75.08k</p>
+          <p className="flex text-xl font-bold text-(--dark) items-center">445.k</p>
 
           {/* <StatCard title="Calls/Month" value="325" />
             <StatCard title="" value="Diabatics" />
             <StatCard title="" value="Doctor" />
             <StatCard title="" value="75.08K" change="↑" trend="up" />
             <StatCard title="" value="445.k" change="↓" trend="down" /> */}
-          <button className="flex items-center gap-1 text-blue-600 text-sm font-medium">
+          <button className="flex items-center gap-1 text-(--primary) text-sm font-medium">
             View Details <ChevronRight className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="grid bg-gray-100 rounded-lg p-3  grid-cols-1 lg:grid-cols-4 gap-2">
+        <div className="grid bg-(--gray-1) rounded-lg p-3  grid-cols-1 lg:grid-cols-4 gap-2">
           {/* Monthly Targets */}
           <div className="bg-(--background) rounded-xl shadow-soft p-6">
             <h2 className="text-lg font-semibold mb-4">Monthly Targets</h2>
             <div className="flex justify-around mb-6">
               <div className="text-center">
-                <p className="text-3xl font-bold text-blue-600">{monthlyTargets.thisMonth}</p>
-                <p className="text-sm text-gray-600">This month</p>
+                <p className="text-3xl font-bold text-(--primary)">{monthlyTargets.thisMonth}</p>
+                <p className="text-sm text-(--gray-6)">This month</p>
               </div>
               <div className="text-center">
-                <p className="text-3xl font-bold text-red-700 ">{monthlyTargets.lastMonth}</p>
-                <p className="text-sm text-gray-600">Last month</p>
+                <p className="text-3xl font-bold text-(--destructive) ">
+                  {monthlyTargets.lastMonth}
+                </p>
+                <p className="text-sm text-(--gray-6)">Last month</p>
               </div>
             </div>
 
@@ -180,16 +182,16 @@ export default function SalesDashboard() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <div />
-                        <span className="text-sm font-medium text-blue-500">{p.name}</span>
+                        <span className="text-sm font-medium text-(--primary)">{p.name}</span>
                       </div>
-                      <span className="font-medium text-sm text-gray-900">
+                      <span className="font-medium text-sm text-(--gray-9)">
                         {p.value.toFixed(1)}K
                       </span>
                     </div>
 
                     {/* Progress Bar (capped at 90%) */}
                     <div className="flex items-center">
-                      <div className="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
+                      <div className="flex-1 bg-(--gray-2) rounded-full h-2 overflow-hidden">
                         <div
                           className="h-full transition-all duration-500 ease-out"
                           style={{
@@ -232,7 +234,7 @@ export default function SalesDashboard() {
                 //   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: b.color }} />
                 //   <span>{b.name}</span>
                 // </div>
-                <button style={{ backgroundColor: b.color }} className="text-white p-2 rounded">
+                <button style={{ backgroundColor: b.color }} className="text-(--light) p-2 rounded">
                   {b.name}
                 </button>
               ))}
@@ -246,20 +248,20 @@ export default function SalesDashboard() {
                 <div>
                   <h2 className="text-lg font-bold">Monthly Attendance</h2>
                 </div>
-                <div className="flex  items-center  text-black p-1  border border-gray-400  bg-gray-200 rounded-full ">
+                <div className="flex  items-center  text-(--dark) p-1  border border-(--gray-4)  bg-(--gray-2) rounded-full ">
                   <ChevronLeft className="w-4 h-4" />
                   <span className="text-bold">September 2025</span>
                   <ChevronRight className="w-4 h-4" />
                 </div>
                 <div className="flex  gap-4 text-xs">
                   <div className="flex items-center  gap-3">
-                    <button className="bg-red-400 p-2 text-white text-bold rounded-md">
+                    <button className="bg-(--destructive) p-2 text-(--light) text-bold rounded-md">
                       Absent
                     </button>
-                    <button className="bg-blue-400 p-2 text-white text-bold rounded-md">
+                    <button className="bg-(--primary) p-2 text-(--light) text-bold rounded-md">
                       Offsite
                     </button>
-                    <button className="bg-green-400 p-2 text-white text-bold rounded-md">
+                    <button className="bg-(--success) p-2 text-(--light) text-bold rounded-md">
                       Onsite
                     </button>
                   </div>
@@ -291,7 +293,7 @@ export default function SalesDashboard() {
               <div>
                 <h2 className="text-lg font-semibold">Sale & Calls</h2>
               </div>
-              <div className="flex items-center gap-1 text-xs text-blue-600 bg-(--background)  rounded-md ">
+              <div className="flex items-center gap-1 text-xs text-(--primary) bg-(--background)  rounded-md ">
                 <ChevronLeft className="w-4 h-4" />
                 <span>September 2025</span>
                 <ChevronRight className="w-4 h-4" />
@@ -303,20 +305,20 @@ export default function SalesDashboard() {
               <div className="bg-(--background) rounded-xl shadow-soft p-2">
                 <div className="space-y-4">
                   <div>
-                    <p className="text-sm text-gray-600">Today sales</p>
+                    <p className="text-sm text-(--gray-6)">Today sales</p>
                     <span className="text-2xl font-semibold">27</span>
-                    <span className="text-xs text-gray-500">September 2025</span>
+                    <span className="text-xs text-(--gray-5)">September 2025</span>
                   </div>
                   {/* Progress Bars with Time Labels */}
                   <div className="flex items-end gap-4 justify-center">
                     {salesProgress.map(({ time, value }) => (
                       <div key={time} className="flex flex-col items-center">
-                        <span className="text-sm text-gray-600 mb-2">{time}</span>
+                        <span className="text-sm text-(--gray-6) mb-2">{time}</span>
 
                         {/* Progress Bar */}
-                        <div className="w-6 h-4 bg-gray-200 rounded-full overflow-hidden relative">
+                        <div className="w-6 h-4 bg-(--gray-2) rounded-full overflow-hidden relative">
                           <div
-                            className="absolute inset-0 bg-blue-500 rounded-full transition-all duration-700 ease-out"
+                            className="absolute inset-0 bg-(--primary) rounded-full transition-all duration-700 ease-out"
                             style={{ width: `${value * 100}%` }}
                           />
                         </div>
@@ -331,11 +333,11 @@ export default function SalesDashboard() {
                 <h2 className="text-lg font-semibold mb-4">Total Calls</h2>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-xl text-blue-300 aline-center font-bold">15</span>
+                    <span className="text-xl text-(--primary-1) aline-center font-bold">15</span>
                     <span className="text-sm"> visitors per day</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-xl text-red-300 font-bold ">05</span>
+                    <span className="text-xl text-(--destructive-1) font-bold ">05</span>
                     <span className="text-sm "> Call Missed</span>
                   </div>
                 </div>

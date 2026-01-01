@@ -30,7 +30,7 @@ export default function MonthlyTargetCard() {
           <span className="text-4xl font-bold text-(--primary)">19,8K</span>
           <div className="flex items-center gap-1 pb-1">
             <TrendingUp className="w-4 h-4 text-(--success)" />
-            <span className="text-sm font-semibold text-(--success) bg-blue-50 px-2 py-0.5 rounded-full">
+            <span className="text-sm font-semibold text-(--success) bg-(--primary-0) px-2 py-0.5 rounded-full">
               +12.88%
             </span>
           </div>
@@ -42,8 +42,8 @@ export default function MonthlyTargetCard() {
             <AreaChart data={monthlyData} margin={{ top: 10, left: 0, right: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="gradientBlue" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#3B82F6" stopOpacity={0.4} />
-                  <stop offset="100%" stopColor="#3B82F6" stopOpacity={0.05} />
+                  <stop offset="0%" stopColor="#0f72f4" stopOpacity={0.4} />
+                  <stop offset="100%" stopColor="#0f72f4" stopOpacity={0.05} />
                 </linearGradient>
               </defs>
               <CartesianGrid stroke="none" />
@@ -52,7 +52,7 @@ export default function MonthlyTargetCard() {
               <Area
                 type="monotone"
                 dataKey="value"
-                stroke="#3B82F6"
+                stroke="#0f72f4"
                 strokeWidth={3}
                 fill="url(#gradientBlue)"
                 dot={false}
@@ -72,7 +72,7 @@ export default function MonthlyTargetCard() {
           <span className="text-3xl font-bold text-(--destructive)">1,321</span>
           <div className="flex items-center gap-1 pb-1">
             <TrendingDown className="w-4 h-4 text-(--destructive)" />
-            <span className="text-sm font-semibold text-(--destructive) bg-red-50 px-2 py-0.5 rounded-full">
+            <span className="text-sm font-semibold text-(--destructive) bg-(--destructive-0) px-2 py-0.5 rounded-full">
               -3.53%
             </span>
           </div>
@@ -84,8 +84,8 @@ export default function MonthlyTargetCard() {
             <AreaChart data={lastMonthData} margin={{ top: 10, left: 0, right: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="gradientRed" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#EF4444" stopOpacity={0.4} />
-                  <stop offset="100%" stopColor="#EF4444" stopOpacity={0.05} />
+                  <stop offset="0%" stopColor="#e02723" stopOpacity={0.4} />
+                  <stop offset="100%" stopColor="#e02723" stopOpacity={0.05} />
                 </linearGradient>
               </defs>
               <CartesianGrid stroke="none" />
@@ -94,7 +94,7 @@ export default function MonthlyTargetCard() {
               <Area
                 type="monotone"
                 dataKey="value"
-                stroke="#EF4444"
+                stroke="#e02723"
                 strokeWidth={3}
                 fill="url(#gradientRed)"
                 dot={false}
