@@ -1,5 +1,8 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
+import TableLoadingState from "@/components/shared/table/TableLoadingState";
+import TableErrorState from "@/components/shared/table/TableErrorState";
+import TableEmptyState from "@/components/shared/table/TableEmptyState";
 
 const tableData = [
   {
@@ -97,79 +100,99 @@ const tableData = [
 const DEFAULT_AVATAR = "/girlPic.svg";
 
 export default function DcrTable() {
+  // Simulate loading and error states (replace with actual API call state)
+  const [loading] = useState(false);
+  const [error] = useState<string | null>(null);
+
+  const handleRetry = () => {
+    // Add retry logic here when connected to API
+    window.location.reload();
+  };
+
   return (
-    <div className="w-full bg-(--gray-0) p-4">
-      <div className="space-y-3">
-        {tableData.map((row) => (
-          <div
-            key={row.id}
-            className="bg-[var(--background)] rounded-2xl border border-(--gray-2) shadow-sm hover:shadow-md transition-shadow"
-          >
-            <div className="px-6 py-5">
-              {/* 12-column grid */}
-              <div className="w-[100%] flex justify-between items-center text-sm">
-                {/* Employee 1 – Left aligned */}
-                <div className="w-[17%] flex  items-center gap-3">
-                  <img
-                    src={DEFAULT_AVATAR}
-                    alt={row.employee1.name}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-md flex-shrink-0"
-                  />
-                  <div>
-                    <p className="font-bold text-(--gray-9)">{row.employee1.name}</p>
-                    <p className="text-xs text-(--gray-5)">{row.employee1.role}</p>
+    <div className="w-full p-4">
+      {loading ? (
+        <TableLoadingState variant="skeleton" rows={5} columns={6} message="Loading DCR data..." />
+      ) : error ? (
+        <TableErrorState error={error} onRetry={handleRetry} title="Failed to load DCR data" />
+      ) : tableData.length === 0 ? (
+        <TableEmptyState
+          message="No DCR records found"
+          description="There are currently no doctor call records to display."
+        />
+      ) : (
+        <div className="space-y-3">
+          {tableData.map((row) => (
+            <div
+              key={row.id}
+              className="bg-[var(--background)] rounded-2xl border border-(--gray-2) shadow-sm hover:shadow-md transition-shadow"
+            >
+              <div className="px-6 py-5">
+                {/* 12-column grid */}
+                <div className="w-[100%] flex justify-between items-center text-sm">
+                  {/* Employee 1 – Left aligned */}
+                  <div className="w-[17%] flex  items-center gap-3">
+                    <img
+                      src={DEFAULT_AVATAR}
+                      alt={row.employee1.name}
+                      className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-md flex-shrink-0"
+                    />
+                    <div>
+                      <p className="font-bold text-(--gray-9)">{row.employee1.name}</p>
+                      <p className="text-xs text-(--gray-5)">{row.employee1.role}</p>
+                    </div>
                   </div>
-                </div>
 
-                {/* Employee 2 – Left aligned */}
-                <div className="w-[17%] flex items-center gap-3">
-                  <img
-                    src={DEFAULT_AVATAR}
-                    alt={row.employee2.name}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-md flex-shrink-0"
-                  />
-                  <div>
-                    <p className="font-bold text-(--gray-9)">{row.employee2.name}</p>
-                    <p className="text-xs text-(--gray-5)">{row.employee2.role}</p>
+                  {/* Employee 2 – Left aligned */}
+                  <div className="w-[17%] flex items-center gap-3">
+                    <img
+                      src={DEFAULT_AVATAR}
+                      alt={row.employee2.name}
+                      className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-md flex-shrink-0"
+                    />
+                    <div>
+                      <p className="font-bold text-(--gray-9)">{row.employee2.name}</p>
+                      <p className="text-xs text-(--gray-5)">{row.employee2.role}</p>
+                    </div>
                   </div>
-                </div>
 
-                {/* Specialty – Left aligned */}
-                <div className="w-[10%]">
-                  <p className="font-semibold text-(--gray-8)">{row.specialty}</p>
-                </div>
+                  {/* Specialty – Left aligned */}
+                  <div className="w-[10%]">
+                    <p className="font-semibold text-(--gray-8)">{row.specialty}</p>
+                  </div>
 
-                {/* Area – Left aligned */}
-                <div className="w-[13%]">
-                  <p className="font-semibold text-(--gray-7)">{row.area}</p>
-                </div>
+                  {/* Area – Left aligned */}
+                  <div className="w-[13%]">
+                    <p className="font-semibold text-(--gray-7)">{row.area}</p>
+                  </div>
 
-                {/* Doctor – Left aligned */}
-                <div className="w-[15%]">
-                  <p className="font-bold text-(--gray-9)">{row.doctor}</p>
-                </div>
+                  {/* Doctor – Left aligned */}
+                  <div className="w-[15%]">
+                    <p className="font-bold text-(--gray-9)">{row.doctor}</p>
+                  </div>
 
-                {/* Medicine – Left aligned */}
-                <div className="w-[10%]">
-                  <p className="font-bold text-(--gray-9)">{row.medicine}</p>
-                </div>
+                  {/* Medicine – Left aligned */}
+                  <div className="w-[10%]">
+                    <p className="font-bold text-(--gray-9)">{row.medicine}</p>
+                  </div>
 
-                {/* Strengths – Chips start from left */}
-                <div className="w-[20%] flex flex-wrap gap-2">
-                  {row.strengths.map((s, i) => (
-                    <span
-                      key={i}
-                      className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-full text-xs font-medium whitespace-nowrap"
-                    >
-                      {s}
-                    </span>
-                  ))}
+                  {/* Strengths – Chips start from left */}
+                  <div className="w-[20%] flex flex-wrap gap-2">
+                    {row.strengths.map((s, i) => (
+                      <span
+                        key={i}
+                        className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-full text-xs font-medium whitespace-nowrap"
+                      >
+                        {s}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

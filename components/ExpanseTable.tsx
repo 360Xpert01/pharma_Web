@@ -1,6 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import TableLoadingState from "@/components/shared/table/TableLoadingState";
+import TableErrorState from "@/components/shared/table/TableErrorState";
+import TableEmptyState from "@/components/shared/table/TableEmptyState";
 
 interface ExpenseRow {
   id: string;
@@ -86,86 +89,113 @@ const expenseData: ExpenseRow[] = [
   },
 ];
 
-const DEFAULT_AVATAR = "/girlPic.svg"; // ya apna placeholder use karo
+const DEFAULT_AVATAR = "/girlPic.svg";
 
 export default function ExpenseApprovalTable() {
+  // Simulate loading and error states (replace with actual API call state)
+  const [loading] = useState(false);
+  const [error] = useState<string | null>(null);
+
+  const handleRetry = () => {
+    // Add retry logic here when connected to API
+    window.location.reload();
+  };
+
   return (
     <div className="w-full bg-(--gray-0)/50">
-      <div className="space-y-1 p-4 ">
-        {expenseData.map((row) => (
-          <div
-            key={row.id}
-            className="bg-[var(--background)] rounded-2xl border border-(--gray-2) "
-          >
-            <div className="p-3">
-              <div className="flex items-center justify-between gap-6 text-sm">
-                {/* Employee 1 */}
-                <div className="flex w-40 items-center gap-3 ">
-                  <img
-                    src={row.employee1.avatar || DEFAULT_AVATAR}
-                    alt={row.employee1.name}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-md"
-                  />
-                  <div className="truncate">
-                    <div className="font-bold text-(--gray-9) truncate">{row.employee1.name}</div>
-                    <div className="text-xs text-(--gray-5) truncate">{row.employee1.role}</div>
+      {loading ? (
+        <div className="p-4">
+          <TableLoadingState
+            variant="skeleton"
+            rows={5}
+            columns={5}
+            message="Loading expenses..."
+          />
+        </div>
+      ) : error ? (
+        <TableErrorState error={error} onRetry={handleRetry} title="Failed to load expenses" />
+      ) : expenseData.length === 0 ? (
+        <TableEmptyState
+          message="No expense data found"
+          description="There are currently no expense records to display."
+        />
+      ) : (
+        <div className="space-y-1 p-4 ">
+          {expenseData.map((row) => (
+            <div
+              key={row.id}
+              className="bg-[var(--background)] rounded-2xl border border-(--gray-2) "
+            >
+              <div className="p-3">
+                <div className="flex items-center justify-between gap-6 text-sm">
+                  {/* Employee 1 */}
+                  <div className="flex w-40 items-center gap-3 ">
+                    <img
+                      src={row.employee1.avatar || DEFAULT_AVATAR}
+                      alt={row.employee1.name}
+                      className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-md"
+                    />
+                    <div className="truncate">
+                      <div className="font-bold text-(--gray-9) truncate">{row.employee1.name}</div>
+                      <div className="text-xs text-(--gray-5) truncate">{row.employee1.role}</div>
+                    </div>
                   </div>
-                </div>
 
-                {/* Employee 2 */}
-                <div className="flex items-center gap-3 ">
-                  <img
-                    src={row.employee2.avatar || DEFAULT_AVATAR}
-                    alt={row.employee2.name}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-md"
-                  />
-                  <div className="truncate">
-                    <div className="font-bold text-(--gray-9) truncate">{row.employee2.name}</div>
-                    <div className="text-xs text-(--gray-5) truncate">{row.employee2.role}</div>
+                  {/* Employee 2 */}
+                  <div className="flex items-center gap-3 ">
+                    <img
+                      src={row.employee2.avatar || DEFAULT_AVATAR}
+                      alt={row.employee2.name}
+                      className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-md"
+                    />
+                    <div className="truncate">
+                      <div className="font-bold text-(--gray-9) truncate">{row.employee2.name}</div>
+                      <div className="text-xs text-(--gray-5) truncate">{row.employee2.role}</div>
+                    </div>
                   </div>
-                </div>
 
-                {/* Total Expense */}
-                <div className="text-center">
-                  <div className="text-xs text-(--gray-5)">Total Expense</div>
-                  <div className="font-bold text-(--warning-2) text-lg">
-                    {row.totalExpense.toLocaleString()}
-                    <span className="font-bold text-(--warning-2) pl-1 text-sm">PKR</span>
+                  {/* Total Expense */}
+                  <div className="text-center">
+                    <div className="text-xs text-(--gray-5)">Total Expense</div>
+                    <div className="font-bold text-(--warning-2) text-lg">
+                      {row.totalExpense.toLocaleString()}
+                      <span className="font-bold text-(--warning-2) pl-1 text-sm">PKR</span>
+                    </div>
                   </div>
-                </div>
 
-                {/* Approved */}
-                <div className="text-center">
-                  <div className="text-xs text-(--gray-5)">Approved</div>
-                  <div className="font-bold text-(--success) text-lg">
-                    {row.approved.toLocaleString()}
-                    <span className="font-bold text-(--success) pl-1 text-sm">PKR</span>
+                  {/* Approved */}
+                  <div className="text-center">
+                    <div className="text-xs text-(--gray-5)">Approved</div>
+                    <div className="font-bold text-(--success) text-lg">
+                      {row.approved.toLocaleString()}
+                      <span className="font-bold text-(--success) pl-1 text-sm">PKR</span>
+                    </div>
                   </div>
-                </div>
 
-                {/* Rejected */}
-                <div className="text-center">
-                  <div className="text-xs text-(--gray-5)">Rejected</div>
-                  <div className="font-bold text-(--destructive) text-lg">
-                    {row.rejected.toLocaleString()}
-                    <span className="font-bold text-(--destructive) pl-1 text-sm">PKR</span>
+                  {/* Rejected */}
+                  <div className="text-center">
+                    <div className="text-xs text-(--gray-5)">Rejected</div>
+                    <div className="font-bold text-(--destructive) text-lg">
+                      {row.rejected.toLocaleString()}
+                      <span className="font-bold text-(--destructive) pl-1 text-sm">PKR</span>
+                    </div>
                   </div>
-                </div>
 
-                {/* Action Buttons */}
-                <div className="flex gap-3">
-                  <button className="px-6 py-1 bg-(--primary) text-(--light) font-medium rounded-lg hover:bg-(--primary-2) transition shadow-sm">
-                    Approve
-                  </button>
-                  <button className="px-6 py-1 bg-[var(--background)] text-(--destructive) font-medium rounded-lg border border-(--destructive) hover:bg-(--destructive-0) transition shadow-sm">
-                    Reject
-                  </button>
+                  {/* Action Buttons */}
+                  <div className="flex gap-3">
+                    <button className="px-6 py-1 bg-(--primary) text-(--light) font-medium rounded-lg hover:bg-(--primary-2) transition shadow-sm">
+                      Approve
+                    </button>
+                    <button className="px-6 py-1 bg-[var(--background)] text-(--destructive) font-medium rounded-lg border border-(--destructive) hover:bg-(--destructive-0) transition shadow-sm">
+                      Reject
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

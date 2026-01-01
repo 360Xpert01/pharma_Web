@@ -3,6 +3,9 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { MoreVertical } from "lucide-react";
 import TableColumnHeader from "@/components/TableColumnHeader";
+import TableLoadingState from "@/components/shared/table/TableLoadingState";
+import TableErrorState from "@/components/shared/table/TableErrorState";
+import TableEmptyState from "@/components/shared/table/TableEmptyState";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllGiveaways, resetGiveawaysState } from "@/store/slices/giveaway/getAllGiveawaysSlice";
 
@@ -47,78 +50,94 @@ export default function GiveawayTable() {
     { label: "", className: "w-48" }, // Actions
   ];
 
+  const handleRetry = () => {
+    dispatch(getAllGiveaways());
+  };
+
   return (
     <div className="w-full overflow-hidden">
-      <div className="px-3">
-        <TableColumnHeader
-          columns={giveawayColumns}
-          containerClassName="flex text-sm font-medium gap-4"
-        />
-      </div>
-
       {loading ? (
-        <div className="text-center py-12 text-(--gray-5)">Loading giveaways...</div>
+        <div className="px-3">
+          <TableLoadingState
+            variant="skeleton"
+            rows={5}
+            columns={4}
+            message="Loading giveaways..."
+          />
+        </div>
       ) : error ? (
-        <div className="text-center py-12 text-(--destructive)">{error}</div>
+        <TableErrorState error={error} onRetry={handleRetry} title="Failed to load giveaways" />
       ) : sortedGiveaways.length === 0 ? (
-        <div className="text-center py-12 text-(--gray-5)">No giveaways found</div>
+        <TableEmptyState
+          message="No giveaways found"
+          description="There are currently no giveaways in the system."
+        />
       ) : (
-        sortedGiveaways.map((item) => (
-          <div
-            key={item.id}
-            className="px-3 py-1 hover:bg-(--gray-0) transition-colors flex items-center"
-          >
-            <div className="w-full bg-[var(--background)] rounded-lg p-4 shadow-sm">
-              {/* Perfectly Equal Columns using flex */}
-              <div className="flex items-center text-sm font-medium gap-4">
-                {/* Pulse Code */}
-                <div className="flex-1 font-bold text-(--gray-6) font-mono">
-                  {item.pulseCode || "N/A"}
-                </div>
+        <>
+          <div className="px-3">
+            <TableColumnHeader
+              columns={giveawayColumns}
+              containerClassName="flex text-sm font-medium gap-4"
+            />
+          </div>
 
-                {/* Name */}
-                <div className="flex-1 font-semibold text-(--gray-9)">{item.name}</div>
+          {sortedGiveaways.map((item) => (
+            <div
+              key={item.id}
+              className="px-3 py-1 hover:bg-(--gray-0) transition-colors flex items-center"
+            >
+              <div className="w-full bg-[var(--background)] rounded-lg p-4 shadow-sm">
+                {/* Perfectly Equal Columns using flex */}
+                <div className="flex items-center text-sm font-medium gap-4">
+                  {/* Pulse Code */}
+                  <div className="flex-1 font-bold text-(--gray-6) font-mono">
+                    {item.pulseCode || "N/A"}
+                  </div>
 
-                {/* Category */}
-                <div className="flex-1 font-medium text-(--gray-6)">{item.category}</div>
+                  {/* Name */}
+                  <div className="flex-1 font-semibold text-(--gray-9)">{item.name}</div>
 
-                {/* Product Name */}
-                <div className="flex-1 font-medium text-(--gray-4)">{item.productName}</div>
+                  {/* Category */}
+                  <div className="flex-1 font-medium text-(--gray-6)">{item.category}</div>
 
-                {/* More Options */}
-                <div className="w-44 flex justify-end flex-shrink-0">
-                  <div className="relative">
-                    <button
-                      onClick={() => setOpenId(openId === item.id ? null : item.id)}
-                      className="p-2 text-(--gray-4) hover:text-(--gray-7) hover:bg-(--gray-1) rounded-full transition cursor-pointer"
-                    >
-                      <MoreVertical className="w-5 h-5" />
-                    </button>
+                  {/* Product Name */}
+                  <div className="flex-1 font-medium text-(--gray-4)">{item.productName}</div>
 
-                    {openId === item.id && (
-                      <>
-                        <div className="fixed inset-0 z-40" onClick={() => setOpenId(null)} />
-                        <div className="absolute right-0 top-10 mt-2 w-48 bg-[var(--background)] rounded-lg shadow-lg border border-(--gray-2) z-50">
-                          <div className="py-1">
-                            <button className="w-full text-left px-4 py-2 text-sm text-(--gray-7) hover:bg-(--gray-1) cursor-pointer">
-                              Edit
-                            </button>
-                            <button className="w-full text-left px-4 py-2 text-sm text-(--gray-7) hover:bg-(--gray-1) cursor-pointer">
-                              View Details
-                            </button>
-                            <button className="w-full text-left px-4 py-2 text-sm text-(--destructive) hover:bg-(--gray-1) cursor-pointer">
-                              Delete
-                            </button>
+                  {/* More Options */}
+                  <div className="w-44 flex justify-end flex-shrink-0">
+                    <div className="relative">
+                      <button
+                        onClick={() => setOpenId(openId === item.id ? null : item.id)}
+                        className="p-2 text-(--gray-4) hover:text-(--gray-7) hover:bg-(--gray-1) rounded-full transition cursor-pointer"
+                      >
+                        <MoreVertical className="w-5 h-5" />
+                      </button>
+
+                      {openId === item.id && (
+                        <>
+                          <div className="fixed inset-0 z-40" onClick={() => setOpenId(null)} />
+                          <div className="absolute right-0 top-10 mt-2 w-48 bg-[var(--background)] rounded-lg shadow-lg border border-(--gray-2) z-50">
+                            <div className="py-1">
+                              <button className="w-full text-left px-4 py-2 text-sm text-(--gray-7) hover:bg-(--gray-1) cursor-pointer">
+                                Edit
+                              </button>
+                              <button className="w-full text-left px-4 py-2 text-sm text-(--gray-7) hover:bg-(--gray-1) cursor-pointer">
+                                View Details
+                              </button>
+                              <button className="w-full text-left px-4 py-2 text-sm text-(--destructive) hover:bg-(--gray-1) cursor-pointer">
+                                Delete
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                      </>
-                    )}
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))
+          ))}
+        </>
       )}
     </div>
   );
