@@ -175,7 +175,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-(--primary-0) to-(--primary-1) flex items-center justify-center p-4">
+    <div className="min-h-screen bg-(--gray-0) flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="bg-(--background) rounded-xl shadow-soft border border-(--gray-1) overflow-hidden">
           <div className="p-10 space-y-8">

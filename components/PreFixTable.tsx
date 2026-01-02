@@ -45,28 +45,28 @@ export default function PrefixListComponent() {
         <div>
           <TableColumnHeader
             columns={[
-              { label: "Entity Name", className: "w-[38%] ml-4" },
-              { label: "Prefix Code", className: "w-[40%] ml-4" },
-              { label: "Example", className: "w-[15%] ml-4" },
+              { label: "Entity Name", className: "w-[35%]" },
+              { label: "Prefix Code", className: "w-[35%] text-center" },
+              { label: "Example", className: "w-[30%] text-right pr-2" },
             ]}
-            containerClassName="flex w-[80%]"
+            containerClassName="flex w-[98%] mx-4 pl-4"
             showBackground={false}
           />
 
           {prefixes.map((item: any, index: number) => (
             <div
               key={index}
-              className="px-3 py-3 w-[98%] flex items-center hover:bg-(--gray-0) transition-all cursor-pointer border border-(--gray-2) mx-4 my-3 rounded-2xl bg-[var(--background)]"
+              className="py-3 w-[98%] flex items-center hover:bg-(--gray-0) transition-all cursor-pointer border border-(--gray-2) mx-4 my-3 rounded-2xl bg-[var(--background)]"
             >
-              <div className="w-[33%] text-sm font-bold text-(--gray-9)" title={item.entity}>
+              <div className="w-[35%] text-sm font-bold text-(--gray-9) pl-4" title={item.entity}>
                 {item.entity}
               </div>
 
-              <div className="w-[33%] text-sm text-(--gray-6)" title={item.code}>
+              <div className="w-[35%] text-sm text-(--gray-6) text-center" title={item.code}>
                 {item.code}
               </div>
 
-              <div className="w-[33%] text-sm font-bold text-(--gray-9)">
+              <div className="w-[30%] text-sm font-bold text-(--gray-9) text-right pr-6">
                 {item.code}-{String(index + 1).padStart(2, "0")}
               </div>
             </div>
