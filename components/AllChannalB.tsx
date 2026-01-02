@@ -37,10 +37,10 @@ export default function ChannelsManager() {
 
   // Define columns for the table header - matching EmploySection/CampainTable pattern
   const channelColumns = [
-    { label: "Pulse Code", className: "w-[25%] ml-3" },
-    { label: "Channel Name", className: "w-[35%]" },
-    { label: "Status", className: "w-[30%]" },
-    { label: "", className: "w-[10%]" },
+    { label: "Pulse Code", className: "w-[35%] ml-3" },
+    { label: "Channel Name", className: "w-[50%]" },
+    { label: "Status", className: "w-[5%]" },
+    { label: "", className: "w-[0%]" },
   ];
 
   return (
@@ -79,7 +79,7 @@ export default function ChannelsManager() {
               >
                 {/* Pulse Code */}
                 <div
-                  className="w-[20%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  className="w-[30%] text-sm font-bold text-[var(--gray-9)] truncate"
                   title={channel.pulseCode}
                 >
                   {channel.pulseCode}
@@ -87,7 +87,7 @@ export default function ChannelsManager() {
 
                 {/* Channel Name */}
                 <div
-                  className="w-[30%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  className="w-[40%] text-sm font-bold text-[var(--gray-9)] truncate"
                   title={channel.name}
                 >
                   {channel.name}

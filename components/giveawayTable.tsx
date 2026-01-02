@@ -46,10 +46,10 @@ export default function GiveawayTable() {
 
   // Define columns for the table header
   const giveawayColumns = [
-    { label: "Pulse Code", className: "w-[28%] ml-3" },
-    { label: "Name", className: "w-[28%]" },
-    { label: "Category", className: "w-[22%]" },
-    { label: "Product Name", className: "w-[20%]" },
+    { label: "Pulse Code", className: "w-[27%]" },
+    { label: "Name", className: "w-[26%]" },
+    { label: "Category", className: "w-[26%]" },
+    { label: "Product Name", className: "w-[26%]" },
     { label: "", className: "w-[0%]" }, // Actions
   ];
 
@@ -93,7 +93,7 @@ export default function GiveawayTable() {
         <div>
           <TableColumnHeader
             columns={giveawayColumns}
-            containerClassName="flex w-[80%]"
+            containerClassName="flex w-full px-3"
             showBackground={false}
           />
 
@@ -101,11 +101,11 @@ export default function GiveawayTable() {
             {paginatedGiveaways.map((item) => (
               <div
                 key={item.id}
-                className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-4 my-3 rounded-2xl bg-[var(--background)]"
+                className="px-3 py-3 w-full flex items-center hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-3 my-3 rounded-2xl bg-[var(--background)]"
               >
                 {/* Pulse Code */}
                 <div
-                  className="w-[20%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  className="w-[40%] text-sm font-bold text-[var(--gray-9)] truncate"
                   title={item.pulseCode || "N/A"}
                 >
                   {item.pulseCode || "N/A"}
@@ -113,7 +113,7 @@ export default function GiveawayTable() {
 
                 {/* Name */}
                 <div
-                  className="w-[25%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  className="w-[40%] text-sm font-bold text-[var(--gray-9)] truncate"
                   title={item.name}
                 >
                   {item.name}
@@ -121,7 +121,7 @@ export default function GiveawayTable() {
 
                 {/* Category */}
                 <div
-                  className="w-[20%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  className="w-[40%] text-sm font-bold text-[var(--gray-9)] truncate"
                   title={item.category}
                 >
                   {item.category}
@@ -129,7 +129,7 @@ export default function GiveawayTable() {
 
                 {/* Product Name */}
                 <div
-                  className="w-[27%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  className="w-[30%] text-sm font-bold text-[var(--gray-9)] truncate"
                   title={item.productName}
                 >
                   {item.productName}
