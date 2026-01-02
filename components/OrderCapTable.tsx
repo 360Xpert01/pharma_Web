@@ -162,12 +162,12 @@ export default function BookingTable() {
 
   // Define columns for the table header
   const orderColumns = [
-    { label: "Employee", className: "w-[20%] ml-4" },
+    { label: "Sales Rep", className: "w-[20%] ml-4" },
     { label: "Company", className: "w-[15%]" },
     { label: "Date", className: "w-[11%]" },
-    { label: "Medicine", className: "w-[18%]" },
-    { label: "Dosages", className: "w-[16%]" },
-    { label: "Customer", className: "w-[10%]" },
+    { label: "Product", className: "w-[18%]" },
+    { label: "SKU's", className: "w-[16%]" },
+    { label: "Location", className: "w-[10%]" },
   ];
 
   return (
