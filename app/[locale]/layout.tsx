@@ -45,7 +45,7 @@ export default async function RootLayout({ children, params }: Props) {
       suppressHydrationWarning
       className={`${poppins.variable} ${GeistSans.variable} ${GeistMono.variable} ${urduFont.variable}`}
     >
-      <body className="font-poppins antialiased bg-gray-50 text-gray-900">
+      <body className="font-poppins antialiased  text-gray-900">
         <NextIntlClientProvider messages={messages}>
           <Providers>{children}</Providers>
           {/* <Analytics /> */}

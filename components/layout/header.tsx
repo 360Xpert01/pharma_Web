@@ -74,45 +74,45 @@ const Navbar = () => {
       ],
     },
     {
-      label: "DCR",
+      label: "DCR & Field Ops",
       items: [
         { label: "Daily Call Reports", href: "/dashboard/DCR" },
         { label: "Sample Distribution", href: "/" },
         { label: "Order Capture Log", href: "/dashboard/DCR-order" },
       ],
     },
-    {
-      label: "Field Ops",
-      items: [
-        {
-          label: "Planning",
+    // {
+    //   label: "Field Ops",
+    //   items: [
+    //     {
+    //       label: "Planning",
 
-          items: [
-            { label: "Monthly Work plans", href: "/dashboard/plan-Management" },
-            { label: "Revenue Targets & Achievement", href: "/dashboard/giveaway-Management" },
-          ],
-        },
-        {
-          label: "Execution",
-          items: [
-            { label: "Live GPS Tracking", href: "/dashboard/plan-Management" },
-            { label: "Attendance", href: "/dashboard/giveaway-Management" },
-            { label: "Travel & Mileage", href: "/dashboard/giveaway-Management" },
-          ],
-        },
-        {
-          label: "Admin",
-          items: [
-            { label: "Leave Requests", href: "/dashboard/plan-Management" },
-            { label: "Expense Claims", href: "/dashboard/expense-claims" },
-            { label: "Audit & Geo Verification", href: "/dashboard/giveaway-Management" },
-            { label: "Requests", href: "/dashboard/request-View" },
-          ],
-        },
-      ],
-    },
+    //       items: [
+    //         { label: "Monthly Work plans", href: "/dashboard/plan-Management" },
+    //         { label: "Revenue Targets & Achievement", href: "/dashboard/giveaway-Management" },
+    //       ],
+    //     },
+    //     {
+    //       label: "Execution",
+    //       items: [
+    //         { label: "Live GPS Tracking", href: "/dashboard/plan-Management" },
+    //         { label: "Attendance", href: "/dashboard/giveaway-Management" },
+    //         { label: "Travel & Mileage", href: "/dashboard/giveaway-Management" },
+    //       ],
+    //     },
+    //     {
+    //       label: "Admin",
+    //       items: [
+    //         { label: "Leave Requests", href: "/dashboard/plan-Management" },
+    //         { label: "Expense Claims", href: "/dashboard/expense-claims" },
+    //         { label: "Audit & Geo Verification", href: "/dashboard/giveaway-Management" },
+    //         { label: "Requests", href: "/dashboard/request-View" },
+    //       ],
+    //     },
+    //   ],
+    // },
     {
-      label: "Analytics",
+      label: "Analytics & Reports",
       items: [
         {
           label: "Performance",
@@ -218,15 +218,15 @@ const Navbar = () => {
         },
       ],
     },
-    {
-      label: "AI & Insights",
-      items: [
-        { label: "Predictive Analytics", href: "/ai/predictive" },
-        { label: "NLP Sentiment", href: "/ai/sentiment" },
-        { label: "Recommendations", href: "/ai/recommendations" },
-        { label: "AI-Generated Summaries", href: "/ai/summaries" },
-      ],
-    },
+    // {
+    //   label: "AI & Insights",
+    //   items: [
+    //     { label: "Predictive Analytics", href: "/ai/predictive" },
+    //     { label: "NLP Sentiment", href: "/ai/sentiment" },
+    //     { label: "Recommendations", href: "/ai/recommendations" },
+    //     { label: "AI-Generated Summaries", href: "/ai/summaries" },
+    //   ],
+    // },
   ];
 
   // Open on hover (desktop)
@@ -391,7 +391,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-(--background) border-b fixed top-0 left-0 right-0 z-50 border-(--border)">
+    <nav className="bg-(--background) border-b fixed top-0 left-0 right-0 z-50 border-(--gray-3) shadow-header">
       {/* Your top bar code remains same */}
       <div className="mx-auto px-6">
         <div className="flex items-center justify-between h-14">
@@ -457,7 +457,7 @@ const Navbar = () => {
 
               {/* Profile Dropdown */}
               {showProfileDropdown && (
-                <div className="absolute right-0 top-full mt-2 w-64 bg-(--background) rounded-lg shadow-soft border border-(--gray-2) py-2 z-50">
+                <div className="absolute right-0 top-full mt-2 w-64 bg-(--background) rounded-lg shadow-soft border border-(--header-border) py-2 z-50">
                   {/* Profile Info */}
                   <div className="px-4 py-3 border-b border-(--gray-2)">
                     <div className="flex items-center gap-3">
@@ -491,7 +491,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-      <hr className="border-(--gray-2)" />
+      <hr className="border-(--header-border)" />
 
       <div className="flex items-center  justify-around bg-(--background) text-(--gray-7)">
         {navItems.map((item) => (
@@ -508,7 +508,7 @@ const Navbar = () => {
                   e.stopPropagation();
                   item.items && toggleClick(item.label);
                 }}
-                className={`flex items-center  gap-1 cursor-pointer px-2 py-3 text-sm font-medium transition-all duration-200 hover:bg-(--gray-0) ${
+                className={`flex items-center  gap-1 cursor-pointer px-2 py-3 text-md font-medium transition-all duration-200 hover:bg-(--gray-0) ${
                   activeDropdown === item.label ? "text-(--primary)" : "text-(--gray-6)"
                 }`}
               >

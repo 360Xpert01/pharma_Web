@@ -3,7 +3,7 @@ import { DashboardContent } from "../components/dashboard-content";
 
 export default function BricksHierarchyPage() {
   return (
-    <div className="bg-gray-50">
+    <div className="bg-(--gray-0)">
       <DashboardContent
         sample="Bricks hierarchy"
         descrip="Manage geographical hierarchy - Region, Province, City, Area, and Bricks"

@@ -4,7 +4,7 @@ import { DashboardContent } from "../components/dashboard-content";
 
 export default function TargetListViewPage() {
   return (
-    <div className="bg-gray-50">
+    <div className="bg-(--gray-0)">
       <DashboardContent
         sample={"Target listview"}
         descrip={"Unlock the potential of your candidates"}
