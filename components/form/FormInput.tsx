@@ -34,7 +34,7 @@ export default function FormInput({
   const hasError = !!error;
 
   const getInputClasses = () => {
-    const baseClasses = "mt-1 w-full px-4 py-3 border rounded-xl outline-none transition-all";
+    const baseClasses = "mt-1 w-full h-12 px-4 py-3 border rounded-8 outline-none transition-all";
 
     if (readOnly || disabled) {
       return `${baseClasses} border-(--gray-3) bg-(--gray-0) text-(--gray-7) cursor-not-allowed`;

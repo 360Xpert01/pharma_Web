@@ -339,7 +339,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                       ? pulseCode || "N/A"
                       : prefixLoading
                         ? "Generating..."
-                        : "PLS_EMP_000152"
+                        : "EMP_000152"
                   }
                   readOnly
                 />

@@ -47,7 +47,7 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
             <div>
               <div className="flex item-center gap-3 mb-2 ">
                 <div className="bg-(--primary) w-[60%] text-(--light) text-[10px] font-regular px-3 py-1.5 rounded-full">
-                  PLS_EMP-000124
+                  EMP-000124
                 </div>
                 <span className="text-[12px] bg-(--light) my-auto">|</span>
                 <span className="text-[12px] my-auto"> 000124</span>
