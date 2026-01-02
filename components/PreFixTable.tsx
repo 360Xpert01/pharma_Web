@@ -45,11 +45,11 @@ export default function PrefixListComponent() {
         <div>
           <TableColumnHeader
             columns={[
-              { label: "Entity Name", className: "w-[35%]" },
+              { label: "Entity Name", className: "w-[35%] text-left" },
               { label: "Prefix Code", className: "w-[35%] text-center" },
               { label: "Example", className: "w-[30%] text-right pr-2" },
             ]}
-            containerClassName="flex w-[98%] mx-4 pl-4"
+            containerClassName="flex w-[98%] mx-4"
             showBackground={false}
           />
 
