@@ -83,7 +83,7 @@ export default function ProductSearch({
             />
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-(--gray-4)" />
           </div>
-          <Button variant="primary" size="lg" icon={Plus} rounded="full">
+          <Button variant="primary" size="lg" icon={Plus} rounded="default">
             Add Products
           </Button>
         </div>
@@ -134,7 +134,7 @@ export default function ProductSearch({
                 size="icon"
                 variant="ghost"
                 onClick={() => handleRemoveProduct(product.id)}
-                className="bg-(--destructive-0) text-(--destructive) hover:bg-(--destructive-1)"
+                className="bg-(--transparent) text-(--destructive) hover:bg-(--transparent) hover:text-(--destructive)"
               >
                 <Trash2 className="w-4 h-4" />
               </Button>

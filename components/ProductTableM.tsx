@@ -29,12 +29,12 @@ export default function MedicineTable() {
 
   // Define columns for the table header
   const productColumns = [
-    { label: "Pulse Code", className: "w-[20%] ml-3" },
-    { label: "Name", className: "w-[22%]" },
-    { label: "Category", className: "w-[22%]" },
-    { label: "SKU", className: "w-[13%]" },
-    { label: "Image", className: "w-[10%]" },
-    { label: "Formula", className: "w-[0%]" },
+    { label: "Pulse Code", className: "w-[17%]" },
+    { label: "Name", className: "w-[17%]" },
+    { label: "Category", className: "w-[17%]" },
+    { label: "SKU", className: "w-[17%]" },
+    { label: "Image", className: "w-[17%]" },
+    { label: "Formula", className: "w-[17%] mr-4" },
     { label: "", className: "w-[0%]" },
   ];
 
@@ -52,7 +52,7 @@ export default function MedicineTable() {
   };
 
   return (
-    <div>
+    <div className="mr-6">
       {loading ? (
         <div className="px-4">
           <TableLoadingState
@@ -73,7 +73,7 @@ export default function MedicineTable() {
         <div>
           <TableColumnHeader
             columns={productColumns}
-            containerClassName="flex w-[80%]"
+            containerClassName="flex w-full px-3"
             showBackground={false}
           />
 
@@ -81,11 +81,11 @@ export default function MedicineTable() {
             {products.map((product) => (
               <div
                 key={product.id}
-                className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-4 my-3 rounded-2xl bg-[var(--background)]"
+                className="px-3 py-3 w-full flex items-center gap-4 hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-3 my-3 rounded-2xl bg-[var(--background)]"
               >
                 {/* Pulse Code */}
                 <div
-                  className="w-[15%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  className="w-[17%] text-sm font-bold text-[var(--gray-9)] truncate"
                   title={product.pulseCode}
                 >
                   {product.pulseCode}
@@ -93,26 +93,26 @@ export default function MedicineTable() {
 
                 {/* Name */}
                 <div
-                  className="w-[18%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  className="w-[17%] text-sm font-bold text-[var(--gray-9)] truncate"
                   title={product.name}
                 >
                   {product.name}
                 </div>
 
                 {/* Category */}
-                <div className="w-[15%]">
+                <div className="w-[17%]">
                   <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-[var(--primary)]/10 text-[var(--primary)]">
                     {product.productCategory}
                   </span>
                 </div>
 
                 {/* SKU Count */}
-                <div className="w-[10%] flex items-center justify-center">
+                <div className="w-[17%] flex items-center">
                   <span className="text-lg font-bold text-[var(--gray-9)]">{product.skuCount}</span>
                 </div>
 
                 {/* Image */}
-                <div className="w-[12%] flex items-center justify-center">
+                <div className="w-[17%] flex items-center">
                   <div className="w-12 h-12 rounded-xl overflow-hidden ring-2 ring-[var(--gray-2)]">
                     {product.imageUrl ? (
                       <Image
@@ -132,14 +132,14 @@ export default function MedicineTable() {
 
                 {/* Formula */}
                 <div
-                  className="w-[22%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  className="w-[17%] text-sm font-bold text-[var(--gray-9)] truncate"
                   title={product.productFormula}
                 >
                   {product.productFormula}
                 </div>
 
                 {/* Actions */}
-                <div className="w-[8%] flex items-center justify-end relative">
+                <div className="flex-1 flex items-center justify-end relative">
                   <button
                     onClick={() => setOpenId(openId === product.id ? null : product.id)}
                     className="p-2 text-[var(--gray-4)] hover:text-[var(--gray-6)] hover:bg-[var(--gray-1)] rounded-md transition cursor-pointer"
