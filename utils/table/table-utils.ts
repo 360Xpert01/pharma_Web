@@ -48,16 +48,16 @@ export function getStatusBadgeClass(status: string): string {
   const normalizedStatus = status.toLowerCase();
 
   const statusMap: Record<string, string> = {
-    active: "px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-(--success)",
-    inactive: "px-3 py-1 rounded-full text-sm font-medium bg-(--gray-1) text-(--gray-6)",
-    pending: "px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-700",
-    approved: "px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-(--success)",
-    rejected: "px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-(--destructive)",
+    active: "px-3 py-1 rounded-8 text-sm font-medium bg-green-100 text-(--success)",
+    inactive: "px-3 py-1 rounded-8 text-sm font-medium bg-(--gray-1) text-(--gray-6)",
+    pending: "px-3 py-1 rounded-8 text-sm font-medium bg-yellow-100 text-yellow-700",
+    approved: "px-3 py-1 rounded-8 text-sm font-medium bg-green-100 text-(--success)",
+    rejected: "px-3 py-1 rounded-8 text-sm font-medium bg-red-100 text-(--destructive)",
   };
 
   return (
     statusMap[normalizedStatus] ||
-    "px-3 py-1 rounded-full text-sm font-medium bg-(--gray-1) text-(--gray-6)"
+    "px-3 py-1 rounded-8 text-sm font-medium bg-(--gray-1) text-(--gray-6)"
   );
 }
 
