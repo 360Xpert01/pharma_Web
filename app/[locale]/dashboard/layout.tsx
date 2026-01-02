@@ -24,7 +24,7 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
   }, [config.header.enabled, config.sidebar.enabled, applyPreset]);
 
   return (
-    <div className={`${poppins.className} min-h-screen bg-gray-50`}>
+    <div className={`${poppins.className} min-h-screen bg-(--gray-0)`}>
       <DynamicLayout>{children}</DynamicLayout>
     </div>
   );

@@ -8,7 +8,7 @@ import TableHeader from "@/components/TableHeader";
 
 export default function DoctorDetailPage() {
   return (
-    <div className=" bg-gray-50 w-[100%] mt-18 py-8 px-4 ">
+    <div className="w-[100%] mt-18 py-8 px-4 ">
       <div className="w-[100%] flex justify-between ">
         {/* Left - Profile */}
         <div className="w-[30%]">

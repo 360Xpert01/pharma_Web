@@ -5,6 +5,9 @@
   .shadow-soft {
     box-shadow: 0px 0.63px 5.5px 0px rgba(0, 0, 0, 0.1);
   }
+  .shadow-header {
+    box-shadow: 0px 4px 10px 0px #0000000d;
+  }
 
   .rounded-8 {
     border-radius: 8px;
@@ -163,6 +166,7 @@
   --destructive-light: #fee2e2;
   --destructive-foreground: #e7000b;
   --border: #f4f4f4;
+  --header-border: #c8c8c8b2;
   --input: #070000;
   --ring: #a4a4a433;
   --chart-1: #f54900;
