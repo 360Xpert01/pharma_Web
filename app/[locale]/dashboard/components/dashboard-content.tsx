@@ -322,7 +322,7 @@ export function DashboardContent({
 
         {proBar && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading="All User's" filterT={filterT} />
+            <TableHeader campHeading="All User's" filterT />
             <SalesTeamTable />
           </div>
         )}

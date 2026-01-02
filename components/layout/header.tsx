@@ -62,7 +62,6 @@ const Navbar = () => {
         { label: "Products", href: "/dashboard/product-Management" },
         { label: "Target View", href: "/dashboard/target-listview" },
         { label: "Set Target", href: "/dashboard/SetTarget" },
-        { label: "Add Prefix", href: "/dashboard/AddPrefix" },
         { label: "Allocate Giveaways & Samples", href: "/dashboard/AllocateGiveawaysSamples" },
 
         {
@@ -190,6 +189,7 @@ const Navbar = () => {
             { label: "Organization Hierarchy", href: "/dashboard/role-hierarchy" },
             { label: "Channels", href: "/dashboard/Channals" },
             { label: "Call Points", href: "/dashboard/Add-Call-points" },
+            { label: "Add Prefix", href: "/dashboard/AddPrefix" },
           ],
         },
         {

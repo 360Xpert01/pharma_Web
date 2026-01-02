@@ -43,14 +43,14 @@ export default function AddPrefixNameComponent() {
   };
 
   const handlePrefixChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.toLowerCase(); // Convert to lowercase
+    const value = e.target.value;
 
     // Clear validation error when user starts typing
     clearFieldError("code");
 
-    // Only allow lowercase letters and numbers
+    // Allow both uppercase and lowercase letters along with numbers
     // Block spaces, hyphens, underscores and all other special characters
-    const validPattern = /^[a-z0-9]*$/;
+    const validPattern = /^[A-Za-z0-9]*$/;
     if (!validPattern.test(value)) {
       return;
     }
@@ -154,9 +154,9 @@ export default function AddPrefixNameComponent() {
             </div>
 
             {/* Form Row */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+            <div className="flex flex-col md:flex-row gap-6 items-end">
               {/* Select Data Table Dropdown */}
-              <div>
+              <div className="w-full md:w-[25%]">
                 <FormSelect
                   label="Select Data Table"
                   name="entity"
@@ -168,7 +168,7 @@ export default function AddPrefixNameComponent() {
                       label: tableName.replace(/-/g, ""),
                     })) || []
                   }
-                  placeholder={loading ? "Loading tables..." : "Select a table..."}
+                  placeholder={loading ? "Loading tables" : "Select a table"}
                   loading={loading}
                   required
                   error={validationErrors.entity}
@@ -177,17 +177,17 @@ export default function AddPrefixNameComponent() {
               </div>
 
               {/* Prefix Input */}
-              <div>
+              <div className="w-full md:w-[25%]">
                 <FormInput
                   label="Prefix"
                   name="code"
                   type="text"
                   value={prefix}
                   onChange={(value) => {
-                    const validPattern = /^[a-z0-9]*$/;
+                    const validPattern = /^[A-Za-z0-9]*$/;
                     if (!validPattern.test(value)) return;
                     if (value.length > 5) return;
-                    setPrefix(value.toLowerCase());
+                    setPrefix(value);
                   }}
                   placeholder="e.g. EMP, max 5 characters"
                   required
@@ -197,29 +197,27 @@ export default function AddPrefixNameComponent() {
               </div>
 
               {/* Preview Box */}
-              <div>
-                <label className="block text-sm font-medium text-(--gray-7) mb-2">Preview</label>
-                <div className="w-full px-4 py-3 bg-(--gray-1) border border-(--gray-2) rounded-xl text-(--gray-7) font-medium">
+              <div className="w-full md:w-[25%]">
+                <label className="block text-sm font-medium text-(--gray-7)">Preview</label>
+                <div className="mt-1 w-full h-12 px-4 py-3 bg-(--gray-1) border border-(--gray-2) rounded-8 text-(--gray-7) font-medium flex items-center">
                   {preview || "—"}
                 </div>
-                {/* Reserve space to align with other fields */}
-                <div className="h-5 mt-1"></div>
               </div>
-            </div>
 
-            {/* Add Prefix Button */}
-            <div className="flex justify-end">
-              <Button
-                variant="primary"
-                size="lg"
-                icon={Plus}
-                rounded="default"
-                onClick={handleAddPrefix}
-                loading={createLoading}
-                disabled={!selectedTable || !prefix}
-              >
-                {createLoading ? "Adding..." : "Add Prefix"}
-              </Button>
+              {/* Add Prefix Button */}
+              <div className="w-full md:w-[25%] flex justify-end items-end">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  icon={Plus}
+                  rounded="default"
+                  onClick={handleAddPrefix}
+                  loading={createLoading}
+                  disabled={!selectedTable || !prefix}
+                >
+                  {createLoading ? "Adding..." : "Add Prefix"}
+                </Button>
+              </div>
             </div>
           </div>
         </div>

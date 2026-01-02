@@ -41,7 +41,7 @@ const buttonVariants = cva(
         false: "w-auto",
       },
       rounded: {
-        default: "rounded-md",
+        default: "rounded-8",
         sm: "rounded-sm",
         lg: "rounded-lg",
         xl: "rounded-xl",

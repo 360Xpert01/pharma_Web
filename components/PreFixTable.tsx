@@ -24,57 +24,55 @@ export default function PrefixListComponent() {
   };
 
   return (
-    <div className="flex items-center justify-center p-8">
-      <div className="w-full">
-        {loading ? (
+    <div>
+      {loading ? (
+        <div className="px-4">
           <TableLoadingState
             variant="skeleton"
             rows={5}
             columns={3}
             message="Loading prefixes..."
           />
-        ) : error ? (
-          <TableErrorState error={error} onRetry={handleRetry} title="Failed to load prefixes" />
-        ) : prefixes.length === 0 ? (
-          <TableEmptyState
-            message="No prefixes found"
-            description="There are currently no prefix codes in the system."
+        </div>
+      ) : error ? (
+        <TableErrorState error={error} onRetry={handleRetry} title="Failed to load prefixes" />
+      ) : prefixes.length === 0 ? (
+        <TableEmptyState
+          message="No prefixes found"
+          description="There are currently no prefix codes in the system."
+        />
+      ) : (
+        <div>
+          <TableColumnHeader
+            columns={[
+              { label: "Entity Name", className: "w-[38%] ml-4" },
+              { label: "Prefix Code", className: "w-[40%] ml-4" },
+              { label: "Example", className: "w-[15%] ml-4" },
+            ]}
+            containerClassName="flex w-[80%]"
+            showBackground={false}
           />
-        ) : (
-          <div className="bg-[var(--background)] rounded-2xl shadow-soft border border-(--gray-1) overflow-hidden">
-            <TableColumnHeader
-              columns={[
-                { label: "Entity Name", className: "flex-1" },
-                { label: "Prefix Code", className: "flex-1" },
-                { label: "Example", className: "" },
-              ]}
-              containerClassName="flex items-center"
-              showBackground={false}
-            />
-            <div className="px-3 space-y-6">
-              {prefixes.map((item: any, index: number) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between py-3 px-3 border border-(--gray-2) rounded-xl"
-                >
-                  {/* Table Name */}
-                  <div className="text-lg font-medium w-[20%] text-(--gray-8)">{item.entity}</div>
 
-                  <div className=" text-(--gray-7) w-[20%] flex justify-start font-semibold rounded-full text-sm">
-                    {item.code}
-                  </div>
+          {prefixes.map((item: any, index: number) => (
+            <div
+              key={index}
+              className="px-3 py-3 w-[98%] flex items-center hover:bg-(--gray-0) transition-all cursor-pointer border border-(--gray-2) mx-4 my-3 rounded-2xl bg-[var(--background)]"
+            >
+              <div className="w-[33%] text-sm font-bold text-(--gray-9)" title={item.entity}>
+                {item.entity}
+              </div>
 
-                  <div className="flex items-center gap-12">
-                    <div className=" text-(--gray-6) font-medium rounded-full text-sm">
-                      {item.code}01
-                    </div>
-                  </div>
-                </div>
-              ))}
+              <div className="w-[33%] text-sm text-(--gray-6)" title={item.code}>
+                {item.code}
+              </div>
+
+              <div className="w-[33%] text-sm font-bold text-(--gray-9)">
+                {item.code}-{String(index + 1).padStart(2, "0")}
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
