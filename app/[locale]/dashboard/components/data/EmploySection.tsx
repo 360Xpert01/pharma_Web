@@ -10,6 +10,7 @@ import TableColumnHeader from "@/components/TableColumnHeader";
 import TableLoadingState from "@/components/shared/table/TableLoadingState";
 import TableErrorState from "@/components/shared/table/TableErrorState";
 import TableEmptyState from "@/components/shared/table/TableEmptyState";
+import TablePagination from "@/components/TablePagination";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllUsers } from "@/store/slices/employee/getAllUsersSlice";
 
@@ -29,6 +30,8 @@ export default function SalesTeamTable() {
   const { users, loading, error } = useAppSelector((state) => state.allUsers);
 
   const [openRowId, setOpenRowId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
     dispatch(getAllUsers());
@@ -69,6 +72,20 @@ export default function SalesTeamTable() {
     dispatch(getAllUsers());
   };
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1);
+  };
+
+  // Calculate paginated data
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedMembers = teamMembers.slice(startIndex, endIndex);
+
   return (
     <div>
       {loading ? (
@@ -95,7 +112,7 @@ export default function SalesTeamTable() {
             showBackground={false}
           />
 
-          {teamMembers.map((member) => (
+          {paginatedMembers.map((member) => (
             <div key={member.id}>
               {/* Main Row */}
               <div className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-(--gray-0) transition-all cursor-pointer border border-(--gray-2) mx-4 my-3 rounded-2xl bg-[var(--background)]">
@@ -176,6 +193,20 @@ export default function SalesTeamTable() {
               )}
             </div>
           ))}
+
+          {/* Pagination */}
+          {teamMembers.length > 0 && (
+            <TablePagination
+              currentPage={currentPage}
+              totalItems={teamMembers.length}
+              itemsPerPage={itemsPerPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+              pageSizeOptions={[10, 20, 30, 50]}
+              showPageInfo={true}
+              showItemsPerPageSelector={true}
+            />
+          )}
         </div>
       )}
     </div>

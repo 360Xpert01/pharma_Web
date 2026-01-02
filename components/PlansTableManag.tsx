@@ -6,6 +6,7 @@ import Link from "next/link";
 import TableLoadingState from "@/components/shared/table/TableLoadingState";
 import TableErrorState from "@/components/shared/table/TableErrorState";
 import TableEmptyState from "@/components/shared/table/TableEmptyState";
+import TablePagination from "@/components/TablePagination";
 
 interface CampaignItem {
   id: string;
@@ -96,11 +97,27 @@ export default function CampaignApprovalTable() {
   // Simulate loading and error states (replace with actual API call state)
   const [loading] = useState(false);
   const [error] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const handleRetry = () => {
     // Add retry logic here when connected to API
     window.location.reload();
   };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1);
+  };
+
+  // Calculate paginated data
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedCampaigns = campaignData.slice(startIndex, endIndex);
 
   return (
     <div className="w-full ">
@@ -122,7 +139,7 @@ export default function CampaignApprovalTable() {
         />
       ) : (
         <>
-          {campaignData.map((item) => (
+          {paginatedCampaigns.map((item) => (
             <div key={item.id} className="px-4 py-1">
               <div className="w-full bg-[var(--background)] rounded-2xl p-3  border border-(--gray-2)">
                 <div className="flex items-center justify-between text-sm">
@@ -174,6 +191,20 @@ export default function CampaignApprovalTable() {
               </div>
             </div>
           ))}
+
+          {/* Pagination */}
+          {campaignData.length > 0 && (
+            <TablePagination
+              currentPage={currentPage}
+              totalItems={campaignData.length}
+              itemsPerPage={itemsPerPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+              pageSizeOptions={[10, 20, 30, 50]}
+              showPageInfo={true}
+              showItemsPerPageSelector={true}
+            />
+          )}
         </>
       )}
     </div>

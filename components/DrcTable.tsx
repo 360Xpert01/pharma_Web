@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import TableLoadingState from "@/components/shared/table/TableLoadingState";
 import TableErrorState from "@/components/shared/table/TableErrorState";
 import TableEmptyState from "@/components/shared/table/TableEmptyState";
+import TableColumnHeader from "@/components/TableColumnHeader";
+import TablePagination from "@/components/TablePagination";
 
 const tableData = [
   {
@@ -103,16 +105,50 @@ export default function DcrTable() {
   // Simulate loading and error states (replace with actual API call state)
   const [loading] = useState(false);
   const [error] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  // Define columns for the table header
+  const dcrColumns = [
+    { label: "Employee 1", className: "w-[17%]" },
+    { label: "Employee 2", className: "w-[17%]" },
+    { label: "Specialty", className: "w-[10%]" },
+    { label: "Area", className: "w-[14%]" },
+    { label: "Doctor", className: "w-[14%]" },
+    { label: "Medicine", className: "w-[12%]" },
+    { label: "Strengths", className: "w-[19%]" },
+  ];
 
   const handleRetry = () => {
     // Add retry logic here when connected to API
     window.location.reload();
   };
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1);
+  };
+
+  // Calculate paginated data
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedData = tableData.slice(startIndex, endIndex);
+
   return (
-    <div className="w-full p-4">
+    <div className="w-full overflow-hidden">
       {loading ? (
-        <TableLoadingState variant="skeleton" rows={5} columns={6} message="Loading DCR data..." />
+        <div className="px-4">
+          <TableLoadingState
+            variant="skeleton"
+            rows={5}
+            columns={7}
+            message="Loading DCR data..."
+          />
+        </div>
       ) : error ? (
         <TableErrorState error={error} onRetry={handleRetry} title="Failed to load DCR data" />
       ) : tableData.length === 0 ? (
@@ -121,77 +157,98 @@ export default function DcrTable() {
           description="There are currently no doctor call records to display."
         />
       ) : (
-        <div className="space-y-3">
-          {tableData.map((row) => (
-            <div
-              key={row.id}
-              className="bg-[var(--background)] rounded-2xl border border-(--gray-2) shadow-soft hover:shadow-soft transition-shadow"
-            >
-              <div className="px-3 py-3">
-                {/* 12-column grid */}
-                <div className="w-[100%] flex justify-between items-center text-sm">
-                  {/* Employee 1 – Left aligned */}
-                  <div className="w-[17%] flex  items-center gap-3">
-                    <img
-                      src={DEFAULT_AVATAR}
-                      alt={row.employee1.name}
-                      className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
-                    />
-                    <div>
-                      <p className="font-bold text-(--gray-9)">{row.employee1.name}</p>
-                      <p className="text-xs text-(--gray-5)">{row.employee1.role}</p>
+        <>
+          <TableColumnHeader
+            columns={dcrColumns}
+            containerClassName="flex items-center gap-6 w-full"
+          />
+
+          <div className="space-y-3">
+            {paginatedData.map((row) => (
+              <div
+                key={row.id}
+                className="bg-[var(--background)] rounded-2xl border border-(--gray-2) shadow-soft hover:shadow-soft transition-shadow"
+              >
+                <div className="px-3 py-3">
+                  {/* 12-column grid */}
+                  <div className="w-[100%] flex justify-between items-center text-sm">
+                    {/* Employee 1 – Left aligned */}
+                    <div className="w-[17%] flex  items-center gap-3">
+                      <img
+                        src={DEFAULT_AVATAR}
+                        alt={row.employee1.name}
+                        className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
+                      />
+                      <div>
+                        <p className="font-bold text-(--gray-9)">{row.employee1.name}</p>
+                        <p className="text-xs text-(--gray-5)">{row.employee1.role}</p>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Employee 2 – Left aligned */}
-                  <div className="w-[17%] flex items-center gap-3">
-                    <img
-                      src={DEFAULT_AVATAR}
-                      alt={row.employee2.name}
-                      className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
-                    />
-                    <div>
-                      <p className="font-bold text-(--gray-9)">{row.employee2.name}</p>
-                      <p className="text-xs text-(--gray-5)">{row.employee2.role}</p>
+                    {/* Employee 2 – Left aligned */}
+                    <div className="w-[17%] flex items-center gap-3">
+                      <img
+                        src={DEFAULT_AVATAR}
+                        alt={row.employee2.name}
+                        className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
+                      />
+                      <div>
+                        <p className="font-bold text-(--gray-9)">{row.employee2.name}</p>
+                        <p className="text-xs text-(--gray-5)">{row.employee2.role}</p>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Specialty – Left aligned */}
-                  <div className="w-[10%]">
-                    <p className="font-semibold text-(--gray-8)">{row.specialty}</p>
-                  </div>
+                    {/* Specialty – Left aligned */}
+                    <div className="w-[10%]">
+                      <p className="font-semibold text-(--gray-8)">{row.specialty}</p>
+                    </div>
 
-                  {/* Area – Left aligned */}
-                  <div className="w-[13%]">
-                    <p className="font-semibold text-(--gray-7)">{row.area}</p>
-                  </div>
+                    {/* Area – Left aligned */}
+                    <div className="w-[13%]">
+                      <p className="font-semibold text-(--gray-7)">{row.area}</p>
+                    </div>
 
-                  {/* Doctor – Left aligned */}
-                  <div className="w-[15%]">
-                    <p className="font-bold text-(--gray-9)">{row.doctor}</p>
-                  </div>
+                    {/* Doctor – Left aligned */}
+                    <div className="w-[15%]">
+                      <p className="font-bold text-(--gray-9)">{row.doctor}</p>
+                    </div>
 
-                  {/* Medicine – Left aligned */}
-                  <div className="w-[10%]">
-                    <p className="font-bold text-(--gray-9)">{row.medicine}</p>
-                  </div>
+                    {/* Medicine – Left aligned */}
+                    <div className="w-[10%]">
+                      <p className="font-bold text-(--gray-9)">{row.medicine}</p>
+                    </div>
 
-                  {/* Strengths – Chips start from left */}
-                  <div className="w-[20%] flex flex-wrap gap-2">
-                    {row.strengths.map((s, i) => (
-                      <span
-                        key={i}
-                        className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-full text-xs font-medium whitespace-nowrap"
-                      >
-                        {s}
-                      </span>
-                    ))}
+                    {/* Strengths – Chips start from left */}
+                    <div className="w-[20%] flex flex-wrap gap-2">
+                      {row.strengths.map((s, i) => (
+                        <span
+                          key={i}
+                          className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-full text-xs font-medium whitespace-nowrap"
+                        >
+                          {s}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+
+            {/* Pagination */}
+            {tableData.length > 0 && (
+              <TablePagination
+                currentPage={currentPage}
+                totalItems={tableData.length}
+                itemsPerPage={itemsPerPage}
+                onPageChange={handlePageChange}
+                onItemsPerPageChange={handleItemsPerPageChange}
+                pageSizeOptions={[10, 20, 30, 50]}
+                showPageInfo={true}
+                showItemsPerPageSelector={true}
+              />
+            )}
+          </div>
+        </>
       )}
     </div>
   );

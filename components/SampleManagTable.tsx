@@ -6,12 +6,15 @@ import TableColumnHeader from "@/components/TableColumnHeader";
 import TableLoadingState from "@/components/shared/table/TableLoadingState";
 import TableErrorState from "@/components/shared/table/TableErrorState";
 import TableEmptyState from "@/components/shared/table/TableEmptyState";
+import TablePagination from "@/components/TablePagination";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProducts } from "@/store/slices/product/getAllProductsSlice";
 import { formatDate } from "@/utils/formatDate";
 
 export default function SampleManagTable() {
   const [openId, setOpenId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const dispatch = useDispatch<any>();
 
   const { products, loading, error } = useSelector((state: any) => state.allProducts);
@@ -32,6 +35,20 @@ export default function SampleManagTable() {
   const handleRetry = () => {
     dispatch(getAllProducts());
   };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1);
+  };
+
+  // Calculate paginated data
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedProducts = products?.slice(startIndex, endIndex) || [];
 
   return (
     <div className="w-full overflow-hidden">
@@ -60,7 +77,7 @@ export default function SampleManagTable() {
           />
 
           <div>
-            {products.map((item: any) => (
+            {paginatedProducts.map((item: any) => (
               <div
                 key={item.id}
                 className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-4 my-3 rounded-2xl bg-[var(--background)]"
@@ -144,6 +161,20 @@ export default function SampleManagTable() {
               </div>
             ))}
           </div>
+
+          {/* Pagination */}
+          {products && products.length > 0 && (
+            <TablePagination
+              currentPage={currentPage}
+              totalItems={products.length}
+              itemsPerPage={itemsPerPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+              pageSizeOptions={[10, 20, 30, 50]}
+              showPageInfo={true}
+              showItemsPerPageSelector={true}
+            />
+          )}
         </div>
       )}
     </div>

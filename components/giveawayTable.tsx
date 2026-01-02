@@ -6,6 +6,7 @@ import TableColumnHeader from "@/components/TableColumnHeader";
 import TableLoadingState from "@/components/shared/table/TableLoadingState";
 import TableErrorState from "@/components/shared/table/TableErrorState";
 import TableEmptyState from "@/components/shared/table/TableEmptyState";
+import TablePagination from "@/components/TablePagination";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllGiveaways, resetGiveawaysState } from "@/store/slices/giveaway/getAllGiveawaysSlice";
 
@@ -13,6 +14,8 @@ export default function GiveawayTable() {
   const dispatch = useAppDispatch();
   const hasFetched = useRef(false);
   const [openId, setOpenId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   // Redux state
   const { giveaways, loading, error } = useAppSelector((state) => state.allGiveaways);
@@ -54,6 +57,20 @@ export default function GiveawayTable() {
     dispatch(getAllGiveaways());
   };
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1);
+  };
+
+  // Calculate paginated data
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedGiveaways = sortedGiveaways.slice(startIndex, endIndex);
+
   return (
     <div className="w-full overflow-hidden">
       {loading ? (
@@ -81,7 +98,7 @@ export default function GiveawayTable() {
           />
 
           <div>
-            {sortedGiveaways.map((item) => (
+            {paginatedGiveaways.map((item) => (
               <div
                 key={item.id}
                 className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-4 my-3 rounded-2xl bg-[var(--background)]"
@@ -165,6 +182,20 @@ export default function GiveawayTable() {
               </div>
             ))}
           </div>
+
+          {/* Pagination */}
+          {sortedGiveaways.length > 0 && (
+            <TablePagination
+              currentPage={currentPage}
+              totalItems={sortedGiveaways.length}
+              itemsPerPage={itemsPerPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+              pageSizeOptions={[10, 20, 30, 50]}
+              showPageInfo={true}
+              showItemsPerPageSelector={true}
+            />
+          )}
         </div>
       )}
     </div>

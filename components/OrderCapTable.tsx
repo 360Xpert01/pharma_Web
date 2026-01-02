@@ -6,6 +6,8 @@ import { ChevronRight } from "lucide-react";
 import TableLoadingState from "@/components/shared/table/TableLoadingState";
 import TableErrorState from "@/components/shared/table/TableErrorState";
 import TableEmptyState from "@/components/shared/table/TableEmptyState";
+import TablePagination from "@/components/TablePagination";
+import TableColumnHeader from "@/components/TableColumnHeader";
 
 interface BookingItem {
   id: string;
@@ -136,11 +138,37 @@ export default function BookingTable() {
   // Simulate loading and error states (replace with actual API call state)
   const [loading] = useState(false);
   const [error] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const handleRetry = () => {
     // Add retry logic here when connected to API
     window.location.reload();
   };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1);
+  };
+
+  // Calculate paginated data
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedBookings = bookingData.slice(startIndex, endIndex);
+
+  // Define columns for the table header
+  const orderColumns = [
+    { label: "Employee", className: "w-[20%] ml-4" },
+    { label: "Company", className: "w-[15%]" },
+    { label: "Date", className: "w-[11%]" },
+    { label: "Medicine", className: "w-[18%]" },
+    { label: "Dosages", className: "w-[16%]" },
+    { label: "Customer", className: "w-[10%]" },
+  ];
 
   return (
     <div className="w-full overflow-hidden">
@@ -162,46 +190,55 @@ export default function BookingTable() {
         />
       ) : (
         <>
-          {bookingData.map((item) => (
-            <div key={item.id} className="px-3 py-3 hover:bg-(--gray-0) transition-colors ">
-              <div className="w-full bg-[var(--background)] rounded-xl p-2 border border-(--gray-2) ">
-                {/* Pure Flex with Equal Spacing */}
+          <TableColumnHeader
+            columns={orderColumns}
+            containerClassName="flex items-center gap-6 w-full -mb-4"
+          />
+
+          {paginatedBookings.map((item) => (
+            <div key={item.id} className="px-3 py-3 hover:bg-(--gray-0) transition-colors">
+              <div className="w-full bg-[var(--background)] rounded-xl p-3 border border-(--gray-2)">
+                {/* Flex layout with consistent spacing */}
                 <div className="flex items-center gap-6 w-full text-sm">
-                  {/* Avatar + Name + Position */}
-                  <div className="flex items-center gap-3 flex-shrink-0 w-[16%]">
+                  {/* Employee - Avatar + Name + Position */}
+                  <div className="w-[20%] flex items-center gap-3">
                     <Image
                       src={item.avatar}
                       alt={item.name}
-                      width={52}
-                      height={52}
-                      className="rounded-full border-2 border-(--light) shadow-soft object-cover"
+                      width={48}
+                      height={48}
+                      className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
                       onError={(e) => {
                         e.currentTarget.src = "/girlPic.svg";
                       }}
                     />
-                    <div>
-                      <div className="font-bold text-(--gray-9)">{item.name}</div>
-                      <div className="text-xs text-(--gray-5)">{item.position}</div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-bold text-(--gray-9) truncate">{item.name}</p>
+                      <p className="text-xs text-(--gray-5) truncate">{item.position}</p>
                     </div>
                   </div>
 
                   {/* Company */}
-                  <div className="flex w-[10%] font-bold text-(--gray-8)">{item.company}</div>
+                  <div className="w-[15%]">
+                    <p className="font-bold text-(--gray-8)">{item.company}</p>
+                  </div>
 
                   {/* Date */}
-                  <div className="w-[16%] text-(--gray-4) text-center">{item.date}</div>
+                  <div className="w-[12%]">
+                    <p className="text-(--gray-7)">{item.date}</p>
+                  </div>
 
                   {/* Medicine */}
-                  <div className="w-[16%] font-semibold text-(--gray-9) text-center">
-                    {item.medicine}
+                  <div className="w-[15%]">
+                    <p className="font-semibold text-(--gray-9)">{item.medicine}</p>
                   </div>
 
                   {/* Dosages */}
-                  <div className=" w-[16%]  flex-1 flex-wrap gap-3 items-center justify-center">
+                  <div className="w-[20%] flex flex-wrap gap-2">
                     {item.dosages.map((dose, idx) => (
                       <span
                         key={idx}
-                        className="px-4 py-2  text-(--gray-4) rounded-full text-xs font-medium whitespace-nowrap"
+                        className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-full text-xs font-medium whitespace-nowrap"
                       >
                         {dose}
                       </span>
@@ -209,13 +246,27 @@ export default function BookingTable() {
                   </div>
 
                   {/* Customer */}
-                  <div className="w-[16%] flex-1 text-(--gray-8) font-medium text-center">
-                    {item.customer}
+                  <div className="w-[12%]">
+                    <p className="text-(--gray-8) font-medium">{item.customer}</p>
                   </div>
                 </div>
               </div>
             </div>
           ))}
+
+          {/* Pagination */}
+          {bookingData.length > 0 && (
+            <TablePagination
+              currentPage={currentPage}
+              totalItems={bookingData.length}
+              itemsPerPage={itemsPerPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+              pageSizeOptions={[10, 20, 30, 50]}
+              showPageInfo={true}
+              showItemsPerPageSelector={true}
+            />
+          )}
         </>
       )}
     </div>

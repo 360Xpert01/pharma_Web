@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import TableLoadingState from "@/components/shared/table/TableLoadingState";
 import TableErrorState from "@/components/shared/table/TableErrorState";
 import TableEmptyState from "@/components/shared/table/TableEmptyState";
+import TablePagination from "@/components/TablePagination";
 
 interface ExpenseRow {
   id: string;
@@ -95,11 +96,27 @@ export default function ExpenseApprovalTable() {
   // Simulate loading and error states (replace with actual API call state)
   const [loading] = useState(false);
   const [error] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const handleRetry = () => {
     // Add retry logic here when connected to API
     window.location.reload();
   };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1);
+  };
+
+  // Calculate paginated data
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedExpenses = expenseData.slice(startIndex, endIndex);
 
   return (
     <div className="w-full bg-(--gray-0)/50">
@@ -121,7 +138,7 @@ export default function ExpenseApprovalTable() {
         />
       ) : (
         <div className="space-y-1 p-4 ">
-          {expenseData.map((row) => (
+          {paginatedExpenses.map((row) => (
             <div
               key={row.id}
               className="bg-[var(--background)] rounded-2xl border border-(--gray-2) "
@@ -194,6 +211,20 @@ export default function ExpenseApprovalTable() {
               </div>
             </div>
           ))}
+
+          {/* Pagination */}
+          {expenseData.length > 0 && (
+            <TablePagination
+              currentPage={currentPage}
+              totalItems={expenseData.length}
+              itemsPerPage={itemsPerPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+              pageSizeOptions={[10, 20, 30, 50]}
+              showPageInfo={true}
+              showItemsPerPageSelector={true}
+            />
+          )}
         </div>
       )}
     </div>
