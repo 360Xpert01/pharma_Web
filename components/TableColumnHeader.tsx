@@ -45,7 +45,7 @@ export default function TableColumnHeader({
     : containerClassName;
 
   return (
-    <div className={`px-3 mb-3 ${showBackground ? "bg-[var(--background)] rounded-xl py-3" : ""}`}>
+    <div className={`px-3 mb-3 ${showBackground ? "bg-[var(--background)] rounded-8 py-3" : ""}`}>
       <div className={isGridLayout ? "flex items-center justify-between gap-6" : ""}>
         <div className={innerContainerClasses}>
           {columns.map((column, index) => (

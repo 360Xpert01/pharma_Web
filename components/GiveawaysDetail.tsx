@@ -33,12 +33,12 @@ export default function GiveawaysDetail() {
           {giveawaysData.map((giveaway) => (
             <div
               key={giveaway.id}
-              className="flex items-center rounded-2xl shadow-soft border border-(--gray-1) bg-(--background) p-3"
+              className="flex items-center rounded-8 shadow-soft border border-(--gray-1) bg-(--background) p-3"
             >
               {/* Left: Giveaway Info */}
               <div className="flex items-center gap-4 w-[280px]">
                 <div className="relative">
-                  <div className="w-14 h-14 rounded-md overflow-hidden border-2 border-white shadow-soft">
+                  <div className="w-14 h-14 rounded-8 overflow-hidden border-2 border-white shadow-soft">
                     <Image
                       src="/capMan.svg"
                       alt={giveaway.name}

@@ -8,7 +8,7 @@ export default function SalesAndCallsCard() {
       {/* Header */}
       <div className="flex  justify-between p-3 pb-4">
         <h2 className="text-3xl font-semibold text-(--gray-5)">Sale & Calls</h2>
-        <div className="flex items-center gap-2 text-sm font-medium text-(--primary) bg-(--background) px-4 py-2 rounded-md  transition-colors cursor-pointer">
+        <div className="flex items-center gap-2 text-sm font-medium text-(--primary) bg-(--background) px-4 py-2 rounded-8  transition-colors cursor-pointer">
           <ChevronLeft className="w-4 h-4 text-(--gray-4) " />
           <span>September, 27 2025</span>
           <ChevronRight className="w-4 h-4 text-(--gray-4)" />
@@ -17,7 +17,7 @@ export default function SalesAndCallsCard() {
 
       <div className="flex justify-between gap-6  pb-6 w-[100%]">
         {/* Today Sales */}
-        <div className="p-8 border bg-(--background) w-[49%] border-(--gray-1) rounded-lg shadow-soft">
+        <div className="p-8 border bg-(--background) w-[49%] border-(--gray-1) rounded-8 shadow-soft">
           <h3 className="text-3xl font-semibold text-(--gray-9) mb-6">Today sales</h3>
 
           <div className="flex items-baseline gap-3 mb-8">
@@ -34,7 +34,7 @@ export default function SalesAndCallsCard() {
               <span>20:00</span>
             </div>
 
-            <div className="relative h-3 bg-(--gray-1) rounded-full overflow-hidden">
+            <div className="relative h-3 bg-(--gray-1) rounded-8 overflow-hidden">
               <div className="absolute inset-0 flex items-center">
                 {/* Active Progress */}
                 <div className="h-full flex">
@@ -51,7 +51,7 @@ export default function SalesAndCallsCard() {
                 {[0, 1, 2, 3].map((i) => (
                   <div
                     key={i}
-                    className="w-1.5 h-1.5 bg-(--background) rounded-full shadow-soft"
+                    className="w-1.5 h-1.5 bg-(--background) rounded-8 shadow-soft"
                   ></div>
                 ))}
               </div>
@@ -60,7 +60,7 @@ export default function SalesAndCallsCard() {
         </div>
 
         {/* Total Calls */}
-        <div className="p-8 border bg-(--background) w-[49%] border-(--gray-1) rounded-lg shadow-soft">
+        <div className="p-8 border bg-(--background) w-[49%] border-(--gray-1) rounded-8 shadow-soft">
           <h3 className="text-3xl font-semibold text-(--gray-9) mb-6">Total Calls</h3>
 
           <div className="space-y-5">

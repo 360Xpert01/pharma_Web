@@ -177,7 +177,7 @@ export default function LoginScreen() {
   return (
     <div className="min-h-screen bg-(--gray-0) flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="bg-(--background) rounded-xl shadow-soft border border-(--gray-1) overflow-hidden">
+        <div className="bg-(--background) rounded-8 shadow-soft border border-(--gray-1) overflow-hidden">
           <div className="p-10 space-y-8">
             <div className="text-center">
               <h1 className="text-3xl font-bold text-(--gray-9)">Welcome Back</h1>
@@ -199,7 +199,7 @@ export default function LoginScreen() {
                     }
                   }}
                   placeholder="user@example.com"
-                  className="w-full px-4 py-3 border border-(--gray-3) rounded-lg focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none transition-all text-base"
+                  className="w-full px-4 py-3 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none transition-all text-base"
                   disabled={isOtpSent}
                 />
               </div>
@@ -214,7 +214,7 @@ export default function LoginScreen() {
                 <button
                   onClick={handleSendOTP}
                   disabled={loading || !email.includes("@")}
-                  className="w-full py-3.5 bg-(--primary) text-(--light) cursor-pointer font-semibold rounded-lg hover:bg-(--primary-2) disabled:bg-(--gray-3) disabled:cursor-not-allowed transition-all duration-200 shadow-soft hover:shadow-soft flex items-center justify-center gap-2"
+                  className="w-full py-3.5 bg-(--primary) text-(--light) cursor-pointer font-semibold rounded-8 hover:bg-(--primary-2) disabled:bg-(--gray-3) disabled:cursor-not-allowed transition-all duration-200 shadow-soft hover:shadow-soft flex items-center justify-center gap-2"
                 >
                   {loading ? (
                     <>
@@ -242,7 +242,7 @@ export default function LoginScreen() {
                           onChange={(e) => handleOtpChange(index, e.target.value)}
                           onKeyDown={(e) => handleKeyDown(index, e)}
                           disabled={isVerifying}
-                          className="w-16 h-16 text-center text-2xl font-bold border-2 border-(--gray-3) rounded-xl focus:border-(--primary) focus:ring-4 focus:ring-(--primary)/20 outline-none transition-all disabled:bg-(--gray-1) disabled:cursor-not-allowed"
+                          className="w-16 h-16 text-center text-2xl font-bold border-2 border-(--gray-3) rounded-8 focus:border-(--primary) focus:ring-4 focus:ring-(--primary)/20 outline-none transition-all disabled:bg-(--gray-1) disabled:cursor-not-allowed"
                         />
                       ))}
                     </div>

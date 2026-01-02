@@ -87,7 +87,7 @@ export default function SalesDashboard() {
     change?: string;
     trend?: "up" | "down";
   }) => (
-    <div className="bg-(--background) rounded-lg p-4 shadow-soft border border-(--gray-1)">
+    <div className="bg-(--background) rounded-8 p-4 shadow-soft border border-(--gray-1)">
       <p className="text-sm text-(--gray-6)">{title}</p>
       <div className="flex items-end gap-2 mt-1">
         <p className="text-2xl font-semibold">{value}</p>
@@ -107,9 +107,9 @@ export default function SalesDashboard() {
     <>
       <div className=" text-(--dark)">
         {/* Header */}
-        <div className="bg-(--background) w-full  rounded-xl shadow-soft p-2 mb-2 flex justify-between ">
+        <div className="bg-(--background) w-full  rounded-8 shadow-soft p-2 mb-2 flex justify-between ">
           <div className="flex gap-2 items-center">
-            <div className="w-16 h-16 rounded-full bg-(--gray-2) border-2 border-dashed" />
+            <div className="w-16 h-16 rounded-8 bg-(--gray-2) border-2 border-dashed" />
             <div className="items-center">
               <h1 className="text-xl font-semibold">Mohammad Amir</h1>
               <p className="text-sm text-(--gray-6)">Sales Representative</p>
@@ -136,9 +136,9 @@ export default function SalesDashboard() {
           </button>
         </div>
 
-        <div className="grid bg-(--gray-1) rounded-lg p-3  grid-cols-1 lg:grid-cols-4 gap-2">
+        <div className="grid bg-(--gray-1) rounded-8 p-3  grid-cols-1 lg:grid-cols-4 gap-2">
           {/* Monthly Targets */}
-          <div className="bg-(--background) rounded-xl shadow-soft p-6">
+          <div className="bg-(--background) rounded-8 shadow-soft p-6">
             <h2 className="text-lg font-semibold mb-4">Monthly Targets</h2>
             <div className="flex justify-around mb-6">
               <div className="text-center">
@@ -167,7 +167,7 @@ export default function SalesDashboard() {
 
           {/* Most Sold Products */}
 
-          <div className="bg-(--background) rounded-xl shadow-soft p-6">
+          <div className="bg-(--background) rounded-8 shadow-soft p-6">
             <h2 className="text-lg font-semibold mb-4">Most Sold Products</h2>
 
             <div className="space-y-5">
@@ -191,7 +191,7 @@ export default function SalesDashboard() {
 
                     {/* Progress Bar (capped at 90%) */}
                     <div className="flex items-center">
-                      <div className="flex-1 bg-(--gray-2) rounded-full h-2 overflow-hidden">
+                      <div className="flex-1 bg-(--gray-2) rounded-8 h-2 overflow-hidden">
                         <div
                           className="h-full transition-all duration-500 ease-out"
                           style={{
@@ -208,7 +208,7 @@ export default function SalesDashboard() {
           </div>
 
           {/* By Brands */}
-          <div className="bg-(--background) rounded-xl shadow-soft p-6">
+          <div className="bg-(--background) rounded-8 shadow-soft p-6">
             <h2 className="text-lg font-semibold ">By Brands</h2>
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
@@ -231,7 +231,7 @@ export default function SalesDashboard() {
             <div className="flex justify-center gap-4 mt-4 flex-wrap">
               {brandData.map((b) => (
                 // <div key={b.name} className="flex items-center gap-1 text-xs">
-                //   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: b.color }} />
+                //   <div className="w-3 h-3 rounded-8" style={{ backgroundColor: b.color }} />
                 //   <span>{b.name}</span>
                 // </div>
                 <button style={{ backgroundColor: b.color }} className="text-(--light) p-2 rounded">
@@ -243,25 +243,25 @@ export default function SalesDashboard() {
 
           <div className="grid grid-cols-1 lg:grid-cols-1 gap-2 ">
             {/* Monthly Attendance */}
-            <div className="bg-(--background) flex  rounded-xl shadow-soft p-3">
+            <div className="bg-(--background) flex  rounded-8 shadow-soft p-3">
               <div className=" w-[50%] h-full flex flex-col justify-between bg-(--background) ">
                 <div>
                   <h2 className="text-lg font-bold">Monthly Attendance</h2>
                 </div>
-                <div className="flex  items-center  text-(--dark) p-1  border border-(--gray-4)  bg-(--gray-2) rounded-full ">
+                <div className="flex  items-center  text-(--dark) p-1  border border-(--gray-4)  bg-(--gray-2) rounded-8 ">
                   <ChevronLeft className="w-4 h-4" />
                   <span className="text-bold">September 2025</span>
                   <ChevronRight className="w-4 h-4" />
                 </div>
                 <div className="flex  gap-4 text-xs">
                   <div className="flex items-center  gap-3">
-                    <button className="bg-(--destructive) p-2 text-(--light) text-bold rounded-md">
+                    <button className="bg-(--destructive) p-2 text-(--light) text-bold rounded-8">
                       Absent
                     </button>
-                    <button className="bg-(--primary) p-2 text-(--light) text-bold rounded-md">
+                    <button className="bg-(--primary) p-2 text-(--light) text-bold rounded-8">
                       Offsite
                     </button>
-                    <button className="bg-(--success) p-2 text-(--light) text-bold rounded-md">
+                    <button className="bg-(--success) p-2 text-(--light) text-bold rounded-8">
                       Onsite
                     </button>
                   </div>
@@ -293,7 +293,7 @@ export default function SalesDashboard() {
               <div>
                 <h2 className="text-lg font-semibold">Sale & Calls</h2>
               </div>
-              <div className="flex items-center gap-1 text-xs text-(--primary) bg-(--background)  rounded-md ">
+              <div className="flex items-center gap-1 text-xs text-(--primary) bg-(--background)  rounded-8 ">
                 <ChevronLeft className="w-4 h-4" />
                 <span>September 2025</span>
                 <ChevronRight className="w-4 h-4" />
@@ -302,7 +302,7 @@ export default function SalesDashboard() {
 
             {/* Sale & Calls */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-              <div className="bg-(--background) rounded-xl shadow-soft p-2">
+              <div className="bg-(--background) rounded-8 shadow-soft p-2">
                 <div className="space-y-4">
                   <div>
                     <p className="text-sm text-(--gray-6)">Today sales</p>
@@ -316,9 +316,9 @@ export default function SalesDashboard() {
                         <span className="text-sm text-(--gray-6) mb-2">{time}</span>
 
                         {/* Progress Bar */}
-                        <div className="w-6 h-4 bg-(--gray-2) rounded-full overflow-hidden relative">
+                        <div className="w-6 h-4 bg-(--gray-2) rounded-8 overflow-hidden relative">
                           <div
-                            className="absolute inset-0 bg-(--primary) rounded-full transition-all duration-700 ease-out"
+                            className="absolute inset-0 bg-(--primary) rounded-8 transition-all duration-700 ease-out"
                             style={{ width: `${value * 100}%` }}
                           />
                         </div>
@@ -329,7 +329,7 @@ export default function SalesDashboard() {
               </div>
 
               {/* Total Calls */}
-              <div className="bg-(--background) rounded-xl shadow-soft p-2">
+              <div className="bg-(--background) rounded-8 shadow-soft p-2">
                 <h2 className="text-lg font-semibold mb-4">Total Calls</h2>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">

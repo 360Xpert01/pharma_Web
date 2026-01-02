@@ -4,7 +4,7 @@ import { attendanceData } from "../app/data/mockData";
 
 export default function MonthlyAttendance() {
   return (
-    <div className="w-full bg-(--background) rounded-2xl shadow-soft border border-(--gray-1) py-4 -mt-4 px-8">
+    <div className="w-full bg-(--background) rounded-8 shadow-soft border border-(--gray-1) py-4 -mt-4 px-8">
       {/* Header */}
       <div>
         <h2 className="text-xl font-semibold mt-2 text-(--gray-9)">Monthly Attendance</h2>
@@ -15,7 +15,7 @@ export default function MonthlyAttendance() {
         {/* Left Side Content */}
         <div className="flex flex-col gap-8">
           {/* Date Navigator */}
-          <div className="flex items-center gap-3 bg-(--gray-1) text-(--gray-7) px-5 py-2.5 rounded-full text-sm font-medium hover:bg-(--gray-2) transition cursor-pointer w-fit">
+          <div className="flex items-center gap-3 bg-(--gray-1) text-(--gray-7) px-5 py-2.5 rounded-8 text-sm font-medium hover:bg-(--gray-2) transition cursor-pointer w-fit">
             <ChevronLeft className="w-4 h-4" />
             <span>September 2025</span>
             <ChevronRight className="w-4 h-4" />
@@ -23,13 +23,13 @@ export default function MonthlyAttendance() {
 
           {/* Status Badges */}
           <div className="flex gap-3">
-            <button className="bg-(--destructive) text-(--light) text-xs px-4 py-1.5 rounded-md font-semibold uppercase cursor-pointer">
+            <button className="bg-(--destructive) text-(--light) text-xs px-4 py-1.5 rounded-8 font-semibold uppercase cursor-pointer">
               Absent
             </button>
-            <button className="bg-(--primary-1) text-(--light) text-xs px-4 py-1.5 rounded-md font-semibold uppercase cursor-pointer">
+            <button className="bg-(--primary-1) text-(--light) text-xs px-4 py-1.5 rounded-8 font-semibold uppercase cursor-pointer">
               Offsite
             </button>
-            <button className="bg-(--success) text-(--light) text-xs px-4 py-1.5 rounded-md font-semibold uppercase cursor-pointer">
+            <button className="bg-(--success) text-(--light) text-xs px-4 py-1.5 rounded-8 font-semibold uppercase cursor-pointer">
               Onsite
             </button>
           </div>

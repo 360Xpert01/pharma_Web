@@ -2,9 +2,9 @@ import { ChevronRight } from "lucide-react";
 
 export default function Header() {
   return (
-    <div className="bg-(--background) w-full rounded-xl shadow-soft p-4 mb-4 flex flex-wrap items-center justify-between gap-4">
+    <div className="bg-(--background) w-full rounded-8 shadow-soft p-4 mb-4 flex flex-wrap items-center justify-between gap-4">
       <div className="flex gap-3 items-center">
-        <div className="w-16 h-16 rounded-full bg-(--gray-2) border-2 border-dashed" />
+        <div className="w-16 h-16 rounded-8 bg-(--gray-2) border-2 border-dashed" />
         <div>
           <h1 className="text-xl font-semibold">Mohammad Amir</h1>
           <p className="text-sm text-(--gray-6)">Sales Representative</p>

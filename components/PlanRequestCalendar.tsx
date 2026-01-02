@@ -77,7 +77,7 @@ export default function PlanRequestCalendar() {
   return (
     <>
       {/* Candidate Info Card */}
-      <div className="bg-(--background) rounded-lg shadow-soft p-6">
+      <div className="bg-(--background) rounded-8 shadow-soft p-6">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-6">
             <Image width={100} height={100} src="/capMan.svg" alt="Candidate" />
@@ -113,7 +113,7 @@ export default function PlanRequestCalendar() {
           <div className="">
             <div>
               <p className="text-xs text-(--gray-5)">Status</p>
-              <span className="inline-block bg-(--warning) text-(--light) px-4 py-1 rounded-full text-xs">
+              <span className="inline-block bg-(--warning) text-(--light) px-4 py-1 rounded-8 text-xs">
                 {candidate.status}
               </span>
             </div>
@@ -124,15 +124,15 @@ export default function PlanRequestCalendar() {
       </div>
 
       {/* Calendar */}
-      <div className="bg-(--background) rounded-lg shadow-soft p-6 mt-6">
+      <div className="bg-(--background) rounded-8 shadow-soft p-6 mt-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-3xl font-bold text-(--gray-9)">{monthName}</h3>
-          <div className="flex items-center bg-(--gray-1) rounded-full border border-(--gray-2)">
-            <button onClick={previousMonth} className="p-3 hover:bg-(--gray-2) rounded-lg">
+          <div className="flex items-center bg-(--gray-1) rounded-8 border border-(--gray-2)">
+            <button onClick={previousMonth} className="p-3 hover:bg-(--gray-2) rounded-8">
               <ChevronLeft className="w-5 h-5" />
             </button>
             <span className="px-6 font-medium">{monthName}</span>
-            <button onClick={nextMonth} className="p-3 hover:bg-(--gray-2) rounded-lg">
+            <button onClick={nextMonth} className="p-3 hover:bg-(--gray-2) rounded-8">
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
@@ -154,7 +154,7 @@ export default function PlanRequestCalendar() {
               <div
                 key={i}
                 className={`
-                  aspect-square rounded-lg p-3 flex flex-col justify-between text-left
+                  aspect-square rounded-8 p-3 flex flex-col justify-between text-left
                   ${!day ? "bg-transparent" : isZero ? "bg-(--destructive) text-(--light)" : isSelected ? "bg-(--primary) text-(--light)" : "bg-(--gray-0)"}
                 `}
               >

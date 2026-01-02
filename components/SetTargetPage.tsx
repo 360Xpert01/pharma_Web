@@ -223,7 +223,7 @@ export default function SetTargetPage() {
     <div className="min-h-screen bg-(--gray-0)">
       {/* Centered Content Container */}
       {/* Main White Card */}
-      <div className="bg-(--background) rounded-xl shadow-soft p-8 overflow-hidden">
+      <div className="bg-(--background) rounded-8 shadow-soft p-8 overflow-hidden">
         {/* Target Configuration Form */}
         <TargetConfigForm
           selectedTeam={selectedTeam}
@@ -253,11 +253,11 @@ export default function SetTargetPage() {
                     type="text"
                     value={managers.find((m) => m.id === selectedManager1)?.name || ""}
                     readOnly
-                    className="w-full px-4 py-2.5 pr-10 bg-(--gray-0) border border-(--gray-3) rounded-lg text-sm text-(--gray-7) cursor-default"
+                    className="w-full px-4 py-2.5 pr-10 bg-(--gray-0) border border-(--gray-3) rounded-8 text-sm text-(--gray-7) cursor-default"
                   />
                   {selectedManager1 && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                      <div className="w-5 h-5 rounded-full bg-(--gray-4) flex items-center justify-center">
+                      <div className="w-5 h-5 rounded-8 bg-(--gray-4) flex items-center justify-center">
                         <span className="text-xs text-(--light) font-medium">
                           {managers.findIndex((m) => m.id === selectedManager1) + 1}
                         </span>
@@ -277,11 +277,11 @@ export default function SetTargetPage() {
                     type="text"
                     value={managers.find((m) => m.id === selectedManager2)?.name || ""}
                     readOnly
-                    className="w-full px-4 py-2.5 pr-10 bg-(--gray-0) border border-(--gray-3) rounded-lg text-sm text-(--gray-7) cursor-default"
+                    className="w-full px-4 py-2.5 pr-10 bg-(--gray-0) border border-(--gray-3) rounded-8 text-sm text-(--gray-7) cursor-default"
                   />
                   {selectedManager2 && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                      <div className="w-5 h-5 rounded-full bg-(--gray-4) flex items-center justify-center">
+                      <div className="w-5 h-5 rounded-8 bg-(--gray-4) flex items-center justify-center">
                         <span className="text-xs text-(--light) font-medium">
                           {managers.findIndex((m) => m.id === selectedManager2) + 1}
                         </span>
@@ -318,12 +318,12 @@ export default function SetTargetPage() {
 
         {/* Footer Action Buttons */}
         <div className="flex justify-end gap-4 pt-6 border-t border-(--gray-2)">
-          <button className="px-6 py-3 border border-(--gray-3) text-(--gray-7) rounded-full hover:bg-(--gray-0) transition cursor-pointer font-medium">
+          <button className="px-6 py-3 border border-(--gray-3) text-(--gray-7) rounded-8 hover:bg-(--gray-0) transition cursor-pointer font-medium">
             Discard
           </button>
           <button
             onClick={handleSetTarget}
-            className="px-8 py-3 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition shadow-soft cursor-pointer font-medium"
+            className="px-8 py-3 bg-(--primary) text-(--light) rounded-8 hover:bg-(--primary-2) transition shadow-soft cursor-pointer font-medium"
           >
             Set Target
           </button>

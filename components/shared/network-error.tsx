@@ -256,7 +256,7 @@ export default function NetworkErrorPage({
       <div className="w-full max-w-2xl space-y-6">
         {/* Error Icon and Title */}
         <div className="text-center space-y-4">
-          <div className="mx-auto w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center">
+          <div className="mx-auto w-16 h-16 rounded-8 bg-destructive/10 flex items-center justify-center">
             <WifiOff className="h-8 w-8 text-destructive" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight">{getErrorTitle()}</h1>

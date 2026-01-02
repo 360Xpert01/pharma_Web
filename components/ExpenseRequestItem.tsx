@@ -17,7 +17,7 @@ const ExpenseRequestItem: React.FC<ExpenseRequestItemProps> = ({
   onReject,
 }) => {
   return (
-    <div className="bg-(--background) rounded-2xl shadow-soft border border-(--gray-2) p-4 flex items-center justify-between hover:shadow-soft transition-shadow">
+    <div className="bg-(--background) rounded-8 shadow-soft border border-(--gray-2) p-4 flex items-center justify-between hover:shadow-soft transition-shadow">
       <div className="flex-1">
         <h3 className="text-base font-medium text-(--gray-9)">{title}</h3>
       </div>
@@ -25,14 +25,14 @@ const ExpenseRequestItem: React.FC<ExpenseRequestItemProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={onApprove}
-            className="px-4 py-2 bg-(--primary) text-(--light) text-sm font-medium rounded-full hover:bg-(--primary-2) transition-colors flex items-center gap-1 shadow-soft"
+            className="px-4 py-2 bg-(--primary) text-(--light) text-sm font-medium rounded-8 hover:bg-(--primary-2) transition-colors flex items-center gap-1 shadow-soft"
           >
             <Check className="w-4 h-4" />
             Approve
           </button>
           <button
             onClick={onReject}
-            className="px-4 py-2 border border-(--destructive) text-(--destructive) text-sm font-medium rounded-full hover:bg-(--destructive-0) transition-colors flex items-center gap-1"
+            className="px-4 py-2 border border-(--destructive) text-(--destructive) text-sm font-medium rounded-8 hover:bg-(--destructive-0) transition-colors flex items-center gap-1"
           >
             <X className="w-4 h-4" />
             Reject

@@ -61,7 +61,7 @@ export const TagsInputField = ({ field }: { field: FormField }) => {
                     <button
                       type="button"
                       onClick={() => removeTag(index)}
-                      className="ml-1 rounded-full hover:bg-accent"
+                      className="ml-1 rounded-8 hover:bg-accent"
                       aria-label={`Remove tag ${tag}`}
                     >
                       <X size={14} className="text-muted-foreground" />

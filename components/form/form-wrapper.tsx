@@ -37,7 +37,7 @@ export const FormWrapper = ({ field, children }: SectionWrapperProps) => {
   const renderContent = () => <div className={cn(getGridClasses(), "w-full")}>{children}</div>;
 
   return (
-    <div className="space-y-2 rounded-lg border p-4">
+    <div className="space-y-2 rounded-8 border p-4">
       {isCollapsible ? (
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <CollapsibleTrigger className="w-full">

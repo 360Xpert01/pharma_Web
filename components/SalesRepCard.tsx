@@ -46,12 +46,12 @@ export default function SalesRepCard({
   };
 
   return (
-    <div className="bg-(--background) border border-(--gray-2) rounded-2xl overflow-hidden">
+    <div className="bg-(--background) border border-(--gray-2) rounded-8 overflow-hidden">
       {/* Header Row: Avatar, Name, Role, Search, Menu */}
       <div className="flex items-center justify-between gap-4 p-5 pb-4">
         <div className="flex items-center gap-4">
           {/* Avatar */}
-          <div className="w-12 h-12 rounded-full bg-(--gray-2) overflow-hidden flex-shrink-0">
+          <div className="w-12 h-12 rounded-8 bg-(--gray-2) overflow-hidden flex-shrink-0">
             <Image
               src={rep.avatar}
               alt={rep.name}
@@ -75,13 +75,13 @@ export default function SalesRepCard({
             <input
               type="text"
               placeholder="Select SKU's"
-              className="w-52 px-4 py-2.5 pl-10 border border-(--gray-3) rounded-xl focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none text-sm bg-(--background)"
+              className="w-52 px-4 py-2.5 pl-10 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none text-sm bg-(--background)"
             />
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-(--gray-4)" />
           </div>
 
           {/* Three Dots Menu */}
-          <button className="text-(--gray-4) hover:text-(--gray-6) p-2 hover:bg-(--gray-1) rounded-lg transition cursor-pointer">
+          <button className="text-(--gray-4) hover:text-(--gray-6) p-2 hover:bg-(--gray-1) rounded-8 transition cursor-pointer">
             <MoreVertical className="w-5 h-5" />
           </button>
         </div>
@@ -95,7 +95,7 @@ export default function SalesRepCard({
           return (
             <span
               key={index}
-              className={`px-3 py-1.5 text-sm font-medium rounded-full ${
+              className={`px-3 py-1.5 text-sm font-medium rounded-8 ${
                 isFilled
                   ? "bg-(--gray-8) text-(--light)"
                   : "bg-(--background) border border-(--gray-3) text-(--gray-7)"
@@ -119,7 +119,7 @@ export default function SalesRepCard({
               {/* Left Product Card */}
               {leftProduct && (
                 <div
-                  className={`rounded-xl p-4 bg-(--gray-0) ${getRowBorderStyle(leftProduct.hasConflict || false)}`}
+                  className={`rounded-8 p-4 bg-(--gray-0) ${getRowBorderStyle(leftProduct.hasConflict || false)}`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4 flex-1">
@@ -139,7 +139,7 @@ export default function SalesRepCard({
                     {/* Delete Button */}
                     <button
                       onClick={() => onDeleteProduct(rep.id, leftProduct.id)}
-                      className="text-(--destructive-1) hover:text-(--destructive) p-2 hover:bg-(--destructive-0) rounded-lg transition cursor-pointer"
+                      className="text-(--destructive-1) hover:text-(--destructive) p-2 hover:bg-(--destructive-0) rounded-8 transition cursor-pointer"
                     >
                       <Trash2 className="w-5 h-5" />
                     </button>
@@ -150,7 +150,7 @@ export default function SalesRepCard({
               {/* Right Product Card - Input Style */}
               {rightProduct && (
                 <div
-                  className={`rounded-xl p-4 bg-(--background) ${getRowBorderStyle(false)} flex items-center gap-3`}
+                  className={`rounded-8 p-4 bg-(--background) ${getRowBorderStyle(false)} flex items-center gap-3`}
                 >
                   {/* Product Name Input */}
                   <div className="flex-1">
@@ -168,13 +168,13 @@ export default function SalesRepCard({
                   <input
                     type="text"
                     placeholder="Set Monthly Target"
-                    className="px-3 py-2 border border-(--gray-2) rounded-lg text-sm text-(--gray-4) w-36 bg-(--background)"
+                    className="px-3 py-2 border border-(--gray-2) rounded-8 text-sm text-(--gray-4) w-36 bg-(--background)"
                   />
                   {/* Share % Input */}
                   <input
                     type="text"
                     placeholder="Share (%)"
-                    className="px-3 py-2 border border-(--gray-2) rounded-lg text-sm text-(--gray-4) w-24 bg-(--background)"
+                    className="px-3 py-2 border border-(--gray-2) rounded-8 text-sm text-(--gray-4) w-24 bg-(--background)"
                   />
                 </div>
               )}

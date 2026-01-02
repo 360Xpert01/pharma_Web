@@ -25,7 +25,7 @@ export const TiptapEditor = ({ content = "", onChange, placeholder }: TiptapEdit
     editorProps: {
       attributes: {
         class:
-          "prose prose-sm dark:prose-invert focus:outline-none min-h-[150px] p-2 border rounded-md",
+          "prose prose-sm dark:prose-invert focus:outline-none min-h-[150px] p-2 border rounded-8",
       },
     },
     onUpdate: ({ editor }) => {
@@ -40,7 +40,7 @@ export const TiptapEditor = ({ content = "", onChange, placeholder }: TiptapEdit
   }, [content, editor]);
 
   return (
-    <div className="relative border rounded-md">
+    <div className="relative border rounded-8">
       {" "}
       {/* Added relative here */}
       <Toolbar editor={editor} />

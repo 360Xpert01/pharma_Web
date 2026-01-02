@@ -34,11 +34,11 @@ export default function PlanRequestHeader() {
       </div>
       <div className="flex mt-5 gap-8">
         <div className="flex gap-3">
-          <button className="text-(--destructive) border border-(--destructive) rounded-xl flex items-center gap-2 px-4 py-2 bg-(--background) hover:bg-(--destructive-0)">
+          <button className="text-(--destructive) border border-(--destructive) rounded-8 flex items-center gap-2 px-4 py-2 bg-(--background) hover:bg-(--destructive-0)">
             <X className="w-4" />
             Reject
           </button>
-          <button className="bg-(--primary) hover:bg-(--primary-2) text-(--light) rounded-xl flex items-center gap-2 px-4 py-2">
+          <button className="bg-(--primary) hover:bg-(--primary-2) text-(--light) rounded-8 flex items-center gap-2 px-4 py-2">
             Accept
             <ChevronRight className="w-4" />
           </button>

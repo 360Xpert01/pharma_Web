@@ -85,7 +85,7 @@ export default function TodaysAppointments() {
         {appointments.map((appt) => (
           <div
             key={appt.id}
-            className="bg-(--background) rounded-lg shadow-soft px-6 py-5 transition-all duration-200"
+            className="bg-(--background) rounded-8 shadow-soft px-6 py-5 transition-all duration-200"
           >
             {/* Appointment Title */}
             <h3 className="text-base font-semibold text-(--gray-9) mb-3">{appt.title}</h3>
@@ -93,7 +93,7 @@ export default function TodaysAppointments() {
             <div className="flex items-center justify-between">
               {/* Doctor Info */}
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full overflow-hidden">
+                <div className="w-12 h-12 rounded-8 overflow-hidden">
                   <Image
                     src={appt.avatar || "https://randomuser.me/api/portraits/women/44.jpg"}
                     alt={appt.doctorName}
@@ -111,7 +111,7 @@ export default function TodaysAppointments() {
 
               {/* Clinic & Location */}
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 rounded-8 flex items-center justify-center flex-shrink-0">
                   <MapPin className="w-5 h-5 text-(--primary)" />
                 </div>
                 <div>

@@ -141,7 +141,7 @@ export default function CampaignApprovalTable() {
         <>
           {paginatedCampaigns.map((item) => (
             <div key={item.id} className="px-4 py-1">
-              <div className="w-full bg-[var(--background)] rounded-2xl p-3  border border-(--gray-2)">
+              <div className="w-full bg-[var(--background)] rounded-8 p-3  border border-(--gray-2)">
                 <div className="flex items-center justify-between text-sm">
                   {/* Name */}
                   <div className="w-48 font-bold text-(--gray-9)">{item.name}</div>
@@ -165,7 +165,7 @@ export default function CampaignApprovalTable() {
                   {/* Status Badge */}
                   <div className="w-40 flex justify-center">
                     <span
-                      className={`px-6 py-1 rounded-full text-xs text-(--light) shadow-soft ${
+                      className={`px-6 py-1 rounded-8 text-xs text-(--light) shadow-soft ${
                         item.status === "Approved"
                           ? "bg-(--success)"
                           : item.status === "Rejected"

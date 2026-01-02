@@ -81,7 +81,7 @@ export default function MedicineTable() {
             {products.map((product) => (
               <div
                 key={product.id}
-                className="px-3 py-3 w-full flex items-center gap-4 hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-3 my-3 rounded-2xl bg-[var(--background)]"
+                className="px-3 py-3 w-full flex items-center gap-4 hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-3 my-3 rounded-8 bg-[var(--background)]"
               >
                 {/* Pulse Code */}
                 <div
@@ -101,7 +101,7 @@ export default function MedicineTable() {
 
                 {/* Category */}
                 <div className="w-[17%]">
-                  <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-[var(--primary)]/10 text-[var(--primary)]">
+                  <span className="inline-flex items-center px-3 py-1.5 rounded-8 text-xs font-medium bg-[var(--primary)]/10 text-[var(--primary)]">
                     {product.productCategory}
                   </span>
                 </div>
@@ -113,7 +113,7 @@ export default function MedicineTable() {
 
                 {/* Image */}
                 <div className="w-[17%] flex items-center">
-                  <div className="w-12 h-12 rounded-xl overflow-hidden ring-2 ring-[var(--gray-2)]">
+                  <div className="w-12 h-12 rounded-8 overflow-hidden ring-2 ring-[var(--gray-2)]">
                     {product.imageUrl ? (
                       <Image
                         src={product.imageUrl}
@@ -142,7 +142,7 @@ export default function MedicineTable() {
                 <div className="flex-1 flex items-center justify-end relative">
                   <button
                     onClick={() => setOpenId(openId === product.id ? null : product.id)}
-                    className="p-2 text-[var(--gray-4)] hover:text-[var(--gray-6)] hover:bg-[var(--gray-1)] rounded-md transition cursor-pointer"
+                    className="p-2 text-[var(--gray-4)] hover:text-[var(--gray-6)] hover:bg-[var(--gray-1)] rounded-8 transition cursor-pointer"
                   >
                     <MoreVertical className="w-5 h-5" />
                   </button>
@@ -150,7 +150,7 @@ export default function MedicineTable() {
                   {openId === product.id && (
                     <>
                       <div className="fixed inset-0 z-40" onClick={() => setOpenId(null)} />
-                      <div className="absolute right-0 top-10 mt-2 w-48 bg-[var(--light)] rounded-lg shadow-soft border border-[var(--gray-2)] z-50">
+                      <div className="absolute right-0 top-10 mt-2 w-48 bg-[var(--light)] rounded-8 shadow-soft border border-[var(--gray-2)] z-50">
                         <button
                           onClick={() => {
                             console.log("Edit", product.id);

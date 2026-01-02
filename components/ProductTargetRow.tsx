@@ -56,7 +56,7 @@ export default function ProductTargetRow({
         {/* Delete Icon */}
         <button
           onClick={() => onDelete(product.id)}
-          className="text-(--destructive) hover:text-(--destructive) transition cursor-pointer p-1.5 hover:bg-(--destructive-0) rounded-lg"
+          className="text-(--destructive) hover:text-(--destructive) transition cursor-pointer p-1.5 hover:bg-(--destructive-0) rounded-8"
           title="Delete product target"
         >
           <Trash2 className="w-4 h-4" />
@@ -71,7 +71,7 @@ export default function ProductTargetRow({
           value={product.inputValue}
           onChange={(e) => onInputChange(product.id, e.target.value)}
           placeholder="e.g. Atorvastatin 10mg"
-          className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none text-sm ${
+          className={`px-3 py-2 border rounded-8 focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none text-sm ${
             product.hasConflict
               ? "border-(--destructive-1) bg-(--destructive-0)"
               : "border-(--gray-3)"
@@ -82,7 +82,7 @@ export default function ProductTargetRow({
         <input
           type="text"
           placeholder="e.g. Elt 250mg"
-          className="px-3 py-2 border border-(--gray-3) rounded-lg focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none text-sm"
+          className="px-3 py-2 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none text-sm"
         />
       </div>
 
@@ -90,7 +90,7 @@ export default function ProductTargetRow({
       {product.hasConflict && (
         <div
           onClick={onConflictClick}
-          className="flex items-center gap-2 px-3 py-2 bg-(--destructive-0) border border-(--destructive-1) rounded-lg cursor-pointer hover:bg-(--destructive-0) transition-colors"
+          className="flex items-center gap-2 px-3 py-2 bg-(--destructive-0) border border-(--destructive-1) rounded-8 cursor-pointer hover:bg-(--destructive-0) transition-colors"
         >
           <AlertCircle className="w-4 h-4 text-(--destructive) flex-shrink-0" />
           <p className="text-xs text-(--destructive)">

@@ -118,12 +118,12 @@ export default function ExpenseApprovalList() {
           {expensesData.map((item) => (
             <div
               key={item.id}
-              className="flex items-center rounded-2xl shadow-soft border border-(--gray-1) bg-(--background) p-4"
+              className="flex items-center rounded-8 shadow-soft border border-(--gray-1) bg-(--background) p-4"
             >
               {/* Left: User Info */}
               <div className="flex items-center gap-4 w-[25%]">
                 <div className="relative">
-                  <div className="w-14 h-14 rounded-md overflow-hidden border-2 border-white shadow-soft">
+                  <div className="w-14 h-14 rounded-8 overflow-hidden border-2 border-white shadow-soft">
                     <Image
                       src={`/capMan.svg`}
                       alt={item.name}
@@ -139,7 +139,7 @@ export default function ExpenseApprovalList() {
                   <div className="flex items-center gap-2">
                     <p className="text-sm text-(--gray-5)">{item.role}</p>
                     <span
-                      className={`px-2 py-0.5 text-xs font-medium rounded-full ${
+                      className={`px-2 py-0.5 text-xs font-medium rounded-8 ${
                         item.status === "Review"
                           ? "bg-(--warning-light) text-(--warning-2)"
                           : "bg-(--destructive-light) text-(--destructive)"

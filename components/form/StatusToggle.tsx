@@ -19,11 +19,11 @@ export default function StatusToggle({
 }: StatusToggleProps) {
   return (
     <div className={`flex ${className}`}>
-      <div className="inline-flex border border-(--gray-3) rounded-full p-1 bg-(--gray-0) overflow-hidden">
+      <div className="inline-flex border border-(--gray-3) rounded-8 p-1 bg-(--gray-0) overflow-hidden">
         <button
           type="button"
           onClick={() => onChange("Active")}
-          className={`px-6 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
+          className={`px-6 py-2 rounded-8 text-sm font-medium transition-all cursor-pointer ${
             status === "Active"
               ? "bg-(--primary) text-(--light)"
               : "text-(--gray-6) hover:bg-(--gray-1)"
@@ -34,7 +34,7 @@ export default function StatusToggle({
         <button
           type="button"
           onClick={() => onChange("Inactive")}
-          className={`px-6 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
+          className={`px-6 py-2 rounded-8 text-sm font-medium transition-all cursor-pointer ${
             status === "Inactive"
               ? "bg-(--primary) text-(--light)"
               : "text-(--gray-6) hover:bg-(--gray-1)"

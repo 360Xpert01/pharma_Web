@@ -88,13 +88,13 @@ export default function MemberSearch({
             }}
             placeholder={loading ? "Loading sales reps..." : placeholder}
             disabled={loading}
-            className="w-full px-4 py-3 pl-12 border border-(--gray-3) rounded-xl focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none text-(--gray-5) disabled:bg-(--gray-1) disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 pl-12 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none text-(--gray-5) disabled:bg-(--gray-1) disabled:cursor-not-allowed"
           />
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-(--gray-4)" />
 
           {/* Member Search Results Dropdown */}
           {showSearchResults && searchQuery && !loading && (
-            <div className="absolute z-10 w-full mt-2 bg-(--light) border border-(--gray-2) rounded-xl shadow-soft max-h-64 overflow-y-auto">
+            <div className="absolute z-10 w-full mt-2 bg-(--light) border border-(--gray-2) rounded-8 shadow-soft max-h-64 overflow-y-auto">
               {filteredMembers.length > 0 ? (
                 filteredMembers.map((user) => (
                   <div
@@ -109,7 +109,7 @@ export default function MemberSearch({
                         </p>
                         <p className="text-sm text-(--gray-5)">{user.pulseCode}</p>
                       </div>
-                      <span className="px-2 py-1 bg-(--muted) text-(--primary) text-xs font-medium rounded-full">
+                      <span className="px-2 py-1 bg-(--muted) text-(--primary) text-xs font-medium rounded-8">
                         {user.email}
                       </span>
                     </div>
@@ -126,8 +126,8 @@ export default function MemberSearch({
         {selectedMembers.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-3">
             {selectedMembers.map((member) => (
-              <div key={member.id} className="p-3 bg-(--gray-1) rounded-xl flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-(--gray-3) overflow-hidden flex-shrink-0">
+              <div key={member.id} className="p-3 bg-(--gray-1) rounded-8 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-8 bg-(--gray-3) overflow-hidden flex-shrink-0">
                   {member.profilePicture ? (
                     <Image
                       src={member.profilePicture}

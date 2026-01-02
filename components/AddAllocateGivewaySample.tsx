@@ -169,7 +169,7 @@ export default function AddAllocateGivewaySample() {
 
   return (
     <div className="bg-(--gray-0)">
-      <div className="bg-(--background) rounded-2xl shadow-soft p-8">
+      <div className="bg-(--background) rounded-8 shadow-soft p-8">
         {/* Select Employee Section */}
         <div className="mb-8">
           <h2 className="text-xl font-bold text-(--gray-9) mb-4">Select Employee</h2>
@@ -192,7 +192,7 @@ export default function AddAllocateGivewaySample() {
                     setSelectedEmployee(null); // Clear selection when typing
                   }}
                   onFocus={() => setShowEmployeeDropdown(true)}
-                  className="w-full pl-10 pr-4 py-2.5 border border-(--gray-3) rounded-lg focus:ring-2 focus:ring-(--primary) outline-none text-sm"
+                  className="w-full pl-10 pr-4 py-2.5 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) outline-none text-sm"
                 />
               </div>
 
@@ -201,7 +201,7 @@ export default function AddAllocateGivewaySample() {
                 employeeSearch &&
                 !selectedEmployee &&
                 filteredEmployees.length > 0 && (
-                  <div className="absolute z-50 w-full mt-2 bg-(--background) border border-(--gray-2) rounded-lg shadow-soft max-h-64 overflow-y-auto">
+                  <div className="absolute z-50 w-full mt-2 bg-(--background) border border-(--gray-2) rounded-8 shadow-soft max-h-64 overflow-y-auto">
                     {filteredEmployees.slice(0, 5).map((employee) => (
                       <div
                         key={employee.id}
@@ -209,7 +209,7 @@ export default function AddAllocateGivewaySample() {
                         className="flex items-center gap-3 px-4 py-3 hover:bg-(--gray-0) cursor-pointer border-b border-(--gray-1) last:border-b-0"
                       >
                         {/* Avatar */}
-                        <div className="w-10 h-10 rounded-full bg-(--gray-2) flex items-center justify-center overflow-hidden flex-shrink-0">
+                        <div className="w-10 h-10 rounded-8 bg-(--gray-2) flex items-center justify-center overflow-hidden flex-shrink-0">
                           {employee.profilePicture ? (
                             <img
                               src={employee.profilePicture}
@@ -259,7 +259,7 @@ export default function AddAllocateGivewaySample() {
                   <label className="block text-xs font-medium text-(--gray-6) mb-2">
                     Team Pulse Code<span className="text-(--destructive)">*</span>
                   </label>
-                  <div className="flex items-center px-4 py-2.5 bg-(--gray-0) rounded-lg text-sm">
+                  <div className="flex items-center px-4 py-2.5 bg-(--gray-0) rounded-8 text-sm">
                     <span className="text-(--gray-9) ml-1">{selectedEmployee.pulseCode}</span>
                   </div>
                 </div>
@@ -269,7 +269,7 @@ export default function AddAllocateGivewaySample() {
                   <label className="block text-xs font-medium text-(--gray-6) mb-2">
                     Employee Name
                   </label>
-                  <div className="flex items-center px-4 py-2.5 bg-(--gray-0) rounded-lg text-sm">
+                  <div className="flex items-center px-4 py-2.5 bg-(--gray-0) rounded-8 text-sm">
                     <span className="text-(--gray-9)">
                       {selectedEmployee.firstName} {selectedEmployee.lastName}
                     </span>
@@ -279,7 +279,7 @@ export default function AddAllocateGivewaySample() {
                 {/* Role */}
                 <div>
                   <label className="block text-xs font-medium text-(--gray-6) mb-2">Role</label>
-                  <div className="flex items-center px-4 py-2.5 bg-(--gray-0) rounded-lg text-sm">
+                  <div className="flex items-center px-4 py-2.5 bg-(--gray-0) rounded-8 text-sm">
                     <span className="text-(--gray-9)">Sales Representative</span>
                   </div>
                 </div>
@@ -287,7 +287,7 @@ export default function AddAllocateGivewaySample() {
                 {/* Manager */}
                 <div>
                   <label className="block text-xs font-medium text-(--gray-6) mb-2">Manager</label>
-                  <div className="flex items-center px-4 py-2.5 bg-(--gray-0) rounded-lg text-sm">
+                  <div className="flex items-center px-4 py-2.5 bg-(--gray-0) rounded-8 text-sm">
                     <span className="text-(--gray-9)">Abdul Aziz Warsi</span>
                   </div>
                 </div>
@@ -310,13 +310,13 @@ export default function AddAllocateGivewaySample() {
                     placeholder="Search Product Name"
                     value={giveawaySearch}
                     onChange={(e) => setGiveawaySearch(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 border border-(--gray-3) rounded-lg focus:ring-2 focus:ring-(--primary) outline-none text-sm"
+                    className="w-full pl-10 pr-4 py-2.5 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) outline-none text-sm"
                   />
                 </div>
                 <div className="flex items-end">
                   <button
                     onClick={handleAddGiveaway}
-                    className="px-5 py-2.5 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition flex items-center gap-2 text-sm font-medium cursor-pointer whitespace-nowrap"
+                    className="px-5 py-2.5 bg-(--primary) text-(--light) rounded-8 hover:bg-(--primary-2) transition flex items-center gap-2 text-sm font-medium cursor-pointer whitespace-nowrap"
                   >
                     <Plus className="w-4 h-4" />
                     Add Giveaway
@@ -326,12 +326,12 @@ export default function AddAllocateGivewaySample() {
 
               {/* Giveaway Cards Grid */}
               {filteredGiveaways.length > 0 && (
-                <div className="bg-(--gray-0) rounded-lg p-4">
+                <div className="bg-(--gray-0) rounded-8 p-4">
                   <div className="grid grid-cols-4 gap-3">
                     {filteredGiveaways.map((item) => (
                       <div
                         key={item.id}
-                        className="flex items-center justify-between px-4 py-3 (--background) border border-(--gray-2) rounded-lg hover:shadow-soft transition"
+                        className="flex items-center justify-between px-4 py-3 (--background) border border-(--gray-2) rounded-8 hover:shadow-soft transition"
                       >
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-(--gray-9) truncate">
@@ -378,13 +378,13 @@ export default function AddAllocateGivewaySample() {
                     placeholder="Search Sample Name"
                     value={sampleSearch}
                     onChange={(e) => setSampleSearch(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 border border-(--gray-3) rounded-lg focus:ring-2 focus:ring-(--primary) outline-none text-sm"
+                    className="w-full pl-10 pr-4 py-2.5 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) outline-none text-sm"
                   />
                 </div>
                 <div className="flex items-end">
                   <button
                     onClick={handleAddSample}
-                    className="px-5 py-2.5 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition flex items-center gap-2 text-sm font-medium cursor-pointer whitespace-nowrap"
+                    className="px-5 py-2.5 bg-(--primary) text-(--light) rounded-8 hover:bg-(--primary-2) transition flex items-center gap-2 text-sm font-medium cursor-pointer whitespace-nowrap"
                   >
                     <Plus className="w-4 h-4" />
                     Add Sample
@@ -394,12 +394,12 @@ export default function AddAllocateGivewaySample() {
 
               {/* Sample Cards Grid */}
               {filteredSamples.length > 0 && (
-                <div className="bg-(--gray-0) rounded-lg p-4">
+                <div className="bg-(--gray-0) rounded-8 p-4">
                   <div className="grid grid-cols-4 gap-3">
                     {filteredSamples.map((item) => (
                       <div
                         key={item.id}
-                        className="flex items-center justify-between px-4 py-3 (--background) border border-(--gray-2) rounded-lg hover:shadow-soft transition"
+                        className="flex items-center justify-between px-4 py-3 (--background) border border-(--gray-2) rounded-8 hover:shadow-soft transition"
                       >
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-(--gray-9) truncate">
@@ -436,14 +436,14 @@ export default function AddAllocateGivewaySample() {
         <div className="flex justify-end gap-4 pt-6 mt-8">
           <button
             onClick={handleDiscard}
-            className="px-8 py-3 border border-(--gray-3) text-(--gray-7) rounded-full hover:bg-(--gray-0) transition cursor-pointer"
+            className="px-8 py-3 border border-(--gray-3) text-(--gray-7) rounded-8 hover:bg-(--gray-0) transition cursor-pointer"
           >
             Discard
           </button>
           <button
             onClick={handleAllocate}
             disabled={!selectedEmployee}
-            className={`px-10 py-3 bg-(--primary) text-(--light) rounded-full hover:bg-(--primary-2) transition flex items-center gap-2 shadow-soft cursor-pointer ${
+            className={`px-10 py-3 bg-(--primary) text-(--light) rounded-8 hover:bg-(--primary-2) transition flex items-center gap-2 shadow-soft cursor-pointer ${
               !selectedEmployee ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >

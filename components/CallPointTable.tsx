@@ -84,7 +84,7 @@ export default function CallPointsList() {
             {paginatedCallPoints.map((point) => (
               <div
                 key={point.id}
-                className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-4 my-3 rounded-2xl bg-[var(--background)]"
+                className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-4 my-3 rounded-8 bg-[var(--background)]"
               >
                 {/* Pulse Code */}
                 <div
@@ -120,7 +120,7 @@ export default function CallPointsList() {
 
                 {/* More Options */}
                 <div className="w-[8%] flex items-center justify-end">
-                  <button className="p-2 text-[var(--gray-4)] hover:text-[var(--gray-6)] hover:bg-[var(--gray-1)] rounded-md transition cursor-pointer">
+                  <button className="p-2 text-[var(--gray-4)] hover:text-[var(--gray-6)] hover:bg-[var(--gray-1)] rounded-8 transition cursor-pointer">
                     <MoreVertical className="w-5 h-5" />
                   </button>
                 </div>

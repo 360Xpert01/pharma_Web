@@ -182,7 +182,7 @@ export default function AddGiveawayForm() {
         <div className="space-y-6">
           <ProfileImageUpload imagePreview={image} onImageChange={handleImageChange} />
           {/* Small Thumbnail */}
-          <div className="w-20 h-20 bg-(--gray-2) border-2 border-dashed border-(--gray-3) rounded-xl " />
+          <div className="w-20 h-20 bg-(--gray-2) border-2 border-dashed border-(--gray-3) rounded-8 " />
         </div>
 
         {/* Right: Form Fields */}
@@ -267,7 +267,7 @@ export default function AddGiveawayForm() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Pain reliever tablet"
-              className={`w-full px-5 py-3.5 border rounded-xl outline-none transition resize-none ${
+              className={`w-full px-5 py-3.5 border rounded-8 outline-none transition resize-none ${
                 validationErrors.description
                   ? "border-(--destructive) focus:ring-2 focus:ring-(--destructive)"
                   : "border-(--gray-3) focus:ring-2 focus:ring-(--primary)"

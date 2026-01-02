@@ -74,7 +74,7 @@ export function DoctorCardDetails({
           <Progress value={progress} className="h-3 bg-(--gray-2)" />
           <div
             className={cn(
-              "absolute inset-0 h-3 rounded-full transition-all",
+              "absolute inset-0 h-3 rounded-8 transition-all",
               colorClasses[colorVariant]
             )}
             style={{ width: `${progress}%` }}

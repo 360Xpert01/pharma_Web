@@ -48,7 +48,7 @@ export default function ProfileImageUpload({
     <div className={`relative ${className}`}>
       <div
         onClick={handleImageClick}
-        className="relative w-full h-96 bg-(--gray-1) border-2 border-dashed border-(--gray-3) rounded-3xl cursor-pointer overflow-hidden group hover:border-(--gray-4) transition-all"
+        className="relative w-full h-96 bg-(--gray-1) border-2 border-dashed border-(--gray-3) rounded-8 cursor-pointer overflow-hidden group hover:border-(--gray-4) transition-all"
       >
         {imagePreview ? (
           <>

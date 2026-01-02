@@ -57,14 +57,14 @@ export default function MonthlyTargets({
   };
 
   return (
-    <div className="w-full bg-(--light) rounded-lg  p-6 shadow-soft">
+    <div className="w-full bg-(--light) rounded-8  p-6 shadow-soft">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold text-(--dark)">Monthly Targets</h2>
         <div className="flex items-center gap-2">
           <button
             onClick={handlePreviousMonth}
-            className="p-1 hover:bg-(--light) rounded-md transition-colors cursor-pointer"
+            className="p-1 hover:bg-(--light) rounded-8 transition-colors cursor-pointer"
             aria-label="Previous month"
           >
             <ChevronLeft className="w-5 h-5 text-(--primary)" />
@@ -74,7 +74,7 @@ export default function MonthlyTargets({
           </span>
           <button
             onClick={handleNextMonth}
-            className="p-1 hover:bg-(--light) rounded-md transition-colors cursor-pointer"
+            className="p-1 hover:bg-(--light) rounded-8 transition-colors cursor-pointer"
             aria-label="Next month"
           >
             <ChevronRight className="w-5 h-5 text-(--primary)" />

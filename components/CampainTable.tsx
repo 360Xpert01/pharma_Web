@@ -117,7 +117,7 @@ export default function CampaignsTable() {
         {paginatedTeams.map((team) => (
           <div
             key={team.id}
-            className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-4 my-3 rounded-2xl bg-[var(--background)]"
+            className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-4 my-3 rounded-8 bg-[var(--background)]"
             onClick={() => setOpenId(null)}
           >
             {/* Pulse Code */}
@@ -159,7 +159,7 @@ export default function CampaignsTable() {
                   {team.users.slice(0, 3).map((user, idx) => (
                     <div
                       key={user.id}
-                      className="w-8 h-8 rounded-full border-2 border-[var(--light)] overflow-hidden ring-2 ring-[var(--gray-1)]"
+                      className="w-8 h-8 rounded-8 border-2 border-[var(--light)] overflow-hidden ring-2 ring-[var(--gray-1)]"
                     >
                       <img
                         src={
@@ -174,7 +174,7 @@ export default function CampaignsTable() {
                     </div>
                   ))}
                   {team.users.length > 3 && (
-                    <div className="w-8 h-8 rounded-full border-2 border-[var(--light)] flex items-center justify-center text-xs font-medium text-[var(--gray-5)] ring-2 ring-[var(--gray-1)] bg-[var(--gray-1)]">
+                    <div className="w-8 h-8 rounded-8 border-2 border-[var(--light)] flex items-center justify-center text-xs font-medium text-[var(--gray-5)] ring-2 ring-[var(--gray-1)] bg-[var(--gray-1)]">
                       +{team.users.length - 3}
                     </div>
                   )}
@@ -187,7 +187,7 @@ export default function CampaignsTable() {
             {/* Status */}
             <div className="w-[13%] flex items-center">
               <span
-                className={`px-4 min-w-[90px] text-center py-1.5 rounded-full text-sm font-medium ${
+                className={`px-4 min-w-[90px] text-center py-1.5 rounded-8 text-sm font-medium ${
                   team.isActive
                     ? "bg-[var(--success)]/10 text-[var(--success)]"
                     : "bg-[var(--gray-1)] text-[var(--gray-5)]"
@@ -204,14 +204,14 @@ export default function CampaignsTable() {
             >
               <button
                 onClick={() => handleToggle(team.id)}
-                className="p-2 text-[var(--gray-4)] hover:text-[var(--gray-6)] hover:bg-[var(--gray-1)] rounded-md transition cursor-pointer"
+                className="p-2 text-[var(--gray-4)] hover:text-[var(--gray-6)] hover:bg-[var(--gray-1)] rounded-8 transition cursor-pointer"
               >
                 <MoreVertical className="w-5 h-5" />
               </button>
 
               {/* Dropdown */}
               {openId === team.id && (
-                <div className="absolute right-6 top-12 mt-2 w-48 rounded-lg shadow-soft border border-[var(--gray-2)] bg-[var(--light)] z-50">
+                <div className="absolute right-6 top-12 mt-2 w-48 rounded-8 shadow-soft border border-[var(--gray-2)] bg-[var(--light)] z-50">
                   <button
                     onClick={() => {
                       console.log("Edit", team.id);

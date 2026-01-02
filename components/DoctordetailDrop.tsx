@@ -142,9 +142,9 @@ export default function VisitHistoryAccordion() {
         {/* Tabs */}
 
         <div className="w-full max-w-md  my-6 mx-4">
-          <div className="relative bg-(--gray-1) rounded-full p-1 shadow-inner">
+          <div className="relative bg-(--gray-1) rounded-8 p-1 shadow-inner">
             <div
-              className="absolute top-1 left-1 h-[calc(100%-8px)] w-[calc(33.333%-8px)] bg-(--primary) rounded-full transition-all duration-300 ease-out shadow-soft"
+              className="absolute top-1 left-1 h-[calc(100%-8px)] w-[calc(33.333%-8px)] bg-(--primary) rounded-8 transition-all duration-300 ease-out shadow-soft"
               style={{
                 transform:
                   activeTab === "plans"
@@ -159,7 +159,7 @@ export default function VisitHistoryAccordion() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`relative z-10 flex-1 py-2 px-6 text-sm font-medium transition-all duration-300 rounded-full ${
+                  className={`relative z-10 flex-1 py-2 px-6 text-sm font-medium transition-all duration-300 rounded-8 ${
                     activeTab === tab.id
                       ? "text-(--light)"
                       : "text-(--gray-6) hover:text-(--gray-8)"
@@ -181,7 +181,7 @@ export default function VisitHistoryAccordion() {
                 onClick={() => toggleExpand(visit.id)}
                 className="px-6 py-1 transition-all cursor-pointer flex items-center justify-between group"
               >
-                <div className="w-full p-4 rounded-md hover:bg-(--gray-0)  border border-(--gray-2)  grid grid-cols-14 gap-6 text-sm">
+                <div className="w-full p-4 rounded-8 hover:bg-(--gray-0)  border border-(--gray-2)  grid grid-cols-14 gap-6 text-sm">
                   <div className="col-span-2">
                     <p className="font-semibold text-(--gray-9)">{visit.doctorName}</p>
                   </div>
@@ -220,7 +220,7 @@ export default function VisitHistoryAccordion() {
                             {visit.sampleItems.map((item, i) => (
                               <div
                                 key={i}
-                                className="flex justify-between items-center bg-(--background) rounded-xl px-5 py-4"
+                                className="flex justify-between items-center bg-(--background) rounded-8 px-5 py-4"
                               >
                                 <span className="font-medium text-(--gray-8)">{item.name}</span>
                                 <span className="text-sm text-(--gray-5)">{item.date}</span>
@@ -241,7 +241,7 @@ export default function VisitHistoryAccordion() {
                             {visit.giveawayItems.map((item, i) => (
                               <div
                                 key={i}
-                                className="flex justify-between items-center bg-(--background) rounded-xl px-5 py-4"
+                                className="flex justify-between items-center bg-(--background) rounded-8 px-5 py-4"
                               >
                                 <span className="font-medium text-(--gray-8)">{item.name}</span>
                                 <span className="text-sm text-(--gray-5)">{item.date}</span>
@@ -261,7 +261,7 @@ export default function VisitHistoryAccordion() {
                       {/* Remarks */}
                       <div className="w-[49%]">
                         <h4 className="text-sm font-bold text-(--gray-8) mb-3">Remarks</h4>
-                        <p className="text-sm leading-relaxed text-(--gray-6) bg-(--background) rounded-xl p-5 border shadow-soft">
+                        <p className="text-sm leading-relaxed text-(--gray-6) bg-(--background) rounded-8 p-5 border shadow-soft">
                           {visit.remarks}
                         </p>
                       </div>
@@ -271,7 +271,7 @@ export default function VisitHistoryAccordion() {
                         <h4 className="text-sm font-bold text-(--gray-8) mb-3 flex items-center gap-2">
                           Attachments
                           {selectedFiles[visit.id]?.length > 0 && (
-                            <span className="text-xs bg-(--primary-0) text-(--primary) px-2 py-0.5 rounded-full font-medium">
+                            <span className="text-xs bg-(--primary-0) text-(--primary) px-2 py-0.5 rounded-8 font-medium">
                               {selectedFiles[visit.id].length}
                             </span>
                           )}
@@ -290,13 +290,13 @@ export default function VisitHistoryAccordion() {
                         {selectedFiles[visit.id]?.length > 0 ? (
                           <div
                             onClick={() => openFilePicker(visit.id)}
-                            className="flex items-center gap-4 bg-(--background) rounded-xl p-3 border shadow-soft cursor-pointer hover:bg-(--gray-0) transition"
+                            className="flex items-center gap-4 bg-(--background) rounded-8 p-3 border shadow-soft cursor-pointer hover:bg-(--gray-0) transition"
                           >
                             <Paperclip className="w-6 h-6 text-(--gray-5)" />
                             <div className="flex gap-3 flex-wrap">
                               {selectedFiles[visit.id].map((file, index) => (
                                 <div key={index} className="relative group">
-                                  <div className="w-10 h-10 rounded-xl overflow-hidden border-2 border-(--gray-3)">
+                                  <div className="w-10 h-10 rounded-8 overflow-hidden border-2 border-(--gray-3)">
                                     <Image
                                       src={URL.createObjectURL(file)}
                                       alt="attachment"
@@ -310,13 +310,13 @@ export default function VisitHistoryAccordion() {
                                       e.stopPropagation();
                                       removeImage(visit.id, index);
                                     }}
-                                    className="absolute -top-1 -right-1 bg-(--destructive) text-(--light) rounded-full w-5 h-5 text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+                                    className="absolute -top-1 -right-1 bg-(--destructive) text-(--light) rounded-8 w-5 h-5 text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
                                   >
                                     ×
                                   </button>
                                 </div>
                               ))}
-                              <div className="w-10 h-10 bg-(--gray-1) border-2 border-dashed border-(--gray-4) rounded-xl flex items-center justify-center">
+                              <div className="w-10 h-10 bg-(--gray-1) border-2 border-dashed border-(--gray-4) rounded-8 flex items-center justify-center">
                                 <span className="text-xl text-(--gray-4)">+</span>
                               </div>
                             </div>
@@ -324,7 +324,7 @@ export default function VisitHistoryAccordion() {
                         ) : (
                           <div
                             onClick={() => openFilePicker(visit.id)}
-                            className="text-sm text-(--gray-4) italic cursor-pointer hover:text-(--gray-6) transition bg-(--background) rounded-xl p-5 border text-center shadow-soft"
+                            className="text-sm text-(--gray-4) italic cursor-pointer hover:text-(--gray-6) transition bg-(--background) rounded-8 p-5 border text-center shadow-soft"
                           >
                             Click to add attachments
                           </div>

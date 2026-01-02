@@ -11,19 +11,19 @@ export function FeatureCard({ feature }: FeatureCardProps) {
 
   return (
     <div className="group relative h-full">
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-300"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-8 blur opacity-0 group-hover:opacity-100 transition duration-300"></div>
       <div
-        className="relative bg-card border border-border rounded-xl p-8 transition h-full flex flex-col shadow-soft
+        className="relative bg-card border border-border rounded-8 p-8 transition h-full flex flex-col shadow-soft
         hover:shadow-soft hover:border-primary/60 focus-within:shadow-soft focus-within:border-primary/80 active:scale-[0.98] active:shadow-soft
         dark:bg-card dark:border-border"
         tabIndex={0}
       >
         <div className="flex items-start justify-between mb-6">
-          <div className="bg-muted rounded-lg p-3 group-hover:bg-primary/10 transition">
+          <div className="bg-muted rounded-8 p-3 group-hover:bg-primary/10 transition">
             <Icon className="w-6 h-6 text-foreground/80" />
           </div>
           {feature.isNew && (
-            <span className="bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full">
+            <span className="bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-8">
               New
             </span>
           )}

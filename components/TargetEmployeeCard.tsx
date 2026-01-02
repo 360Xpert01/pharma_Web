@@ -56,7 +56,7 @@ export default function TargetEmployeeCard({ target, month }: TargetEmployeeCard
   };
 
   return (
-    <div className="bg-[var(--background)] rounded-2xl border border-[var(--gray-2)] overflow-hidden">
+    <div className="bg-[var(--background)] rounded-8 border border-[var(--gray-2)] overflow-hidden">
       {/* Employee Header - Always Visible */}
       <div className="px-3 py-3 w-full flex items-center gap-6 hover:bg-[var(--gray-0)] transition-all cursor-pointer">
         {/* Month Label - 12% */}
@@ -71,7 +71,7 @@ export default function TargetEmployeeCard({ target, month }: TargetEmployeeCard
             alt={target.employeeName}
             width={40}
             height={40}
-            className="rounded-full flex-shrink-0"
+            className="rounded-8 flex-shrink-0"
           />
           <div className="min-w-0 flex-1">
             <h3
@@ -135,7 +135,7 @@ export default function TargetEmployeeCard({ target, month }: TargetEmployeeCard
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search..."
-              className="w-full pl-10 pr-4 py-2 border border-[var(--gray-3)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)]"
+              className="w-full pl-10 pr-4 py-2 border border-[var(--gray-3)] rounded-8 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)]"
             />
           </div>
 
@@ -145,7 +145,7 @@ export default function TargetEmployeeCard({ target, month }: TargetEmployeeCard
               {target.tags.map((tag) => (
                 <span
                   key={tag}
-                  className={`px-3 py-1 rounded-md text-xs font-semibold ${getStatusBadgeColor(tag)}`}
+                  className={`px-3 py-1 rounded-8 text-xs font-semibold ${getStatusBadgeColor(tag)}`}
                 >
                   {tag}
                 </span>
@@ -159,7 +159,7 @@ export default function TargetEmployeeCard({ target, month }: TargetEmployeeCard
           {target.products.map((product) => (
             <div
               key={product.id}
-              className="bg-[var(--background)] rounded-lg px-4 py-3 border border-[var(--gray-2)]"
+              className="bg-[var(--background)] rounded-8 px-4 py-3 border border-[var(--gray-2)]"
             >
               {editingProduct === product.id ? (
                 /* Edit Mode */

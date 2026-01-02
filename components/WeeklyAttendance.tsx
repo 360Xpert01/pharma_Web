@@ -64,18 +64,18 @@ export default function AttendanceDashboard() {
           <div key={index} className="space-y-3">
             {/* Offsite Warning */}
             {day.offsite && (
-              <div className="flex items-center justify-center gap-2 bg-(--destructive-0) text-(--destructive) px-4 py-3 rounded-lg text-sm  font-medium shadow-soft">
+              <div className="flex items-center justify-center gap-2 bg-(--destructive-0) text-(--destructive) px-4 py-3 rounded-8 text-sm  font-medium shadow-soft">
                 <AlertTriangle className="w-5 h-5" />
                 Checked in at off-site location.
               </div>
             )}
 
             {/* Day Row */}
-            <div className="bg-(--background) rounded-lg shadow-soft px-6 py-5">
+            <div className="bg-(--background) rounded-8 shadow-soft px-6 py-5">
               <p className="text-base font-semibold text-(--gray-9) mb-3">{day.date}</p>
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-(--primary-0) rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 bg-(--primary-0) rounded-8 flex items-center justify-center">
                     <ChevronRight className="w-5 h-5 text-(--primary) rotate-180" />
                   </div>
                   <div>
@@ -85,7 +85,7 @@ export default function AttendanceDashboard() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-(--primary-0) rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 bg-(--primary-0) rounded-8 flex items-center justify-center">
                     <ChevronRight className="w-5 h-5 text-(--primary)" />
                   </div>
                   <div>

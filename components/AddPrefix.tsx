@@ -35,7 +35,7 @@ export default function AddPrefixNameComponent() {
 
   const getInputClasses = (fieldName: string) => {
     const baseClasses =
-      "w-full px-4 py-3 bg-(--gray-0) border rounded-xl focus:outline-none focus:ring-2";
+      "w-full px-4 py-3 bg-(--gray-0) border rounded-8 focus:outline-none focus:ring-2";
     if (hasError(fieldName)) {
       return `${baseClasses} border-(--destructive) focus:ring-(--destructive) focus:border-(--destructive)`;
     }
@@ -143,7 +143,7 @@ export default function AddPrefixNameComponent() {
   return (
     <div className=" bg-(--gray-0) flex items-center justify-center ">
       <div className="w-full">
-        <div className="bg-(--background) rounded-2xl shadow-soft border border-(--gray-1) overflow-hidden">
+        <div className="bg-(--background) rounded-8 shadow-soft border border-(--gray-1) overflow-hidden">
           <div className="p-8 space-y-6">
             {/* Title & Subtitle */}
             <div>

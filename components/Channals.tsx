@@ -88,7 +88,7 @@ export default function AddChannelsCard() {
 
   return (
     <div className="w-full ">
-      <div className="bg-(--background) rounded-3xl shadow-soft border border-(--gray-1) overflow-hidden">
+      <div className="bg-(--background) rounded-8 shadow-soft border border-(--gray-1) overflow-hidden">
         <div className="px-8 py-10 space-y-8">
           {/* Header */}
           <div>
@@ -108,7 +108,7 @@ export default function AddChannelsCard() {
                 value={generatedPrefix || ""}
                 placeholder={prefixLoading ? "Generating..." : "PLS_CH_000001"}
                 readOnly
-                className="w-full px-5 py-4 bg-(--gray-1) border border-(--gray-2) rounded-xl font-mono text-(--gray-7) cursor-not-allowed"
+                className="w-full px-5 py-4 bg-(--gray-1) border border-(--gray-2) rounded-8 font-mono text-(--gray-7) cursor-not-allowed"
                 title={prefixError || "Auto-generated pulse code (read-only)"}
               />
             </div>
@@ -123,7 +123,7 @@ export default function AddChannelsCard() {
                 value={channelName}
                 onChange={(e) => setChannelName(e.target.value)}
                 placeholder="e.g. Doctor Channel"
-                className="w-full px-5 py-4 bg-(--gray-0) border border-(--gray-2) rounded-xl text-(--gray-9) placeholder-(--gray-4) focus:outline-none focus:ring-2 focus:ring-(--primary) focus:border-transparent transition"
+                className="w-full px-5 py-4 bg-(--gray-0) border border-(--gray-2) rounded-8 text-(--gray-9) placeholder-(--gray-4) focus:outline-none focus:ring-2 focus:ring-(--primary) focus:border-transparent transition"
               />
             </div>
 
@@ -137,7 +137,7 @@ export default function AddChannelsCard() {
                 value={legacyCode}
                 onChange={(e) => setLegacyCode(e.target.value)}
                 placeholder="e.g. OLD-CH-001"
-                className="w-full px-5 py-4 bg-(--gray-0) border border-(--gray-2) rounded-xl text-(--gray-9) placeholder-(--gray-4) focus:outline-none focus:ring-2 focus:ring-(--primary) focus:border-transparent transition"
+                className="w-full px-5 py-4 bg-(--gray-0) border border-(--gray-2) rounded-8 text-(--gray-9) placeholder-(--gray-4) focus:outline-none focus:ring-2 focus:ring-(--primary) focus:border-transparent transition"
               />
             </div>
 
@@ -146,7 +146,7 @@ export default function AddChannelsCard() {
               <button
                 onClick={handleAddChannel}
                 disabled={!channelName.trim() || loading}
-                className="px-10 py-4 bg-(--primary) text-(--light) font-medium rounded-full hover:bg-(--primary-2) disabled:bg-(--gray-3) disabled:cursor-not-allowed transition-all duration-200 shadow-soft flex items-center gap-2"
+                className="px-10 py-4 bg-(--primary) text-(--light) font-medium rounded-8 hover:bg-(--primary-2) disabled:bg-(--gray-3) disabled:cursor-not-allowed transition-all duration-200 shadow-soft flex items-center gap-2"
               >
                 <Plus className="w-5 h-5" />
                 {loading ? "Adding..." : "Add to list"}
@@ -164,7 +164,7 @@ export default function AddChannelsCard() {
                 {channelsList.map((channel) => (
                   <div
                     key={channel.id}
-                    className="flex items-center justify-between p-5 bg-(--gray-0) rounded-xl border border-(--gray-2)"
+                    className="flex items-center justify-between p-5 bg-(--gray-0) rounded-8 border border-(--gray-2)"
                   >
                     <div className="grid grid-cols-3 gap-8 flex-1">
                       <div>
@@ -182,7 +182,7 @@ export default function AddChannelsCard() {
                     </div>
                     <button
                       onClick={() => removeChannel(channel.id)}
-                      className="ml-6 text-(--destructive) hover:bg-(--destructive-0) p-2 rounded-lg transition"
+                      className="ml-6 text-(--destructive) hover:bg-(--destructive-0) p-2 rounded-8 transition"
                     >
                       <X className="w-5 h-5" />
                     </button>

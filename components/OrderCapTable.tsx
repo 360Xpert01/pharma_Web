@@ -197,7 +197,7 @@ export default function BookingTable() {
 
           {paginatedBookings.map((item) => (
             <div key={item.id} className="px-3 py-3 hover:bg-(--gray-0) transition-colors">
-              <div className="w-full bg-[var(--background)] rounded-xl p-3 border border-(--gray-2)">
+              <div className="w-full bg-[var(--background)] rounded-8 p-3 border border-(--gray-2)">
                 {/* Flex layout with consistent spacing */}
                 <div className="flex items-center gap-6 w-full text-sm">
                   {/* Employee - Avatar + Name + Position */}
@@ -207,7 +207,7 @@ export default function BookingTable() {
                       alt={item.name}
                       width={48}
                       height={48}
-                      className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
+                      className="w-12 h-12 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
                       onError={(e) => {
                         e.currentTarget.src = "/girlPic.svg";
                       }}
@@ -238,7 +238,7 @@ export default function BookingTable() {
                     {item.dosages.map((dose, idx) => (
                       <span
                         key={idx}
-                        className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-full text-xs font-medium whitespace-nowrap"
+                        className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-8 text-xs font-medium whitespace-nowrap"
                       >
                         {dose}
                       </span>

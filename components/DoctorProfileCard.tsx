@@ -4,13 +4,13 @@ import { MapPin, Clock } from "lucide-react";
 
 export default function DoctorProfileCard() {
   return (
-    <div className="space-y-6 shadow-soft h-[100%]  rounded-2xl p-6">
+    <div className="space-y-6 shadow-soft h-[100%]  rounded-8 p-6">
       {/* Photo + Name */}
 
       <div className="text-2xl border-b font-bold text-(--gray-8)">Doctor Profile</div>
 
       <div className="flex items-center gap-5">
-        <div className="relative w-28 h-28 rounded-2xl ">
+        <div className="relative w-28 h-28 rounded-8 ">
           <Image src="/capMan.svg" alt="Dr. Sarah Ali" fill className="object-cover" />
         </div>
         <div>

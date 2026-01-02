@@ -22,7 +22,7 @@ const lastMonthData = [
 
 export default function MonthlyTargetCard() {
   return (
-    <div className="w-full h-full bg-(--background) rounded-2xl shadow-soft border border-(--gray-1) p-6 space-y-8">
+    <div className="w-full h-full bg-(--background) rounded-8 shadow-soft border border-(--gray-1) p-6 space-y-8">
       {/* This Month */}
       <div className="space-y-3">
         <p className="text-sm font-medium text-(--gray-5)">Monthly target</p>
@@ -30,7 +30,7 @@ export default function MonthlyTargetCard() {
           <span className="text-4xl font-bold text-(--primary)">19,8K</span>
           <div className="flex items-center gap-1 pb-1">
             <TrendingUp className="w-4 h-4 text-(--success)" />
-            <span className="text-sm font-semibold text-(--success) bg-(--primary-0) px-2 py-0.5 rounded-full">
+            <span className="text-sm font-semibold text-(--success) bg-(--primary-0) px-2 py-0.5 rounded-8">
               +12.88%
             </span>
           </div>
@@ -72,7 +72,7 @@ export default function MonthlyTargetCard() {
           <span className="text-3xl font-bold text-(--destructive)">1,321</span>
           <div className="flex items-center gap-1 pb-1">
             <TrendingDown className="w-4 h-4 text-(--destructive)" />
-            <span className="text-sm font-semibold text-(--destructive) bg-(--destructive-0) px-2 py-0.5 rounded-full">
+            <span className="text-sm font-semibold text-(--destructive) bg-(--destructive-0) px-2 py-0.5 rounded-8">
               -3.53%
             </span>
           </div>
