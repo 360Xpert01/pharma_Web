@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { MoreVertical } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/index";
 import { getAllCallPoints } from "@/store/slices/callPoint/getAllCallPointsSlice";
@@ -8,11 +8,14 @@ import TableColumnHeader from "@/components/TableColumnHeader";
 import TableLoadingState from "@/components/shared/table/TableLoadingState";
 import TableErrorState from "@/components/shared/table/TableErrorState";
 import TableEmptyState from "@/components/shared/table/TableEmptyState";
+import TablePagination from "@/components/TablePagination";
 
 export default function CallPointsList() {
   const dispatch = useAppDispatch();
   const { callPoints, loading, error } = useAppSelector((state) => state.allCallPoints);
   const hasFetched = useRef(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   // Fetch call points on component mount (prevent double call)
   useEffect(() => {
@@ -34,6 +37,20 @@ export default function CallPointsList() {
   const handleRetry = () => {
     dispatch(getAllCallPoints());
   };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1);
+  };
+
+  // Calculate paginated data
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedCallPoints = callPoints?.slice(startIndex, endIndex) || [];
 
   return (
     <div className="w-full overflow-hidden bg-(--background)">
@@ -64,7 +81,7 @@ export default function CallPointsList() {
 
           {/* List */}
           <div>
-            {callPoints.map((point) => (
+            {paginatedCallPoints.map((point) => (
               <div
                 key={point.id}
                 className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-4 my-3 rounded-2xl bg-[var(--background)]"
@@ -110,6 +127,20 @@ export default function CallPointsList() {
               </div>
             ))}
           </div>
+
+          {/* Pagination */}
+          {callPoints.length > 0 && (
+            <TablePagination
+              currentPage={currentPage}
+              totalItems={callPoints.length}
+              itemsPerPage={itemsPerPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+              pageSizeOptions={[10, 20, 30, 50]}
+              showPageInfo={true}
+              showItemsPerPageSelector={true}
+            />
+          )}
         </div>
       )}
     </div>

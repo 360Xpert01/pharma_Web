@@ -7,6 +7,7 @@ import TableColumnHeader from "@/components/TableColumnHeader";
 import TableLoadingState from "@/components/shared/table/TableLoadingState";
 import TableErrorState from "@/components/shared/table/TableErrorState";
 import TableEmptyState from "@/components/shared/table/TableEmptyState";
+import TablePagination from "@/components/TablePagination";
 
 interface Doctor {
   id: string;
@@ -88,6 +89,8 @@ export default function DoctorsTable() {
   // Simulate loading and error states (replace with actual API call state)
   const [loading] = useState(false);
   const [error] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   // Define columns for the table header
   const doctorColumns = [
@@ -104,6 +107,20 @@ export default function DoctorsTable() {
     // Add retry logic here when connected to API
     window.location.reload();
   };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1);
+  };
+
+  // Calculate paginated data
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedDoctors = doctorsData.slice(startIndex, endIndex);
 
   return (
     <div className="w-full overflow-hidden">
@@ -122,11 +139,11 @@ export default function DoctorsTable() {
         <>
           <TableColumnHeader columns={doctorColumns} gridCols={12} />
 
-          {doctorsData.map((doctor, index) => (
+          {paginatedDoctors.map((doctor, index) => (
             <div
               key={doctor.id}
               className={`px-3 py-3 hover:bg-(--gray-0) transition-colors flex items-center ${
-                index !== doctorsData.length - 1 ? "" : ""
+                index !== paginatedDoctors.length - 1 ? "" : ""
               }`}
             >
               <div className="w-full bg-[var(--background)] rounded-lg p-3 border border-(--gray-2) grid grid-cols-12 gap-4 text-sm">
@@ -177,6 +194,20 @@ export default function DoctorsTable() {
               </div>
             </div>
           ))}
+
+          {/* Pagination */}
+          {doctorsData.length > 0 && (
+            <TablePagination
+              currentPage={currentPage}
+              totalItems={doctorsData.length}
+              itemsPerPage={itemsPerPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+              pageSizeOptions={[10, 20, 30, 50]}
+              showPageInfo={true}
+              showItemsPerPageSelector={true}
+            />
+          )}
         </>
       )}
     </div>
