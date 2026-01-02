@@ -55,7 +55,7 @@ export function DashboardHeader({
         </Button> */}
         {!btnTrue && (
           <button
-            className="p-3 cursor-pointer bg-(--primary) hover:bg-(--primary-2) text-sm text-(--light) rounded-full flex items-center"
+            className="p-3 cursor-pointer bg-(--primary) hover:bg-(--primary-2) text-sm text-(--light) rounded-8 flex items-center"
             onClick={onSettings}
             title={t("tooltips.settings")}
             aria-label={t("tooltips.settings")}
@@ -67,7 +67,7 @@ export function DashboardHeader({
 
         {!btnReqquest && !btnTrue && btntextReq && (
           <button
-            className="p-3 bg-(--primary) cursor-pointer hover:bg-(--primary-2) text-sm text-(--light) rounded-full flex items-center"
+            className="p-3 bg-(--primary) cursor-pointer hover:bg-(--primary-2) text-sm text-(--light) rounded-8 flex items-center"
             onClick={onSettingView}
             title={t("tooltips.settings")}
             aria-label={t("tooltips.settings")}

@@ -9,10 +9,7 @@ import WeeklyAttendance from "@/components/WeeklyAttendance";
 import MonthlyAttendance from "@/components/MonthlyAttendance";
 import WeekelyExpenses from "@/components/WeeklyExpenses";
 import ExpansesListApprove from "@/components/ExpansesListApprove";
-import ByBrands from "@/components/ByBrands";
-import CountryMap from "@/components/CountryMap";
 import TodaysAppointments from "@/components/TodayAppoinment";
-import MostSoldProducts from "@/components/MostSoldProducts";
 import SamplesDetail from "@/components/SamplesDetail";
 import GiveawaysDetail from "@/components/GiveawaysDetail";
 import DeviceList from "@/components/DeviceList";
@@ -83,7 +80,7 @@ export default function EmployeeProfileTabs({ candidate }: EmployeeProfileTabsPr
       {/* Tab Content */}
       <div className="transition-all bg-(--background) shadow-soft p-5 rounded-2xl duration-300">
         {/* Tab Navigation */}
-        <div className="flex gap-2 bg-(--gray-2) rounded-full my-5 p-2 w-fit">
+        <div className="flex gap-2 bg-(--muted) rounded-full my-5 p-2 w-fit">
           {tabs.map((tab) => (
             <Button
               key={tab}

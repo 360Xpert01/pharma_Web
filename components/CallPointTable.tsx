@@ -27,9 +27,9 @@ export default function CallPointsList() {
 
   // Define columns for the table header - matching EmploySection/CampainTable pattern
   const callPointColumns = [
-    { label: "Pulse Code", className: "w-[28%] ml-3" },
+    { label: "Pulse Code", className: "w-[32%] ml-3" },
     { label: "Location Title", className: "w-[32%]" },
-    { label: "Latitude", className: "w-[24%]" },
+    { label: "Latitude", className: "w-[30%]" },
     { label: "Longitude", className: "w-[0%]" },
     { label: "", className: "w-[0%]" },
   ];
@@ -88,7 +88,7 @@ export default function CallPointsList() {
               >
                 {/* Pulse Code */}
                 <div
-                  className="w-[20%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  className="w-[30%] text-sm font-bold text-[var(--gray-9)] truncate"
                   title={point.pulseCode || "N/A"}
                 >
                   {point.pulseCode || "N/A"}
@@ -96,7 +96,7 @@ export default function CallPointsList() {
 
                 {/* Location Title */}
                 <div
-                  className="w-[25%] text-sm font-bold text-[var(--gray-9)] truncate"
+                  className="w-[30%] text-sm font-bold text-[var(--gray-9)] truncate"
                   title={point.name}
                 >
                   {point.name}
@@ -104,7 +104,7 @@ export default function CallPointsList() {
 
                 {/* Latitude */}
                 <div
-                  className="w-[18%] text-sm text-[var(--gray-6)] truncate"
+                  className="w-[30%] text-sm text-[var(--gray-6)] truncate"
                   title={String(point.latitude)}
                 >
                   {point.latitude}
@@ -112,7 +112,7 @@ export default function CallPointsList() {
 
                 {/* Longitude */}
                 <div
-                  className="w-[18%] text-sm text-[var(--gray-6)] truncate"
+                  className="w-[20%] text-sm text-[var(--gray-6)] truncate"
                   title={String(point.longitude)}
                 >
                   {point.longitude}
