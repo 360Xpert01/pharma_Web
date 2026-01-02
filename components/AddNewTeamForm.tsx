@@ -288,7 +288,7 @@ function HierarchyNode({
                 variant="primary"
                 size="lg"
                 icon={Plus}
-                rounded="full"
+                rounded="default"
                 className="shadow-soft"
               >
                 Assign Bricks
@@ -739,7 +739,7 @@ export default function CreateCampaignForm() {
 
         {/* Buttons */}
         <div className="flex justify-end gap-4 pt-6">
-          <Button variant="outline" size="lg" rounded="full">
+          <Button variant="outline" size="lg" rounded="default">
             Discard
           </Button>
           <Button
@@ -749,7 +749,7 @@ export default function CreateCampaignForm() {
             variant="primary"
             size="lg"
             icon={Plus}
-            rounded="full"
+            rounded="default"
             className="shadow-soft"
           >
             {createTeamLoading ? "Creating..." : "Add Team"}
