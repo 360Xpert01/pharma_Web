@@ -110,13 +110,13 @@ export default function DcrTable() {
 
   // Define columns for the table header
   const dcrColumns = [
-    { label: "Employee 1", className: "w-[17%]" },
-    { label: "Employee 2", className: "w-[17%]" },
-    { label: "Specialty", className: "w-[10%]" },
-    { label: "Area", className: "w-[14%]" },
+    { label: "Sales Rep", className: "w-[17%]" },
+    { label: "Line Manager", className: "w-[17%]" },
+    { label: "Specialization", className: "w-[10%]" },
+    { label: "Location", className: "w-[14%]" },
     { label: "Doctor", className: "w-[14%]" },
-    { label: "Medicine", className: "w-[12%]" },
-    { label: "Strengths", className: "w-[19%]" },
+    { label: "Product", className: "w-[12%]" },
+    { label: "SKU's", className: "w-[19%]" },
   ];
 
   const handleRetry = () => {

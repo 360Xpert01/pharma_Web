@@ -43,14 +43,39 @@ export default function TablePagination({
     <div
       className={`flex items-center justify-between gap-4 px-4 py-3 bg-[var(--background)] rounded-xl mt-3 ${className}`}
     >
-      {/* Left: Records info */}
-      <div className="flex items-center gap-2 text-sm text-[var(--gray-6)]">
-        <span>Records:</span>
-        <span className="text-[var(--gray-8)] font-medium">
-          {startItem}-{String(endItem).padStart(2, "0")}
-        </span>
-        <span>of</span>
-        <span className="text-[var(--gray-8)] font-medium">{totalItems}</span>
+      {/* Left: Records info and rows per page */}
+      <div className="flex items-center gap-4 text-sm text-[var(--gray-6)]">
+        <div className="flex items-center gap-2">
+          <span>Records:</span>
+          <span className="text-[var(--gray-8)] font-medium">
+            {startItem}-{String(endItem).padStart(2, "0")}
+          </span>
+          <span>of</span>
+          <span className="text-[var(--gray-8)] font-medium">{totalItems}</span>
+        </div>
+
+        {/* Rows per page dropdown */}
+        {showItemsPerPageSelector && onItemsPerPageChange && (
+          <div className="flex items-center gap-2 border-l border-[var(--gray-3)] pl-4">
+            <span>Show:</span>
+            <select
+              value={itemsPerPage}
+              onChange={(e) => {
+                const newItemsPerPage = parseInt(e.target.value, 10);
+                if (!isNaN(newItemsPerPage)) {
+                  onItemsPerPageChange(newItemsPerPage);
+                }
+              }}
+              className="min-w-[60px] px-2 py-1 text-center text-sm border border-[var(--gray-3)] rounded-md bg-[var(--background)] text-[var(--gray-8)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-[var(--primary)] cursor-pointer"
+            >
+              {pageSizeOptions.map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
 
       {/* Right: Page controls */}
