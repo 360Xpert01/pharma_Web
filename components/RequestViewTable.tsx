@@ -155,7 +155,7 @@ export default function DoctorRequestTable() {
               key={item.id}
               className="px-3 py-3 hover:bg-(--gray-0) transition-colors duration-200"
             >
-              <div className="bg-[var(--background)] rounded-2xl border border-(--gray-2) p-2">
+              <div className="bg-[var(--background)] rounded-8 border border-(--gray-2) p-2">
                 <div className="flex items-center justify-between text-sm">
                   {/* Left: Avatar + Name + Position */}
                   <div className="flex items-center gap-4 flex-shrink-0">
@@ -164,7 +164,7 @@ export default function DoctorRequestTable() {
                       alt={item.name}
                       width={48}
                       height={48}
-                      className="rounded-full object-cover border-2 border-(--light) shadow-soft"
+                      className="rounded-8 object-cover border-2 border-(--light) shadow-soft"
                       onError={(e) => {
                         e.currentTarget.src = DEFAULT_AVATAR;
                       }}

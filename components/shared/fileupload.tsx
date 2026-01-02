@@ -28,7 +28,7 @@ export default function FileUpload({ onChange, value }: TFileUploadProps) {
   };
   return (
     <div className="flex items-center justify-center">
-      <div className="relative h-36 w-36 overflow-hidden rounded-full bg-(--gray-2) shadow-soft">
+      <div className="relative h-36 w-36 overflow-hidden rounded-8 bg-(--gray-2) shadow-soft">
         {/* <LoaderOverlay isLoading={isLoading} /> */}
         <div {...getRootProps({ className: "dropzone cursor-pointer" })}>
           <input {...getInputProps()} disabled={isLoading} />
@@ -63,10 +63,6 @@ function ImagePreview({ file }: { file: File }) {
   }, [file]);
 
   return objectUrl ? (
-    <img
-      src={objectUrl}
-      alt="Preview"
-      className="absolute  h-full w-full rounded-full object-cover"
-    />
+    <img src={objectUrl} alt="Preview" className="absolute  h-full w-full rounded-8 object-cover" />
   ) : null;
 }

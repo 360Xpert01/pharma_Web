@@ -41,7 +41,7 @@ export function ShowcaseSection() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {features.map((feature) => (
                 <div key={feature.key} className="flex items-center gap-3">
-                  <span className="flex items-center justify-center w-9 h-9 rounded-full bg-(--primary-0) dark:bg-(--primary-2) border border-(--primary-1) dark:border-(--primary) shadow-soft">
+                  <span className="flex items-center justify-center w-9 h-9 rounded-8 bg-(--primary-0) dark:bg-(--primary-2) border border-(--primary-1) dark:border-(--primary) shadow-soft">
                     <Check
                       className="w-6 h-6 text-(--primary) dark:text-(--primary-1)"
                       strokeWidth={2.5}
@@ -57,8 +57,8 @@ export function ShowcaseSection() {
 
           {/* Right Column - Image Showcase */}
           <div className="pt-8 lg:pt-0">
-            <div className="relative rounded-2xl overflow-hidden border border-(--gray-3) dark:border-(--gray-8) bg-(--gray-1) dark:bg-(--gray-9)/50 backdrop-blur-sm p-8 transition-colors duration-300 h-full w-full flex flex-col justify-center">
-              <div className="relative rounded-lg overflow-hidden w-full h-[600px] lg:h-[700px]">
+            <div className="relative rounded-8 overflow-hidden border border-(--gray-3) dark:border-(--gray-8) bg-(--gray-1) dark:bg-(--gray-9)/50 backdrop-blur-sm p-8 transition-colors duration-300 h-full w-full flex flex-col justify-center">
+              <div className="relative rounded-8 overflow-hidden w-full h-[600px] lg:h-[700px]">
                 <Image
                   src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&q=80"
                   alt="Showcase"

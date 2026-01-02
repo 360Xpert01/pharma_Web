@@ -167,7 +167,7 @@ export default function DcrTable() {
             {paginatedData.map((row) => (
               <div
                 key={row.id}
-                className="bg-[var(--background)] rounded-2xl border border-(--gray-2) shadow-soft hover:shadow-soft transition-shadow"
+                className="bg-[var(--background)] rounded-8 border border-(--gray-2) shadow-soft hover:shadow-soft transition-shadow"
               >
                 <div className="px-3 py-3">
                   {/* 12-column grid */}
@@ -177,7 +177,7 @@ export default function DcrTable() {
                       <img
                         src={DEFAULT_AVATAR}
                         alt={row.employee1.name}
-                        className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
+                        className="w-12 h-12 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
                       />
                       <div>
                         <p className="font-bold text-(--gray-9)">{row.employee1.name}</p>
@@ -190,7 +190,7 @@ export default function DcrTable() {
                       <img
                         src={DEFAULT_AVATAR}
                         alt={row.employee2.name}
-                        className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
+                        className="w-12 h-12 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
                       />
                       <div>
                         <p className="font-bold text-(--gray-9)">{row.employee2.name}</p>
@@ -223,7 +223,7 @@ export default function DcrTable() {
                       {row.strengths.map((s, i) => (
                         <span
                           key={i}
-                          className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-full text-xs font-medium whitespace-nowrap"
+                          className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-8 text-xs font-medium whitespace-nowrap"
                         >
                           {s}
                         </span>

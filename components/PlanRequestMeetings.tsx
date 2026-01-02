@@ -45,7 +45,7 @@ const meetings = [
 
 export default function PlanRequestMeetings() {
   return (
-    <div className="bg-(--background) rounded-lg shadow-soft p-6 h-fit sticky top-6">
+    <div className="bg-(--background) rounded-8 shadow-soft p-6 h-fit sticky top-6">
       <div className="mb-6 pb-6 ">
         <p className="font-bold text-3xl">September, 11 2025</p>
         <p className="text-sm text-(--gray-6) mt-1">Sunday, 12 Call schedule for today</p>
@@ -53,7 +53,7 @@ export default function PlanRequestMeetings() {
 
       <div className="space-y-3">
         {meetings.map((m) => (
-          <div key={m.id} className="border border-(--gray-2) rounded-xl p-2 ">
+          <div key={m.id} className="border border-(--gray-2) rounded-8 p-2 ">
             <h4 className="font-bold text-(--gray-9) mb-3">{m.type}</h4>
             <div className="flex items-start gap-4">
               <Avatar className="h-12 w-12 mt-1">

@@ -1,7 +1,7 @@
 // components/DoctorInfoCard.tsx
 export default function DoctorInfoCard() {
   return (
-    <div className="shadow-soft  rounded-2xl p-6 space-y-6">
+    <div className="shadow-soft  rounded-8 p-6 space-y-6">
       <h2 className="text-2xl font-semibold text-(--gray-8)">Doctor Details</h2>
 
       <div className="border-b"></div>
@@ -33,7 +33,7 @@ export default function DoctorInfoCard() {
         </div>
       </div>
 
-      <span className="inline-block px-5 py-2 bg-(--warning-0) text-(--warning) rounded-full text-sm font-medium">
+      <span className="inline-block px-5 py-2 bg-(--warning-0) text-(--warning) rounded-8 text-sm font-medium">
         Under Review
       </span>
     </div>

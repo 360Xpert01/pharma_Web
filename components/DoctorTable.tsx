@@ -146,7 +146,7 @@ export default function DoctorsTable() {
                 index !== paginatedDoctors.length - 1 ? "" : ""
               }`}
             >
-              <div className="w-full bg-[var(--background)] rounded-lg p-3 border border-(--gray-2) grid grid-cols-12 gap-4 text-sm">
+              <div className="w-full bg-[var(--background)] rounded-8 p-3 border border-(--gray-2) grid grid-cols-12 gap-4 text-sm">
                 {/* Name */}
                 <div className="col-span-2 font-bold text-(--gray-9)">{doctor.name}</div>
 
@@ -171,7 +171,7 @@ export default function DoctorsTable() {
                 {/* Status */}
                 <div className="col-span-2 flex justify-center">
                   <span
-                    className={`px-12 py-1 rounded-full text-sm font-medium ${
+                    className={`px-12 py-1 rounded-8 text-sm font-medium ${
                       doctor.status === "Active"
                         ? "bg-(--success-0) text-(--success)"
                         : "bg-(--gray-1) text-(--gray-6)"

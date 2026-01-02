@@ -78,13 +78,13 @@ const RoleNode: React.FC<RoleNodeProps> = ({
 
       {/* Main node card */}
       <div
-        className="relative flex items-center gap-3 shadow-soft bg-[var(--background)] rounded-xl py-3 px-4"
+        className="relative flex items-center gap-3 shadow-soft bg-[var(--background)] rounded-8 py-3 px-4"
         style={{ marginLeft: `${nodeIndent}px` }}
       >
         {/* Expand/Collapse Button */}
         <button
           onClick={() => hasChildren && setIsExpanded(!isExpanded)}
-          className={`w-7 h-7 flex items-center justify-center rounded-md transition-colors flex-shrink-0 ${
+          className={`w-7 h-7 flex items-center justify-center rounded-8 transition-colors flex-shrink-0 ${
             hasChildren
               ? "hover:bg-[var(--gray-1)] cursor-pointer text-[var(--gray-6)]"
               : "text-transparent cursor-default"
@@ -99,7 +99,7 @@ const RoleNode: React.FC<RoleNodeProps> = ({
         </button>
 
         {/* Role Icon Badge */}
-        <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 bg-[var(--primary)]">
+        <div className="w-10 h-10 rounded-8 flex items-center justify-center flex-shrink-0 bg-[var(--primary)]">
           <RoleSvg width={18} height={18} className="text-[var(--background)]" />
         </div>
 
@@ -111,12 +111,12 @@ const RoleNode: React.FC<RoleNodeProps> = ({
                 type="text"
                 placeholder="Enter Tree Name"
                 defaultValue={item.name}
-                className="px-3 py-2 border border-[var(--gray-3)] rounded-lg text-sm bg-[var(--background)] text-[var(--gray-7)] placeholder-[var(--gray-4)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] w-40"
+                className="px-3 py-2 border border-[var(--gray-3)] rounded-8 text-sm bg-[var(--background)] text-[var(--gray-7)] placeholder-[var(--gray-4)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] w-40"
               />
               <div className="relative">
                 <select
                   defaultValue={item.responsibilities || ""}
-                  className="px-3 py-2 pr-8 border border-[var(--gray-3)] rounded-lg text-sm bg-[var(--background)] text-[var(--gray-5)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] appearance-none cursor-pointer min-w-[200px]"
+                  className="px-3 py-2 pr-8 border border-[var(--gray-3)] rounded-8 text-sm bg-[var(--background)] text-[var(--gray-5)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] appearance-none cursor-pointer min-w-[200px]"
                 >
                   <option value="">Choose Role Responsibilities</option>
                   <option value="sales">Sales & Marketing</option>
@@ -142,14 +142,14 @@ const RoleNode: React.FC<RoleNodeProps> = ({
         {/* Action Buttons */}
         <div className="flex items-center gap-2 flex-shrink-0">
           <button
-            className="w-9 h-9 rounded-lg bg-[var(--primary)] text-[var(--background)] flex items-center justify-center cursor-pointer"
+            className="w-9 h-9 rounded-8 bg-[var(--primary)] text-[var(--background)] flex items-center justify-center cursor-pointer"
             onClick={() => childType && onAddChild?.(item.id, childType)}
             title={childType ? `Add ${childType}` : "Add"}
           >
             <Plus className="w-5 h-5" />
           </button>
           <button
-            className="w-9 h-9 flex items-center justify-center hover:bg-[var(--gray-1)] rounded-lg transition-colors text-[var(--gray-5)] cursor-pointer"
+            className="w-9 h-9 flex items-center justify-center hover:bg-[var(--gray-1)] rounded-8 transition-colors text-[var(--gray-5)] cursor-pointer"
             onClick={() => onMoreOptions?.(item.id, item.type)}
             aria-label="More options"
           >
@@ -189,7 +189,7 @@ export const RoleHierarchy: React.FC<RoleHierarchyProps> = ({
   onMoreOptions,
 }) => {
   return (
-    <div className="w-full bg-[var(--background)] rounded-xl p-6">
+    <div className="w-full bg-[var(--background)] rounded-8 p-6">
       <div className="space-y-3">
         {data.map((item, index) => (
           <RoleNode

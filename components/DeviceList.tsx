@@ -59,12 +59,12 @@ export default function DeviceList() {
           {devices.map((device) => (
             <div
               key={device.id}
-              className="flex items-center rounded-2xl shadow-soft border border-(--gray-1) bg-(--background) p-3"
+              className="flex items-center rounded-8 shadow-soft border border-(--gray-1) bg-(--background) p-3"
             >
               {/* Left: Device Info */}
               <div className="flex items-center gap-4 w-[280px]">
                 <div className="relative">
-                  <div className="w-14 h-14 rounded-md overflow-hidden border-2 border-white shadow-soft flex items-center justify-center bg-(--primary-0)">
+                  <div className="w-14 h-14 rounded-8 overflow-hidden border-2 border-white shadow-soft flex items-center justify-center bg-(--primary-0)">
                     <Smartphone className="w-6 h-6 text-(--primary)" />
                   </div>
                 </div>
@@ -108,7 +108,7 @@ export default function DeviceList() {
                   </>
                 ) : (
                   <>
-                    <span className="px-5 py-2 bg-(--success-light) cursor-pointer text-(--success) text-sm font-medium rounded-lg">
+                    <span className="px-5 py-2 bg-(--success-light) cursor-pointer text-(--success) text-sm font-medium rounded-8">
                       Approved
                     </span>
                     <Button

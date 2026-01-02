@@ -59,7 +59,7 @@ export default function AddEmployeeForm() {
   return (
     <>
       <div className=" mx-auto text-(--dark) p-6 bg-(--gray-0) min-h-screen ">
-        <div className="bg-(--background) rounded-2xl shadow-soft border border-(--gray-2) overflow-hidden">
+        <div className="bg-(--background) rounded-8 shadow-soft border border-(--gray-2) overflow-hidden">
           <div className="px-8 py-6 border-b border-(--gray-2)">
             <h2 className="text-2xl font-bold text-(--gray-9)">Add Employees</h2>
             <p className="text-sm text-(--gray-5) mt-1">Create New Employee</p>
@@ -76,7 +76,7 @@ export default function AddEmployeeForm() {
                   </label>
                   <input
                     type="text"
-                    className="w-full px-4 py-2 border border-(--gray-3) rounded-lg focus:ring-2 focus:ring-(--primary) focus:border-transparent"
+                    className="w-full px-4 py-2 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) focus:border-transparent"
                     placeholder="e.g. John Doe"
                   />
                 </div>
@@ -87,7 +87,7 @@ export default function AddEmployeeForm() {
                   </label>
                   <input
                     type="text"
-                    className="w-full px-4 py-2 border border-(--gray-3) rounded-lg focus:ring-2 focus:ring-(--primary) focus:border-transparent"
+                    className="w-full px-4 py-2 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) focus:border-transparent"
                     placeholder="e.g. john.doe"
                   />
                 </div>
@@ -100,7 +100,7 @@ export default function AddEmployeeForm() {
                     <Mail className="absolute left-3 top-3 w-4 h-4 text-(--gray-4)" />
                     <input
                       type="email"
-                      className="w-full pl-10 pr-4 py-2 border border-(--gray-3) rounded-lg focus:ring-2 focus:ring-(--primary) focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-2 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) focus:border-transparent"
                       placeholder="e.g. john@example.com"
                     />
                   </div>
@@ -110,7 +110,7 @@ export default function AddEmployeeForm() {
                   <label className="block text-sm font-medium text-(--gray-7) mb-1">Password</label>
                   <input
                     type="password"
-                    className="w-full px-4 py-2 border border-(--gray-3) rounded-lg focus:ring-2 focus:ring-(--primary) focus:border-transparent"
+                    className="w-full px-4 py-2 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) focus:border-transparent"
                     placeholder="••••••••"
                   />
                 </div>
@@ -123,7 +123,7 @@ export default function AddEmployeeForm() {
                     <Lock className="absolute left-3 top-3 w-4 h-4 text-(--gray-4)" />
                     <input
                       type="password"
-                      className="w-full pl-10 pr-4 py-2 border border-(--gray-3) rounded-lg focus:ring-2 focus:ring-(--primary) focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-2 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) focus:border-transparent"
                       placeholder="••••••••"
                     />
                   </div>
@@ -137,7 +137,7 @@ export default function AddEmployeeForm() {
                     <Phone className="absolute left-3 top-3 w-4 h-4 text-(--gray-4)" />
                     <input
                       type="tel"
-                      className="w-full pl-10 pr-4 py-2 border border-(--gray-3) rounded-lg focus:ring-2 focus:ring-(--primary) focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-2 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) focus:border-transparent"
                       placeholder="+92-3456789000"
                     />
                   </div>
@@ -151,7 +151,7 @@ export default function AddEmployeeForm() {
                     <Calendar className="absolute left-3 top-3 w-4 h-4 text-(--gray-4)" />
                     <input
                       type="date"
-                      className="w-full pl-10 pr-4 py-2 border border-(--gray-3) rounded-lg focus:ring-2 focus:ring-(--primary) focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-2 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) focus:border-transparent"
                     />
                   </div>
                 </div>
@@ -162,7 +162,7 @@ export default function AddEmployeeForm() {
                     <MapPin className="absolute left-3 top-8 w-4 h-4 text-(--gray-4)" />
                     <textarea
                       rows={3}
-                      className="w-full pl-10 pr-4 py-2 border border-(--gray-3) rounded-lg focus:ring-2 focus:ring-(--primary) focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-2 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) focus:border-transparent"
                       placeholder="e.g. H031, Block-2, Gulistan-e-Jauhar, Karachi, Pakistan"
                     />
                   </div>
@@ -179,7 +179,7 @@ export default function AddEmployeeForm() {
                   <label className="block text-sm font-medium text-(--gray-7) mb-2">
                     Select Role <span className="text-(--destructive)">*</span>
                   </label>
-                  <select className="w-full px-4 py-3 border border-(--gray-3) rounded-xl text-(--gray-7) focus:ring-2 focus:ring-(--primary) focus:border-transparent">
+                  <select className="w-full px-4 py-3 border border-(--gray-3) rounded-8 text-(--gray-7) focus:ring-2 focus:ring-(--primary) focus:border-transparent">
                     <option>Sales Representative</option>
                     <option>Manager</option>
                     <option>Admin</option>
@@ -190,7 +190,7 @@ export default function AddEmployeeForm() {
                   <label className="block text-sm font-medium text-(--gray-7) mb-2">
                     Select Line Manager
                   </label>
-                  <select className="w-full px-4 py-3 border border-(--gray-3) rounded-xl text-(--gray-7) focus:ring-2 focus:ring-(--primary) focus:border-transparent">
+                  <select className="w-full px-4 py-3 border border-(--gray-3) rounded-8 text-(--gray-7) focus:ring-2 focus:ring-(--primary) focus:border-transparent">
                     <option>Select Line Manager</option>
                     <option>Sales Representative</option>
                   </select>
@@ -200,7 +200,7 @@ export default function AddEmployeeForm() {
                   <label className="block text-sm font-medium text-(--gray-7) mb-2">
                     Select Team <span className="text-(--destructive)">*</span>
                   </label>
-                  <select className="w-full px-4 py-3 border border-(--gray-3) rounded-xl text-(--gray-7) focus:ring-2 focus:ring-(--primary) focus:border-transparent">
+                  <select className="w-full px-4 py-3 border border-(--gray-3) rounded-8 text-(--gray-7) focus:ring-2 focus:ring-(--primary) focus:border-transparent">
                     <option>Sales Representative</option>
                   </select>
                 </div>
@@ -219,10 +219,10 @@ export default function AddEmployeeForm() {
                         value={capsule.monthlyTarget}
                         onChange={(e) => updateCapsuleTarget(capsule.id, e.target.value)}
                         placeholder="Set Monthly Target"
-                        className="w-48 px-4 py-3 border border-(--gray-3) rounded-xl focus:ring-2 focus:ring-(--primary) focus:border-transparent"
+                        className="w-48 px-4 py-3 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) focus:border-transparent"
                       />
                     </div>
-                    <button className="px-4 py-3 bg-(--primary) text-(--light) font-medium rounded-xl hover:bg-(--primary-2) transition-colors whitespace-nowrap">
+                    <button className="px-4 py-3 bg-(--primary) text-(--light) font-medium rounded-8 hover:bg-(--primary-2) transition-colors whitespace-nowrap">
                       Save Target
                     </button>
                   </div>
@@ -235,7 +235,7 @@ export default function AddEmployeeForm() {
                   <label className="block text-sm font-medium text-(--gray-7) mb-2">
                     City <span className="text-(--destructive)">*</span>
                   </label>
-                  <select className="w-full px-4 py-3 border border-(--gray-3) rounded-xl text-(--gray-7)">
+                  <select className="w-full px-4 py-3 border border-(--gray-3) rounded-8 text-(--gray-7)">
                     <option>Select your region</option>
                   </select>
                 </div>
@@ -244,7 +244,7 @@ export default function AddEmployeeForm() {
                   <label className="block text-sm font-medium text-(--gray-7) mb-2">
                     Country <span className="text-(--destructive)">*</span>
                   </label>
-                  <select className="w-full px-4 py-3 border border-(--gray-3) rounded-xl text-(--gray-7)">
+                  <select className="w-full px-4 py-3 border border-(--gray-3) rounded-8 text-(--gray-7)">
                     <option>Enter your country</option>
                     <option>Pakistan</option>
                   </select>
@@ -254,7 +254,7 @@ export default function AddEmployeeForm() {
                   <label className="block text-sm font-medium text-(--gray-7) mb-2">
                     Area <span className="text-(--destructive)">*</span>
                   </label>
-                  <select className="w-full px-4 py-3 border border-(--gray-3) rounded-xl text-(--gray-7)">
+                  <select className="w-full px-4 py-3 border border-(--gray-3) rounded-8 text-(--gray-7)">
                     <option>Enter your Area</option>
                   </select>
                 </div>
@@ -266,7 +266,7 @@ export default function AddEmployeeForm() {
                   <label className="block text-sm font-medium text-(--gray-7) mb-2">
                     Bricks <span className="text-(--destructive)">*</span>
                   </label>
-                  <select className="w-full max-w-md px-4 py-3 border border-(--gray-3) rounded-xl text-(--gray-7)">
+                  <select className="w-full max-w-md px-4 py-3 border border-(--gray-3) rounded-8 text-(--gray-7)">
                     <option>Enter your bricks</option>
                   </select>
                 </div>
@@ -275,7 +275,7 @@ export default function AddEmployeeForm() {
                   {bricks.map((brick) => (
                     <div
                       key={brick.id}
-                      className={`flex items-center gap-2 px-4 py-3 rounded-xl border ${
+                      className={`flex items-center gap-2 px-4 py-3 rounded-8 border ${
                         brick.name === "Nazimabad No.4"
                           ? "border-(--destructive) bg-(--destructive-0)"
                           : "border-(--gray-3) bg-(--background)"
@@ -293,7 +293,7 @@ export default function AddEmployeeForm() {
                       )}
                       <button
                         onClick={() => removeBrick(brick.id)}
-                        className="text-(--destructive) hover:bg-(--destructive-0) p-1 rounded-lg transition-colors"
+                        className="text-(--destructive) hover:bg-(--destructive-0) p-1 rounded-8 transition-colors"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -301,7 +301,7 @@ export default function AddEmployeeForm() {
                   ))}
                   <button
                     onClick={addBrick}
-                    className="flex items-center gap-2 px-5 py-3 bg-(--primary) text-(--light) font-medium rounded-xl hover:bg-(--primary-2) transition-colors"
+                    className="flex items-center gap-2 px-5 py-3 bg-(--primary) text-(--light) font-medium rounded-8 hover:bg-(--primary-2) transition-colors"
                   >
                     <Plus className="w-5 h-5" />
                     Add New Brick
@@ -326,13 +326,13 @@ export default function AddEmployeeForm() {
                     <input
                       type="text"
                       placeholder={`atb02c9de5f67890`}
-                      className={`px-5 py-3 rounded-xl border ${
+                      className={`px-5 py-3 rounded-8 border ${
                         i === 0
                           ? "border-(--destructive-1) bg-(--destructive-0)"
                           : "border-(--gray-3)"
                       } focus:ring-2 focus:ring-(--primary) focus:border-transparent`}
                     />
-                    <button className="text-(--destructive) hover:bg-(--destructive-0) p-2 rounded-lg transition-colors">
+                    <button className="text-(--destructive) hover:bg-(--destructive-0) p-2 rounded-8 transition-colors">
                       <Trash2 className="w-5 h-5" />
                     </button>
                   </div>
@@ -342,10 +342,10 @@ export default function AddEmployeeForm() {
 
             {/* Buttons */}
             <div className="flex justify-end gap-4 pt-8 border-t border-(--gray-2)">
-              <button className="px-6 py-3 border border-(--primary) text-(--primary) font-medium rounded-xl hover:bg-(--primary-0) transition-colors">
+              <button className="px-6 py-3 border border-(--primary) text-(--primary) font-medium rounded-8 hover:bg-(--primary-0) transition-colors">
                 Discard
               </button>
-              <button className="px-8 py-3 bg-(--primary) text-(--light) font-medium rounded-xl hover:bg-(--primary-2) transition-colors flex items-center gap-2">
+              <button className="px-8 py-3 bg-(--primary) text-(--light) font-medium rounded-8 hover:bg-(--primary-2) transition-colors flex items-center gap-2">
                 <Plus className="w-5 h-5" />
                 Add Employee
               </button>

@@ -137,11 +137,11 @@ export default function OtpPage() {
             type="button"
             onClick={() => handleVerify(otpCode)}
             disabled={isLoading || otpCode.length !== 4}
-            className="w-full cursor-pointer text-sm md:text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full cursor-pointer text-sm md:text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 rounded-8 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isLoading ? (
               <div className="flex items-center justify-center gap-2">
-                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+                <div className="animate-spin rounded-8 h-4 w-4 border-2 border-white border-t-transparent" />
                 {t("submittingButton")}
               </div>
             ) : (

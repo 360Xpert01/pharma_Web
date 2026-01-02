@@ -35,7 +35,7 @@ export function ChartCardSkeleton({ className }: LoadingSkeletonProps) {
       <CardContent>
         <div className="h-64 bg-primary/10 rounded animate-pulse flex items-center justify-center">
           <div className="text-center space-y-2">
-            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
+            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-8 animate-spin mx-auto"></div>
             <p className="text-sm text-muted-foreground">{t("charts.loading")}</p>
           </div>
         </div>
@@ -64,7 +64,7 @@ export function DataTableSkeleton({ className }: LoadingSkeletonProps) {
             ))}
           </div>
           <div className="text-center py-4">
-            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-8 animate-spin mx-auto mb-2"></div>
             <p className="text-sm text-muted-foreground">{t("table.loading")}</p>
           </div>
         </div>

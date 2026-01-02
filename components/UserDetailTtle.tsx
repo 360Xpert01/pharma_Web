@@ -33,7 +33,7 @@ export default function SalesPersonCard({
   status = "Under Review",
 }: SalesPersonCardProps) {
   return (
-    <div className="w-full bg-(--background) rounded-lg shadow-soft border border-(--gray-2) p-5 hover:shadow-soft transition-shadow">
+    <div className="w-full bg-(--background) rounded-8 shadow-soft border border-(--gray-2) p-5 hover:shadow-soft transition-shadow">
       <div className="flex items-start justify-between">
         {/* Left Section - Profile */}
         <div className="flex items-center gap-5">
@@ -42,10 +42,10 @@ export default function SalesPersonCard({
               <img
                 src={photoUrl}
                 alt={name}
-                className="w-40 h-50 rounded-sm object-cover border-2 border-(--gray-2)"
+                className="w-40 h-50 rounded-8 object-cover border-2 border-(--gray-2)"
               />
             ) : (
-              <div className="w-20 h-60 bg-(--gray-2) border-2 border-dashed border-(--gray-4) rounded-full flex items-center justify-center">
+              <div className="w-20 h-60 bg-(--gray-2) border-2 border-dashed border-(--gray-4) rounded-8 flex items-center justify-center">
                 <User className="w-10 h-10 text-(--gray-4)" />
               </div>
             )}
@@ -85,7 +85,7 @@ export default function SalesPersonCard({
               <p className="mb-1"> status</p>
 
               <span
-                className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${statusColors[status]}`}
+                className={`inline-flex items-center px-3 py-1 rounded-8 text-xs font-medium ${statusColors[status]}`}
               >
                 {status}
               </span>

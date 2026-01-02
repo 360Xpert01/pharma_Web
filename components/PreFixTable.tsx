@@ -73,7 +73,7 @@ export default function PrefixListComponent() {
           {paginatedPrefixes.map((item: any, index: number) => (
             <div
               key={index}
-              className="py-3 w-[98%] flex items-center hover:bg-(--gray-0) transition-all cursor-pointer border border-(--gray-2) mx-4 my-3 rounded-2xl bg-[var(--background)]"
+              className="py-3 w-[98%] flex items-center hover:bg-(--gray-0) transition-all cursor-pointer border border-(--gray-2) mx-4 my-3 rounded-8 bg-[var(--background)]"
             >
               <div className="w-[35%] text-sm font-bold text-(--gray-9) pl-4" title={item.entity}>
                 {item.entity}

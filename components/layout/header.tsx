@@ -79,6 +79,31 @@ const Navbar = () => {
         { label: "Daily Call Reports", href: "/dashboard/DCR" },
         { label: "Sample Distribution", href: "/" },
         { label: "Order Capture Log", href: "/dashboard/DCR-order" },
+        {
+          label: "Planning",
+
+          items: [
+            { label: "Monthly Work plans", href: "/dashboard/plan-Management" },
+            { label: "Revenue Targets & Achievement", href: "/dashboard/giveaway-Management" },
+          ],
+        },
+        {
+          label: "Execution",
+          items: [
+            { label: "Live GPS Tracking", href: "/dashboard/plan-Management" },
+            { label: "Attendance", href: "/dashboard/giveaway-Management" },
+            { label: "Travel & Mileage", href: "/dashboard/giveaway-Management" },
+          ],
+        },
+        {
+          label: "Admin",
+          items: [
+            { label: "Leave Requests", href: "/dashboard/plan-Management" },
+            { label: "Expense Claims", href: "/dashboard/expense-claims" },
+            { label: "Audit & Geo Verification", href: "/dashboard/giveaway-Management" },
+            { label: "Requests", href: "/dashboard/request-View" },
+          ],
+        },
       ],
     },
     // {
@@ -131,6 +156,10 @@ const Navbar = () => {
           ],
         },
         { label: "BI Dashboards", href: "/analytics/bi" },
+        { label: "Predictive Analytics", href: "/ai/predictive" },
+        { label: "NLP Sentiment", href: "/ai/sentiment" },
+        { label: "Recommendations", href: "/ai/recommendations" },
+        { label: "AI-Generated Summaries", href: "/ai/summaries" },
       ],
     },
     {
@@ -408,7 +437,7 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3 bg-(--background) rounded-full px-4 py-2.5 w-full max-w-md border border-(--gray-3) hover:border-(--gray-4)transition-colors">
+            <div className="flex items-center gap-3 bg-(--background) rounded-8 px-4 py-2.5 w-full max-w-md border border-(--gray-3) hover:border-(--gray-4)transition-colors">
               <Search className="h-5 w-5 text-(--primary) flex-shrink-0" />
               <input
                 type="text"
@@ -419,7 +448,7 @@ const Navbar = () => {
               />
             </div>
 
-            <button className="relative p-2 text-(--gray-6) hover:text-(--gray-9) bg-(--gray-1) hover:bg-(--gray-2) rounded-full transition-colors">
+            <button className="relative p-2 text-(--gray-6) hover:text-(--gray-9) bg-(--gray-1) hover:bg-(--gray-2) rounded-8 transition-colors">
               {/* <Bell className="w-5 h-5 text-(--primary)" /> */}
               <div>
                 <Image
@@ -430,7 +459,7 @@ const Navbar = () => {
                   className="object-contain"
                 />
               </div>
-              <span className="absolute top-1.5 right-2 w-4 h-4 bg-(--dark) text-(--light) text-xs rounded-full">
+              <span className="absolute top-1.5 right-2 w-4 h-4 bg-(--dark) text-(--light) text-xs rounded-8">
                 9
               </span>
             </button>
@@ -438,9 +467,9 @@ const Navbar = () => {
             <div className="relative" ref={profileRef}>
               <div
                 onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                className="flex items-center gap-2 p-2 text-(--gray-7) hover:text-(--gray-9) hover:bg-(--gray-0) rounded-lg transition-colors cursor-pointer"
+                className="flex items-center gap-2 p-2 text-(--gray-7) hover:text-(--gray-9) hover:bg-(--gray-0) rounded-8 transition-colors cursor-pointer"
               >
-                <div className="w-8 h-8 bg-(--gray-2) rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-(--gray-2) rounded-8 flex items-center justify-center">
                   <Image
                     src="/girlPic.svg"
                     alt="Profile"
@@ -457,11 +486,11 @@ const Navbar = () => {
 
               {/* Profile Dropdown */}
               {showProfileDropdown && (
-                <div className="absolute right-0 top-full mt-2 w-64 bg-(--background) rounded-lg shadow-soft border border-(--header-border) py-2 z-50">
+                <div className="absolute right-0 top-full mt-2 w-64 bg-(--background) rounded-8 shadow-soft border border-(--header-border) py-2 z-50">
                   {/* Profile Info */}
                   <div className="px-4 py-3 border-b border-(--gray-2)">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-(--gray-2) rounded-full flex items-center justify-center">
+                      <div className="w-12 h-12 bg-(--gray-2) rounded-8 flex items-center justify-center">
                         <Image
                           src="/girlPic.svg"
                           alt="Profile"

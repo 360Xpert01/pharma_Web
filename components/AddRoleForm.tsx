@@ -68,7 +68,7 @@ export default function AddNewRoleForm() {
   };
 
   const getInputClasses = (fieldName: string) => {
-    const baseClasses = "w-full px-4 py-3 border rounded-xl outline-none";
+    const baseClasses = "w-full px-4 py-3 border rounded-8 outline-none";
     if (hasError(fieldName)) {
       return `${baseClasses} border-(--destructive) focus:ring-2 focus:ring-(--destructive) focus:border-(--destructive)`;
     }
@@ -169,7 +169,7 @@ export default function AddNewRoleForm() {
   };
 
   return (
-    <div className="w-full mt-24 bg-(--background) rounded-3xl shadow-soft border border-(--gray-1) overflow-hidden">
+    <div className="w-full mt-24 bg-(--background) rounded-8 shadow-soft border border-(--gray-1) overflow-hidden">
       <div className="p-8 space-y-10">
         {/* Header */}
         <div>
@@ -220,7 +220,7 @@ export default function AddNewRoleForm() {
 
           <div className="space-y-6">
             {/* Plan Scheduling */}
-            <div className="bg-(--gray-0) rounded-2xl overflow-hidden border border-(--gray-2)">
+            <div className="bg-(--gray-0) rounded-8 overflow-hidden border border-(--gray-2)">
               <button
                 onClick={() => toggleSection("plan")}
                 className="w-full px-6 py-4 flex items-center justify-between hover:bg-(--gray-1) transition cursor-pointer"
@@ -234,7 +234,7 @@ export default function AddNewRoleForm() {
                   </h3>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-sm font-medium text-(--primary) bg-(--primary-0) px-3 py-1 rounded-full">
+                  <span className="text-sm font-medium text-(--primary) bg-(--primary-0) px-3 py-1 rounded-8">
                     {getSelectedCount("plan")} Selected
                   </span>
                   {expandedSections.plan ? (
@@ -264,7 +264,7 @@ export default function AddNewRoleForm() {
             </div>
 
             {/* Channel Managements */}
-            <div className="bg-(--gray-0) rounded-2xl overflow-hidden border border-(--gray-2)">
+            <div className="bg-(--gray-0) rounded-8 overflow-hidden border border-(--gray-2)">
               <button
                 onClick={() => toggleSection("channel")}
                 className="w-full px-6 py-4 flex items-center justify-between hover:bg-(--gray-1) transition cursor-pointer"
@@ -301,7 +301,7 @@ export default function AddNewRoleForm() {
             </div>
 
             {/* Product Managements */}
-            <div className="bg-(--gray-0) rounded-2xl overflow-hidden border border-(--gray-2)">
+            <div className="bg-(--gray-0) rounded-8 overflow-hidden border border-(--gray-2)">
               <button
                 onClick={() => toggleSection("product")}
                 className="w-full px-6 py-4 flex items-center justify-between hover:bg-(--gray-1) transition cursor-pointer"
@@ -314,7 +314,7 @@ export default function AddNewRoleForm() {
                     </span>
                   </h3>
                   <div className="flex items-center gap-3">
-                    <span className="text-sm font-medium text-(--primary) bg-(--primary-0) px-3 py-1 rounded-full">
+                    <span className="text-sm font-medium text-(--primary) bg-(--primary-0) px-3 py-1 rounded-8">
                       {getSelectedCount("product")} Selected
                     </span>
                     {expandedSections.product ? (
@@ -330,7 +330,7 @@ export default function AddNewRoleForm() {
                   {responsibilities.product.map((item) => (
                     <label
                       key={item.id}
-                      className="flex items-center justify-between py-3 cursor-pointer hover:bg-(--background) rounded-lg px-3 -mx-3"
+                      className="flex items-center justify-between py-3 cursor-pointer hover:bg-(--background) rounded-8 px-3 -mx-3"
                     >
                       <span className="text-(--gray-7)">{item.name}</span>
                       <input
@@ -345,7 +345,7 @@ export default function AddNewRoleForm() {
             </div>
 
             {/* Team Management */}
-            <div className="bg-(--gray-0) rounded-2xl overflow-hidden border border-(--gray-2)">
+            <div className="bg-(--gray-0) rounded-8 overflow-hidden border border-(--gray-2)">
               <button
                 onClick={() => toggleSection("team")}
                 className="w-full px-6 py-4 flex items-center justify-between hover:bg-(--gray-1) transition cursor-pointer"

@@ -101,7 +101,7 @@ export default function GiveawayTable() {
             {paginatedGiveaways.map((item) => (
               <div
                 key={item.id}
-                className="px-3 py-3 w-full flex items-center hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-3 my-3 rounded-2xl bg-[var(--background)]"
+                className="px-3 py-3 w-full flex items-center hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-3 my-3 rounded-8 bg-[var(--background)]"
               >
                 {/* Pulse Code */}
                 <div
@@ -139,7 +139,7 @@ export default function GiveawayTable() {
                 <div className="w-[8%] flex items-center justify-end relative">
                   <button
                     onClick={() => setOpenId(openId === item.id ? null : item.id)}
-                    className="p-2 text-[var(--gray-4)] hover:text-[var(--gray-6)] hover:bg-[var(--gray-1)] rounded-md transition cursor-pointer"
+                    className="p-2 text-[var(--gray-4)] hover:text-[var(--gray-6)] hover:bg-[var(--gray-1)] rounded-8 transition cursor-pointer"
                   >
                     <MoreVertical className="w-5 h-5" />
                   </button>
@@ -147,7 +147,7 @@ export default function GiveawayTable() {
                   {openId === item.id && (
                     <>
                       <div className="fixed inset-0 z-40" onClick={() => setOpenId(null)} />
-                      <div className="absolute right-0 top-10 mt-2 w-48 bg-[var(--light)] rounded-lg shadow-soft border border-[var(--gray-2)] z-50">
+                      <div className="absolute right-0 top-10 mt-2 w-48 bg-[var(--light)] rounded-8 shadow-soft border border-[var(--gray-2)] z-50">
                         <button
                           onClick={() => {
                             console.log("Edit", item.id);

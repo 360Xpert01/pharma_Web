@@ -29,7 +29,7 @@ export function HeroSection({ isUrdu }: HeroSectionProps) {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 text-center space-y-8">
           {/* Waitlist Badge */}
           <div className="inline-block">
-            <div className="bg-gray-800/80 backdrop-blur-sm border border-gray-700 rounded-full px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 transition-all duration-200 hover:bg-gray-700/80 hover:border-gray-600">
+            <div className="bg-gray-800/80 backdrop-blur-sm border border-gray-700 rounded-8 px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 transition-all duration-200 hover:bg-gray-700/80 hover:border-gray-600">
               <span
                 className={`text-[var(--gray-3)] text-xs sm:text-sm font-medium ${isUrdu ? "font-urdu" : ""}`}
               >

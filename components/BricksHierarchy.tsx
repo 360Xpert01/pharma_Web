@@ -143,7 +143,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
         />
       )}
 
-      <div className="flex items-center gap-3 group border border-[var(--gray-2)] rounded-lg p-4 bg-[var(--background)] hover:bg-[var(--gray-0)] transition-colors">
+      <div className="flex items-center gap-3 group border border-[var(--gray-2)] rounded-8 p-4 bg-[var(--background)] hover:bg-[var(--gray-0)] transition-colors">
         {/* Expand/Collapse Button */}
         <div className="flex items-center">
           {hasChildren ? (
@@ -166,7 +166,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
         {/* Icon */}
         <div
           className={cn(
-            "w-10 h-10 rounded-lg flex items-center justify-center",
+            "w-10 h-10 rounded-8 flex items-center justify-center",
             getTypeStyles(item.type)
           )}
         >
@@ -192,7 +192,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
         <div className="flex items-center gap-2">
           {canHaveChildren && (
             <button
-              className="h-10 w-10 rounded-md bg-[var(--primary)] hover:bg-[var(--primary)]/80 text-[var(--light)] border-none shadow-soft cursor-pointer flex items-center justify-center transition-colors"
+              className="h-10 w-10 rounded-8 bg-[var(--primary)] hover:bg-[var(--primary)]/80 text-[var(--light)] border-none shadow-soft cursor-pointer flex items-center justify-center transition-colors"
               onClick={() => childType && onAddChild?.(item.id, childType)}
               title={`Add ${childType}`}
             >
@@ -201,7 +201,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
           )}
 
           <button
-            className="w-9 h-9 flex items-center justify-center hover:bg-[var(--gray-1)] rounded-full transition-colors cursor-pointer"
+            className="w-9 h-9 flex items-center justify-center hover:bg-[var(--gray-1)] rounded-8 transition-colors cursor-pointer"
             onClick={() => onMoreOptions?.(item.id, item.type)}
             aria-label="More options"
           >
@@ -331,7 +331,7 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
   // Loading state
   if (loading) {
     return (
-      <div className="w-full bg-[var(--background)] rounded-lg">
+      <div className="w-full bg-[var(--background)] rounded-8">
         <div className="px-6 py-16 flex flex-col items-center justify-center">
           <Loader2 className="w-8 h-8 text-[var(--primary)] animate-spin mb-4" />
           <p className="text-[var(--gray-5)]">Loading bricks hierarchy...</p>
@@ -343,9 +343,9 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
   // Error state
   if (error) {
     return (
-      <div className="w-full bg-[var(--background)] rounded-lg">
+      <div className="w-full bg-[var(--background)] rounded-8">
         <div className="px-6 py-16 flex flex-col items-center justify-center">
-          <div className="w-12 h-12 rounded-full bg-[var(--destructive)]/10 flex items-center justify-center mb-4">
+          <div className="w-12 h-12 rounded-8 bg-[var(--destructive)]/10 flex items-center justify-center mb-4">
             <MapPin className="w-6 h-6 text-[var(--destructive)]" />
           </div>
           <p className="text-[var(--destructive)] font-medium mb-2">Failed to load hierarchy</p>
@@ -358,9 +358,9 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
   // Empty state
   if (hierarchyData.length === 0) {
     return (
-      <div className="w-full bg-[var(--background)] rounded-lg">
+      <div className="w-full bg-[var(--background)] rounded-8">
         <div className="px-6 py-16 flex flex-col items-center justify-center">
-          <div className="w-12 h-12 rounded-full bg-[var(--gray-1)] flex items-center justify-center mb-4">
+          <div className="w-12 h-12 rounded-8 bg-[var(--gray-1)] flex items-center justify-center mb-4">
             <Globe className="w-6 h-6 text-[var(--gray-4)]" />
           </div>
           <p className="text-[var(--gray-5)] font-medium mb-2">No regions found</p>
@@ -373,7 +373,7 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
   }
 
   return (
-    <div className="w-full bg-[var(--background)] rounded-lg">
+    <div className="w-full bg-[var(--background)] rounded-8">
       {/* Hierarchy Tree */}
       <div className="px-6 py-8 space-y-6">
         {hierarchyData.map((item) => (

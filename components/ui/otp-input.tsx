@@ -127,7 +127,7 @@ export function OTPInput({
           disabled={disabled}
           className={cn(
             "w-12 h-12 md:w-14 md:h-14 text-center text-lg md:text-xl font-semibold",
-            "rounded-full border-2 transition-all duration-200",
+            "rounded-8 border-2 transition-all duration-200",
             "focus:outline-none focus:ring-2 focus:ring-offset-2",
             error
               ? "border-destructive focus:ring-destructive"

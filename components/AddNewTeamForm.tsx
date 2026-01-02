@@ -176,7 +176,7 @@ function HierarchyNode({
       {/* Node card */}
       <div
         onClick={() => hasChildren && setIsOpen(!isOpen)}
-        className={`flex items-center gap-4 bg-[var(--light)] border border-[var(--gray-2)] rounded-2xl p-6 hover:shadow-soft transition-all ${hasChildren ? "cursor-pointer" : ""} select-none`}
+        className={`flex items-center gap-4 bg-[var(--light)] border border-[var(--gray-2)] rounded-8 p-6 hover:shadow-soft transition-all ${hasChildren ? "cursor-pointer" : ""} select-none`}
       >
         {hasChildren && (
           <Button size="icon" variant="ghost" className="flex-shrink-0 w-8 h-8">
@@ -188,7 +188,7 @@ function HierarchyNode({
           </Button>
         )}
 
-        <div className="w-12 h-12 rounded-full bg-[var(--gray-3)] overflow-hidden flex-shrink-0 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-8 bg-[var(--gray-3)] overflow-hidden flex-shrink-0 flex items-center justify-center">
           <span className="text-[var(--gray-6)] font-bold text-lg">
             {node.fullName
               ?.split(" ")
@@ -209,7 +209,7 @@ function HierarchyNode({
             {userBricks.slice(0, 4).map((brick) => (
               <span
                 key={brick.id}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--primary)] text-[var(--primary-foreground)] text-sm font-medium rounded-full whitespace-nowrap"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--primary)] text-[var(--primary-foreground)] text-sm font-medium rounded-8 whitespace-nowrap"
               >
                 {brick.name}
                 <Button
@@ -226,7 +226,7 @@ function HierarchyNode({
               </span>
             ))}
             {userBricks.length > 4 && (
-              <span className="inline-flex items-center px-3 py-1.5 bg-[var(--primary)] text-[var(--primary-foreground)] text-sm font-medium rounded-full whitespace-nowrap">
+              <span className="inline-flex items-center px-3 py-1.5 bg-[var(--primary)] text-[var(--primary-foreground)] text-sm font-medium rounded-8 whitespace-nowrap">
                 +{userBricks.length - 4}
               </span>
             )}
@@ -246,7 +246,7 @@ function HierarchyNode({
                       }
                     }}
                     placeholder="e.g: KL123, KL456, KL789"
-                    className="w-64 px-4 py-3 pl-12 border border-[var(--gray-3)] rounded-full focus:ring-2 focus:ring-[var(--primary)] outline-none"
+                    className="w-64 px-4 py-3 pl-12 border border-[var(--gray-3)] rounded-8 focus:ring-2 focus:ring-[var(--primary)] outline-none"
                     autoFocus
                   />
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--gray-4)]" />
@@ -265,7 +265,7 @@ function HierarchyNode({
                 </div>{" "}
                 {/* Brick Dropdown */}
                 {brickSearchQuery && (
-                  <div className="absolute z-20 w-64 mt-2 bg-[var(--light)] border border-[var(--gray-2)] rounded-xl shadow-soft max-h-48 overflow-y-auto">
+                  <div className="absolute z-20 w-64 mt-2 bg-[var(--light)] border border-[var(--gray-2)] rounded-8 shadow-soft max-h-48 overflow-y-auto">
                     {filteredBricks.length > 0 ? (
                       filteredBricks.map((brick) => (
                         <div
@@ -572,7 +572,7 @@ export default function CreateCampaignForm() {
 
   return (
     <div className=" ">
-      <div className="bg-[var(--light)] rounded-2xl shadow-soft p-8 space-y-10">
+      <div className="bg-[var(--light)] rounded-8 shadow-soft p-8 space-y-10">
         {/* Team Name Section */}
         <div className="space-y-6">
           <h2 className="text-2xl font-bold text-[var(--gray-9)]">Team Name</h2>

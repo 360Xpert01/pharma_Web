@@ -66,7 +66,7 @@ export default function AddDoctorForm() {
   };
 
   return (
-    <div className="bg-[var(--background)] rounded-xl p-9">
+    <div className="bg-[var(--background)] rounded-8 p-9">
       {/* Header */}
       <h2 className="text-3xl font-bold text-[var(--gray-9)] mb-8">Basic Info</h2>
 

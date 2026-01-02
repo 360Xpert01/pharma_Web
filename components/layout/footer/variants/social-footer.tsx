@@ -66,7 +66,7 @@ export function SocialFooter({ footerT, isUrdu }: SocialFooterProps) {
         {/* Social Icons */}
         <div className="flex items-center justify-center gap-4">
           {socialLinks.map(({ icon: Icon, href, label, ariaLabel }) => (
-            <Button key={href} asChild size="icon" className="w-10 h-10 rounded-full">
+            <Button key={href} asChild size="icon" className="w-10 h-10 rounded-8">
               <a
                 href={href}
                 target="_blank"

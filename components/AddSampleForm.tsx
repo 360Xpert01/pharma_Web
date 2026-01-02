@@ -49,7 +49,7 @@ export default function AddSampleForm() {
         <div className="space-y-6">
           <ProfileImageUpload imagePreview={image} onImageChange={handleImageChange} />
           {/* Small Thumbnail */}
-          <div className="w-20 h-20 bg-(--gray-2) border-2 border-dashed border-(--gray-3) rounded-xl" />
+          <div className="w-20 h-20 bg-(--gray-2) border-2 border-dashed border-(--gray-3) rounded-8" />
         </div>
 
         {/* Right Side - Form Fields */}
@@ -120,7 +120,7 @@ export default function AddSampleForm() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Pain reliever tablet"
-              className="w-full px-4 py-3 border border-(--gray-3) rounded-xl focus:ring-2 focus:ring-(--primary) focus:border-transparent outline-none transition resize-none"
+              className="w-full px-4 py-3 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) focus:border-transparent outline-none transition resize-none"
             />
           </div>
 

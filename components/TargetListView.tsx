@@ -253,7 +253,7 @@ export default function TargetListView() {
       {/* Employee Cards Grouped by Month */}
       <div>
         {Object.keys(groupedTargets).length === 0 ? (
-          <div className="bg-[var(--gray-0)] rounded-2xl p-12 text-center mx-4 my-3">
+          <div className="bg-[var(--gray-0)] rounded-8 p-12 text-center mx-4 my-3">
             <p className="text-[var(--gray-5)] text-lg">No targets found matching your criteria</p>
           </div>
         ) : (

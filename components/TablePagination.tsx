@@ -41,7 +41,7 @@ export default function TablePagination({
 
   return (
     <div
-      className={`flex items-center justify-between gap-4 px-4 py-3 bg-[var(--background)] rounded-xl mt-3 ${className}`}
+      className={`flex items-center justify-between gap-4 px-4 py-3 bg-[var(--background)] rounded-8 mt-3 ${className}`}
     >
       {/* Left: Records info and rows per page */}
       <div className="flex items-center gap-4 text-sm text-[var(--gray-6)]">
@@ -66,7 +66,7 @@ export default function TablePagination({
                   onItemsPerPageChange(newItemsPerPage);
                 }
               }}
-              className="min-w-[60px] px-2 py-1 text-center text-sm border border-[var(--gray-3)] rounded-md bg-[var(--background)] text-[var(--gray-8)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-[var(--primary)] cursor-pointer"
+              className="min-w-[60px] px-2 py-1 text-center text-sm border border-[var(--gray-3)] rounded-8 bg-[var(--background)] text-[var(--gray-8)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-[var(--primary)] cursor-pointer"
             >
               {pageSizeOptions.map((size) => (
                 <option key={size} value={size}>
@@ -84,7 +84,7 @@ export default function TablePagination({
         <button
           onClick={() => handlePageChange(1)}
           disabled={currentPage === 1}
-          className="p-1.5 text-[var(--gray-5)] hover:text-[var(--gray-7)] hover:bg-[var(--gray-2)] rounded-md transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+          className="p-1.5 text-[var(--gray-5)] hover:text-[var(--gray-7)] hover:bg-[var(--gray-2)] rounded-8 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
           aria-label="Go to first page"
           title="First page"
         >
@@ -95,7 +95,7 @@ export default function TablePagination({
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="p-1.5 text-[var(--gray-5)] hover:text-[var(--gray-7)] hover:bg-[var(--gray-2)] rounded-md transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+          className="p-1.5 text-[var(--gray-5)] hover:text-[var(--gray-7)] hover:bg-[var(--gray-2)] rounded-8 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
           aria-label="Go to previous page"
           title="Previous page"
         >
@@ -114,7 +114,7 @@ export default function TablePagination({
               onPageChange(page);
             }
           }}
-          className="min-w-[60px] px-2 py-1 text-center text-sm border border-[var(--gray-3)] rounded-md bg-[var(--background)] text-[var(--gray-8)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-[var(--primary)] cursor-pointer"
+          className="min-w-[60px] px-2 py-1 text-center text-sm border border-[var(--gray-3)] rounded-8 bg-[var(--background)] text-[var(--gray-8)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)] focus:border-[var(--primary)] cursor-pointer"
         >
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
             <option key={page} value={page}>
@@ -127,7 +127,7 @@ export default function TablePagination({
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages || totalPages === 0}
-          className="p-1.5 text-[var(--gray-5)] hover:text-[var(--gray-7)] hover:bg-[var(--gray-2)] rounded-md transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+          className="p-1.5 text-[var(--gray-5)] hover:text-[var(--gray-7)] hover:bg-[var(--gray-2)] rounded-8 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
           aria-label="Go to next page"
           title="Next page"
         >
@@ -138,7 +138,7 @@ export default function TablePagination({
         <button
           onClick={() => handlePageChange(totalPages)}
           disabled={currentPage === totalPages || totalPages === 0}
-          className="p-1.5 text-[var(--gray-5)] hover:text-[var(--gray-7)] hover:bg-[var(--gray-2)] rounded-md transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+          className="p-1.5 text-[var(--gray-5)] hover:text-[var(--gray-7)] hover:bg-[var(--gray-2)] rounded-8 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
           aria-label="Go to last page"
           title="Last page"
         >

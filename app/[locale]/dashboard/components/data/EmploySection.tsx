@@ -115,7 +115,7 @@ export default function SalesTeamTable() {
           {paginatedMembers.map((member) => (
             <div key={member.id}>
               {/* Main Row */}
-              <div className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-(--gray-0) transition-all cursor-pointer border border-(--gray-2) mx-4 my-3 rounded-2xl bg-[var(--background)]">
+              <div className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-(--gray-0) transition-all cursor-pointer border border-(--gray-2) mx-4 my-3 rounded-8 bg-[var(--background)]">
                 <div
                   onClick={() => toggleRow(member.id)}
                   className="w-[15%] text-sm font-bold text-(--gray-9) truncate"
@@ -133,7 +133,7 @@ export default function SalesTeamTable() {
                     alt={member.name}
                     width={40}
                     height={40}
-                    className="rounded-full flex-shrink-0"
+                    className="rounded-8 flex-shrink-0"
                   />
                   <div className="min-w-0 flex-1">
                     <p className="font-bold text-(--gray-9) truncate" title={member.name}>

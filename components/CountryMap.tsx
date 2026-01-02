@@ -41,7 +41,7 @@ const getFillColor = (geo: any) => {
 
 export default function TopSalesMap() {
   return (
-    <div className="w-full bg-(--background) rounded-2xl shadow-soft border border-(--gray-1) p-6">
+    <div className="w-full bg-(--background) rounded-8 shadow-soft border border-(--gray-1) p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -57,7 +57,7 @@ export default function TopSalesMap() {
         <div className="space-y-1 w-[10%]">
           <div className="space-y-4">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-7 rounded-sm overflow-hidden shadow-soft">
+              <div className="w-10 h-7 rounded-8 overflow-hidden shadow-soft">
                 <div className="w-full h-full bg-(--success)"></div>
                 <div className="w-full h-1.5 bg-(--background)"></div>
                 <div className="w-full h-1.5 bg-(--destructive)"></div>
@@ -69,7 +69,7 @@ export default function TopSalesMap() {
             </div>
 
             <div className="flex items-center gap-4">
-              <div className="w-10 h-7 rounded-sm overflow-hidden shadow-soft">
+              <div className="w-10 h-7 rounded-8 overflow-hidden shadow-soft">
                 <div className="w-full h-2 bg-(--destructive)"></div>
                 <div className="w-full h-2 bg-(--background)"></div>
                 <div className="w-full h-3 bg-(--success)"></div>
@@ -82,7 +82,7 @@ export default function TopSalesMap() {
 
             <div className="flex items-center gap-4">
               <div
-                className="w-10 h-7 rounded-sm shadow-soft bg-cover bg-center"
+                className="w-10 h-7 rounded-8 shadow-soft bg-cover bg-center"
                 style={{ backgroundImage: "url('https://flagcdn.com/gb.svg')" }}
               />
               <div>
@@ -93,7 +93,7 @@ export default function TopSalesMap() {
 
             <div className="flex items-center gap-4">
               <div
-                className="w-10 h-7 rounded-sm shadow-soft bg-cover bg-center"
+                className="w-10 h-7 rounded-8 shadow-soft bg-cover bg-center"
                 style={{ backgroundImage: "url('https://flagcdn.com/us.svg')" }}
               />
               <div>

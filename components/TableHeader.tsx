@@ -35,7 +35,7 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
             <input
               type="text"
               placeholder="Search users..."
-              className="pl-10 pr-4 py-2.5 w-full sm:w-64 bg-[var(--gray-2)] text-[var(--gray-9)] rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:bg-[var(--light)] transition-all duration-200"
+              className="pl-10 pr-4 py-2.5 w-full sm:w-64 bg-[var(--gray-2)] text-[var(--gray-9)] rounded-8 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:bg-[var(--light)] transition-all duration-200"
             />
           </div>
 
@@ -43,7 +43,7 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
             <div className="relative">
               <button
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className="flex items-center justify-center p-3.5 bg-[var(--primary)] text-[var(--light)] rounded-full cursor-pointer transition-colors shadow-soft"
+                className="flex items-center justify-center p-3.5 bg-[var(--primary)] text-[var(--light)] rounded-8 cursor-pointer transition-colors shadow-soft"
                 aria-label="Filter"
               >
                 <ListFilter className="w-4 h-4" />
@@ -51,7 +51,7 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
 
               {/* Filter Dropdown */}
               {isFilterOpen && (
-                <div className="absolute cursor-pointer right-0 mt-2 w-72 bg-[var(--background)] rounded-xl shadow-soft border border-[var(--gray-2)] z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute cursor-pointer right-0 mt-2 w-72 bg-[var(--background)] rounded-8 shadow-soft border border-[var(--gray-2)] z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="p-5 space-y-5">
                     {/* Header */}
                     <div className="flex items-center justify-between">
@@ -69,7 +69,7 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
                       <label className="block text-sm font-medium text-[var(--gray-7)] mb-1.5">
                         Role
                       </label>
-                      <select className="w-full px-3 py-2.5 border border-[var(--gray-3)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] transition">
+                      <select className="w-full px-3 py-2.5 border border-[var(--gray-3)] rounded-8 text-sm focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] transition">
                         <option>All Roles</option>
                         <option>Admin</option>
                         <option>Manager</option>
@@ -84,7 +84,7 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
                       <label className="block text-sm font-medium text-[var(--gray-7)] mb-1.5">
                         Status
                       </label>
-                      <select className="w-full px-3 py-2.5 border border-[var(--gray-3)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] transition">
+                      <select className="w-full px-3 py-2.5 border border-[var(--gray-3)] rounded-8 text-sm focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] transition">
                         <option>All Status</option>
                         <option>Active</option>
                         <option>Inactive</option>
@@ -98,7 +98,7 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
                       <label className="block text-sm font-medium text-[var(--gray-7)] mb-1.5">
                         Date Range
                       </label>
-                      <select className="w-full px-3 py-2.5 border border-[var(--gray-3)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] transition">
+                      <select className="w-full px-3 py-2.5 border border-[var(--gray-3)] rounded-8 text-sm focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] transition">
                         <option>Last 30 Days</option>
                         <option>Last 7 Days</option>
                         <option>This Month</option>
@@ -109,10 +109,10 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
 
                     {/* Action Buttons */}
                     <div className="flex gap-3 pt-3">
-                      <button className="flex-1 px-4 py-2.5 border border-[var(--gray-3)] text-[var(--gray-7)] rounded-lg text-sm font-medium hover:bg-[var(--gray-0)] transition">
+                      <button className="flex-1 px-4 py-2.5 border border-[var(--gray-3)] text-[var(--gray-7)] rounded-8 text-sm font-medium hover:bg-[var(--gray-0)] transition">
                         Clear All
                       </button>
-                      <button className="flex-1 px-4 py-2.5 bg-[var(--primary)] text-[var(--light)] rounded-lg text-sm font-medium hover:bg-[var(--primary-2)] transition shadow-soft">
+                      <button className="flex-1 px-4 py-2.5 bg-[var(--primary)] text-[var(--light)] rounded-8 text-sm font-medium hover:bg-[var(--primary-2)] transition shadow-soft">
                         Apply Filters
                       </button>
                     </div>
@@ -127,33 +127,32 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
           {/* Export Button */}
           <div
             onClick={() => setOpenId(!openId)}
-            className="flex items-center cursor-pointer relative gap-2 border border-[var(--primary)]  text-[var(--light)] rounded-full text-sm font-medium  transition-colors shadow-soft"
+            className="flex items-center cursor-pointer relative gap-0 border border-[var(--primary)] rounded-8 text-sm font-medium shadow-soft overflow-hidden"
           >
-            <div className="flex relative items-center  gap-2 bg-[var(--primary)] hover:bg-[var(--primary-2)] px-3 py-3 overflow-hidden rounded-tl-full rounded-bl-full ">
+            <div className="flex items-center gap-2 px-4 py-3 bg-[var(--primary)] hover:bg-[var(--primary-2)] text-[var(--light)] transition-colors">
               <Upload className="w-4 h-4" />
               <span>Export List</span>
             </div>
 
-            {/* <div className="border-l border-gray-400"></div> */}
-            <div className="  mr-3 ">
+            <div className="px-3 py-3 bg-[var(--light)] hover:bg-[var(--gray-1)] flex items-center justify-center transition-colors">
               <Image
                 src="/arrow-down-blue.svg"
-                alt="Ceturvi Logo"
-                width={25}
-                height={25}
-                // className="object-contain"
-                className={"w-5 h-5 object-contain "}
+                alt="Dropdown Arrow"
+                width={20}
+                height={20}
+                className="w-5 h-5 object-contain"
               />
             </div>
+
             {openId && (
               <>
                 {/* Backdrop */}
                 <div className="fixed inset-0 z-40" onClick={() => setOpenId(false)} />
 
                 {/* Dropdown Menu */}
-                <div className="absolute right-0 top-14 mt-2 w-56 bg-[var(--background)] rounded-lg shadow-soft border border-[var(--gray-2)] z-50 overflow-hidden">
+                <div className="absolute right-0 top-full mt-2 w-56 bg-[var(--background)] rounded-8 shadow-soft border border-[var(--gray-2)] z-50 overflow-hidden">
                   <div className="py-2">
-                    <button className="w-full text-left  px-5 py-3 text-sm text-[var(--gray-7)] hover:bg-[var(--gray-1)] flex items-center gap-3 transition">
+                    <button className="w-full text-left px-5 py-3 text-sm text-[var(--gray-7)] hover:bg-[var(--gray-1)] flex items-center gap-3 transition">
                       <span>Export Format (.xls)</span>
                     </button>
                     <button className="w-full text-left px-5 py-3 text-sm text-[var(--gray-7)] hover:bg-[var(--gray-1)] flex items-center gap-3 transition">

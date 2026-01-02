@@ -29,7 +29,7 @@ const SpinnerVariants = {
   minimal: ({ size, isDark, mounted }: { size: string; isDark: boolean; mounted: boolean }) => (
     <div
       className={cn(
-        "animate-spin rounded-full border-2 border-t-transparent",
+        "animate-spin rounded-8 border-2 border-t-transparent",
         mounted ? "border-white dark:border-white" : "border-white",
         size
       )}
@@ -42,7 +42,7 @@ const SpinnerVariants = {
         <div
           key={i}
           className={cn(
-            "animate-bounce rounded-full",
+            "animate-bounce rounded-8",
             mounted ? "bg-(--background) dark:bg-(--background)" : "bg-(--background)",
             size === "h-8 w-8" ? "h-2 w-2" : size === "h-12 w-12" ? "h-3 w-3" : "h-4 w-4"
           )}
@@ -122,7 +122,7 @@ const LoaderOverlay: React.FC<LoaderOverlayProps> = ({
             {[0, 1, 2].map((i) => (
               <div
                 key={i}
-                className={cn("h-1 w-1 rounded-full animate-pulse", "bg-(--background)/60")}
+                className={cn("h-1 w-1 rounded-8 animate-pulse", "bg-(--background)/60")}
                 style={{ animationDelay: `${i * 0.2}s` }}
               />
             ))}

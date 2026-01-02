@@ -35,7 +35,7 @@ export function CTASection() {
           {/* Primary Button */}
           <Button
             size="sm"
-            className="min-w-0 sm:px-2 sm:py-2 lg:px-6 lg:py-6 text-xs lg:text-lg font-semibold rounded-lg transition-all duration-300 w-1/2 lg:w-1/4"
+            className="min-w-0 sm:px-2 sm:py-2 lg:px-6 lg:py-6 text-xs lg:text-lg font-semibold rounded-8 transition-all duration-300 w-1/2 lg:w-1/4"
           >
             {t("cta.primaryButton")}
           </Button>
@@ -44,7 +44,7 @@ export function CTASection() {
           <Button
             variant="ghost"
             size="sm"
-            className="min-w-0 px-2 py-2 lg:px-6 lg:py-6 text-xs lg:text-lg font-semibold rounded-lg transition-all duration-300 w-1/2 lg:w-1/4"
+            className="min-w-0 px-2 py-2 lg:px-6 lg:py-6 text-xs lg:text-lg font-semibold rounded-8 transition-all duration-300 w-1/2 lg:w-1/4"
           >
             {t("cta.secondaryButton")}
           </Button>

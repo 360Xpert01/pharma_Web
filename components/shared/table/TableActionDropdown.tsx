@@ -86,7 +86,7 @@ export default function TableActionDropdown({
           onToggle();
         }}
         className={cn(
-          "p-2 rounded-full transition cursor-pointer text-(--gray-4) hover:text-(--gray-7) hover:bg-(--gray-1)",
+          "p-2 rounded-8 transition cursor-pointer text-(--gray-4) hover:text-(--gray-7) hover:bg-(--gray-1)",
           triggerClassName
         )}
         aria-label="Open menu"
@@ -103,7 +103,7 @@ export default function TableActionDropdown({
           {/* Dropdown Menu */}
           <div
             className={cn(
-              "absolute top-10 mt-2 w-48 rounded-lg shadow-soft z-50 bg-[var(--background)] border border-(--gray-2)",
+              "absolute top-10 mt-2 w-48 rounded-8 shadow-soft z-50 bg-[var(--background)] border border-(--gray-2)",
               position === "right" ? "right-0" : "left-0"
             )}
             role="menu"

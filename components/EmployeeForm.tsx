@@ -278,7 +278,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
   if (isUpdateMode && fetchingUser) {
     return (
       <div className="bg-(--gray-0) flex items-center justify-center min-h-[600px]">
-        <div className="bg-(--background) rounded-2xl shadow-soft p-12 flex flex-col items-center gap-4">
+        <div className="bg-(--background) rounded-8 shadow-soft p-12 flex flex-col items-center gap-4">
           <Loader2 className="w-12 h-12 animate-spin text-(--primary)" />
           <p className="text-lg font-medium text-(--gray-7)">Loading employee data...</p>
         </div>
@@ -290,7 +290,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
   if (isUpdateMode && fetchError && !employeeData) {
     return (
       <div className="bg-(--gray-0) flex items-center justify-center min-h-[600px]">
-        <div className="bg-(--background) rounded-2xl shadow-soft p-12 flex flex-col items-center gap-4">
+        <div className="bg-(--background) rounded-8 shadow-soft p-12 flex flex-col items-center gap-4">
           <p className="text-lg font-medium text-(--destructive)">Failed to load employee data</p>
           <p className="text-sm text-(--gray-6)">{fetchError}</p>
           <Button onClick={handleDiscard} variant="primary" size="default" rounded="full">
@@ -312,7 +312,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
 
   return (
     <div className="bg-(--gray-0)">
-      <div className="bg-(--background) rounded-2xl shadow-soft p-8 space-y-10">
+      <div className="bg-(--background) rounded-8 shadow-soft p-8 space-y-10">
         {/* Section: Basic Info */}
         <div className="space-y-6">
           <h2 className="text-2xl font-bold text-(--gray-9)">Basic Info</h2>

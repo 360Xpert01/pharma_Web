@@ -79,7 +79,7 @@ export default function ProductSearch({
               }}
               placeholder={loading ? "Loading products..." : "Search Product Name"}
               disabled={loading}
-              className="w-full px-4 py-3 pl-12 border border-(--gray-3) rounded-xl focus:ring-2 focus:ring-(--primary) outline-none disabled:bg-(--gray-1) disabled:cursor-not-allowed"
+              className="w-full px-4 py-3 pl-12 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) outline-none disabled:bg-(--gray-1) disabled:cursor-not-allowed"
             />
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-(--gray-4)" />
           </div>
@@ -90,7 +90,7 @@ export default function ProductSearch({
 
         {/* Search Results Dropdown */}
         {showSearchResults && searchQuery && !loading && (
-          <div className="absolute z-10 w-full mt-2 bg-(--light) border border-(--gray-2) rounded-xl shadow-soft max-h-96 overflow-y-auto">
+          <div className="absolute z-10 w-full mt-2 bg-(--light) border border-(--gray-2) rounded-8 shadow-soft max-h-96 overflow-y-auto">
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
                 <div
@@ -104,7 +104,7 @@ export default function ProductSearch({
                       <p className="text-sm text-(--gray-5)">{product.productCode}</p>
                     </div>
                     {product.productCategory && (
-                      <span className="px-2 py-1 bg-(--muted) text-(--primary) text-xs font-medium rounded-full">
+                      <span className="px-2 py-1 bg-(--muted) text-(--primary) text-xs font-medium rounded-8">
                         {product.productCategory}
                       </span>
                     )}
@@ -120,11 +120,11 @@ export default function ProductSearch({
 
       {/* Selected Products Grid */}
       {selectedProducts.length > 0 && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-(--gray-1) p-4 rounded-xl">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-(--gray-1) p-4 rounded-8">
           {selectedProducts.map((product) => (
             <div
               key={product.id}
-              className="bg-(--light) border border-(--gray-1) rounded-xl p-4 flex items-center justify-between shadow-soft hover:shadow-soft transition group"
+              className="bg-(--light) border border-(--gray-1) rounded-8 p-4 flex items-center justify-between shadow-soft hover:shadow-soft transition group"
             >
               <div className="flex items-center gap-6">
                 <p className="text-sm text-(--gray-4) font-medium">{product.code}</p>

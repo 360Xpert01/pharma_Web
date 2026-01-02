@@ -32,9 +32,9 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
     <div className=" ">
       <div className="flex justify-between w-[100%]   gap-3">
         {/* Left - Avatar + Basic Info */}
-        <div className="flex justify-between gap-6 w-[39%] bg-(--background) rounded-lg shadow-soft p-4 border border-(--gray-1) ">
+        <div className="flex justify-between gap-6 w-[39%] bg-(--background) rounded-8 shadow-soft p-4 border border-(--gray-1) ">
           <div className="flex gap-3 justify-center">
-            <div className="relative w-38 h-38 rounded-lg overflow-hidden  shadow-soft">
+            <div className="relative w-38 h-38 rounded-8 overflow-hidden  shadow-soft">
               <Image
                 src="/capMan.svg"
                 alt={candidate.name}
@@ -46,7 +46,7 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
 
             <div>
               <div className="flex item-center gap-3 mb-2 ">
-                <div className="bg-(--primary) w-[60%] text-(--light) text-[10px] font-regular px-3 py-1.5 rounded-full">
+                <div className="bg-(--primary) w-[60%] text-(--light) text-[10px] font-regular px-3 py-1.5 rounded-8">
                   EMP-000124
                 </div>
                 <span className="text-[12px] bg-(--light) my-auto">|</span>
@@ -84,7 +84,7 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
 
         {/* Middle Left */}
 
-        <div className="flex justify-between gap-15 w-[60%] bg-(--background) rounded-lg shadow-soft p-4 border border-(--gray-2) ">
+        <div className="flex justify-between gap-15 w-[60%] bg-(--background) rounded-8 shadow-soft p-4 border border-(--gray-2) ">
           <div className="space-y-14">
             <div>
               <p className="text-[10px] text-(--gray-5) uppercase tracking-wider">Campaign</p>
@@ -129,7 +129,7 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
             <div>
               <p className="text-xs text-(--gray-5) uppercase tracking-wider">Status</p>
               <span
-                className={`inline-block px-4 py-1.5 rounded-full text-xs font-medium text-(--light) mt-1 ${
+                className={`inline-block px-4 py-1.5 rounded-8 text-xs font-medium text-(--light) mt-1 ${
                   candidate.status.toLowerCase() === "active" ||
                   candidate.status.toLowerCase() === "approved"
                     ? "bg-(--success)"

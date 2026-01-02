@@ -132,7 +132,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
         <div className="min-h-[400px] flex items-center justify-center p-4">
           <Card className="w-full max-w-lg">
             <CardHeader className="text-center">
-              <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-destructive/10 flex items-center justify-center">
+              <div className="mx-auto mb-4 h-12 w-12 rounded-8 bg-destructive/10 flex items-center justify-center">
                 <AlertIcon className="h-6 w-6 text-destructive" />
               </div>
               <CardTitle className="text-xl">

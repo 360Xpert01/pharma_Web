@@ -41,7 +41,7 @@ export default function TargetConfigForm({
           <select
             value={selectedTeam}
             onChange={(e) => onTeamChange(e.target.value)}
-            className="w-full px-4 py-3 border border-(--gray-3) rounded-lg focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none bg-(--light) text-(--gray-7) cursor-pointer"
+            className="w-full px-4 py-3 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none bg-(--light) text-(--gray-7) cursor-pointer"
           >
             <option value="">Search teams</option>
             <option value="team1">High Blood Pressure Team</option>
@@ -58,7 +58,7 @@ export default function TargetConfigForm({
           <select
             value={targetMonth}
             onChange={(e) => onMonthChange(e.target.value)}
-            className="w-full px-4 py-3 border border-(--gray-3) rounded-lg focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none bg-(--light) text-(--gray-7) cursor-pointer"
+            className="w-full px-4 py-3 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none bg-(--light) text-(--gray-7) cursor-pointer"
           >
             <option value="">Select Month</option>
             <option value="january">January 2025</option>
@@ -90,7 +90,7 @@ export default function TargetConfigForm({
             value={teamRoleCode}
             readOnly
             disabled
-            className="w-full px-4 py-3 border border-(--gray-3) rounded-lg bg-(--gray-0) text-(--gray-6) cursor-not-allowed outline-none"
+            className="w-full px-4 py-3 border border-(--gray-3) rounded-8 bg-(--gray-0) text-(--gray-6) cursor-not-allowed outline-none"
             placeholder="PL_SPT_017284"
           />
         </div>
@@ -103,7 +103,7 @@ export default function TargetConfigForm({
             value={teamName}
             readOnly
             disabled
-            className="w-full px-4 py-3 border border-(--gray-3) rounded-lg bg-(--gray-0) text-(--gray-6) cursor-not-allowed outline-none"
+            className="w-full px-4 py-3 border border-(--gray-3) rounded-8 bg-(--gray-0) text-(--gray-6) cursor-not-allowed outline-none"
             placeholder="High Blood Pressure"
           />
         </div>
@@ -116,7 +116,7 @@ export default function TargetConfigForm({
             value={channelName}
             readOnly
             disabled
-            className="w-full px-4 py-3 border border-(--gray-3) rounded-lg bg-(--gray-0) text-(--gray-6) cursor-not-allowed outline-none"
+            className="w-full px-4 py-3 border border-(--gray-3) rounded-8 bg-(--gray-0) text-(--gray-6) cursor-not-allowed outline-none"
             placeholder="Chain Pharmacy"
           />
         </div>
@@ -129,7 +129,7 @@ export default function TargetConfigForm({
             value={callPoint}
             readOnly
             disabled
-            className="w-full px-4 py-3 border border-(--gray-3) rounded-lg bg-(--gray-0) text-(--gray-6) cursor-not-allowed outline-none"
+            className="w-full px-4 py-3 border border-(--gray-3) rounded-8 bg-(--gray-0) text-(--gray-6) cursor-not-allowed outline-none"
             placeholder="36 Export Solutions"
           />
         </div>

@@ -141,7 +141,7 @@ export default function ExpenseApprovalTable() {
           {paginatedExpenses.map((row) => (
             <div
               key={row.id}
-              className="bg-[var(--background)] rounded-2xl border border-(--gray-2) "
+              className="bg-[var(--background)] rounded-8 border border-(--gray-2) "
             >
               <div className="px-3 py-3">
                 <div className="flex items-center justify-between gap-6 text-sm">
@@ -150,7 +150,7 @@ export default function ExpenseApprovalTable() {
                     <img
                       src={row.employee1.avatar || DEFAULT_AVATAR}
                       alt={row.employee1.name}
-                      className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-soft"
+                      className="w-12 h-12 rounded-8 object-cover border-2 border-(--light) shadow-soft"
                     />
                     <div className="truncate">
                       <div className="font-bold text-(--gray-9) truncate">{row.employee1.name}</div>
@@ -163,7 +163,7 @@ export default function ExpenseApprovalTable() {
                     <img
                       src={row.employee2.avatar || DEFAULT_AVATAR}
                       alt={row.employee2.name}
-                      className="w-12 h-12 rounded-full object-cover border-2 border-(--light) shadow-soft"
+                      className="w-12 h-12 rounded-8 object-cover border-2 border-(--light) shadow-soft"
                     />
                     <div className="truncate">
                       <div className="font-bold text-(--gray-9) truncate">{row.employee2.name}</div>
@@ -200,10 +200,10 @@ export default function ExpenseApprovalTable() {
 
                   {/* Action Buttons */}
                   <div className="flex gap-3">
-                    <button className="px-6 py-1 bg-(--primary) text-(--light) font-medium rounded-lg hover:bg-(--primary-2) transition shadow-soft">
+                    <button className="px-6 py-1 bg-(--primary) text-(--light) font-medium rounded-8 hover:bg-(--primary-2) transition shadow-soft">
                       Approve
                     </button>
-                    <button className="px-6 py-1 bg-[var(--background)] text-(--destructive) font-medium rounded-lg border border-(--destructive) hover:bg-(--destructive-0) transition shadow-soft">
+                    <button className="px-6 py-1 bg-[var(--background)] text-(--destructive) font-medium rounded-8 border border-(--destructive) hover:bg-(--destructive-0) transition shadow-soft">
                       Reject
                     </button>
                   </div>

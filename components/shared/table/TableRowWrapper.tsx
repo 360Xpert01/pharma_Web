@@ -50,7 +50,7 @@ export default function TableRowWrapper({
       onClick={onClick}
       className={cn(baseClasses, variantClasses[variant], hoverClasses, cursorClasses, className)}
     >
-      <div className="w-full bg-[var(--background)] rounded-lg p-4 border border-(--gray-2)">
+      <div className="w-full bg-[var(--background)] rounded-8 p-4 border border-(--gray-2)">
         {children}
       </div>
     </div>

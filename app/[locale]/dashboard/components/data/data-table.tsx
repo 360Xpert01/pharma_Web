@@ -192,7 +192,7 @@ export function DataTable<T extends Record<string, any>>({
         </div>
       </CardHeader>
       <CardContent>
-        <div className="rounded-md shadow-soft ">
+        <div className="rounded-8 shadow-soft ">
           <Table>
             <TableHeader>
               <TableRow>

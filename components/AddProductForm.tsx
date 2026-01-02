@@ -135,7 +135,7 @@ export default function AddProductForm() {
 
   const getInputClasses = (fieldName: string) => {
     const baseClasses =
-      "w-full px-3 py-3 border rounded-lg focus:ring-2 outline-none text-sm transition-all";
+      "w-full px-3 py-3 border rounded-8 focus:ring-2 outline-none text-sm transition-all";
     if (hasError(fieldName)) {
       return `${baseClasses} border-(--destructive) focus:ring-(--destructive)`;
     }
@@ -333,7 +333,7 @@ export default function AddProductForm() {
                     type="text"
                     id="sku-input"
                     placeholder="e.g. Capsule 500Mg"
-                    className="flex-1 px-3 py-3 border border-[var(--gray-3)] rounded-xl focus:ring-2 focus:ring-[var(--primary)] outline-none text-sm"
+                    className="flex-1 px-3 py-3 border border-[var(--gray-3)] rounded-8 focus:ring-2 focus:ring-[var(--primary)] outline-none text-sm"
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && e.currentTarget.value.trim()) {
                         setSkus([...skus, e.currentTarget.value.trim()]);
@@ -371,7 +371,7 @@ export default function AddProductForm() {
                     .map((sku, index) => (
                       <div
                         key={index}
-                        className="px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-full text-sm font-medium flex items-center gap-2 hover:bg-[var(--primary)]/90 transition"
+                        className="px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-8 text-sm font-medium flex items-center gap-2 hover:bg-[var(--primary)]/90 transition"
                       >
                         {sku}
                         <button onClick={() => removeSku(index)} className="cursor-pointer">

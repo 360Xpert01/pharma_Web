@@ -44,7 +44,7 @@ export function CenteredFooter({ footerT, isUrdu }: CenteredFooterProps) {
           {/* Logo & Company Info */}
           <div className="space-y-6">
             <div className="flex items-center justify-center gap-3">
-              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-primary rounded-8 flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-lg">S</span>
               </div>
               <h3 className="font-bold text-2xl text-foreground">{footerT("companyName")}</h3>
@@ -99,7 +99,7 @@ export function CenteredFooter({ footerT, isUrdu }: CenteredFooterProps) {
                   asChild
                   size="icon"
                   variant="outline"
-                  className="w-12 h-12 rounded-full"
+                  className="w-12 h-12 rounded-8"
                 >
                   <a
                     href={href}

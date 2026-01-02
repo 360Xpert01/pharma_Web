@@ -36,7 +36,7 @@ export default function TableEmptyState({
   return (
     <div className="w-full flex items-center justify-center py-16">
       <div className="text-center max-w-md">
-        <div className="mx-auto w-16 h-16 rounded-full bg-[var(--gray-1)] flex items-center justify-center mb-4">
+        <div className="mx-auto w-16 h-16 rounded-8 bg-[var(--gray-1)] flex items-center justify-center mb-4">
           {icon || <Inbox className="w-8 h-8 text-[var(--gray-5)]" />}
         </div>
 
@@ -47,7 +47,7 @@ export default function TableEmptyState({
         {action && (
           <button
             onClick={action.onClick}
-            className="px-4 py-2 bg-[var(--primary)] text-[var(--light)] rounded-lg hover:bg-[var(--primary-2)] transition cursor-pointer font-medium"
+            className="px-4 py-2 bg-[var(--primary)] text-[var(--light)] rounded-8 hover:bg-[var(--primary-2)] transition cursor-pointer font-medium"
           >
             {action.text}
           </button>
