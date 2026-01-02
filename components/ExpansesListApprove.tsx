@@ -118,10 +118,10 @@ export default function ExpenseApprovalList() {
           {expensesData.map((item) => (
             <div
               key={item.id}
-              className="flex items-center justify-between rounded-2xl shadow-soft border border-(--gray-1) bg-(--background) p-3"
+              className="flex items-center rounded-2xl shadow-soft border border-(--gray-1) bg-(--background) p-4"
             >
               {/* Left: User Info */}
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 w-[25%]">
                 <div className="relative">
                   <div className="w-14 h-14 rounded-md overflow-hidden border-2 border-white shadow-soft">
                     <Image
@@ -151,23 +151,23 @@ export default function ExpenseApprovalList() {
                 </div>
               </div>
 
-              {/* Center: Expense Breakdown */}
-              <div className="flex items-center gap-12 text-center">
-                <div>
+              {/* Center: Expense Breakdown - Three evenly distributed columns */}
+              <div className="flex items-center flex-1">
+                <div className="w-1/3 text-center">
                   <p className="text-xs text-(--gray-4)">Total Expense</p>
                   <p className="text-lg font-bold text-(--warning-2)">
                     {item.total.toLocaleString()}
                     <span className="text-xs font-medium text-(--warning-2) ml-1">PKR</span>
                   </p>
                 </div>
-                <div>
+                <div className="w-1/3 text-center">
                   <p className="text-xs text-(--gray-4)">Approved</p>
                   <p className="text-lg font-bold text-(--success)">
                     {item.approved.toLocaleString()}
                     <span className="text-xs font-medium text-(--success) ml-1">PKR</span>
                   </p>
                 </div>
-                <div>
+                <div className="w-1/3 text-center">
                   <p className="text-xs text-(--gray-4)">Rejected</p>
                   <p className="text-lg font-bold text-(--destructive)">
                     {item.rejected.toLocaleString()}
@@ -177,8 +177,8 @@ export default function ExpenseApprovalList() {
               </div>
 
               {/* Right: Action Buttons */}
-              <div className="flex items-center gap-3">
-                <Button variant="primary" size="sm" rounded="xl" className="px-5 shadow-soft">
+              <div className="flex items-center gap-3 w-[20%] justify-end">
+                <Button variant="primary" size="sm" rounded="xl" className="px-5">
                   Approve
                 </Button>
                 <Button
