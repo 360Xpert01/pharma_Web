@@ -160,44 +160,41 @@ export default function LoginScreen() {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-2xl p-8 space-y-6">
-      <div className="text-center">
+    <div className="bg-white rounded-2xl shadow-lg px-12 py-10 space-y-6 max-w-md mx-auto my-8">
+      <div className="text-center space-y-1">
         <h1 className="text-3xl font-bold text-gray-900">Welcome</h1>
-        <p className="text-gray-400 text-sm mt-1">Login with your email</p>
+        <p className="text-gray-500 text-sm">Login with your email</p>
       </div>
 
       <div className="space-y-5">
         {!isOtpSent ? (
           <>
             {/* Email Input */}
-            <FormInput
-              label="Email"
-              name="email"
-              type="email"
-              value={email}
-              onChange={setEmail}
-              placeholder="Enter your email"
-              disabled={loading}
-              error={
-                userNotFound
-                  ? "User not found"
-                  : otpSentState
-                    ? "An OTP has already been sent to this email."
-                    : ""
-              }
-            />
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-900">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                disabled={loading}
+                className="w-full h-12 px-4 py-3 border border-gray-300 rounded-lg outline-none transition-all focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+              />
+              {(userNotFound || otpSentState) && (
+                <p className="text-red-500 text-xs mt-1">
+                  {userNotFound ? "User not found" : "An OTP has already been sent to this email."}
+                </p>
+              )}
+            </div>
 
             {/* Send OTP Button */}
-            <Button
-              variant="primary"
-              size="lg"
-              fullWidth
+            <button
               onClick={handleSendOTP}
               disabled={loading || !email.includes("@")}
-              loading={loading}
+              className="w-full h-12 bg-linear-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
             >
-              Send OTP
-            </Button>
+              {loading ? "Sending..." : "Send OTP"}
+            </button>
           </>
         ) : (
           <>

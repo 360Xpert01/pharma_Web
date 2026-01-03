@@ -35,21 +35,19 @@ export default function AuthLayout({ children }: PropsWithChildren) {
       {/* Right Side - Form with Background Shape */}
       <div className="w-full lg:w-1/2 relative overflow-hidden flex flex-col">
         {/* Form Background SVG */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 -right-30">
           <FormBg className="w-full h-full object-cover" />
         </div>
 
         {/* Form Content - Centered */}
-        <div className="relative z-10 flex-1 flex items-center justify-center px-6 lg:px-16">
-          <div className="w-full max-w-sm">
-            {/* Mobile Logo */}
-            <div className="lg:hidden mb-8 flex justify-center">
-              <Logo className="w-40 h-auto" />
-            </div>
-
-            {/* Children (Login Form) */}
-            {children}
+        <div className="relative z-10 flex-1 flex items-center justify-center px-6 lg:px-16 py-12 lg:py-16">
+          {/* Mobile Logo */}
+          <div className="lg:hidden mb-8 flex justify-center absolute top-8 left-0 right-0">
+            <Logo className="w-40 h-auto" />
           </div>
+
+          {/* Children (Login Form) */}
+          {children}
         </div>
 
         {/* Footer - Fixed at Bottom */}
