@@ -137,7 +137,7 @@ export function DashboardContent({
   };
 
   return (
-    <div className="space-y-1 px-3 mt-26 bg-(--gray-0)">
+    <div className="space-y-1 px-3 mt-30 bg-(--gray-0)">
       {/* space-y-10 p-3 */}
       {/* Dashboard Header with Actions */}
       {/* shadow-[0px_0.63px_5.5px_0px_rgba(0,0,0,0.1)] */}
@@ -159,7 +159,7 @@ export function DashboardContent({
 
       <div className="space-y-10 ">
         {/* Metrics Cards Section */}
-        <div className="grid mt-6 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid mt-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {!hideMetrics &&
             (topHcps?.length > 0 ? (
               topHcps.map((hcp, index) => (

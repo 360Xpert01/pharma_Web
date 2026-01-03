@@ -40,7 +40,9 @@ const Navbar = () => {
     {
       label: "People & Teams",
       items: [
-        { label: "Employees (Rep, Manager, Admin)", href: "/dashboard/Employees-Management" },
+        // TODO: add <span> for roles like (Rep, Manager, Admin) in future.
+        // { label: "Employees (Rep, Manager, Admin)", href: "/dashboard/Employees-Management" },
+        { label: "Employees", href: "/dashboard/Employees-Management" },
         { label: "Teams", href: "/dashboard/campaign-Management" },
         { label: "Attendance & Tracking", href: "/dashboard/product-Management" },
         { label: "Leave Management", href: "/dashboard" },
@@ -191,15 +193,6 @@ const Navbar = () => {
       ],
     },
     {
-      label: "Integrations",
-      items: [
-        { label: "Import / Export (CSV)", href: "/integrations/csv" },
-        { label: "CRM API Management", href: "/integrations/api" },
-        { label: "Integration / CSV Import Logs", href: "/integrations/import" },
-        { label: "BI / Reporting Tools", href: "/integrations/bi" },
-      ],
-    },
-    {
       label: "Support",
       items: [
         { label: "Help Center / Knowledge Base", href: "/support/help" },
@@ -245,6 +238,15 @@ const Navbar = () => {
             { label: "Visit Frequency Rules", href: "/dashboard" },
             { label: "Expense Policies", href: "/dashboard" },
             { label: "Notification Templates", href: "/dashboard" },
+          ],
+        },
+        {
+          label: "Integrations",
+          items: [
+            { label: "Import / Export (CSV)", href: "/integrations/csv" },
+            { label: "CRM API Management", href: "/integrations/api" },
+            { label: "Integration / CSV Import Logs", href: "/integrations/import" },
+            { label: "BI / Reporting Tools", href: "/integrations/bi" },
           ],
         },
       ],
@@ -366,7 +368,7 @@ const Navbar = () => {
               setClickedItem(null);
               setActiveSubmenu(null);
             }}
-            className="flex items-center  transition-all duration-200  justify-between px-4 py-2.5 text-sm text-(--gray-7)  border-b border-(--gray-1)"
+            className="flex items-center  transition-all duration-200  justify-between px-4 py-3 text-sm text-(--gray-7)  border-b border-(--gray-1) hover:bg-(--gray-1)"
           >
             <span>{item.label}</span>
             {item.items && (
@@ -383,7 +385,7 @@ const Navbar = () => {
             )}
           </Link>
         ) : (
-          <div className="flex items-center cursor-pointer justify-between px-4 py-2.5 text-sm text-(--gray-7)  border-b border-(--gray-1) ">
+          <div className="flex items-center cursor-pointer justify-between px-4 py-3 text-sm text-(--gray-7)  border-b border-(--gray-1) hover:bg-(--gray-1)">
             <span>{item.label}</span>
             {item.items && (
               <Image
@@ -403,7 +405,7 @@ const Navbar = () => {
         {/* Flyout Submenu */}
         {item.items && activeSubmenu === item.label && (
           <div
-            className="absolute cursor-pointer left-60 top-0 mt-2 bg-(--background)  w-58 z-50"
+            className="absolute cursor-pointer left-60 top-0 mt-2 bg-(--background)  w-58 z-50 shadow-soft"
             style={{ top: -8 }}
             onMouseEnter={() => setActiveSubmenu(item.label)}
             onMouseLeave={() => setActiveSubmenu(null)}
@@ -424,7 +426,7 @@ const Navbar = () => {
   return (
     <nav className="bg-(--background) border-b fixed top-0 left-0 right-0 z-50 border-(--gray-3) shadow-header">
       {/* Your top bar code remains same */}
-      <div className="mx-auto px-6">
+      <div className="mx-auto px-6 py-1">
         <div className="flex items-center justify-between h-14">
           <div className="flex items-center gap-8">
             <div>
@@ -524,7 +526,7 @@ const Navbar = () => {
       </div>
       <hr className="border-(--header-border)" />
 
-      <div className="flex items-center ml-10 bg-(--background) text-(--gray-7)">
+      <div className="flex items-center ml-6 bg-(--background) text-(--gray-7)">
         {navItems.map((item) => (
           <div
             key={item.label}
@@ -539,8 +541,8 @@ const Navbar = () => {
                   e.stopPropagation();
                   item.items && toggleClick(item.label);
                 }}
-                className={`flex items-center  gap-1 cursor-pointer px-2 py-3 text-md font-medium transition-all duration-200 hover:bg-(--gray-0) ${
-                  activeDropdown === item.label ? "text-(--primary)" : "text-(--gray-6)"
+                className={`flex items-center gap-1 cursor-pointer px-5 py-3 text-md font-medium transition-all duration-200 hover:bg-(--gray-1) ${
+                  activeDropdown === item.label ? "bg-(--gray-1)" : "text-(--gray-6)"
                 }`}
               >
                 {item.label}
@@ -563,7 +565,7 @@ const Navbar = () => {
             ) : (
               <Link
                 href={item.href || "#"}
-                className="px-4 py-3 text-sm font-medium hover:text-(--primary) hover:bg-(--gray-0) transition-all"
+                className="flex items-center gap-1 cursor-pointer px-5 py-3 text-md font-medium transition-all duration-200 hover:bg-(--gray-1) text-(--gray-6)"
               >
                 {item.label}
               </Link>
@@ -572,7 +574,7 @@ const Navbar = () => {
             {/* Mega Menu Dropdown */}
             {item.items && activeDropdown === item.label && (
               <div
-                className="absolute shadow-soft top-full left-0 mt-1 w-60 bg-(--background) py-3 z-50"
+                className="absolute shadow-soft top-full left-0 mt-0.5 w-60 bg-(--background) py-3 z-50"
                 onMouseEnter={() => hoveredItem && handleMouseEnter(item.label)}
                 onMouseLeave={handleMouseLeave}
               >
