@@ -12,23 +12,23 @@ export default function AuthLayout({ children }: PropsWithChildren) {
   return (
     <div className="min-h-screen flex">
       {/* Left Side - Logo and Illustration */}
-      <div className="hidden lg:flex lg:w-1/2 bg-white relative overflow-hidden flex-col p-8 lg:p-12">
+      <div className="hidden lg:flex lg:w-1/2 bg-white relative overflow-hidden flex-col p-8 lg:pl-16 lg:pr-12 lg:py-8">
         {/* Logo at Top */}
-        <div className="mb-6">
-          <Logo className="w-44 h-auto" />
+        <div className="mb-4">
+          <Logo className="w-56 h-auto" />
         </div>
 
         {/* Tagline */}
         <div className="mb-8">
-          <p className="text-gray-400 text-xs leading-relaxed max-w-sm">
+          <p className="text-gray-300 text-xs leading-relaxed max-w-md">
             Pulse by Ceturo provides real-time, medical-grade heart monitoring. It simplifies vital
             tracking to help you take proactive control of your health.
           </p>
         </div>
 
-        {/* LoginFrame Illustration - centered and larger */}
-        <div className="flex-1 flex items-center justify-center w-full max-w-lg mx-auto">
-          <LoginFrame className="w-full h-auto" />
+        {/* LoginFrame Illustration - aligned left */}
+        <div className="flex-1 flex items-center justify-start w-full">
+          <LoginFrame className="w-full max-w-xl h-auto" />
         </div>
       </div>
 
