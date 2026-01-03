@@ -195,7 +195,7 @@ export default function AddGiveawayForm() {
               type="text"
               value={generatedPrefix || ""}
               onChange={() => {}}
-              placeholder={prefixLoading ? "Generating..." : "PLS_GIV_000001"}
+              placeholder={prefixLoading ? "Generating..." : "GIV_000001"}
               readOnly
               error={prefixError || ""}
             />
@@ -259,9 +259,7 @@ export default function AddGiveawayForm() {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-(--gray-7) mb-2">
-              Sample Description
-            </label>
+            <label className="block t-label mb-2">Sample Description</label>
             <textarea
               rows={4}
               value={description}
@@ -274,7 +272,7 @@ export default function AddGiveawayForm() {
               }`}
             />
             {validationErrors.description && (
-              <p className="mt-1 text-sm text-(--destructive)">{validationErrors.description}</p>
+              <p className="mt-1 t-sm t-err">{validationErrors.description}</p>
             )}
           </div>
 

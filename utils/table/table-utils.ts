@@ -43,21 +43,35 @@ export function formatTableDateTime(date: string | Date | null | undefined): str
 
 /**
  * Get status badge className based on status value
+ * Updated to use rounded-full for consistent pill-shaped badges
  */
 export function getStatusBadgeClass(status: string): string {
-  const normalizedStatus = status.toLowerCase();
+  const normalizedStatus = status.toLowerCase().replace(/\s+/g, "");
 
   const statusMap: Record<string, string> = {
-    active: "px-3 py-1 rounded-8 text-sm font-medium bg-green-100 text-(--success)",
-    inactive: "px-3 py-1 rounded-8 text-sm font-medium bg-(--gray-1) text-(--gray-6)",
-    pending: "px-3 py-1 rounded-8 text-sm font-medium bg-yellow-100 text-yellow-700",
-    approved: "px-3 py-1 rounded-8 text-sm font-medium bg-green-100 text-(--success)",
-    rejected: "px-3 py-1 rounded-8 text-sm font-medium bg-red-100 text-(--destructive)",
+    active:
+      "px-5 py-2 rounded-full text-sm font-medium bg-[var(--success-0)] text-[var(--success)] inline-flex items-center justify-center min-w-[100px]",
+    inactive:
+      "px-5 py-2 rounded-full text-sm font-medium bg-[var(--gray-1)] text-[var(--gray-6)] inline-flex items-center justify-center min-w-[100px]",
+    pending:
+      "px-5 py-2 rounded-full text-sm font-medium bg-[var(--warning-0)] text-[var(--warning)] inline-flex items-center justify-center min-w-[100px]",
+    underreview:
+      "px-5 py-2 rounded-full text-sm font-medium bg-[var(--warning-0)] text-[var(--warning)] inline-flex items-center justify-center min-w-[100px]",
+    approved:
+      "px-5 py-2 rounded-full text-sm font-medium bg-[var(--success-0)] text-[var(--success)] inline-flex items-center justify-center min-w-[100px]",
+    rejected:
+      "px-5 py-2 rounded-full text-sm font-medium bg-[var(--destructive-0)] text-[var(--destructive)] inline-flex items-center justify-center min-w-[100px]",
+    completed:
+      "px-5 py-2 rounded-full text-sm font-medium bg-[var(--success-0)] text-[var(--success)] inline-flex items-center justify-center min-w-[100px]",
+    processing:
+      "px-5 py-2 rounded-full text-sm font-medium bg-[var(--primary-0)] text-[var(--primary)] inline-flex items-center justify-center min-w-[100px]",
+    cancelled:
+      "px-5 py-2 rounded-full text-sm font-medium bg-[var(--destructive-0)] text-[var(--destructive)] inline-flex items-center justify-center min-w-[100px]",
   };
 
   return (
     statusMap[normalizedStatus] ||
-    "px-3 py-1 rounded-8 text-sm font-medium bg-(--gray-1) text-(--gray-6)"
+    "px-5 py-2 rounded-full text-sm font-medium bg-[var(--gray-1)] text-[var(--gray-6)] inline-flex items-center justify-center min-w-[100px]"
   );
 }
 

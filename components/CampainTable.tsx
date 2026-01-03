@@ -7,6 +7,7 @@ import TableLoadingState from "@/components/shared/table/TableLoadingState";
 import TableErrorState from "@/components/shared/table/TableErrorState";
 import TableEmptyState from "@/components/shared/table/TableEmptyState";
 import TablePagination from "@/components/TablePagination";
+import StatusBadge from "@/components/shared/StatusBadge";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllTeams } from "@/store/slices/team/getAllTeamsSlice";
 
@@ -121,34 +122,22 @@ export default function CampaignsTable() {
             onClick={() => setOpenId(null)}
           >
             {/* Pulse Code */}
-            <div
-              className="w-[15%] text-sm font-bold text-[var(--gray-9)] truncate"
-              title={team.pulseCode || "N/A"}
-            >
+            <div className="w-[15%] t-td-b truncate" title={team.pulseCode || "N/A"}>
               {team.pulseCode || "N/A"}
             </div>
 
             {/* Name */}
-            <div
-              className="w-[17%] text-sm font-bold text-[var(--gray-9)] truncate"
-              title={team.name}
-            >
+            <div className="w-[17%] t-td-b truncate" title={team.name}>
               {team.name}
             </div>
 
             {/* Channel */}
-            <div
-              className="w-[17%] text-sm font-bold text-[var(--gray-9)] truncate"
-              title={team.channelName || "N/A"}
-            >
+            <div className="w-[17%] t-td-b truncate" title={team.channelName || "N/A"}>
               {team.channelName || "N/A"}
             </div>
 
             {/* Call Point */}
-            <div
-              className="w-[17%] text-sm font-bold text-[var(--gray-9)] truncate"
-              title={team.callPointName || "N/A"}
-            >
+            <div className="w-[17%] t-td-b truncate" title={team.callPointName || "N/A"}>
               {team.callPointName || "N/A"}
             </div>
 
@@ -180,21 +169,13 @@ export default function CampaignsTable() {
                   )}
                 </div>
               ) : (
-                <span className="text-sm text-[var(--gray-5)]">N/A</span>
+                <span className="t-sm">N/A</span>
               )}
             </div>
 
             {/* Status */}
             <div className="w-[13%] flex items-center">
-              <span
-                className={`px-4 min-w-[90px] text-center py-1.5 rounded-8 text-sm font-medium ${
-                  team.isActive
-                    ? "bg-[var(--success)]/10 text-[var(--success)]"
-                    : "bg-[var(--gray-1)] text-[var(--gray-5)]"
-                }`}
-              >
-                {team.isActive ? "Active" : "Inactive"}
-              </span>
+              <StatusBadge status={team.isActive ? "active" : "inactive"} />
             </div>
 
             {/* Actions */}
@@ -217,7 +198,7 @@ export default function CampaignsTable() {
                       console.log("Edit", team.id);
                       setOpenId(null);
                     }}
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-[var(--gray-1)] cursor-pointer transition"
+                    className="w-full text-left px-4 py-2 t-td hover:bg-[var(--gray-1)] cursor-pointer transition"
                   >
                     Edit
                   </button>
@@ -227,7 +208,7 @@ export default function CampaignsTable() {
                       console.log("Duplicate", team.id);
                       setOpenId(null);
                     }}
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-[var(--gray-1)] cursor-pointer transition"
+                    className="w-full text-left px-4 py-2 t-td hover:bg-[var(--gray-1)] cursor-pointer transition"
                   >
                     Duplicate
                   </button>
@@ -237,7 +218,7 @@ export default function CampaignsTable() {
                       console.log("Delete", team.id);
                       setOpenId(null);
                     }}
-                    className="w-full text-left px-4 py-2 text-sm text-[var(--destructive)] hover:bg-[var(--gray-1)] cursor-pointer transition"
+                    className="w-full text-left px-4 py-2 t-td t-err hover:bg-[var(--gray-1)] cursor-pointer transition"
                   >
                     Delete
                   </button>

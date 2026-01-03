@@ -70,9 +70,7 @@ export default function TodaysAppointments() {
     <div className="w-full">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-(--employee-detail-tab-heading)">
-          Weekly Appointments
-        </h2>
+        <h2 className="t-h3">Weekly Appointments</h2>
         <div className="flex items-center gap-2 text-(--primary) text-sm font-medium cursor-pointer">
           <ChevronLeft className="w-4 h-4" />
           <span>01 - 07 Sept, 2025</span>
@@ -88,7 +86,7 @@ export default function TodaysAppointments() {
             className="bg-(--background) rounded-8 shadow-soft px-6 py-5 transition-all duration-200"
           >
             {/* Appointment Title */}
-            <h3 className="text-base font-semibold text-(--gray-9) mb-3">{appt.title}</h3>
+            <h3 className="t-label-b mb-3">{appt.title}</h3>
 
             <div className="flex items-center justify-between">
               {/* Doctor Info */}
@@ -104,8 +102,8 @@ export default function TodaysAppointments() {
                 </div>
 
                 <div>
-                  <h4 className="text-sm font-semibold text-(--gray-9)">{appt.doctorName}</h4>
-                  <p className="text-xs text-(--gray-5)">{appt.specialty}</p>
+                  <h4 className="t-label">{appt.doctorName}</h4>
+                  <p className="t-cap">{appt.specialty}</p>
                 </div>
               </div>
 
@@ -115,8 +113,8 @@ export default function TodaysAppointments() {
                   <MapPin className="w-5 h-5 text-(--primary)" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-semibold text-(--gray-9)">{appt.clinic}</h4>
-                  <p className="text-xs text-(--gray-5)">{appt.address}</p>
+                  <h4 className="t-label">{appt.clinic}</h4>
+                  <p className="t-cap">{appt.address}</p>
                 </div>
               </div>
             </div>

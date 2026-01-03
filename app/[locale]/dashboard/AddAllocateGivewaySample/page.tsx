@@ -2,11 +2,11 @@
 
 import { DashboardContent } from "../components/dashboard-content";
 
-export default function AllocateGiveawaysSamplesRoute() {
+export default function AddAllocateGivewaySamplePage() {
   return (
-    <div className="bg-(--background)">
+    <div className="bg-[var(--gray-0)]">
       <DashboardContent
-        sample={"Allocate Giveaways & Samples"}
+        sample={"Allocated Giveaways & Samples"}
         descrip={"Unlock the potential of your candidates"}
         hideHeader={false}
         hideMetrics={true}

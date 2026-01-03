@@ -87,34 +87,22 @@ export default function CallPointsList() {
                 className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-4 my-3 rounded-8 bg-[var(--background)]"
               >
                 {/* Pulse Code */}
-                <div
-                  className="w-[30%] text-sm font-bold text-[var(--gray-9)] truncate"
-                  title={point.pulseCode || "N/A"}
-                >
+                <div className="w-[30%] t-td-b truncate" title={point.pulseCode || "N/A"}>
                   {point.pulseCode || "N/A"}
                 </div>
 
                 {/* Location Title */}
-                <div
-                  className="w-[30%] text-sm font-bold text-[var(--gray-9)] truncate"
-                  title={point.name}
-                >
+                <div className="w-[30%] t-td-b truncate" title={point.name}>
                   {point.name}
                 </div>
 
                 {/* Latitude */}
-                <div
-                  className="w-[30%] text-sm text-[var(--gray-6)] truncate"
-                  title={String(point.latitude)}
-                >
+                <div className="w-[30%] t-td truncate" title={String(point.latitude)}>
                   {point.latitude}
                 </div>
 
                 {/* Longitude */}
-                <div
-                  className="w-[20%] text-sm text-[var(--gray-6)] truncate"
-                  title={String(point.longitude)}
-                >
+                <div className="w-[20%] t-td truncate" title={String(point.longitude)}>
                   {point.longitude}
                 </div>
 

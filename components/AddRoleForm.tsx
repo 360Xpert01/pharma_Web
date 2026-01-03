@@ -79,19 +79,19 @@ export default function AddNewRoleForm() {
     setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
   };
 
-  const responsibilities: Record<string, Responsibility[]> = {
+  const [responsibilities, setResponsibilities] = useState<Record<string, Responsibility[]>>({
     plan: [
       { id: "p1", name: "Create Campaign Plan", checked: true },
-      { id: "p2", name: "Approve Budget Allocation", checked: false },
-      { id: "p3", name: "Review Campaign Performance", checked: true },
+      { id: "p2", name: "Approve Budget Allocation", checked: true },
+      { id: "p3", name: "Review Campaign Performance", checked: false },
     ],
     channel: [
       { id: "c1", name: "Manage Social Media Channels", checked: true },
       { id: "c2", name: "Publish Content Calendar", checked: true },
-      { id: "c3", name: "Respond to Customer Queries", checked: false },
-      { id: "c4", name: "Run Paid Ads", checked: true },
+      { id: "c3", name: "Respond to Customer Queries", checked: true },
+      { id: "c4", name: "Run Paid Ads", checked: false },
       { id: "c5", name: "Analyze Channel Analytics", checked: false },
-      { id: "c6", name: "Collaborate with Influencers", checked: true },
+      { id: "c6", name: "Collaborate with Influencers", checked: false },
     ],
     product: [
       { id: "pr1", name: "View Sample Products", checked: true },
@@ -105,8 +105,17 @@ export default function AddNewRoleForm() {
       { id: "t1", name: "Add New Team Member", checked: true },
       { id: "t2", name: "Assign Tasks", checked: true },
       { id: "t3", name: "Approve Leave Requests", checked: false },
-      { id: "t4", name: "View Team Performance", checked: true },
+      { id: "t4", name: "View Team Performance", checked: false },
     ],
+  });
+
+  const toggleResponsibility = (section: string, id: string) => {
+    setResponsibilities((prev) => ({
+      ...prev,
+      [section]: prev[section].map((item) =>
+        item.id === id ? { ...item, checked: !item.checked } : item
+      ),
+    }));
   };
 
   const getSelectedCount = (section: string) => {
@@ -173,27 +182,27 @@ export default function AddNewRoleForm() {
       <div className="p-8 space-y-10">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-(--gray-9)">Add New Role</h1>
-          <p className="text-sm text-(--gray-5) mt-2">Unlock the potential of your candidates</p>
+          <h1 className="t-h1">Add New Role</h1>
+          <p className="t-md mt-2">Unlock the potential of your candidates</p>
         </div>
         {/* Pules Code and Role Name Inputs */}
         <div>
           {/* Inputs Row */}
-          <div className="flex w-full items-start">
-            <div className="relative w-[25%] mr-6">
+          <div className="flex w-full items-start gap-6">
+            <div className="w-[20%]">
               <FormInput
                 label="Pulse Code"
                 name="pulseCode"
                 type="text"
                 value={generatedPrefix || ""}
                 onChange={() => {}}
-                placeholder={prefixLoading ? "Generating..." : "PLS_ROLE_000001"}
+                placeholder={prefixLoading ? "Generating..." : "ROLE_000001"}
                 readOnly
                 required
                 error={prefixError || ""}
               />
             </div>
-            <div className="relative w-[25%] mr-6">
+            <div className="w-[20%]">
               <FormInput
                 label="Role Name"
                 name="roleName"
@@ -205,7 +214,7 @@ export default function AddNewRoleForm() {
                 error={validationErrors.roleName}
               />
             </div>
-            <p className="text-xs text-(--gray-5) mt-8 w-[20%]">
+            <p className="t-md mt-6 w-[25%]">
               You can easily name the role you want and take on different responsibilities.
             </p>
           </div>
@@ -215,15 +224,15 @@ export default function AddNewRoleForm() {
 
         {/* Assign Responsibilities */}
         <div>
-          <h2 className="text-2xl font-bold text-(--gray-9) mb-6">Assign Responsibilities</h2>
-          <p className="text-sm text-(--gray-5) mb-8">Unlock the potential of your candidates</p>
+          <h2 className="t-h2 mb-6">Assign Responsibilities</h2>
+          <p className="t-md mb-8">Unlock the potential of your candidates</p>
 
           <div className="space-y-6">
             {/* Plan Scheduling */}
-            <div className="bg-(--gray-0) rounded-8 overflow-hidden border border-(--gray-2)">
+            <div className="bg-(--background) rounded-8 overflow-hidden border border-(--gray-2)">
               <button
                 onClick={() => toggleSection("plan")}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-(--gray-1) transition cursor-pointer"
+                className="w-full px-6 py-4 flex items-center justify-between hover:bg-(--gray-0) transition cursor-pointer"
               >
                 <div>
                   <h3 className="font-semibold text-(--gray-9)">
@@ -234,9 +243,11 @@ export default function AddNewRoleForm() {
                   </h3>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-sm font-medium text-(--primary) bg-(--primary-0) px-3 py-1 rounded-8">
-                    {getSelectedCount("plan")} Selected
-                  </span>
+                  {getSelectedCount("plan") > 0 && (
+                    <span className="t-sm text-(--primary)">
+                      0{getSelectedCount("plan")} Selected
+                    </span>
+                  )}
                   {expandedSections.plan ? (
                     <ChevronUp className="w-5 h-5" />
                   ) : (
@@ -245,16 +256,17 @@ export default function AddNewRoleForm() {
                 </div>
               </button>
               {expandedSections.plan && (
-                <div className="px-6 pb-4 space-y-4">
+                <div className="px-4 py-6 space-y-4 bg-(--gray-0)">
                   {responsibilities.plan.map((item) => (
                     <label
                       key={item.id}
-                      className="flex items-center justify-between py-3 cursor-pointer"
+                      className="flex items-center justify-between px-4 py-3 cursor-pointer transition-all border border-(--gray-2) rounded-8 bg-(--background)"
                     >
-                      <span className="text-(--gray-7)">{item.name}</span>
+                      <span className="t-label">{item.name}</span>
                       <input
                         type="checkbox"
-                        defaultChecked={item.checked}
+                        checked={item.checked}
+                        onChange={() => toggleResponsibility("plan", item.id)}
                         className="w-5 h-5 text-(--primary) rounded focus:ring-(--primary) accent-(--primary)"
                       />
                     </label>
@@ -264,10 +276,10 @@ export default function AddNewRoleForm() {
             </div>
 
             {/* Channel Managements */}
-            <div className="bg-(--gray-0) rounded-8 overflow-hidden border border-(--gray-2)">
+            <div className="bg-(--background) rounded-8 overflow-hidden border border-(--gray-2)">
               <button
                 onClick={() => toggleSection("channel")}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-(--gray-1) transition cursor-pointer"
+                className="w-full px-6 py-4 flex items-center justify-between hover:bg-(--gray-0) transition cursor-pointer"
               >
                 <h3 className="font-semibold text-(--gray-9)">
                   Channel Managements{" "}
@@ -275,23 +287,31 @@ export default function AddNewRoleForm() {
                     ({responsibilities.channel.length} Responsibilities)
                   </span>
                 </h3>
-                {expandedSections.channel ? (
-                  <ChevronUp className="w-5 h-5" />
-                ) : (
-                  <ChevronDown className="w-5 h-5" />
-                )}
+                <div className="flex items-center gap-3">
+                  {getSelectedCount("channel") > 0 && (
+                    <span className="t-sm text-(--primary)">
+                      0{getSelectedCount("channel")} Selected
+                    </span>
+                  )}
+                  {expandedSections.channel ? (
+                    <ChevronUp className="w-5 h-5" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5" />
+                  )}
+                </div>
               </button>
               {expandedSections.channel && (
-                <div className="px-6 pb-4 space-y-4">
+                <div className="px-4 pb-4 space-y-3">
                   {responsibilities.channel.map((item) => (
                     <label
                       key={item.id}
-                      className="flex items-center justify-between py-3 cursor-pointer"
+                      className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-(--gray-0) transition-all border border-(--gray-2) rounded-8 bg-(--background)"
                     >
-                      <span className="text-(--gray-7)">{item.name}</span>
+                      <span className="t-label">{item.name}</span>
                       <input
                         type="checkbox"
-                        defaultChecked={item.checked}
+                        checked={item.checked}
+                        onChange={() => toggleResponsibility("channel", item.id)}
                         className="w-5 h-5 text-(--primary) rounded accent-(--primary)"
                       />
                     </label>
@@ -301,10 +321,10 @@ export default function AddNewRoleForm() {
             </div>
 
             {/* Product Managements */}
-            <div className="bg-(--gray-0) rounded-8 overflow-hidden border border-(--gray-2)">
+            <div className="bg-(--background) rounded-8 overflow-hidden border border-(--gray-2)">
               <button
                 onClick={() => toggleSection("product")}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-(--gray-1) transition cursor-pointer"
+                className="w-full px-6 py-4 flex items-center justify-between hover:bg-(--gray-0) transition cursor-pointer"
               >
                 <div className="flex items-center justify-between w-full">
                   <h3 className="font-semibold text-(--gray-9)">
@@ -314,9 +334,11 @@ export default function AddNewRoleForm() {
                     </span>
                   </h3>
                   <div className="flex items-center gap-3">
-                    <span className="text-sm font-medium text-(--primary) bg-(--primary-0) px-3 py-1 rounded-8">
-                      {getSelectedCount("product")} Selected
-                    </span>
+                    {getSelectedCount("product") > 0 && (
+                      <span className="t-sm text-(--primary)">
+                        0{getSelectedCount("product")} Selected
+                      </span>
+                    )}
                     {expandedSections.product ? (
                       <ChevronUp className="w-5 h-5" />
                     ) : (
@@ -326,16 +348,17 @@ export default function AddNewRoleForm() {
                 </div>
               </button>
               {expandedSections.product && (
-                <div className="px-6 pb-4 space-y-4">
+                <div className="px-4 pb-4 space-y-3">
                   {responsibilities.product.map((item) => (
                     <label
                       key={item.id}
-                      className="flex items-center justify-between py-3 cursor-pointer hover:bg-(--background) rounded-8 px-3 -mx-3"
+                      className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-(--gray-0) transition-all border border-(--gray-2) rounded-8 bg-(--background)"
                     >
-                      <span className="text-(--gray-7)">{item.name}</span>
+                      <span className="t-label">{item.name}</span>
                       <input
                         type="checkbox"
-                        defaultChecked={item.checked}
+                        checked={item.checked}
+                        onChange={() => toggleResponsibility("product", item.id)}
                         className="w-5 h-5 text-(--primary) rounded focus:ring-(--primary) accent-(--primary)"
                       />
                     </label>
@@ -345,10 +368,10 @@ export default function AddNewRoleForm() {
             </div>
 
             {/* Team Management */}
-            <div className="bg-(--gray-0) rounded-8 overflow-hidden border border-(--gray-2)">
+            <div className="bg-(--background) rounded-8 overflow-hidden border border-(--gray-2)">
               <button
                 onClick={() => toggleSection("team")}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-(--gray-1) transition cursor-pointer"
+                className="w-full px-6 py-4 flex items-center justify-between hover:bg-(--gray-0) transition cursor-pointer"
               >
                 <h3 className="font-semibold text-(--gray-9)">
                   Team Management{" "}
@@ -356,23 +379,31 @@ export default function AddNewRoleForm() {
                     ({responsibilities.team.length} Responsibilities)
                   </span>
                 </h3>
-                {expandedSections.team ? (
-                  <ChevronUp className="w-5 h-5" />
-                ) : (
-                  <ChevronDown className="w-5 h-5" />
-                )}
+                <div className="flex items-center gap-3">
+                  {getSelectedCount("team") > 0 && (
+                    <span className="t-sm text-(--primary)">
+                      0{getSelectedCount("team")} Selected
+                    </span>
+                  )}
+                  {expandedSections.team ? (
+                    <ChevronUp className="w-5 h-5" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5" />
+                  )}
+                </div>
               </button>
               {expandedSections.team && (
-                <div className="px-6 pb-4 space-y-4">
+                <div className="px-4 pb-4 space-y-3">
                   {responsibilities.team.map((item) => (
                     <label
                       key={item.id}
-                      className="flex items-center justify-between py-3 cursor-pointer"
+                      className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-(--gray-0) transition-all border border-(--gray-2) rounded-8 bg-(--background)"
                     >
-                      <span className="text-(--gray-7)">{item.name}</span>
+                      <span className="t-label">{item.name}</span>
                       <input
                         type="checkbox"
-                        defaultChecked={item.checked}
+                        checked={item.checked}
+                        onChange={() => toggleResponsibility("team", item.id)}
                         className="w-5 h-5 text-(--primary) rounded accent-(--primary)"
                       />
                     </label>

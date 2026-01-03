@@ -1,5 +1,6 @@
 import React from "react";
-import { Mail, Phone, User } from "lucide-react"; // optional: for icons
+import { Mail, Phone, User } from "lucide-react";
+import StatusBadge from "@/components/shared/StatusBadge";
 
 interface SalesPersonCardProps {
   name: string;
@@ -13,12 +14,6 @@ interface SalesPersonCardProps {
   totalCalls: number;
   status: "Under Review" | "Approved" | "Rejected";
 }
-
-const statusColors = {
-  "Under Review": "bg-(--warning-0) text-(--warning)",
-  Approved: "bg-(--success-0) text-(--success)",
-  Rejected: "bg-(--destructive-0) text-(--destructive)",
-};
 
 export default function SalesPersonCard({
   name,
@@ -52,11 +47,11 @@ export default function SalesPersonCard({
           </div>
 
           <div>
-            <h2 className="text-xl font-semibold text-(--gray-9)">{name}</h2>
-            <div className="flex items-center gap-2 text-sm text-(--gray-6) mt-1">
+            <h2 className="t-h2">{name}</h2>
+            <div className="flex items-center gap-2 t-md mt-1">
               <span>{email}</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-(--gray-6) mt-1">
+            <div className="flex items-center gap-2 t-md mt-1">
               <span>{phone}</span>
             </div>
           </div>
@@ -66,43 +61,38 @@ export default function SalesPersonCard({
         <div className=" text-sm items-center mt-6 text-(--gray-6) space-y-3">
           <div className="flex justify-between gap-5 ">
             <div>
-              <span>Campaign</span>
-              <div className="font-bold text-lg">{campaign}</div>
+              <span className="t-sm">Campaign</span>
+              <div className="t-val-sm">{campaign}</div>
             </div>
             <div>
-              <span>Requested Month</span>
-              <div className="font-bold text-lg">{requestedMonth}</div>
+              <span className="t-sm">Requested Month</span>
+              <div className="t-val-sm">{requestedMonth}</div>
             </div>
             <div>
-              <span>Channel</span>
-              <div className="font-bold text-lg">{channel}</div>
+              <span className="t-sm">Channel</span>
+              <div className="t-val-sm">{channel}</div>
             </div>
             <div>
-              <span>Reporting Manager</span>
-              <div className="font-bold text-lg">{reportingManager}</div>
+              <span className="t-sm">Reporting Manager</span>
+              <div className="t-val-sm">{reportingManager}</div>
             </div>
             <div className="">
-              <p className="mb-1"> status</p>
-
-              <span
-                className={`inline-flex items-center px-3 py-1 rounded-8 text-xs font-medium ${statusColors[status]}`}
-              >
-                {status}
-              </span>
+              <p className="mb-1">status</p>
+              <StatusBadge status={status} />
             </div>
           </div>
           <div className="flex justify-start gap-8 mt-8 text-lg font-semibold text-(--gray-8)">
             <div>
-              <div className="text-(--gray-5) text-xs font-normal">Total Calls</div>
-              <div>{totalCalls.toLocaleString()}</div>
+              <div className="t-cap">Total Calls</div>
+              <div className="t-val-sm">{totalCalls.toLocaleString()}</div>
             </div>
             <div>
-              <div className="text-(--gray-5) text-xs font-normal">Total Calls</div>
-              <div>{totalCalls.toLocaleString()}</div>
+              <div className="t-cap">Total Calls</div>
+              <div className="t-val-sm">{totalCalls.toLocaleString()}</div>
             </div>
             <div>
-              <div className="text-(--gray-5) text-xs font-normal">Total Calls</div>
-              <div>{totalCalls.toLocaleString()}</div>
+              <div className="t-cap">Total Calls</div>
+              <div className="t-val-sm">{totalCalls.toLocaleString()}</div>
             </div>
           </div>
 

@@ -112,9 +112,7 @@ export default function AddSampleForm() {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-(--gray-7) mb-1">
-              Sample Description
-            </label>
+            <label className="block t-label mb-1">Sample Description</label>
             <textarea
               rows={4}
               value={description}

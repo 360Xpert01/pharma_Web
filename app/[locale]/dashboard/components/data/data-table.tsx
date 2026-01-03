@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import StatusBadge from "@/components/shared/StatusBadge";
 import {
   Table,
   TableBody,
@@ -110,27 +111,6 @@ export function DataTable<T extends Record<string, any>>({
     return <SortIcon className="h-4 w-4" />;
   };
 
-  const getStatusBadge = (status: string) => {
-    const statusColors = {
-      active: "bg-(--success-0) text-(--success)",
-      inactive: "bg-(--destructive-0) text-(--destructive)",
-      pending: "bg-(--warning-0) text-(--warning)",
-      completed: "bg-(--success-0) text-(--success)",
-      processing: "bg-(--primary-0) text-(--primary)",
-      cancelled: "bg-(--destructive-0) text-(--destructive)",
-    };
-
-    return (
-      <Badge
-        className={
-          statusColors[status as keyof typeof statusColors] || "bg-(--gray-1) text-(--gray-8)"
-        }
-      >
-        {status}
-      </Badge>
-    );
-  };
-
   if (isLoading) {
     return <DataTableSkeleton />;
   }
@@ -139,8 +119,8 @@ export function DataTable<T extends Record<string, any>>({
       <CardHeader>
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-2xl font-bold">
-              <CardTitle>{title}</CardTitle>
+            <div className="flex items-center gap-2">
+              <CardTitle className="t-h2">{title}</CardTitle>
             </div>
 
             <div className="flex items-center gap-4 ">
@@ -188,7 +168,7 @@ export function DataTable<T extends Record<string, any>>({
           </div>
 
           {/* Add description here */}
-          {description && <p className="text-sm text-(--gray-6)">{description}</p>}
+          {description && <p className="t-sm">{description}</p>}
         </div>
       </CardHeader>
       <CardContent>

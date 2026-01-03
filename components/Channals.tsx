@@ -9,6 +9,8 @@ import {
   generatePrefix,
   resetGeneratePrefixState,
 } from "@/store/slices/preFix/generatePrefixSlice";
+import { FormInput } from "@/components/form";
+import { Button } from "@/components/ui/button/button";
 
 interface Channel {
   id: string;
@@ -87,105 +89,98 @@ export default function AddChannelsCard() {
   };
 
   return (
-    <div className="w-full ">
-      <div className="bg-(--background) rounded-8 shadow-soft border border-(--gray-1) overflow-hidden">
+    <div className="w-full">
+      <div className="bg-[var(--background)] rounded-8 shadow-soft border border-[var(--gray-1)] overflow-hidden">
         <div className="px-8 py-10 space-y-8">
           {/* Header */}
           <div>
-            <h2 className="text-2xl font-bold text-(--gray-9)">Add Channels</h2>
-            <p className="text-sm text-(--gray-5) mt-1">Unlock the potential of your candidates</p>
+            <h2 className="t-h2">Add Channels</h2>
+            <p className="t-sm mt-1">Unlock the potential of your candidates</p>
           </div>
 
           {/* Add New Channel Form */}
-          <div className="flex flex-wrap items-end gap-6">
-            {/* Pulse Generated Code */}
-            <div className="flex-1 min-w-64">
-              <label className="block text-sm font-medium text-(--gray-7) mb-2">
-                Pulse Generated Code
-              </label>
-              <input
+          <div className="flex gap-6 items-end">
+            {/* Input Fields Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1">
+              {/* Pulse Code */}
+              <FormInput
+                label="Pulse Code"
+                name="pulseCode"
                 type="text"
                 value={generatedPrefix || ""}
-                placeholder={prefixLoading ? "Generating..." : "PLS_CH_000001"}
+                onChange={() => {}} // Read-only, no-op
+                placeholder={prefixLoading ? "Generating..." : "CH_000001"}
                 readOnly
-                className="w-full px-5 py-4 bg-(--gray-1) border border-(--gray-2) rounded-8 font-mono text-(--gray-7) cursor-not-allowed"
-                title={prefixError || "Auto-generated pulse code (read-only)"}
+                required
               />
-            </div>
 
-            {/* Channel Name */}
-            <div className="flex-1 min-w-64">
-              <label className="block text-sm font-medium text-(--gray-7) mb-2">
-                Channel Name <span className="text-(--destructive)">*</span>
-              </label>
-              <input
+              {/* Channel Name */}
+              <FormInput
+                label="Channel Name"
+                name="channelName"
                 type="text"
                 value={channelName}
-                onChange={(e) => setChannelName(e.target.value)}
+                onChange={setChannelName}
                 placeholder="e.g. Doctor Channel"
-                className="w-full px-5 py-4 bg-(--gray-0) border border-(--gray-2) rounded-8 text-(--gray-9) placeholder-(--gray-4) focus:outline-none focus:ring-2 focus:ring-(--primary) focus:border-transparent transition"
+                required
               />
-            </div>
 
-            {/* Legacy Code */}
-            <div className="flex-1 min-w-64">
-              <label className="block text-sm font-medium text-(--gray-7) mb-2">
-                Legacy Code (Optional)
-              </label>
-              <input
+              {/* Legacy Code */}
+              <FormInput
+                label="Legacy Code (Optional)"
+                name="legacyCode"
                 type="text"
                 value={legacyCode}
-                onChange={(e) => setLegacyCode(e.target.value)}
+                onChange={setLegacyCode}
                 placeholder="e.g. OLD-CH-001"
-                className="w-full px-5 py-4 bg-(--gray-0) border border-(--gray-2) rounded-8 text-(--gray-9) placeholder-(--gray-4) focus:outline-none focus:ring-2 focus:ring-(--primary) focus:border-transparent transition"
               />
             </div>
 
             {/* Add Button */}
-            <div>
-              <button
-                onClick={handleAddChannel}
-                disabled={!channelName.trim() || loading}
-                className="px-10 py-4 bg-(--primary) text-(--light) font-medium rounded-8 hover:bg-(--primary-2) disabled:bg-(--gray-3) disabled:cursor-not-allowed transition-all duration-200 shadow-soft flex items-center gap-2"
-              >
-                <Plus className="w-5 h-5" />
-                {loading ? "Adding..." : "Add to list"}
-              </button>
-            </div>
+            <Button
+              onClick={handleAddChannel}
+              disabled={!channelName.trim() || loading}
+              variant="primary"
+              size="lg"
+              icon={Plus}
+              loading={loading}
+              className="h-12 px-8"
+            >
+              {loading ? "Adding..." : "Add to list"}
+            </Button>
           </div>
 
           {/* Added Channels List */}
           {channelsList.length > 0 && (
             <div className="mt-10">
-              <h3 className="text-lg font-semibold text-(--gray-9) mb-4">
-                Added Channels ({channelsList.length})
-              </h3>
+              <h3 className="t-h4 mb-4">Added Channels ({channelsList.length})</h3>
               <div className="space-y-3">
                 {channelsList.map((channel) => (
                   <div
                     key={channel.id}
-                    className="flex items-center justify-between p-5 bg-(--gray-0) rounded-8 border border-(--gray-2)"
+                    className="flex items-center justify-between p-5 bg-[var(--gray-0)] rounded-8 border border-[var(--gray-2)]"
                   >
                     <div className="grid grid-cols-3 gap-8 flex-1">
                       <div>
-                        <p className="text-sm text-(--gray-5)">Channel Name</p>
-                        <p className="font-medium">{channel.channelName}</p>
+                        <p className="t-cap">Channel Name</p>
+                        <p className="t-label-b">{channel.channelName}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-(--gray-5)">Pulse Code</p>
-                        <p className="font-mono text-sm">{channel.pulseCode}</p>
+                        <p className="t-cap">Pulse Code</p>
+                        <p className="t-val-sm">{channel.pulseCode}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-(--gray-5)">Legacy Code</p>
-                        <p className="text-sm">{channel.legacyCode}</p>
+                        <p className="t-cap">Legacy Code</p>
+                        <p className="t-label-b">{channel.legacyCode}</p>
                       </div>
                     </div>
-                    <button
+                    <Button
                       onClick={() => removeChannel(channel.id)}
-                      className="ml-6 text-(--destructive) hover:bg-(--destructive-0) p-2 rounded-8 transition"
-                    >
-                      <X className="w-5 h-5" />
-                    </button>
+                      variant="ghost"
+                      size="icon"
+                      icon={X}
+                      className="ml-6 text-[var(--destructive)] hover:bg-[var(--destructive-0)]"
+                    />
                   </div>
                 ))}
               </div>

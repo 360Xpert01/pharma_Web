@@ -19,7 +19,7 @@ interface TableLoadingStateProps {
  * if (loading) return <TableLoadingState variant="skeleton" rows={5} columns={4} />
  */
 export default function TableLoadingState({
-  message = "Loading...",
+  message = "",
   rows = 3,
   columns = 4,
   variant = "spinner",

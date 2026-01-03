@@ -46,11 +46,11 @@ export default function GiveawayTable() {
 
   // Define columns for the table header
   const giveawayColumns = [
-    { label: "Pulse Code", className: "w-[27%]" },
-    { label: "Name", className: "w-[26%]" },
-    { label: "Category", className: "w-[26%]" },
-    { label: "Product Name", className: "w-[26%]" },
-    { label: "", className: "w-[0%]" }, // Actions
+    { label: "Pulse Code", className: "w-[25%]" },
+    { label: "Name", className: "w-[25%]" },
+    { label: "Category", className: "w-[25%]" },
+    { label: "Product Name", className: "w-[17%]" },
+    { label: "", className: "w-[8%]" }, // Actions
   ];
 
   const handleRetry = () => {
@@ -101,37 +101,25 @@ export default function GiveawayTable() {
             {paginatedGiveaways.map((item) => (
               <div
                 key={item.id}
-                className="px-3 py-3 w-full flex items-center hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-3 my-3 rounded-8 bg-[var(--background)]"
+                className="px-3 py-1 w-[98%] flex items-center hover:bg-(--gray-0) transition-all cursor-pointer border border-(--gray-2) mx-3 my-2 rounded-8 bg-[var(--background)]"
               >
                 {/* Pulse Code */}
-                <div
-                  className="w-[40%] text-sm font-bold text-[var(--gray-9)] truncate"
-                  title={item.pulseCode || "N/A"}
-                >
+                <div className="w-[25%] t-td-b truncate" title={item.pulseCode || "N/A"}>
                   {item.pulseCode || "N/A"}
                 </div>
 
                 {/* Name */}
-                <div
-                  className="w-[40%] text-sm font-bold text-[var(--gray-9)] truncate"
-                  title={item.name}
-                >
+                <div className="w-[25%] t-td-b truncate" title={item.name}>
                   {item.name}
                 </div>
 
                 {/* Category */}
-                <div
-                  className="w-[40%] text-sm font-bold text-[var(--gray-9)] truncate"
-                  title={item.category}
-                >
+                <div className="w-[25%] t-td-b truncate" title={item.category}>
                   {item.category}
                 </div>
 
                 {/* Product Name */}
-                <div
-                  className="w-[30%] text-sm font-bold text-[var(--gray-9)] truncate"
-                  title={item.productName}
-                >
+                <div className="w-[17%] t-td-b truncate" title={item.productName}>
                   {item.productName}
                 </div>
 
@@ -153,7 +141,7 @@ export default function GiveawayTable() {
                             console.log("Edit", item.id);
                             setOpenId(null);
                           }}
-                          className="w-full text-left px-4 py-2 text-sm hover:bg-[var(--gray-1)] cursor-pointer transition"
+                          className="w-full text-left px-4 py-2 t-td hover:bg-[var(--gray-1)] cursor-pointer transition"
                         >
                           Edit
                         </button>
@@ -162,7 +150,7 @@ export default function GiveawayTable() {
                             console.log("View Details", item.id);
                             setOpenId(null);
                           }}
-                          className="w-full text-left px-4 py-2 text-sm hover:bg-[var(--gray-1)] cursor-pointer transition"
+                          className="w-full text-left px-4 py-2 t-td hover:bg-[var(--gray-1)] cursor-pointer transition"
                         >
                           View Details
                         </button>
@@ -171,7 +159,7 @@ export default function GiveawayTable() {
                             console.log("Delete", item.id);
                             setOpenId(null);
                           }}
-                          className="w-full text-left px-4 py-2 text-sm text-[var(--destructive)] hover:bg-[var(--gray-1)] cursor-pointer transition"
+                          className="w-full text-left px-4 py-2 t-td t-err hover:bg-[var(--gray-1)] cursor-pointer transition"
                         >
                           Delete
                         </button>

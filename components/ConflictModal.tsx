@@ -98,7 +98,7 @@ export default function ConflictModal({ isOpen, onClose }: ConflictModalProps) {
         {/* Header */}
         <div className="p-8 pb-4">
           <div className="flex justify-between items-start mb-2">
-            <h2 className="text-3xl font-bold text-(--gray-9)">Conflicts in sales</h2>
+            <h2 className="t-h1">Conflicts in sales</h2>
             <button
               onClick={onClose}
               className="p-2 hover:bg-(--gray-1) rounded-8 transition cursor-pointer"
@@ -106,7 +106,7 @@ export default function ConflictModal({ isOpen, onClose }: ConflictModalProps) {
               <X className="w-6 h-6 text-(--gray-4)" />
             </button>
           </div>
-          <p className="text-(--gray-5) text-lg">
+          <p className="t-lg">
             Please review and confirm this expense before approval or rejection
           </p>
         </div>
@@ -126,7 +126,7 @@ export default function ConflictModal({ isOpen, onClose }: ConflictModalProps) {
                 onClick={() => toggleExpand(product.id)}
               >
                 <div className="flex items-center gap-4">
-                  <span className="font-bold text-(--gray-9) text-lg">{product.name}</span>
+                  <span className="t-val-sm">{product.name}</span>
                   <div className="flex items-center gap-2">
                     {product.isExpanded && (
                       <div className="flex -space-x-2">
@@ -146,11 +146,9 @@ export default function ConflictModal({ isOpen, onClose }: ConflictModalProps) {
                         ))}
                       </div>
                     )}
-                    <span className="text-(--gray-4) text-sm">
+                    <span className="t-sm">
                       Conflicts with{" "}
-                      <span className="text-(--destructive) font-medium">
-                        {product.reps.length} Reps
-                      </span>
+                      <span className="t-err font-medium">{product.reps.length} Reps</span>
                     </span>
                   </div>
                 </div>

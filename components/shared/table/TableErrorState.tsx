@@ -34,9 +34,9 @@ export default function TableErrorState({
           <AlertCircle className="w-6 h-6 text-[var(--destructive)]" />
         </div>
 
-        <h3 className="text-lg font-semibold text-[var(--gray-9)] mb-2">{title}</h3>
+        <h3 className="t-lg mb-2">{title}</h3>
 
-        <p className="text-[var(--gray-6)] mb-4">{errorMessage}</p>
+        <p className="t-md mb-4">{errorMessage}</p>
 
         {onRetry && (
           <button

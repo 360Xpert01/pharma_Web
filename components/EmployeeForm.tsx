@@ -280,7 +280,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
       <div className="bg-(--gray-0) flex items-center justify-center min-h-[600px]">
         <div className="bg-(--background) rounded-8 shadow-soft p-12 flex flex-col items-center gap-4">
           <Loader2 className="w-12 h-12 animate-spin text-(--primary)" />
-          <p className="text-lg font-medium text-(--gray-7)">Loading employee data...</p>
+          <p className="t-lg">Loading employee data...</p>
         </div>
       </div>
     );
@@ -291,8 +291,8 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
     return (
       <div className="bg-(--gray-0) flex items-center justify-center min-h-[600px]">
         <div className="bg-(--background) rounded-8 shadow-soft p-12 flex flex-col items-center gap-4">
-          <p className="text-lg font-medium text-(--destructive)">Failed to load employee data</p>
-          <p className="text-sm text-(--gray-6)">{fetchError}</p>
+          <p className="t-lg t-err">Failed to load employee data</p>
+          <p className="t-md">{fetchError}</p>
           <Button onClick={handleDiscard} variant="primary" size="default" rounded="full">
             Go Back
           </Button>
@@ -315,7 +315,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
       <div className="bg-(--background) rounded-8 shadow-soft p-8 space-y-10">
         {/* Section: Basic Info */}
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-(--gray-9)">Basic Info</h2>
+          <h2 className="t-h2">Basic Info</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Left: Profile Image Upload */}
@@ -452,7 +452,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
 
               {/* Assign Role */}
               <div className="md:col-span-2 space-y-6 pt-4">
-                <h2 className="text-2xl font-bold text-(--gray-9)">Assign Role</h2>
+                <h2 className="t-h2">Assign Role</h2>
                 <div className="grid grid-cols-2 gap-8">
                   <FormSelect
                     label="Select Role"

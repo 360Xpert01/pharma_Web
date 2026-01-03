@@ -162,12 +162,12 @@ export default function BookingTable() {
 
   // Define columns for the table header
   const orderColumns = [
-    { label: "Sales Rep", className: "w-[20%] ml-4" },
+    { label: "Sales Rep", className: "w-[20%]" },
     { label: "Company", className: "w-[15%]" },
-    { label: "Date", className: "w-[11%]" },
-    { label: "Product", className: "w-[18%]" },
-    { label: "SKU's", className: "w-[16%]" },
-    { label: "Location", className: "w-[10%]" },
+    { label: "Date", className: "w-[12%]" },
+    { label: "Product", className: "w-[15%]" },
+    { label: "SKU's", className: "w-[20%]" },
+    { label: "Location", className: "w-[12%]" },
   ];
 
   return (
@@ -192,63 +192,61 @@ export default function BookingTable() {
         <>
           <TableColumnHeader
             columns={orderColumns}
-            containerClassName="flex items-center gap-6 w-full -mb-4"
+            containerClassName="flex w-full px-3"
+            showBackground={false}
           />
 
           {paginatedBookings.map((item) => (
-            <div key={item.id} className="px-3 py-3 hover:bg-(--gray-0) transition-colors">
-              <div className="w-full bg-[var(--background)] rounded-8 p-3 border border-(--gray-2)">
-                {/* Flex layout with consistent spacing */}
-                <div className="flex items-center gap-6 w-full text-sm">
-                  {/* Employee - Avatar + Name + Position */}
-                  <div className="w-[20%] flex items-center gap-3">
-                    <Image
-                      src={item.avatar}
-                      alt={item.name}
-                      width={48}
-                      height={48}
-                      className="w-12 h-12 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
-                      onError={(e) => {
-                        e.currentTarget.src = "/girlPic.svg";
-                      }}
-                    />
-                    <div className="min-w-0 flex-1">
-                      <p className="font-bold text-(--gray-9) truncate">{item.name}</p>
-                      <p className="text-xs text-(--gray-5) truncate">{item.position}</p>
-                    </div>
+            <div key={item.id} className="px-3 py-1">
+              <div className="w-full bg-[var(--background)] rounded-8 p-3 border border-(--gray-2) flex items-center hover:bg-(--gray-0) transition-all cursor-pointer">
+                {/* Employee - Avatar + Name + Position */}
+                <div className="w-[20%] flex items-center gap-3">
+                  <Image
+                    src={item.avatar}
+                    alt={item.name}
+                    width={40}
+                    height={40}
+                    className="w-10 h-10 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
+                    onError={(e) => {
+                      e.currentTarget.src = "/girlPic.svg";
+                    }}
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="t-td-b truncate">{item.name}</p>
+                    <p className="t-cap truncate">{item.position}</p>
                   </div>
+                </div>
 
-                  {/* Company */}
-                  <div className="w-[15%]">
-                    <p className="font-bold text-(--gray-8)">{item.company}</p>
-                  </div>
+                {/* Company */}
+                <div className="w-[15%]">
+                  <p className="t-td-b truncate">{item.company}</p>
+                </div>
 
-                  {/* Date */}
-                  <div className="w-[12%]">
-                    <p className="text-(--gray-7)">{item.date}</p>
-                  </div>
+                {/* Date */}
+                <div className="w-[12%]">
+                  <p className="t-td truncate">{item.date}</p>
+                </div>
 
-                  {/* Medicine */}
-                  <div className="w-[15%]">
-                    <p className="font-semibold text-(--gray-9)">{item.medicine}</p>
-                  </div>
+                {/* Medicine */}
+                <div className="w-[15%]">
+                  <p className="t-td-b truncate">{item.medicine}</p>
+                </div>
 
-                  {/* Dosages */}
-                  <div className="w-[20%] flex flex-wrap gap-2">
-                    {item.dosages.map((dose, idx) => (
-                      <span
-                        key={idx}
-                        className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-8 text-xs font-medium whitespace-nowrap"
-                      >
-                        {dose}
-                      </span>
-                    ))}
-                  </div>
+                {/* Dosages */}
+                <div className="w-[20%] flex flex-wrap gap-2">
+                  {item.dosages.map((dose, idx) => (
+                    <span
+                      key={idx}
+                      className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-8 t-sm font-medium whitespace-nowrap"
+                    >
+                      {dose}
+                    </span>
+                  ))}
+                </div>
 
-                  {/* Customer */}
-                  <div className="w-[12%]">
-                    <p className="text-(--gray-8) font-medium">{item.customer}</p>
-                  </div>
+                {/* Customer */}
+                <div className="w-[12%]">
+                  <p className="t-td-b truncate">{item.customer}</p>
                 </div>
               </div>
             </div>

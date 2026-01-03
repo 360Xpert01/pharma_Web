@@ -43,23 +43,16 @@ export function MetricsSection({
   return (
     <Card className={cn("shadow-soft", className)}>
       <CardHeader className="">
-        <h3 className="text-1.5xl 2xl:text-2xl font-bold text-(--dark)">{title}</h3>
+        <h3 className="t-h3">{title}</h3>
       </CardHeader>
       <CardContent className="space-y-3 flex flex-col justify-between h-full">
         <div>
           <div className="flex items-baseline gap-2">
-            <span
-              className={cn(
-                " text-3xl 2xl:text-4xl font-semibold",
-                valueColorClasses[colorVariant]
-              )}
-            >
-              {value}
-            </span>
-            <span className="text-lg text-muted-foreground">{valueLabel}</span>
+            <span className={cn("t-val-lg", valueColorClasses[colorVariant])}>{value}</span>
+            <span className="t-lg">{valueLabel}</span>
           </div>
 
-          <div className="flex items-center justify-between text-sm text-muted-foreground">
+          <div className="flex items-center justify-between t-sm">
             <span>{subtitle}</span>
             <div className="flex items-center gap-5">
               <span>{detailValue}</span>
@@ -68,8 +61,8 @@ export function MetricsSection({
           </div>
 
           {detailLabel && detailValue && (
-            <div className="flex items-center text-(--dark) justify-between text-sm">
-              <span className="text-muted-foreground">{detailLabel}</span>
+            <div className="flex items-center justify-between t-sm">
+              <span className="">{detailLabel}</span>
               <span className="font-medium">{detailValue}</span>
             </div>
           )}

@@ -27,15 +27,15 @@ export default function TargetConfigForm({
     <div className="space-y-6">
       {/* Title Section */}
       <div className="mb-6">
-        <h3 className="text-lg font-bold text-(--gray-9)">Set Target</h3>
-        <p className="text-sm text-(--gray-5)">Select team</p>
+        <h3 className="t-lg">Set Target</h3>
+        <p className="t-sm">Select team</p>
       </div>
 
       {/* First Row: Team Selector, Month Selector, Helper Text */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
         {/* Select Team */}
         <div>
-          <label className="block text-sm font-medium text-(--gray-7) mb-2">
+          <label className="t-label block mb-2">
             Select Team<span className="text-(--destructive)">*</span>
           </label>
           <select
@@ -52,7 +52,7 @@ export default function TargetConfigForm({
 
         {/* Target Month */}
         <div>
-          <label className="block text-sm font-medium text-(--gray-7) mb-2">
+          <label className="t-label block mb-2">
             Target Month<span className="text-(--destructive)">*</span>
           </label>
           <select
@@ -72,7 +72,7 @@ export default function TargetConfigForm({
 
         {/* Helper Text */}
         <div className="flex items-center mt-6">
-          <p className="text-md text-(--gray-5) leading-relaxed">
+          <p className="t-md leading-relaxed">
             You can easily name the role you want and take on different responsibilities.
           </p>
         </div>
@@ -82,7 +82,7 @@ export default function TargetConfigForm({
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Team Role Code */}
         <div>
-          <label className="block text-sm font-medium text-(--gray-7) mb-2">
+          <label className="t-label block mb-2">
             Team Role Code<span className="text-(--destructive)">*</span>
           </label>
           <input
@@ -97,7 +97,7 @@ export default function TargetConfigForm({
 
         {/* Team Name */}
         <div>
-          <label className="block text-sm font-medium text-(--gray-7) mb-2">Team Name</label>
+          <label className="t-label block mb-2">Team Name</label>
           <input
             type="text"
             value={teamName}
@@ -110,7 +110,7 @@ export default function TargetConfigForm({
 
         {/* Channel Name */}
         <div>
-          <label className="block text-sm font-medium text-(--gray-7) mb-2">Channel Name</label>
+          <label className="t-label block mb-2">Channel Name</label>
           <input
             type="text"
             value={channelName}
@@ -123,7 +123,7 @@ export default function TargetConfigForm({
 
         {/* Call Point */}
         <div>
-          <label className="block text-sm font-medium text-(--gray-7) mb-2">Call Point</label>
+          <label className="t-label block mb-2">Call Point</label>
           <input
             type="text"
             value={callPoint}

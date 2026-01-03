@@ -40,9 +40,9 @@ export default function TableEmptyState({
           {icon || <Inbox className="w-8 h-8 text-[var(--gray-5)]" />}
         </div>
 
-        <h3 className="text-lg font-semibold text-[var(--gray-9)] mb-2">{message}</h3>
+        <h3 className="t-lg mb-2">{message}</h3>
 
-        {description && <p className="text-[var(--gray-6)] mb-4">{description}</p>}
+        {description && <p className="t-md mb-4">{description}</p>}
 
         {action && (
           <button

@@ -27,7 +27,7 @@ export default function SamplesDetail() {
   return (
     <div className="">
       <div className="mt-3">
-        <h2 className="text-xl font-bold text-(--employee-detail-tab-heading) mb-6">Samples</h2>
+        <h2 className="t-h3 mb-6">Samples</h2>
 
         <div className="space-y-3">
           {samplesData.map((sample) => (
@@ -50,24 +50,24 @@ export default function SamplesDetail() {
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-(--gray-9)">{sample.name}</h3>
-                  <p className="text-sm text-(--gray-5)">{sample.dosage}</p>
+                  <h3 className="t-label-b">{sample.name}</h3>
+                  <p className="t-sm">{sample.dosage}</p>
                 </div>
               </div>
 
               {/* Center: Total QTY */}
               <div className="flex-1 flex justify-center">
                 <div className="text-center">
-                  <p className="text-xs text-(--gray-4)">Total QTY</p>
-                  <p className="text-lg font-bold text-(--success)">{sample.totalQty}</p>
+                  <p className="t-cap">Total QTY</p>
+                  <p className="t-val-sm t-ok">{sample.totalQty}</p>
                 </div>
               </div>
 
               {/* Right: QTY Left */}
               <div className="flex-1 flex justify-center">
                 <div className="text-center">
-                  <p className="text-xs text-(--gray-4)">QTY Left</p>
-                  <p className="text-lg font-bold text-(--destructive)">{sample.qtyLeft}</p>
+                  <p className="t-cap">QTY Left</p>
+                  <p className="t-val-sm t-err">{sample.qtyLeft}</p>
                 </div>
               </div>
             </div>

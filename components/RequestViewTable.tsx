@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
+import TableColumnHeader from "@/components/TableColumnHeader";
 import TableLoadingState from "@/components/shared/table/TableLoadingState";
 import TableErrorState from "@/components/shared/table/TableErrorState";
 import TableEmptyState from "@/components/shared/table/TableEmptyState";
@@ -130,6 +131,15 @@ export default function DoctorRequestTable() {
   const endIndex = startIndex + itemsPerPage;
   const paginatedRequests = requestData.slice(startIndex, endIndex);
 
+  // Define columns for table header
+  const requestColumns = [
+    { label: "Employee", className: "w-[22%]" },
+    { label: "Doctor", className: "w-[18%]" },
+    { label: "Specialty", className: "w-[18%]" },
+    { label: "Area", className: "w-[28%]" },
+    { label: "", className: "w-[14%]" },
+  ];
+
   return (
     <div className="w-full">
       {loading ? (
@@ -150,51 +160,52 @@ export default function DoctorRequestTable() {
         />
       ) : (
         <>
+          <TableColumnHeader
+            columns={requestColumns}
+            containerClassName="flex w-full px-3"
+            showBackground={false}
+          />
+
           {paginatedRequests.map((item) => (
-            <div
-              key={item.id}
-              className="px-3 py-3 hover:bg-(--gray-0) transition-colors duration-200"
-            >
-              <div className="bg-[var(--background)] rounded-8 border border-(--gray-2) p-2">
-                <div className="flex items-center justify-between text-sm">
-                  {/* Left: Avatar + Name + Position */}
-                  <div className="flex items-center gap-4 flex-shrink-0">
-                    <Image
-                      src={item.avatar}
-                      alt={item.name}
-                      width={48}
-                      height={48}
-                      className="rounded-8 object-cover border-2 border-(--light) shadow-soft"
-                      onError={(e) => {
-                        e.currentTarget.src = DEFAULT_AVATAR;
-                      }}
-                    />
-                    <div>
-                      <div className="font-bold text-(--gray-9)">{item.name}</div>
-                      <div className="text-xs text-(--gray-5)">{item.position}</div>
-                    </div>
+            <div key={item.id} className="px-3 py-1">
+              <div className="bg-[var(--background)] rounded-8 border border-(--gray-2) p-3 flex items-center hover:bg-(--gray-0) transition-all cursor-pointer">
+                {/* Left: Avatar + Name + Position */}
+                <div className="w-[22%] flex items-center gap-3">
+                  <Image
+                    src={item.avatar}
+                    alt={item.name}
+                    width={40}
+                    height={40}
+                    className="rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
+                    onError={(e) => {
+                      e.currentTarget.src = DEFAULT_AVATAR;
+                    }}
+                  />
+                  <div className="truncate">
+                    <div className="font-bold text-(--gray-9) truncate">{item.name}</div>
+                    <div className="text-xs text-(--gray-5) truncate">{item.position}</div>
                   </div>
+                </div>
 
-                  {/* Doctor Name */}
-                  <div className="flex-1 text-center">
-                    <div className="font-bold text-(--gray-9)">{item.doctor}</div>
-                  </div>
+                {/* Doctor Name */}
+                <div className="w-[18%]">
+                  <div className="font-bold text-(--gray-9) truncate">{item.doctor}</div>
+                </div>
 
-                  {/* Specialty */}
-                  <div className="flex-1 text-center">
-                    <div className="font-bold text-(--gray-8)">{item.specialty}</div>
-                  </div>
+                {/* Specialty */}
+                <div className="w-[18%]">
+                  <div className="font-bold text-(--gray-8) truncate">{item.specialty}</div>
+                </div>
 
-                  {/* Area + Code */}
-                  <div className="flex-1 font-bold text-center">
-                    <div className=" text-(--gray-7)">{item.area}</div>
-                  </div>
+                {/* Area + Code */}
+                <div className="w-[28%]">
+                  <div className="font-bold text-(--gray-7) truncate">{item.area}</div>
+                </div>
 
-                  {/* See Request Button */}
-                  <div className="flex items-center gap-1 text-(--gray-4)  cursor-pointer">
-                    <span>See Request</span>
-                    <ChevronRight className="w-7 h-7 text-(--primary)" />
-                  </div>
+                {/* See Request Button */}
+                <div className="w-[14%] flex items-center justify-end gap-1 text-(--gray-5) text-sm">
+                  <span>See Request</span>
+                  <ChevronRight className="w-6 h-6 text-(--primary)" />
                 </div>
               </div>
             </div>

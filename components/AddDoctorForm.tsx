@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Trash2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button/button";
-import { FormInput, FormSelect } from "@/components/form";
+import { FormInput, FormSelect, StatusToggle } from "@/components/form";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { getAllSpecializations } from "@/store/slices/specialization/getAllSpecializationsSlice";
 
 interface Location {
   id: string;
@@ -17,14 +19,26 @@ interface Location {
 }
 
 export default function AddDoctorForm() {
+  const dispatch = useAppDispatch();
+
+  // Redux state
+  const { specializations, loading: specializationsLoading } = useAppSelector(
+    (state) => state.allSpecializations
+  );
+
   // Form states
   const [userName, setUserName] = useState("");
   const [specialization, setSpecialization] = useState("");
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState("Active");
+  const [status, setStatus] = useState<"Active" | "Inactive">("Active");
   const [contactNumber, setContactNumber] = useState("");
   const [licenseNumber, setLicenseNumber] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
+
+  // Fetch specializations on mount
+  useEffect(() => {
+    dispatch(getAllSpecializations());
+  }, [dispatch]);
 
   const [locations, setLocations] = useState<Location[]>([
     {
@@ -68,7 +82,7 @@ export default function AddDoctorForm() {
   return (
     <div className="bg-[var(--background)] rounded-8 p-9">
       {/* Header */}
-      <h2 className="text-3xl font-bold text-[var(--gray-9)] mb-8">Basic Info</h2>
+      <h2 className="t-h1 mb-8">Basic Info</h2>
 
       {/* Basic Info Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
@@ -82,14 +96,18 @@ export default function AddDoctorForm() {
           required
         />
 
-        <FormInput
+        <FormSelect
           label="Specialization"
           name="specialization"
-          type="text"
           value={specialization}
           onChange={setSpecialization}
-          placeholder="e.g. Cardiologist"
+          options={specializations.map((spec) => ({
+            value: spec.id,
+            label: spec.name,
+          }))}
+          placeholder="e.g. Cardiologist, Neurologist..."
           required
+          loading={specializationsLoading}
         />
 
         <FormInput
@@ -102,17 +120,12 @@ export default function AddDoctorForm() {
           required
         />
 
-        <FormSelect
-          label="Status"
-          name="status"
-          value={status}
-          onChange={setStatus}
-          options={[
-            { value: "Active", label: "Active" },
-            { value: "Inactive", label: "Inactive" },
-          ]}
-          required
-        />
+        <div className="flex flex-col gap-2">
+          <label className="t-label">
+            Status <span className="t-err">*</span>
+          </label>
+          <StatusToggle status={status} onChange={(newStatus) => setStatus(newStatus)} />
+        </div>
 
         <FormInput
           label="Contact number"
@@ -147,7 +160,7 @@ export default function AddDoctorForm() {
 
       {/* Location Section */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-[var(--gray-9)]">Location</h2>
+        <h2 className="t-h2">Location</h2>
         <Button
           onClick={addLocation}
           variant="primary"
@@ -166,7 +179,7 @@ export default function AddDoctorForm() {
           <div key={location.id} className="relative mt-6">
             {/* Location Title */}
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-lg font-semibold text-[var(--gray-9)]">Location {index + 1}</h3>
+              <h3 className="t-h4">Location {index + 1}</h3>
               {locations.length > 1 && (
                 <Button
                   onClick={() => removeLocation(location.id)}
@@ -250,7 +263,7 @@ export default function AddDoctorForm() {
                 value={location.visitingDays}
                 onChange={(value) => updateLocation(location.id, "visitingDays", value)}
                 readOnly
-                className="text-[var(--gray-6)]"
+                className="t-md"
                 required
               />
 
@@ -261,7 +274,7 @@ export default function AddDoctorForm() {
                 value={location.visitingHours}
                 onChange={(value) => updateLocation(location.id, "visitingHours", value)}
                 readOnly
-                className="text-[var(--gray-6)]"
+                className="t-md"
                 required
               />
             </div>
