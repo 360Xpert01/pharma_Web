@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
-import TableColumnHeader from "@/components/TableColumnHeader";
+import { ColumnDef } from "@tanstack/react-table";
+import CenturoTable from "@/components/shared/table/CenturoTable";
 import TablePagination from "@/components/TablePagination";
 
 interface AllocationRecord {
@@ -102,111 +103,94 @@ const mockAllocations: AllocationRecord[] = [
 ];
 
 export default function AllocatedGiveawaysTable() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-
-  const allocationColumns = [
-    { label: "Pulse Code", className: "w-[20%]" },
-    { label: "Employee Name", className: "w-[30%]" },
-    { label: "Total Giveaways", className: "w-[15%] text-center" },
-    { label: "Total Samples", className: "w-[15%] text-center" },
-    { label: "", className: "w-[20%]" },
-  ];
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const handleItemsPerPageChange = (newItemsPerPage: number) => {
-    setItemsPerPage(newItemsPerPage);
-    setCurrentPage(1);
-  };
-
-  // Calculate paginated data
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedAllocations = mockAllocations.slice(startIndex, endIndex);
-
-  return (
-    <div>
-      <TableColumnHeader
-        columns={allocationColumns}
-        containerClassName="flex w-full px-4"
-        showBackground={false}
-      />
-
-      {paginatedAllocations.map((allocation) => (
+  const columns: ColumnDef<AllocationRecord>[] = [
+    {
+      header: "Pulse Code",
+      accessorKey: "pulseCode",
+      cell: ({ row }) => (
         <div
-          key={allocation.id}
-          className="px-3 py-3 w-[98%] flex items-center gap-4 hover:bg-[var(--gray-0)] transition-all border border-[var(--gray-2)] mx-4 my-3 rounded-8 bg-[var(--background)]"
+          className="text-sm font-bold text-[var(--gray-9)] truncate"
+          title={`EMP_${row.original.pulseCode}`}
         >
-          {/* Pulse Code */}
-          <div
-            className="w-[20%] text-sm font-bold text-[var(--gray-9)] truncate"
-            title={`EMP_${allocation.pulseCode}`}
-          >
-            EMP_{allocation.pulseCode}
-          </div>
-
-          {/* Employee Name with Avatar */}
-          <div className="flex w-[30%] items-center gap-3 min-w-0">
-            <Image
-              src={allocation.profilePicture || "/girlPic.svg"}
-              alt={allocation.employeeName}
-              width={40}
-              height={40}
-              className="rounded-8 flex-shrink-0"
-            />
-            <div className="min-w-0 flex-1">
-              <p
-                className="font-semibold text-[var(--gray-9)] truncate text-sm"
-                title={allocation.employeeName}
-              >
-                {allocation.employeeName}
-              </p>
-              <span
-                className="text-xs text-[var(--gray-5)] truncate block"
-                title={allocation.email}
-              >
-                {allocation.email}
-              </span>
-            </div>
-          </div>
-
-          {/* Total Giveaways */}
-          <div className="w-[15%] text-center">
-            <span className="text-sm font-bold text-[var(--gray-9)]">
-              {allocation.totalGiveaways.toString().padStart(2, "0")}
+          EMP_{row.original.pulseCode}
+        </div>
+      ),
+    },
+    {
+      header: "Employee Name",
+      accessorKey: "employeeName",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-3 min-w-0">
+          <Image
+            src={row.original.profilePicture || "/girlPic.svg"}
+            alt={row.original.employeeName}
+            width={40}
+            height={40}
+            className="rounded-8 flex-shrink-0"
+          />
+          <div className="min-w-0 flex-1">
+            <p
+              className="font-semibold text-[var(--gray-9)] truncate text-sm"
+              title={row.original.employeeName}
+            >
+              {row.original.employeeName}
+            </p>
+            <span
+              className="text-xs text-[var(--gray-5)] truncate block"
+              title={row.original.email}
+            >
+              {row.original.email}
             </span>
-          </div>
-
-          {/* Total Samples */}
-          <div className="w-[15%] text-center">
-            <span className="text-sm font-bold text-[var(--gray-9)]">
-              {allocation.totalSamples.toString().padStart(2, "0")}
-            </span>
-          </div>
-
-          {/* View Details Button - Non-functional */}
-          <div className="w-[20%] flex justify-end">
-            <button className="flex items-center cursor-pointer gap-1 text-sm text-[var(--gray-5)] hover:text-[var(--primary)] transition-colors whitespace-nowrap">
-              View Details
-              <ChevronRight className="w-5 h-5 text-[var(--primary)]" />
-            </button>
           </div>
         </div>
-      ))}
+      ),
+    },
+    {
+      header: "Total Giveaways",
+      accessorKey: "totalGiveaways",
+      cell: ({ row }) => (
+        <div className="text-center">
+          <span className="text-sm font-bold text-[var(--gray-9)]">
+            {row.original.totalGiveaways.toString().padStart(2, "0")}
+          </span>
+        </div>
+      ),
+    },
+    {
+      header: "Total Samples",
+      accessorKey: "totalSamples",
+      cell: ({ row }) => (
+        <div className="text-center">
+          <span className="text-sm font-bold text-[var(--gray-9)]">
+            {row.original.totalSamples.toString().padStart(2, "0")}
+          </span>
+        </div>
+      ),
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: () => (
+        <div className="flex justify-end">
+          <button className="flex items-center cursor-pointer gap-1 text-sm text-[var(--gray-5)] hover:text-[var(--primary)] transition-colors whitespace-nowrap">
+            View Details
+            <ChevronRight className="w-5 h-5 text-[var(--primary)]" />
+          </button>
+        </div>
+      ),
+    },
+  ];
 
-      {/* Pagination */}
-      {mockAllocations.length > 0 && (
-        <TablePagination
-          currentPage={currentPage}
-          totalItems={mockAllocations.length}
-          itemsPerPage={itemsPerPage}
-          onPageChange={handlePageChange}
-          onItemsPerPageChange={handleItemsPerPageChange}
-        />
-      )}
+  return (
+    <div className="w-full">
+      <CenturoTable
+        data={mockAllocations}
+        columns={columns}
+        enablePagination={true}
+        pageSize={10}
+        PaginationComponent={TablePagination}
+        emptyMessage="No allocations found"
+      />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 // components/DoctorInfoCard.tsx
 export default function DoctorInfoCard() {
   return (
-    <div className="shadow-soft  rounded-8 p-6 space-y-6">
+    <div className="shadow-soft rounded-8 p-6 space-y-6 bg-(--background)">
       <h2 className="t-h2">Doctor Details</h2>
 
       <div className="border-b"></div>

@@ -1,9 +1,12 @@
 // components/VisitHistoryAccordion.tsx
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useMemo } from "react";
 import { Paperclip, Gift, Calendar, MoreVertical } from "lucide-react";
 import Image from "next/image";
+import { ColumnDef } from "@tanstack/react-table";
+import CenturoTable from "@/components/shared/table/CenturoTable";
+import TablePagination from "@/components/TablePagination";
 
 interface Visit {
   id: string;
@@ -100,19 +103,17 @@ const visitData: Visit[] = [
 type Tab = "plans" | "samples" | "giveaways";
 
 export default function VisitHistoryAccordion() {
-  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [selectedFiles, setSelectedFiles] = useState<Record<string, File[]>>({});
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const [activeTab, setActiveTab] = useState<Tab>("plans");
+  const [loading] = useState(false);
+  const [error] = useState<string | null>(null);
+
   const tabs: { id: Tab; label: string }[] = [
     { id: "plans", label: "Plans" },
     { id: "samples", label: "Samples" },
     { id: "giveaways", label: "Giveaways" },
   ];
-
-  const toggleExpand = (id: string) => {
-    setExpandedId(expandedId === id ? null : id);
-  };
 
   const openFilePicker = (visitId: string) => {
     fileInputRefs.current[visitId]?.click();
@@ -136,207 +137,233 @@ export default function VisitHistoryAccordion() {
     }));
   };
 
-  return (
-    <div className="w-full ">
-      <div className="">
-        {/* Tabs */}
-
-        <div className="w-full max-w-md  my-6 mx-4">
-          <div className="relative bg-(--gray-1) rounded-8 p-1 shadow-inner">
-            <div
-              className="absolute top-1 left-1 h-[calc(100%-8px)] w-[calc(33.333%-8px)] bg-(--primary) rounded-8 transition-all duration-300 ease-out shadow-soft"
-              style={{
-                transform:
-                  activeTab === "plans"
-                    ? "translateX(0%)"
-                    : activeTab === "samples"
-                      ? "translateX(100%)"
-                      : "translateX(200%)",
-              }}
-            />
-            <div className="relative flex">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`relative z-10 flex-1 py-2 px-6 text-sm font-medium transition-all duration-300 rounded-8 ${
-                    activeTab === tab.id
-                      ? "text-(--light)"
-                      : "text-(--gray-6) hover:text-(--gray-8)"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
+  // Define columns for CenturoTable
+  const columns = useMemo<ColumnDef<Visit>[]>(
+    () => [
+      {
+        accessorKey: "doctorName",
+        header: "Doctor Name",
+        cell: ({ row }) => (
+          <p className="font-semibold text-(--gray-9)">{row.original.doctorName}</p>
+        ),
+      },
+      {
+        accessorKey: "specialty",
+        header: "Specialty",
+        cell: ({ row }) => <p className="text-(--gray-6)">{row.original.specialty}</p>,
+      },
+      {
+        accessorKey: "clinic",
+        header: "Clinic",
+        cell: ({ row }) => <p className="text-(--gray-6)">{row.original.clinic}</p>,
+      },
+      {
+        accessorKey: "date",
+        header: "Date",
+        cell: ({ row }) => <p className="text-(--gray-5)">{row.original.date}</p>,
+      },
+      {
+        accessorKey: "calls",
+        header: "Calls",
+        cell: ({ row }) => <p className="text-(--gray-7) font-medium">{row.original.calls}</p>,
+      },
+      {
+        accessorKey: "actions",
+        header: "",
+        cell: () => (
+          <div className="flex items-center justify-center text-(--primary) gap-4">
+            <Gift className="w-5 h-5" />
+            <Paperclip className="w-5 h-5 rotation-120" />
           </div>
+        ),
+      },
+      {
+        id: "menu",
+        header: "",
+        cell: () => (
+          <div className="flex justify-end">
+            <MoreVertical className="w-4 h-4 text-(--gray-4)" />
+          </div>
+        ),
+      },
+    ],
+    []
+  );
+
+  // Render expanded row content
+  const renderExpandedRow = (visit: Visit) => (
+    <div className="px-4 pb-4">
+      <div className="grid grid-cols-1 gap-10 py-6">
+        {/* Left: Samples & Giveaways */}
+        <div className="space-y-8">
+          {visit.sampleItems.length > 0 && (
+            <div>
+              <h4 className="text-sm font-bold text-(--gray-8) mb-4">Sample Items</h4>
+              <div className="space-y-3">
+                {visit.sampleItems.map((item, i) => (
+                  <div
+                    key={i}
+                    className="flex justify-between items-center bg-(--background) rounded-8 px-5 py-4 border border-(--gray-2)"
+                  >
+                    <span className="font-medium text-(--gray-8)">{item.name}</span>
+                    <span className="text-sm text-(--gray-5)">{item.date}</span>
+                    <span className="text-sm font-bold text-(--gray-9)">{item.quantity}</span>
+                    <MoreVertical className="w-4 h-4 text-(--gray-4)" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {visit.giveawayItems.length > 0 && (
+            <div>
+              <h4 className="text-sm font-bold text-(--gray-8) mb-4">Giveaway Items</h4>
+              <div className="space-y-3">
+                {visit.giveawayItems.map((item, i) => (
+                  <div
+                    key={i}
+                    className="flex justify-between items-center bg-(--background) rounded-8 px-5 py-4 border border-(--gray-2)"
+                  >
+                    <span className="font-medium text-(--gray-8)">{item.name}</span>
+                    <span className="text-sm text-(--gray-5)">{item.date}</span>
+                    <span className="text-sm font-bold text-(--gray-9)">{item.quantity}</span>
+                    <MoreVertical className="w-4 h-4 text-(--gray-4)" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Visit Rows */}
-        <div className="mb-5 ">
-          {visitData.map((visit) => (
-            <div key={visit.id}>
-              {/* Main Row */}
+        {/* Right: Remarks + Attachments */}
+        <div className="flex w-full justify-between gap-10">
+          {/* Remarks */}
+          <div className="w-[49%]">
+            <h4 className="text-sm font-bold text-(--gray-8) mb-3">Remarks</h4>
+            <p className="text-sm leading-relaxed text-(--gray-6) bg-(--background) rounded-8 p-5 border shadow-soft">
+              {visit.remarks}
+            </p>
+          </div>
+
+          {/* Attachments */}
+          <div className="w-[49%]">
+            <h4 className="text-sm font-bold text-(--gray-8) mb-3 flex items-center gap-2">
+              Attachments
+              {selectedFiles[visit.id]?.length > 0 && (
+                <span className="text-xs bg-(--primary-0) text-(--primary) px-2 py-0.5 rounded-8 font-medium">
+                  {selectedFiles[visit.id].length}
+                </span>
+              )}
+            </h4>
+
+            {/* Hidden Input */}
+            <input
+              ref={(el) => {
+                fileInputRefs.current[visit.id] = el;
+              }}
+              type="file"
+              accept="image/*"
+              multiple
+              className="hidden"
+              onChange={(e) => handleFileChange(visit.id, e)}
+            />
+
+            {selectedFiles[visit.id]?.length > 0 ? (
               <div
-                onClick={() => toggleExpand(visit.id)}
-                className="px-6 py-1 transition-all cursor-pointer flex items-center justify-between group"
+                onClick={() => openFilePicker(visit.id)}
+                className="flex items-center gap-4 bg-(--background) rounded-8 p-3 border shadow-soft cursor-pointer hover:bg-(--gray-0) transition"
               >
-                <div className="w-full p-4 rounded-8 hover:bg-(--gray-0)  border border-(--gray-2)  grid grid-cols-14 gap-6 text-sm">
-                  <div className="col-span-2">
-                    <p className="font-semibold text-(--gray-9)">{visit.doctorName}</p>
-                  </div>
-                  <div className="col-span-2">
-                    <p className="text-(--gray-6)">{visit.specialty}</p>
-                  </div>
-                  <div className="col-span-2">
-                    <p className="text-(--gray-6)">{visit.clinic}</p>
-                  </div>
-                  <div className="col-span-2">
-                    <p className="text-(--gray-5)">{visit.date}</p>
-                  </div>
-                  <div className="col-span-2">
-                    <p className="text-(--gray-7) font-medium">{visit.calls}</p>
-                  </div>
-                  <div className="col-span-2 flex items-center justify-center text-(--primary) gap-4">
-                    <Gift className="w-5 h-5" />
-                    <Paperclip className="w-5 h-5 rotation-120 " />
-                  </div>
-                  <div className="col-span-2 flex justify-end">
-                    <MoreVertical className="w-4 h-4 text-(--gray-4)" />
+                <Paperclip className="w-6 h-6 text-(--gray-5)" />
+                <div className="flex gap-3 flex-wrap">
+                  {selectedFiles[visit.id].map((file, index) => (
+                    <div key={index} className="relative group">
+                      <div className="w-10 h-10 rounded-8 overflow-hidden border-2 border-(--gray-3)">
+                        <Image
+                          src={URL.createObjectURL(file)}
+                          alt="attachment"
+                          width={40}
+                          height={40}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeImage(visit.id, index);
+                        }}
+                        className="absolute -top-1 -right-1 bg-(--destructive) text-(--light) rounded-8 w-5 h-5 text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                  <div className="w-10 h-10 bg-(--gray-1) border-2 border-dashed border-(--gray-4) rounded-8 flex items-center justify-center">
+                    <span className="text-xl text-(--gray-4)">+</span>
                   </div>
                 </div>
               </div>
-
-              {/* Expanded Details */}
-              {expandedId === visit.id && (
-                <div className="px-8 pb-8 border-t bg-(--gray-1) border-(--gray-2)">
-                  <div className="grid grid-cols-1 gap-10 py-6">
-                    {/* Left: Samples & Giveaways */}
-                    <div className="space-y-8">
-                      {visit.sampleItems.length > 0 && (
-                        <div>
-                          <h4 className="text-sm font-bold text-(--gray-8) mb-4">Sample Items</h4>
-                          <div className="space-y-3">
-                            {visit.sampleItems.map((item, i) => (
-                              <div
-                                key={i}
-                                className="flex justify-between items-center bg-(--background) rounded-8 px-5 py-4"
-                              >
-                                <span className="font-medium text-(--gray-8)">{item.name}</span>
-                                <span className="text-sm text-(--gray-5)">{item.date}</span>
-                                <span className="text-sm font-bold text-(--gray-9)">
-                                  {item.quantity}
-                                </span>
-                                <MoreVertical className="w-4 h-4 text-(--gray-4)" />
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {visit.giveawayItems.length > 0 && (
-                        <div>
-                          <h4 className="text-sm font-bold text-(--gray-8) mb-4">Giveaway Items</h4>
-                          <div className="space-y-3">
-                            {visit.giveawayItems.map((item, i) => (
-                              <div
-                                key={i}
-                                className="flex justify-between items-center bg-(--background) rounded-8 px-5 py-4"
-                              >
-                                <span className="font-medium text-(--gray-8)">{item.name}</span>
-                                <span className="text-sm text-(--gray-5)">{item.date}</span>
-                                <span className="text-sm font-bold text-(--gray-9)">
-                                  {item.quantity}
-                                </span>
-                                <MoreVertical className="w-4 h-4 text-(--gray-4)" />
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Right: Remarks + Attachments */}
-                    <div className="flex w-full justify-between gap-10">
-                      {/* Remarks */}
-                      <div className="w-[49%]">
-                        <h4 className="text-sm font-bold text-(--gray-8) mb-3">Remarks</h4>
-                        <p className="text-sm leading-relaxed text-(--gray-6) bg-(--background) rounded-8 p-5 border shadow-soft">
-                          {visit.remarks}
-                        </p>
-                      </div>
-
-                      {/* Attachments */}
-                      <div className="w-[49%]">
-                        <h4 className="text-sm font-bold text-(--gray-8) mb-3 flex items-center gap-2">
-                          Attachments
-                          {selectedFiles[visit.id]?.length > 0 && (
-                            <span className="text-xs bg-(--primary-0) text-(--primary) px-2 py-0.5 rounded-8 font-medium">
-                              {selectedFiles[visit.id].length}
-                            </span>
-                          )}
-                        </h4>
-
-                        {/* Hidden Input */}
-                        <input
-                          ref={(el) => (fileInputRefs.current[visit.id] = el)}
-                          type="file"
-                          accept="image/*"
-                          multiple
-                          className="hidden"
-                          onChange={(e) => handleFileChange(visit.id, e)}
-                        />
-
-                        {selectedFiles[visit.id]?.length > 0 ? (
-                          <div
-                            onClick={() => openFilePicker(visit.id)}
-                            className="flex items-center gap-4 bg-(--background) rounded-8 p-3 border shadow-soft cursor-pointer hover:bg-(--gray-0) transition"
-                          >
-                            <Paperclip className="w-6 h-6 text-(--gray-5)" />
-                            <div className="flex gap-3 flex-wrap">
-                              {selectedFiles[visit.id].map((file, index) => (
-                                <div key={index} className="relative group">
-                                  <div className="w-10 h-10 rounded-8 overflow-hidden border-2 border-(--gray-3)">
-                                    <Image
-                                      src={URL.createObjectURL(file)}
-                                      alt="attachment"
-                                      width={40}
-                                      height={40}
-                                      className="w-full h-full object-cover"
-                                    />
-                                  </div>
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      removeImage(visit.id, index);
-                                    }}
-                                    className="absolute -top-1 -right-1 bg-(--destructive) text-(--light) rounded-8 w-5 h-5 text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
-                                  >
-                                    ×
-                                  </button>
-                                </div>
-                              ))}
-                              <div className="w-10 h-10 bg-(--gray-1) border-2 border-dashed border-(--gray-4) rounded-8 flex items-center justify-center">
-                                <span className="text-xl text-(--gray-4)">+</span>
-                              </div>
-                            </div>
-                          </div>
-                        ) : (
-                          <div
-                            onClick={() => openFilePicker(visit.id)}
-                            className="text-sm text-(--gray-4) italic cursor-pointer hover:text-(--gray-6) transition bg-(--background) rounded-8 p-5 border text-center shadow-soft"
-                          >
-                            Click to add attachments
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
+            ) : (
+              <div
+                onClick={() => openFilePicker(visit.id)}
+                className="text-sm text-(--gray-4) italic cursor-pointer hover:text-(--gray-6) transition bg-(--background) rounded-8 p-5 border text-center shadow-soft"
+              >
+                Click to add attachments
+              </div>
+            )}
+          </div>
         </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="w-full">
+      {/* Tabs */}
+      <div className="w-full max-w-md my-6">
+        <div className="relative bg-(--gray-1) rounded-8 p-1 shadow-inner">
+          <div
+            className="absolute top-1 left-1 h-[calc(100%-8px)] bg-(--primary) rounded-8 transition-all duration-300 ease-out shadow-soft"
+            style={{
+              width: "calc(33.333% - 4px)",
+              transform:
+                activeTab === "plans"
+                  ? "translateX(0)"
+                  : activeTab === "samples"
+                    ? "translateX(calc(100% + 4px))"
+                    : "translateX(calc(200% + 8px))",
+            }}
+          />
+          <div className="relative flex">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`relative z-10 flex-1 py-2 cursor-pointer px-6 text-sm font-medium transition-all duration-300 rounded-8 ${
+                  activeTab === tab.id ? "text-(--light)" : "text-(--gray-6) hover:text-(--gray-8)"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Visit Table */}
+      <div className="mb-5">
+        <CenturoTable
+          data={visitData}
+          columns={columns}
+          loading={loading}
+          error={error}
+          enableExpanding={true}
+          enablePagination={true}
+          pageSize={5}
+          emptyMessage="No visit history found"
+          renderExpandedRow={renderExpandedRow}
+          onRowClick={() => {}} // Enables cursor-pointer styling
+          PaginationComponent={TablePagination}
+        />
       </div>
     </div>
   );
