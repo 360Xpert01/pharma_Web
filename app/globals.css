@@ -24,14 +24,14 @@
     font-size: 1.875rem;
     line-height: 2.25rem;
     font-weight: 700;
-    color: var(--gray-9);
+    /* color: var(--gray-9); */
   }
 
   .t-h2 {
     font-size: 1.5rem;
     line-height: 2rem;
     font-weight: 700;
-    color: var(--gray-9);
+    /* color: var(--gray-9); */
   }
 
   .t-h3 {
@@ -45,7 +45,7 @@
     font-size: 1.125rem;
     line-height: 1.75rem;
     font-weight: 700;
-    color: var(--gray-9);
+    /* color: var(--gray-9); */
   }
 
   /* Body */
@@ -53,21 +53,21 @@
     font-size: 1rem;
     line-height: 1.5rem;
     font-weight: 400;
-    color: var(--gray-7);
+    /* color: var(--gray-7); */
   }
 
   .t-md {
     font-size: 0.875rem;
     line-height: 1.25rem;
     font-weight: 400;
-    color: var(--gray-6);
+    /* color: var(--gray-6); */
   }
 
   .t-sm {
     font-size: 0.75rem;
     line-height: 1rem;
     font-weight: 400;
-    color: var(--gray-5);
+    /* color: var(--gray-5); */
   }
 
   /* Labels */
@@ -75,14 +75,14 @@
     font-size: 0.875rem;
     line-height: 1.25rem;
     font-weight: 500;
-    color: var(--gray-7);
+    /* color: var(--gray-7); */
   }
 
   .t-label-b {
     font-size: 0.875rem;
     line-height: 1.25rem;
     font-weight: 700;
-    color: var(--gray-9);
+    /* color: var(--gray-9); */
   }
 
   /* Caption & Overline */
@@ -90,7 +90,7 @@
     font-size: 0.75rem;
     line-height: 1rem;
     font-weight: 400;
-    color: var(--gray-5);
+    /* color: var(--gray-5); */
   }
 
   .t-over {
@@ -99,7 +99,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--gray-5);
+    /* color: var(--gray-5); */
   }
 
   /* Values */
@@ -107,28 +107,28 @@
     font-size: 1.5rem;
     line-height: 2rem;
     font-weight: 700;
-    color: var(--gray-9);
+    /* color: var(--gray-9); */
   }
 
   .t-val-lg {
     font-size: 2.25rem;
     line-height: 2.5rem;
     font-weight: 700;
-    color: var(--gray-9);
+    /* color: var(--gray-9); */
   }
 
   .t-val-sm {
     font-size: 1.125rem;
     line-height: 1.75rem;
     font-weight: 700;
-    color: var(--gray-9);
+    /* color: var(--gray-9); */
   }
 
   /* Links */
   .t-link {
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--primary);
+    /* color: var(--primary); */
     cursor: pointer;
     transition: color 0.15s ease;
   }
@@ -158,19 +158,19 @@
   .t-th {
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--gray-7);
+    /* color: var(--gray-7); */
   }
 
   .t-td {
     font-size: 0.875rem;
     font-weight: 400;
-    color: var(--gray-9);
+    /* color: var(--gray-9); */
   }
 
   .t-td-b {
     font-size: 0.875rem;
     font-weight: 700;
-    color: var(--gray-9);
+    /* color: var(--gray-9); */
   }
 }
 

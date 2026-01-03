@@ -524,7 +524,7 @@ const Navbar = () => {
       </div>
       <hr className="border-(--header-border)" />
 
-      <div className="flex items-center gap-10 ml-10 bg-(--background) text-(--gray-7)">
+      <div className="flex items-center ml-10 bg-(--background) text-(--gray-7)">
         {navItems.map((item) => (
           <div
             key={item.label}
