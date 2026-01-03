@@ -1,5 +1,3 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -15,18 +13,18 @@ interface MetricsSectionProps {
   className?: string;
 }
 
-const colorClasses = {
-  "1": "bg-chart-1",
-  "2": "bg-chart-2",
-  "3": "bg-chart-3",
-  "4": "bg-chart-4",
+const progressColorClasses = {
+  "1": "bg-[#0F72F4]",
+  "2": "bg-[#10B981]",
+  "3": "bg-[#06B6D4]",
+  "4": "bg-[#EF4444]",
 };
 
 const valueColorClasses = {
-  "1": "text-chart-1",
-  "2": "text-chart-2",
-  "3": "text-chart-3",
-  "4": "text-chart-4",
+  "1": "text-[#0F72F4]",
+  "2": "text-[#10B981]",
+  "3": "text-[#06B6D4]",
+  "4": "text-[#EF4444]",
 };
 
 export function MetricsSection({
@@ -41,44 +39,44 @@ export function MetricsSection({
   className,
 }: MetricsSectionProps) {
   return (
-    <Card className={cn("shadow-soft", className)}>
-      <CardHeader className="">
-        <h3 className="t-h3">{title}</h3>
-      </CardHeader>
-      <CardContent className="space-y-3 flex flex-col justify-between h-full">
-        <div>
-          <div className="flex items-baseline gap-2">
-            <span className={cn("t-val-lg", valueColorClasses[colorVariant])}>{value}</span>
-            <span className="t-lg">{valueLabel}</span>
-          </div>
+    <div
+      className={cn(
+        "bg-(--background) border border-(--gray-2) rounded-8 p-4 shadow-soft",
+        className
+      )}
+    >
+      {/* Title */}
+      <h3 className="t-label font-bold text-(--dark) mb-3">{title}</h3>
 
-          <div className="flex items-center justify-between t-sm">
-            <span>{subtitle}</span>
-            <div className="flex items-center gap-5">
-              <span>{detailValue}</span>
-              <TrendingUp className={cn("h-6 w-6", valueColorClasses[colorVariant])} />
-            </div>
-          </div>
+      {/* Value Section */}
+      <div className="mb-3">
+        <div className="flex items-baseline gap-2 mb-1">
+          <span className={cn("t-val-lg", valueColorClasses[colorVariant])}>{value}</span>
+          <span className="t-md text-(--gray-7)">{valueLabel}</span>
+        </div>
 
-          {detailLabel && detailValue && (
-            <div className="flex items-center justify-between t-sm">
-              <span className="">{detailLabel}</span>
-              <span className="font-medium">{detailValue}</span>
+        {/* Subtitle with detail on right */}
+        <div className="flex items-center justify-between">
+          <span className="t-sm text-(--gray-6)">{subtitle}</span>
+          {detailValue && (
+            <div className="flex items-center gap-1">
+              <span className="t-sm text-(--gray-9) font-medium">{detailValue}</span>
+              <TrendingUp className={cn("h-4 w-4", valueColorClasses[colorVariant])} />
             </div>
           )}
         </div>
+      </div>
 
-        <div className="relative">
-          <Progress value={progress} className="h-3 bg-(--gray-2)" />
-          <div
-            className={cn(
-              "absolute inset-0 h-3 rounded-8 transition-all",
-              colorClasses[colorVariant]
-            )}
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-      </CardContent>
-    </Card>
+      {/* Progress Bar */}
+      <div className="relative w-full h-2 bg-(--gray-1) rounded-full overflow-hidden">
+        <div
+          className={cn(
+            "absolute inset-y-0 left-0 rounded-full transition-all",
+            progressColorClasses[colorVariant]
+          )}
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+    </div>
   );
 }

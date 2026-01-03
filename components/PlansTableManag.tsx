@@ -3,10 +3,8 @@
 import React, { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
-import TableColumnHeader from "@/components/TableColumnHeader";
-import TableLoadingState from "@/components/shared/table/TableLoadingState";
-import TableErrorState from "@/components/shared/table/TableErrorState";
-import TableEmptyState from "@/components/shared/table/TableEmptyState";
+import { ColumnDef } from "@tanstack/react-table";
+import CenturoTable from "@/components/shared/table/CenturoTable";
 import TablePagination from "@/components/TablePagination";
 import StatusBadge from "@/components/shared/StatusBadge";
 
@@ -99,122 +97,91 @@ export default function CampaignApprovalTable() {
   // Simulate loading and error states (replace with actual API call state)
   const [loading] = useState(false);
   const [error] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const handleRetry = () => {
-    // Add retry logic here when connected to API
     window.location.reload();
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const handleItemsPerPageChange = (newItemsPerPage: number) => {
-    setItemsPerPage(newItemsPerPage);
-    setCurrentPage(1);
-  };
-
-  // Calculate paginated data
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedCampaigns = campaignData.slice(startIndex, endIndex);
+  const columns: ColumnDef<CampaignItem>[] = [
+    {
+      header: "Name",
+      accessorKey: "name",
+      cell: ({ row }) => (
+        <div className="t-td-b truncate" title={row.original.name}>
+          {row.original.name}
+        </div>
+      ),
+    },
+    {
+      header: "Month",
+      accessorKey: "month",
+      cell: ({ row }) => (
+        <div className="t-td truncate" title={row.original.month}>
+          {row.original.month}
+        </div>
+      ),
+    },
+    {
+      header: "Date",
+      accessorKey: "date",
+      cell: ({ row }) => (
+        <div className="t-mute truncate" title={row.original.date}>
+          {row.original.date}
+        </div>
+      ),
+    },
+    {
+      header: "Condition",
+      accessorKey: "condition",
+      cell: ({ row }) => (
+        <div className="t-label truncate" title={row.original.condition}>
+          {row.original.condition}
+        </div>
+      ),
+    },
+    {
+      header: "Channel",
+      accessorKey: "channel",
+      cell: ({ row }) => (
+        <div className="t-td-b truncate" title={row.original.channel}>
+          {row.original.channel}
+        </div>
+      ),
+    },
+    {
+      header: "Status",
+      accessorKey: "status",
+      cell: ({ row }) => (
+        <div className="flex justify-center">
+          <StatusBadge status={row.original.status} />
+        </div>
+      ),
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: () => (
+        <Link href={`/dashboard/plan-Request`} className="flex justify-end items-center gap-1">
+          <span className="t-sm cursor-pointer whitespace-nowrap">View Details</span>
+          <ChevronRight className="w-6 h-6 text-(--primary)" />
+        </Link>
+      ),
+    },
+  ];
 
   return (
-    <div className="w-full ">
-      {loading ? (
-        <div className="px-4">
-          <TableLoadingState
-            variant="skeleton"
-            rows={5}
-            columns={6}
-            message="Loading campaigns..."
-          />
-        </div>
-      ) : error ? (
-        <TableErrorState error={error} onRetry={handleRetry} title="Failed to load campaigns" />
-      ) : campaignData.length === 0 ? (
-        <TableEmptyState
-          message="No campaigns found"
-          description="There are currently no campaign requests to display."
-        />
-      ) : (
-        <>
-          <TableColumnHeader
-            columns={[
-              { label: "Name", className: "w-[15%]" },
-              { label: "Month", className: "w-[15%]" },
-              { label: "Date", className: "w-[12%]" },
-              { label: "Condition", className: "w-[15%]" },
-              { label: "Channel", className: "w-[15%]" },
-              { label: "Status", className: "w-[15%] text-center" },
-              { label: "", className: "w-[13%]" },
-            ]}
-            containerClassName="flex w-full px-4"
-            showBackground={false}
-          />
-
-          {paginatedCampaigns.map((item) => (
-            <div key={item.id} className="px-4 py-1">
-              <div className="w-full bg-[var(--background)] rounded-8 p-3 border border-(--gray-2) flex items-center hover:bg-(--gray-0) transition-all cursor-pointer">
-                {/* Name */}
-                <div className="w-[15%] t-td-b truncate" title={item.name}>
-                  {item.name}
-                </div>
-
-                {/* Month */}
-                <div className="w-[15%] t-td truncate" title={item.month}>
-                  {item.month}
-                </div>
-
-                {/* Date */}
-                <div className="w-[12%] t-mute truncate" title={item.date}>
-                  {item.date}
-                </div>
-
-                {/* Condition */}
-                <div className="w-[15%] t-label truncate" title={item.condition}>
-                  {item.condition}
-                </div>
-
-                {/* Channel */}
-                <div className="w-[15%] t-td-b truncate" title={item.channel}>
-                  {item.channel}
-                </div>
-
-                {/* Status Badge */}
-                <div className="w-[15%] flex justify-center">
-                  <StatusBadge status={item.status} />
-                </div>
-
-                {/* View Details */}
-                <Link
-                  href={`/dashboard/plan-Request`}
-                  className="w-[13%] flex justify-end items-center gap-1"
-                >
-                  <span className="t-sm cursor-pointer whitespace-nowrap">View Details</span>
-                  <ChevronRight className="w-6 h-6 text-(--primary)" />
-                </Link>
-              </div>
-            </div>
-          ))}
-
-          {/* Pagination */}
-          {campaignData.length > 0 && (
-            <TablePagination
-              currentPage={currentPage}
-              totalItems={campaignData.length}
-              itemsPerPage={itemsPerPage}
-              onPageChange={handlePageChange}
-              onItemsPerPageChange={handleItemsPerPageChange}
-              pageSizeOptions={[10, 20, 30, 50]}
-              showPageInfo={true}
-              showItemsPerPageSelector={true}
-            />
-          )}
-        </>
-      )}
+    <div className="w-full">
+      <CenturoTable
+        data={campaignData}
+        columns={columns}
+        loading={loading}
+        error={error}
+        onRetry={handleRetry}
+        enablePagination={true}
+        pageSize={10}
+        PaginationComponent={TablePagination}
+        emptyMessage="No campaigns found"
+      />
     </div>
   );
 }

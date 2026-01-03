@@ -1,12 +1,22 @@
 "use client";
+
 import React, { useState } from "react";
-import TableLoadingState from "@/components/shared/table/TableLoadingState";
-import TableErrorState from "@/components/shared/table/TableErrorState";
-import TableEmptyState from "@/components/shared/table/TableEmptyState";
-import TableColumnHeader from "@/components/TableColumnHeader";
+import { ColumnDef } from "@tanstack/react-table";
+import CenturoTable from "@/components/shared/table/CenturoTable";
 import TablePagination from "@/components/TablePagination";
 
-const tableData = [
+interface DcrRecord {
+  id: number;
+  employee1: { name: string; role: string };
+  employee2: { name: string; role: string };
+  specialty: string;
+  area: string;
+  doctor: string;
+  medicine: string;
+  strengths: string[];
+}
+
+const tableData: DcrRecord[] = [
   {
     id: 1,
     employee1: { name: "Mohammad Amir", role: "Sales Representative" },
@@ -105,151 +115,98 @@ export default function DcrTable() {
   // Simulate loading and error states (replace with actual API call state)
   const [loading] = useState(false);
   const [error] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  // Define columns for the table header
-  const dcrColumns = [
-    { label: "Sales Rep", className: "w-[17%]" },
-    { label: "Line Manager", className: "w-[17%]" },
-    { label: "Specialization", className: "w-[10%]" },
-    { label: "Location", className: "w-[14%]" },
-    { label: "Doctor", className: "w-[14%]" },
-    { label: "Product", className: "w-[12%]" },
-    { label: "SKU's", className: "w-[19%]" },
+  // Define columns for CenturoTable
+  const columns: ColumnDef<DcrRecord>[] = [
+    {
+      header: "Sales Rep",
+      accessorKey: "employee1",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-3">
+          <img
+            src={DEFAULT_AVATAR}
+            alt={row.original.employee1.name}
+            className="w-12 h-12 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
+          />
+          <div>
+            <p className="t-td-b">{row.original.employee1.name}</p>
+            <p className="t-cap">{row.original.employee1.role}</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "Line Manager",
+      accessorKey: "employee2",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-3">
+          <img
+            src={DEFAULT_AVATAR}
+            alt={row.original.employee2.name}
+            className="w-12 h-12 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
+          />
+          <div>
+            <p className="t-td-b">{row.original.employee2.name}</p>
+            <p className="t-cap">{row.original.employee2.role}</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "Specialization",
+      accessorKey: "specialty",
+      cell: ({ row }) => <p className="t-label">{row.original.specialty}</p>,
+    },
+    {
+      header: "Location",
+      accessorKey: "area",
+      cell: ({ row }) => <p className="t-label">{row.original.area}</p>,
+    },
+    {
+      header: "Doctor",
+      accessorKey: "doctor",
+      cell: ({ row }) => <p className="t-td-b">{row.original.doctor}</p>,
+    },
+    {
+      header: "Product",
+      accessorKey: "medicine",
+      cell: ({ row }) => <p className="t-td-b">{row.original.medicine}</p>,
+    },
+    {
+      header: "SKU's",
+      accessorKey: "strengths",
+      cell: ({ row }) => (
+        <div className="flex flex-wrap gap-2">
+          {row.original.strengths.map((s, i) => (
+            <span
+              key={i}
+              className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-8 text-xs font-medium whitespace-nowrap"
+            >
+              {s}
+            </span>
+          ))}
+        </div>
+      ),
+    },
   ];
 
   const handleRetry = () => {
-    // Add retry logic here when connected to API
     window.location.reload();
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const handleItemsPerPageChange = (newItemsPerPage: number) => {
-    setItemsPerPage(newItemsPerPage);
-    setCurrentPage(1);
-  };
-
-  // Calculate paginated data
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedData = tableData.slice(startIndex, endIndex);
-
   return (
-    <div className="w-full overflow-hidden">
-      {loading ? (
-        <div className="px-4">
-          <TableLoadingState
-            variant="skeleton"
-            rows={5}
-            columns={7}
-            message="Loading DCR data..."
-          />
-        </div>
-      ) : error ? (
-        <TableErrorState error={error} onRetry={handleRetry} title="Failed to load DCR data" />
-      ) : tableData.length === 0 ? (
-        <TableEmptyState
-          message="No DCR records found"
-          description="There are currently no doctor call records to display."
-        />
-      ) : (
-        <>
-          <TableColumnHeader
-            columns={dcrColumns}
-            containerClassName="flex w-full px-3"
-            showBackground={false}
-          />
-
-          <div>
-            {paginatedData.map((row) => (
-              <div key={row.id} className="px-3 py-1">
-                <div className="bg-[var(--background)] rounded-8 border border-(--gray-2) hover:bg-(--gray-0) transition-all cursor-pointer">
-                  <div className="px-3 py-3">
-                    {/* Flex layout */}
-                    <div className="w-full flex items-center text-sm">
-                      {/* Employee 1 – Left aligned */}
-                      <div className="w-[17%] flex  items-center gap-3">
-                        <img
-                          src={DEFAULT_AVATAR}
-                          alt={row.employee1.name}
-                          className="w-12 h-12 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
-                        />
-                        <div>
-                          <p className="t-td-b">{row.employee1.name}</p>
-                          <p className="t-cap">{row.employee1.role}</p>
-                        </div>
-                      </div>
-
-                      {/* Employee 2 – Left aligned */}
-                      <div className="w-[17%] flex items-center gap-3">
-                        <img
-                          src={DEFAULT_AVATAR}
-                          alt={row.employee2.name}
-                          className="w-12 h-12 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
-                        />
-                        <div>
-                          <p className="t-td-b">{row.employee2.name}</p>
-                          <p className="t-cap">{row.employee2.role}</p>
-                        </div>
-                      </div>
-
-                      {/* Specialty – Left aligned */}
-                      <div className="w-[10%]">
-                        <p className="t-label">{row.specialty}</p>
-                      </div>
-
-                      {/* Area – Left aligned */}
-                      <div className="w-[13%]">
-                        <p className="t-label">{row.area}</p>
-                      </div>
-
-                      {/* Doctor – Left aligned */}
-                      <div className="w-[15%]">
-                        <p className="t-td-b">{row.doctor}</p>
-                      </div>
-
-                      {/* Medicine – Left aligned */}
-                      <div className="w-[10%]">
-                        <p className="t-td-b">{row.medicine}</p>
-                      </div>
-
-                      {/* Strengths – Chips start from left */}
-                      <div className="w-[20%] flex flex-wrap gap-2">
-                        {row.strengths.map((s, i) => (
-                          <span
-                            key={i}
-                            className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-8 text-xs font-medium whitespace-nowrap"
-                          >
-                            {s}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Pagination */}
-          {tableData.length > 0 && (
-            <TablePagination
-              currentPage={currentPage}
-              totalItems={tableData.length}
-              itemsPerPage={itemsPerPage}
-              onPageChange={handlePageChange}
-              onItemsPerPageChange={handleItemsPerPageChange}
-              pageSizeOptions={[10, 20, 30, 50]}
-              showPageInfo={true}
-              showItemsPerPageSelector={true}
-            />
-          )}
-        </>
-      )}
+    <div className="w-full">
+      <CenturoTable
+        data={tableData}
+        columns={columns}
+        loading={loading}
+        error={error}
+        onRetry={handleRetry}
+        enablePagination={true}
+        pageSize={10}
+        PaginationComponent={TablePagination}
+        emptyMessage="No DCR records found"
+      />
     </div>
   );
 }

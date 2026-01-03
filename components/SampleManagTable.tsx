@@ -1,20 +1,24 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { MoreVertical } from "lucide-react";
-import TableColumnHeader from "@/components/TableColumnHeader";
-import TableLoadingState from "@/components/shared/table/TableLoadingState";
-import TableErrorState from "@/components/shared/table/TableErrorState";
-import TableEmptyState from "@/components/shared/table/TableEmptyState";
+import { ColumnDef } from "@tanstack/react-table";
+import CenturoTable from "@/components/shared/table/CenturoTable";
 import TablePagination from "@/components/TablePagination";
+import TableActionDropdown from "@/components/shared/table/TableActionDropdown";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProducts } from "@/store/slices/product/getAllProductsSlice";
 import { formatDate } from "@/utils/formatDate";
 
+interface Product {
+  id: string;
+  pulseCode: string;
+  createdAt: string;
+  name: string;
+  productCategory: string;
+}
+
 export default function SampleManagTable() {
   const [openId, setOpenId] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
   const dispatch = useDispatch<any>();
 
   const { products, loading, error } = useSelector((state: any) => state.allProducts);
@@ -23,148 +27,90 @@ export default function SampleManagTable() {
     dispatch(getAllProducts());
   }, [dispatch]);
 
-  // Define columns for the table header
-  const sampleColumns = [
-    { label: "Pulse Code", className: "w-[25%] ml-3" },
-    { label: "Date", className: "w-[25%]" },
-    { label: "Product Name", className: "w-[31%]" },
-    { label: "Category", className: "w-[0%]" },
-    { label: "", className: "w-[0%]" }, // Actions
-  ];
-
   const handleRetry = () => {
     dispatch(getAllProducts());
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const handleItemsPerPageChange = (newItemsPerPage: number) => {
-    setItemsPerPage(newItemsPerPage);
-    setCurrentPage(1);
-  };
-
-  // Calculate paginated data
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedProducts = products?.slice(startIndex, endIndex) || [];
+  const columns: ColumnDef<Product>[] = [
+    {
+      header: "Pulse Code",
+      accessorKey: "pulseCode",
+      cell: ({ row }) => (
+        <div className="t-td-b truncate" title={row.original.pulseCode || "N/A"}>
+          {row.original.pulseCode || "N/A"}
+        </div>
+      ),
+    },
+    {
+      header: "Date",
+      accessorKey: "createdAt",
+      cell: ({ row }) => (
+        <div className="t-td-b truncate" title={formatDate(row.original.createdAt)}>
+          {formatDate(row.original.createdAt)}
+        </div>
+      ),
+    },
+    {
+      header: "Product Name",
+      accessorKey: "name",
+      cell: ({ row }) => (
+        <div className="t-td-b truncate" title={row.original.name || "N/A"}>
+          {row.original.name || "N/A"}
+        </div>
+      ),
+    },
+    {
+      header: "Category",
+      accessorKey: "productCategory",
+      cell: ({ row }) => (
+        <div className="t-td-b truncate" title={row.original.productCategory || "N/A"}>
+          {row.original.productCategory || "N/A"}
+        </div>
+      ),
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => (
+        <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
+          <TableActionDropdown
+            isOpen={openId === row.original.id}
+            onToggle={() => setOpenId(openId === row.original.id ? null : row.original.id)}
+            onClose={() => setOpenId(null)}
+            items={[
+              {
+                label: "Edit",
+                onClick: () => console.log("Edit", row.original.id),
+              },
+              {
+                label: "Duplicate",
+                onClick: () => console.log("Duplicate", row.original.id),
+              },
+              {
+                label: "Delete",
+                onClick: () => console.log("Delete", row.original.id),
+                variant: "danger",
+              },
+            ]}
+          />
+        </div>
+      ),
+    },
+  ];
 
   return (
-    <div className="w-full overflow-hidden">
-      {loading ? (
-        <div className="px-4">
-          <TableLoadingState
-            variant="skeleton"
-            rows={5}
-            columns={5}
-            message="Loading products..."
-          />
-        </div>
-      ) : error ? (
-        <TableErrorState error={error} onRetry={handleRetry} title="Failed to load products" />
-      ) : products.length === 0 ? (
-        <TableEmptyState
-          message="No products found"
-          description="There are currently no products in the system."
-        />
-      ) : (
-        <div>
-          <TableColumnHeader
-            columns={sampleColumns}
-            containerClassName="flex w-[80%]"
-            showBackground={false}
-          />
-
-          <div>
-            {paginatedProducts.map((item: any) => (
-              <div
-                key={item.id}
-                className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-4 my-3 rounded-8 bg-[var(--background)]"
-              >
-                {/* Pulse Code */}
-                <div className="w-[20%] t-td-b truncate" title={item.pulseCode || "N/A"}>
-                  {item.pulseCode || "N/A"}
-                </div>
-
-                {/* Date */}
-                <div className="w-[20%] t-td-b truncate" title={formatDate(item.createdAt)}>
-                  {formatDate(item.createdAt)}
-                </div>
-
-                {/* Product Name */}
-                <div className="w-[25%] t-td-b truncate" title={item.name || "N/A"}>
-                  {item.name || "N/A"}
-                </div>
-
-                {/* Category */}
-                <div className="w-[27%] t-td-b truncate" title={item.productCategory || "N/A"}>
-                  {item.productCategory || "N/A"}
-                </div>
-
-                {/* More Options */}
-                <div className="w-[8%] flex items-center justify-end relative">
-                  <button
-                    onClick={() => setOpenId(openId === item.id ? null : item.id)}
-                    className="p-2 text-[var(--gray-4)] hover:text-[var(--gray-6)] hover:bg-[var(--gray-1)] rounded-8 transition cursor-pointer"
-                  >
-                    <MoreVertical className="w-5 h-5" />
-                  </button>
-
-                  {openId === item.id && (
-                    <>
-                      <div className="fixed inset-0 z-40" onClick={() => setOpenId(null)} />
-                      <div className="absolute right-0 top-10 mt-2 w-48 bg-[var(--light)] rounded-8 shadow-soft border border-[var(--gray-2)] z-50">
-                        <button
-                          onClick={() => {
-                            console.log("Edit", item.id);
-                            setOpenId(null);
-                          }}
-                          className="w-full text-left px-4 py-2 t-td hover:bg-[var(--gray-1)] cursor-pointer transition"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => {
-                            console.log("Duplicate", item.id);
-                            setOpenId(null);
-                          }}
-                          className="w-full text-left px-4 py-2 t-td hover:bg-[var(--gray-1)] cursor-pointer transition"
-                        >
-                          Duplicate
-                        </button>
-                        <button
-                          onClick={() => {
-                            console.log("Delete", item.id);
-                            setOpenId(null);
-                          }}
-                          className="w-full text-left px-4 py-2 t-td t-err hover:bg-[var(--gray-1)] cursor-pointer transition"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Pagination */}
-          {products && products.length > 0 && (
-            <TablePagination
-              currentPage={currentPage}
-              totalItems={products.length}
-              itemsPerPage={itemsPerPage}
-              onPageChange={handlePageChange}
-              onItemsPerPageChange={handleItemsPerPageChange}
-              pageSizeOptions={[10, 20, 30, 50]}
-              showPageInfo={true}
-              showItemsPerPageSelector={true}
-            />
-          )}
-        </div>
-      )}
+    <div className="w-full">
+      <CenturoTable
+        data={products || []}
+        columns={columns}
+        loading={loading}
+        error={error}
+        onRetry={handleRetry}
+        enablePagination={true}
+        pageSize={10}
+        PaginationComponent={TablePagination}
+        emptyMessage="No products found"
+      />
     </div>
   );
 }

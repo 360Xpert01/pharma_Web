@@ -2,12 +2,9 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { ChevronRight } from "lucide-react";
-import TableLoadingState from "@/components/shared/table/TableLoadingState";
-import TableErrorState from "@/components/shared/table/TableErrorState";
-import TableEmptyState from "@/components/shared/table/TableEmptyState";
+import { ColumnDef } from "@tanstack/react-table";
+import CenturoTable from "@/components/shared/table/CenturoTable";
 import TablePagination from "@/components/TablePagination";
-import TableColumnHeader from "@/components/TableColumnHeader";
 
 interface BookingItem {
   id: string;
@@ -138,135 +135,85 @@ export default function BookingTable() {
   // Simulate loading and error states (replace with actual API call state)
   const [loading] = useState(false);
   const [error] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const handleRetry = () => {
-    // Add retry logic here when connected to API
     window.location.reload();
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const handleItemsPerPageChange = (newItemsPerPage: number) => {
-    setItemsPerPage(newItemsPerPage);
-    setCurrentPage(1);
-  };
-
-  // Calculate paginated data
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedBookings = bookingData.slice(startIndex, endIndex);
-
-  // Define columns for the table header
-  const orderColumns = [
-    { label: "Sales Rep", className: "w-[20%]" },
-    { label: "Company", className: "w-[15%]" },
-    { label: "Date", className: "w-[12%]" },
-    { label: "Product", className: "w-[15%]" },
-    { label: "SKU's", className: "w-[20%]" },
-    { label: "Location", className: "w-[12%]" },
+  const columns: ColumnDef<BookingItem>[] = [
+    {
+      header: "Sales Rep",
+      accessorKey: "name",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-3">
+          <Image
+            src={row.original.avatar}
+            alt={row.original.name}
+            width={40}
+            height={40}
+            className="w-10 h-10 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
+            onError={(e) => {
+              e.currentTarget.src = "/girlPic.svg";
+            }}
+          />
+          <div className="min-w-0 flex-1">
+            <p className="t-td-b truncate">{row.original.name}</p>
+            <p className="t-cap truncate">{row.original.position}</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "Company",
+      accessorKey: "company",
+      cell: ({ row }) => <p className="t-td-b truncate">{row.original.company}</p>,
+    },
+    {
+      header: "Date",
+      accessorKey: "date",
+      cell: ({ row }) => <p className="t-td truncate">{row.original.date}</p>,
+    },
+    {
+      header: "Product",
+      accessorKey: "medicine",
+      cell: ({ row }) => <p className="t-td-b truncate">{row.original.medicine}</p>,
+    },
+    {
+      header: "SKU's",
+      accessorKey: "dosages",
+      cell: ({ row }) => (
+        <div className="flex flex-wrap gap-2">
+          {row.original.dosages.map((dose, idx) => (
+            <span
+              key={idx}
+              className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-8 t-sm font-medium whitespace-nowrap"
+            >
+              {dose}
+            </span>
+          ))}
+        </div>
+      ),
+    },
+    {
+      header: "Location",
+      accessorKey: "customer",
+      cell: ({ row }) => <p className="t-td-b truncate">{row.original.customer}</p>,
+    },
   ];
 
   return (
-    <div className="w-full overflow-hidden">
-      {loading ? (
-        <div className="px-4">
-          <TableLoadingState
-            variant="skeleton"
-            rows={5}
-            columns={5}
-            message="Loading bookings..."
-          />
-        </div>
-      ) : error ? (
-        <TableErrorState error={error} onRetry={handleRetry} title="Failed to load bookings" />
-      ) : bookingData.length === 0 ? (
-        <TableEmptyState
-          message="No bookings found"
-          description="There are currently no order capture records to display."
-        />
-      ) : (
-        <>
-          <TableColumnHeader
-            columns={orderColumns}
-            containerClassName="flex w-full px-3"
-            showBackground={false}
-          />
-
-          {paginatedBookings.map((item) => (
-            <div key={item.id} className="px-3 py-1">
-              <div className="w-full bg-[var(--background)] rounded-8 p-3 border border-(--gray-2) flex items-center hover:bg-(--gray-0) transition-all cursor-pointer">
-                {/* Employee - Avatar + Name + Position */}
-                <div className="w-[20%] flex items-center gap-3">
-                  <Image
-                    src={item.avatar}
-                    alt={item.name}
-                    width={40}
-                    height={40}
-                    className="w-10 h-10 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
-                    onError={(e) => {
-                      e.currentTarget.src = "/girlPic.svg";
-                    }}
-                  />
-                  <div className="min-w-0 flex-1">
-                    <p className="t-td-b truncate">{item.name}</p>
-                    <p className="t-cap truncate">{item.position}</p>
-                  </div>
-                </div>
-
-                {/* Company */}
-                <div className="w-[15%]">
-                  <p className="t-td-b truncate">{item.company}</p>
-                </div>
-
-                {/* Date */}
-                <div className="w-[12%]">
-                  <p className="t-td truncate">{item.date}</p>
-                </div>
-
-                {/* Medicine */}
-                <div className="w-[15%]">
-                  <p className="t-td-b truncate">{item.medicine}</p>
-                </div>
-
-                {/* Dosages */}
-                <div className="w-[20%] flex flex-wrap gap-2">
-                  {item.dosages.map((dose, idx) => (
-                    <span
-                      key={idx}
-                      className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-8 t-sm font-medium whitespace-nowrap"
-                    >
-                      {dose}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Customer */}
-                <div className="w-[12%]">
-                  <p className="t-td-b truncate">{item.customer}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-
-          {/* Pagination */}
-          {bookingData.length > 0 && (
-            <TablePagination
-              currentPage={currentPage}
-              totalItems={bookingData.length}
-              itemsPerPage={itemsPerPage}
-              onPageChange={handlePageChange}
-              onItemsPerPageChange={handleItemsPerPageChange}
-              pageSizeOptions={[10, 20, 30, 50]}
-              showPageInfo={true}
-              showItemsPerPageSelector={true}
-            />
-          )}
-        </>
-      )}
+    <div className="w-full">
+      <CenturoTable
+        data={bookingData}
+        columns={columns}
+        loading={loading}
+        error={error}
+        onRetry={handleRetry}
+        enablePagination={true}
+        pageSize={10}
+        PaginationComponent={TablePagination}
+        emptyMessage="No bookings found"
+      />
     </div>
   );
 }

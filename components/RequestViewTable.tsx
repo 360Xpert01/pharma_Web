@@ -3,10 +3,8 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
-import TableColumnHeader from "@/components/TableColumnHeader";
-import TableLoadingState from "@/components/shared/table/TableLoadingState";
-import TableErrorState from "@/components/shared/table/TableErrorState";
-import TableEmptyState from "@/components/shared/table/TableEmptyState";
+import { ColumnDef } from "@tanstack/react-table";
+import CenturoTable from "@/components/shared/table/CenturoTable";
 import TablePagination from "@/components/TablePagination";
 
 interface RequestItem {
@@ -109,123 +107,80 @@ export default function DoctorRequestTable() {
   // Simulate loading and error states (replace with actual API call state)
   const [loading] = useState(false);
   const [error] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const handleRetry = () => {
-    // Add retry logic here when connected to API
     window.location.reload();
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const handleItemsPerPageChange = (newItemsPerPage: number) => {
-    setItemsPerPage(newItemsPerPage);
-    setCurrentPage(1);
-  };
-
-  // Calculate paginated data
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedRequests = requestData.slice(startIndex, endIndex);
-
-  // Define columns for table header
-  const requestColumns = [
-    { label: "Employee", className: "w-[22%]" },
-    { label: "Doctor", className: "w-[18%]" },
-    { label: "Specialty", className: "w-[18%]" },
-    { label: "Area", className: "w-[28%]" },
-    { label: "", className: "w-[14%]" },
+  const columns: ColumnDef<RequestItem>[] = [
+    {
+      header: "Employee",
+      accessorKey: "name",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-3">
+          <Image
+            src={row.original.avatar}
+            alt={row.original.name}
+            width={40}
+            height={40}
+            className="rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
+            onError={(e) => {
+              e.currentTarget.src = DEFAULT_AVATAR;
+            }}
+          />
+          <div className="truncate">
+            <div className="font-bold text-(--gray-9) truncate">{row.original.name}</div>
+            <div className="text-xs text-(--gray-5) truncate">{row.original.position}</div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "Doctor",
+      accessorKey: "doctor",
+      cell: ({ row }) => (
+        <div className="font-bold text-(--gray-9) truncate">{row.original.doctor}</div>
+      ),
+    },
+    {
+      header: "Specialty",
+      accessorKey: "specialty",
+      cell: ({ row }) => (
+        <div className="font-bold text-(--gray-8) truncate">{row.original.specialty}</div>
+      ),
+    },
+    {
+      header: "Area",
+      accessorKey: "area",
+      cell: ({ row }) => (
+        <div className="font-bold text-(--gray-7) truncate">{row.original.area}</div>
+      ),
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: () => (
+        <div className="flex items-center justify-end gap-1 text-(--gray-5) text-sm">
+          <span>See Request</span>
+          <ChevronRight className="w-6 h-6 text-(--primary)" />
+        </div>
+      ),
+    },
   ];
 
   return (
     <div className="w-full">
-      {loading ? (
-        <div className="px-2">
-          <TableLoadingState
-            variant="skeleton"
-            rows={5}
-            columns={4}
-            message="Loading requests..."
-          />
-        </div>
-      ) : error ? (
-        <TableErrorState error={error} onRetry={handleRetry} title="Failed to load requests" />
-      ) : requestData.length === 0 ? (
-        <TableEmptyState
-          message="No requests found"
-          description="There are currently no doctor requests to display."
-        />
-      ) : (
-        <>
-          <TableColumnHeader
-            columns={requestColumns}
-            containerClassName="flex w-full px-3"
-            showBackground={false}
-          />
-
-          {paginatedRequests.map((item) => (
-            <div key={item.id} className="px-3 py-1">
-              <div className="bg-[var(--background)] rounded-8 border border-(--gray-2) p-3 flex items-center hover:bg-(--gray-0) transition-all cursor-pointer">
-                {/* Left: Avatar + Name + Position */}
-                <div className="w-[22%] flex items-center gap-3">
-                  <Image
-                    src={item.avatar}
-                    alt={item.name}
-                    width={40}
-                    height={40}
-                    className="rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
-                    onError={(e) => {
-                      e.currentTarget.src = DEFAULT_AVATAR;
-                    }}
-                  />
-                  <div className="truncate">
-                    <div className="font-bold text-(--gray-9) truncate">{item.name}</div>
-                    <div className="text-xs text-(--gray-5) truncate">{item.position}</div>
-                  </div>
-                </div>
-
-                {/* Doctor Name */}
-                <div className="w-[18%]">
-                  <div className="font-bold text-(--gray-9) truncate">{item.doctor}</div>
-                </div>
-
-                {/* Specialty */}
-                <div className="w-[18%]">
-                  <div className="font-bold text-(--gray-8) truncate">{item.specialty}</div>
-                </div>
-
-                {/* Area + Code */}
-                <div className="w-[28%]">
-                  <div className="font-bold text-(--gray-7) truncate">{item.area}</div>
-                </div>
-
-                {/* See Request Button */}
-                <div className="w-[14%] flex items-center justify-end gap-1 text-(--gray-5) text-sm">
-                  <span>See Request</span>
-                  <ChevronRight className="w-6 h-6 text-(--primary)" />
-                </div>
-              </div>
-            </div>
-          ))}
-
-          {/* Pagination */}
-          {requestData.length > 0 && (
-            <TablePagination
-              currentPage={currentPage}
-              totalItems={requestData.length}
-              itemsPerPage={itemsPerPage}
-              onPageChange={handlePageChange}
-              onItemsPerPageChange={handleItemsPerPageChange}
-              pageSizeOptions={[10, 20, 30, 50]}
-              showPageInfo={true}
-              showItemsPerPageSelector={true}
-            />
-          )}
-        </>
-      )}
+      <CenturoTable
+        data={requestData}
+        columns={columns}
+        loading={loading}
+        error={error}
+        onRetry={handleRetry}
+        enablePagination={true}
+        pageSize={10}
+        PaginationComponent={TablePagination}
+        emptyMessage="No requests found"
+      />
     </div>
   );
 }

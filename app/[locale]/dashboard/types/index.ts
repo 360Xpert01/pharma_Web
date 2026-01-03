@@ -161,4 +161,5 @@ export interface DashboardProps {
   productCategoriesTrue?: boolean;
   specializationsD?: boolean;
   specializationsTrue?: boolean;
+  doctorDetail?: boolean;
 }

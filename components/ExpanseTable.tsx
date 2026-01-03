@@ -1,10 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import TableColumnHeader from "@/components/TableColumnHeader";
-import TableLoadingState from "@/components/shared/table/TableLoadingState";
-import TableErrorState from "@/components/shared/table/TableErrorState";
-import TableEmptyState from "@/components/shared/table/TableEmptyState";
+import { ColumnDef } from "@tanstack/react-table";
+import CenturoTable from "@/components/shared/table/CenturoTable";
 import TablePagination from "@/components/TablePagination";
 
 interface ExpenseRow {
@@ -97,150 +95,111 @@ export default function ExpenseApprovalTable() {
   // Simulate loading and error states (replace with actual API call state)
   const [loading] = useState(false);
   const [error] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const handleRetry = () => {
-    // Add retry logic here when connected to API
     window.location.reload();
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const handleItemsPerPageChange = (newItemsPerPage: number) => {
-    setItemsPerPage(newItemsPerPage);
-    setCurrentPage(1);
-  };
-
-  // Calculate paginated data
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedExpenses = expenseData.slice(startIndex, endIndex);
-
-  // Define columns for table header
-  const expenseColumns = [
-    { label: "Employee", className: "w-[20%]" },
-    { label: "Doctor", className: "w-[20%]" },
-    { label: "Total Expense", className: "w-[12%] text-center" },
-    { label: "Approved", className: "w-[12%] text-center" },
-    { label: "Rejected", className: "w-[12%] text-center" },
-    { label: "Actions", className: "w-[24%] text-center" },
+  const columns: ColumnDef<ExpenseRow>[] = [
+    {
+      header: "Employee",
+      accessorKey: "employee1",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-3">
+          <img
+            src={row.original.employee1.avatar || DEFAULT_AVATAR}
+            alt={row.original.employee1.name}
+            className="w-10 h-10 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
+          />
+          <div className="truncate">
+            <div className="t-td-b truncate">{row.original.employee1.name}</div>
+            <div className="t-cap truncate">{row.original.employee1.role}</div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "Doctor",
+      accessorKey: "employee2",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-3">
+          <img
+            src={row.original.employee2.avatar || DEFAULT_AVATAR}
+            alt={row.original.employee2.name}
+            className="w-10 h-10 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
+          />
+          <div className="truncate">
+            <div className="t-td-b truncate">{row.original.employee2.name}</div>
+            <div className="t-cap truncate">{row.original.employee2.role}</div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "Total Expense",
+      accessorKey: "totalExpense",
+      cell: ({ row }) => (
+        <div className="text-center">
+          <div className="t-val-sm t-warn">
+            {row.original.totalExpense.toLocaleString()}
+            <span className="t-sm t-warn pl-1">PKR</span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "Approved",
+      accessorKey: "approved",
+      cell: ({ row }) => (
+        <div className="text-center">
+          <div className="t-val-sm t-ok">
+            {row.original.approved.toLocaleString()}
+            <span className="t-sm t-ok pl-1">PKR</span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "Rejected",
+      accessorKey: "rejected",
+      cell: ({ row }) => (
+        <div className="text-center">
+          <div className="t-val-sm t-err">
+            {row.original.rejected.toLocaleString()}
+            <span className="t-sm t-err pl-1">PKR</span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      cell: () => (
+        <div className="flex gap-3 justify-center">
+          <button className="px-6 py-1 bg-(--primary) text-(--light) font-medium rounded-8 hover:bg-(--primary-2) transition shadow-soft">
+            Approve
+          </button>
+          <button className="px-6 py-1 bg-[var(--background)] text-(--destructive) font-medium rounded-8 border border-(--destructive) hover:bg-(--destructive-0) transition shadow-soft">
+            Reject
+          </button>
+        </div>
+      ),
+    },
   ];
 
   return (
-    <div className="w-full bg-(--gray-0)/50">
-      {loading ? (
-        <div className="p-4">
-          <TableLoadingState
-            variant="skeleton"
-            rows={5}
-            columns={5}
-            message="Loading expenses..."
-          />
-        </div>
-      ) : error ? (
-        <TableErrorState error={error} onRetry={handleRetry} title="Failed to load expenses" />
-      ) : expenseData.length === 0 ? (
-        <TableEmptyState
-          message="No expense data found"
-          description="There are currently no expense records to display."
-        />
-      ) : (
-        <div className="space-y-1 p-4">
-          <TableColumnHeader
-            columns={expenseColumns}
-            containerClassName="flex w-full"
-            showBackground={false}
-          />
-
-          {paginatedExpenses.map((row) => (
-            <div
-              key={row.id}
-              className="bg-[var(--background)] rounded-8 border border-(--gray-2) hover:bg-(--gray-0) transition-all cursor-pointer"
-            >
-              <div className="px-3 py-3">
-                <div className="flex items-center text-sm">
-                  {/* Employee 1 */}
-                  <div className="w-[20%] flex items-center gap-3">
-                    <img
-                      src={row.employee1.avatar || DEFAULT_AVATAR}
-                      alt={row.employee1.name}
-                      className="w-10 h-10 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
-                    />
-                    <div className="truncate">
-                      <div className="t-td-b truncate">{row.employee1.name}</div>
-                      <div className="t-cap truncate">{row.employee1.role}</div>
-                    </div>
-                  </div>
-
-                  {/* Employee 2 */}
-                  <div className="w-[20%] flex items-center gap-3">
-                    <img
-                      src={row.employee2.avatar || DEFAULT_AVATAR}
-                      alt={row.employee2.name}
-                      className="w-10 h-10 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
-                    />
-                    <div className="truncate">
-                      <div className="t-td-b truncate">{row.employee2.name}</div>
-                      <div className="t-cap truncate">{row.employee2.role}</div>
-                    </div>
-                  </div>
-
-                  {/* Total Expense */}
-                  <div className="w-[12%] text-center">
-                    <div className="t-val-sm t-warn">
-                      {row.totalExpense.toLocaleString()}
-                      <span className="t-sm t-warn pl-1">PKR</span>
-                    </div>
-                  </div>
-
-                  {/* Approved */}
-                  <div className="w-[12%] text-center">
-                    <div className="t-val-sm t-ok">
-                      {row.approved.toLocaleString()}
-                      <span className="t-sm t-ok pl-1">PKR</span>
-                    </div>
-                  </div>
-
-                  {/* Rejected */}
-                  <div className="w-[12%] text-center">
-                    <div className="t-val-sm t-err">
-                      {row.rejected.toLocaleString()}
-                      <span className="t-sm t-err pl-1">PKR</span>
-                    </div>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="w-[24%] flex gap-3 justify-center">
-                    <button className="px-6 py-1 bg-(--primary) text-(--light) font-medium rounded-8 hover:bg-(--primary-2) transition shadow-soft">
-                      Approve
-                    </button>
-                    <button className="px-6 py-1 bg-[var(--background)] text-(--destructive) font-medium rounded-8 border border-(--destructive) hover:bg-(--destructive-0) transition shadow-soft">
-                      Reject
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-
-          {/* Pagination */}
-          {expenseData.length > 0 && (
-            <TablePagination
-              currentPage={currentPage}
-              totalItems={expenseData.length}
-              itemsPerPage={itemsPerPage}
-              onPageChange={handlePageChange}
-              onItemsPerPageChange={handleItemsPerPageChange}
-              pageSizeOptions={[10, 20, 30, 50]}
-              showPageInfo={true}
-              showItemsPerPageSelector={true}
-            />
-          )}
-        </div>
-      )}
+    <div className="w-full bg-(--gray-0)/50 p-4">
+      <CenturoTable
+        data={expenseData}
+        columns={columns}
+        loading={loading}
+        error={error}
+        onRetry={handleRetry}
+        enablePagination={true}
+        pageSize={10}
+        PaginationComponent={TablePagination}
+        emptyMessage="No expense data found"
+      />
     </div>
   );
 }

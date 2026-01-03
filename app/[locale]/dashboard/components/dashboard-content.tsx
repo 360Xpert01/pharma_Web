@@ -50,6 +50,7 @@ import ProductCategories from "@/components/ProductCategories";
 import AllProductCategories from "@/components/AllProductCategories";
 import DoctorSpecializations from "@/components/DoctorSpecializations";
 import AllSpecializations from "@/components/AllSpecializations";
+import DoctorDetail from "@/components/DoctorDetail";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -108,6 +109,7 @@ export function DashboardContent({
   productCategoriesTrue,
   specializationsD,
   specializationsTrue,
+  doctorDetail,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -159,7 +161,7 @@ export function DashboardContent({
 
       <div className="space-y-10 ">
         {/* Metrics Cards Section */}
-        <div className="grid mt-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid mt-8 gap-6 sm:grid-cols-2  lg:grid-cols-4">
           {!hideMetrics &&
             (topHcps?.length > 0 ? (
               topHcps.map((hcp, index) => (
@@ -394,6 +396,8 @@ export function DashboardContent({
             </div>
           </div>
         )}
+
+        {doctorDetail && <DoctorDetail />}
 
         {/* Quick Stats Footer */}
         {/* <PerformanceStats isLoading={combinedLoading} /> */}
