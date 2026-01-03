@@ -35,7 +35,9 @@ export function DashboardHeader({
       {/* Heading */}
       <div className="flex-1">
         <h1 className="t-h1 tracking-tight">{heading || "plans Management"}</h1>
-        <p className="t-md">{description || "Unlock the potential of your candidates"}</p>
+        <p className="t-md text-[var(--subheading-color)]">
+          {description || "Unlock the potential of your candidates"}
+        </p>
       </div>
 
       {/* Action Buttons */}

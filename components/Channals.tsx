@@ -95,7 +95,9 @@ export default function AddChannelsCard() {
           {/* Header */}
           <div>
             <h2 className="t-h2">Add Channels</h2>
-            <p className="t-sm mt-1">Unlock the potential of your candidates</p>
+            <p className="t-sm text-[var(--subheading-color)] mt-1">
+              Unlock the potential of your candidates
+            </p>
           </div>
 
           {/* Add New Channel Form */}

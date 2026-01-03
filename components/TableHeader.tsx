@@ -22,7 +22,9 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
         {/* Left: Title + Description */}
         <div>
           <h1 className="t-h1">{campHeading || "All Users"}</h1>
-          <p className="t-sm mt-1">Unlock the potential of your candidates</p>
+          <p className="t-sm text-[var(--subheading-color)] mt-1">
+            Unlock the potential of your candidates
+          </p>
         </div>
 
         {/* Right: Actions */}
