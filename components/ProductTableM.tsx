@@ -84,18 +84,12 @@ export default function MedicineTable() {
                 className="px-3 py-3 w-full flex items-center gap-4 hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-3 my-3 rounded-8 bg-[var(--background)]"
               >
                 {/* Pulse Code */}
-                <div
-                  className="w-[17%] text-sm font-bold text-[var(--gray-9)] truncate"
-                  title={product.pulseCode}
-                >
+                <div className="w-[17%] t-td-b truncate" title={product.pulseCode}>
                   {product.pulseCode}
                 </div>
 
                 {/* Name */}
-                <div
-                  className="w-[17%] text-sm font-bold text-[var(--gray-9)] truncate"
-                  title={product.name}
-                >
+                <div className="w-[17%] t-td-b truncate" title={product.name}>
                   {product.name}
                 </div>
 
@@ -108,7 +102,7 @@ export default function MedicineTable() {
 
                 {/* SKU Count */}
                 <div className="w-[17%] flex items-center">
-                  <span className="text-lg font-bold text-[var(--gray-9)]">{product.skuCount}</span>
+                  <span className="t-val-sm">{product.skuCount}</span>
                 </div>
 
                 {/* Image */}
@@ -131,10 +125,7 @@ export default function MedicineTable() {
                 </div>
 
                 {/* Formula */}
-                <div
-                  className="w-[17%] text-sm font-bold text-[var(--gray-9)] truncate"
-                  title={product.productFormula}
-                >
+                <div className="w-[17%] t-td-b truncate" title={product.productFormula}>
                   {product.productFormula}
                 </div>
 
@@ -156,7 +147,7 @@ export default function MedicineTable() {
                             console.log("Edit", product.id);
                             setOpenId(null);
                           }}
-                          className="w-full text-left px-4 py-2 text-sm hover:bg-[var(--gray-1)] cursor-pointer transition"
+                          className="w-full text-left px-4 py-2 t-td hover:bg-[var(--gray-1)] cursor-pointer transition"
                         >
                           Edit Medicine
                         </button>
@@ -165,7 +156,7 @@ export default function MedicineTable() {
                             console.log("View Details", product.id);
                             setOpenId(null);
                           }}
-                          className="w-full text-left px-4 py-2 text-sm hover:bg-[var(--gray-1)] cursor-pointer transition"
+                          className="w-full text-left px-4 py-2 t-td hover:bg-[var(--gray-1)] cursor-pointer transition"
                         >
                           View Details
                         </button>
@@ -174,7 +165,7 @@ export default function MedicineTable() {
                             console.log("Delete", product.id);
                             setOpenId(null);
                           }}
-                          className="w-full text-left px-4 py-2 text-sm text-[var(--destructive)] hover:bg-[var(--gray-1)] cursor-pointer transition"
+                          className="w-full text-left px-4 py-2 t-td t-err hover:bg-[var(--gray-1)] cursor-pointer transition"
                         >
                           Delete
                         </button>

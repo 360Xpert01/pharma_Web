@@ -147,10 +147,8 @@ export default function AddPrefixNameComponent() {
           <div className="p-8 space-y-6">
             {/* Title & Subtitle */}
             <div>
-              <h1 className="text-2xl font-bold text-(--gray-9)">Add Prefix Name</h1>
-              <p className="text-sm text-(--gray-0)0 mt-1">
-                Unlock the potential of your candidates
-              </p>
+              <h1 className="t-h2">Add Prefix Name</h1>
+              <p className="t-sm mt-1">Unlock the potential of your candidates</p>
             </div>
 
             {/* Form Row */}
@@ -198,7 +196,7 @@ export default function AddPrefixNameComponent() {
 
               {/* Preview Box */}
               <div className="w-full md:w-[25%]">
-                <label className="block text-sm font-medium text-(--gray-7)">Preview</label>
+                <label className="t-label">Preview</label>
                 <div className="mt-1 w-full h-12 px-4 py-3 bg-(--gray-1) border border-(--gray-2) rounded-8 text-(--gray-7) font-medium flex items-center">
                   {preview || "—"}
                 </div>

@@ -129,12 +129,8 @@ const RoleNode: React.FC<RoleNodeProps> = ({
             </div>
           ) : (
             <>
-              <div className="font-semibold text-[var(--gray-9)] text-sm leading-tight">
-                {item.name}
-              </div>
-              {item.subtitle && (
-                <div className="text-xs text-[var(--gray-5)] mt-0.5">{item.subtitle}</div>
-              )}
+              <div className="t-label-b leading-tight">{item.name}</div>
+              {item.subtitle && <div className="t-cap mt-0.5">{item.subtitle}</div>}
             </>
           )}
         </div>

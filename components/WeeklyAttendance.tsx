@@ -48,9 +48,7 @@ export default function AttendanceDashboard() {
     <div className="w-full">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-(--employee-detail-tab-heading)">
-          Weekly Attendance
-        </h2>
+        <h2 className="t-h3">Weekly Attendance</h2>
         <div className="flex items-center gap-2 text-(--primary) text-sm font-medium cursor-pointer">
           <ChevronLeft className="w-4 h-4" />
           <span>01 - 07 Sept, 2025</span>
@@ -64,7 +62,7 @@ export default function AttendanceDashboard() {
           <div key={index} className="space-y-3">
             {/* Offsite Warning */}
             {day.offsite && (
-              <div className="flex items-center justify-center gap-2 bg-(--destructive-0) text-(--destructive) px-4 py-3 rounded-8 text-sm  font-medium shadow-soft">
+              <div className="flex items-center justify-center gap-2 bg-(--destructive-0) text-(--destructive) px-4 py-3 rounded-8 t-md shadow-soft">
                 <AlertTriangle className="w-5 h-5" />
                 Checked in at off-site location.
               </div>
@@ -72,15 +70,15 @@ export default function AttendanceDashboard() {
 
             {/* Day Row */}
             <div className="bg-(--background) rounded-8 shadow-soft px-6 py-5">
-              <p className="text-base font-semibold text-(--gray-9) mb-3">{day.date}</p>
+              <p className="t-label-b mb-3">{day.date}</p>
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-(--primary-0) rounded-8 flex items-center justify-center">
                     <ChevronRight className="w-5 h-5 text-(--primary) rotate-180" />
                   </div>
                   <div>
-                    <p className="text-xl font-semibold text-(--gray-9)">{day.checkIn}</p>
-                    <p className="text-xs text-(--gray-5)">Check-in</p>
+                    <p className="t-val-sm">{day.checkIn}</p>
+                    <p className="t-cap">Check-in</p>
                   </div>
                 </div>
 
@@ -89,8 +87,8 @@ export default function AttendanceDashboard() {
                     <ChevronRight className="w-5 h-5 text-(--primary)" />
                   </div>
                   <div>
-                    <p className="text-xl font-semibold text-(--gray-9)">{day.checkOut}</p>
-                    <p className="text-xs text-(--gray-5)">Check-out</p>
+                    <p className="t-val-sm">{day.checkOut}</p>
+                    <p className="t-cap">Check-out</p>
                   </div>
                 </div>
               </div>

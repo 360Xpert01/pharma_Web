@@ -21,10 +21,8 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
       <div className="px-4 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
         {/* Left: Title + Description */}
         <div>
-          <h1 className="text-3xl font-bold text-[var(--gray-9)]">{campHeading || "All Users"}</h1>
-          <p className="text-sm text-[var(--gray-5)] mt-1">
-            Unlock the potential of your candidates
-          </p>
+          <h1 className="t-h1">{campHeading || "All Users"}</h1>
+          <p className="t-sm mt-1">Unlock the potential of your candidates</p>
         </div>
 
         {/* Right: Actions */}
@@ -55,7 +53,7 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
                   <div className="p-5 space-y-5">
                     {/* Header */}
                     <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-semibold text-[var(--gray-9)]">Filter by</h3>
+                      <h3 className="t-h4">Filter by</h3>
                       <button
                         onClick={() => setIsFilterOpen(false)}
                         className="text-[var(--gray-4)] hover:text-[var(--gray-6)] transition"
@@ -66,9 +64,7 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
 
                     {/* Role Filter */}
                     <div>
-                      <label className="block text-sm font-medium text-[var(--gray-7)] mb-1.5">
-                        Role
-                      </label>
+                      <label className="t-label block mb-1.5">Role</label>
                       <select className="w-full px-3 py-2.5 border border-[var(--gray-3)] rounded-8 text-sm focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] transition">
                         <option>All Roles</option>
                         <option>Admin</option>
@@ -81,9 +77,7 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
 
                     {/* Status Filter */}
                     <div>
-                      <label className="block text-sm font-medium text-[var(--gray-7)] mb-1.5">
-                        Status
-                      </label>
+                      <label className="t-label block mb-1.5">Status</label>
                       <select className="w-full px-3 py-2.5 border border-[var(--gray-3)] rounded-8 text-sm focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] transition">
                         <option>All Status</option>
                         <option>Active</option>
@@ -95,9 +89,7 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
 
                     {/* Date Range */}
                     <div>
-                      <label className="block text-sm font-medium text-[var(--gray-7)] mb-1.5">
-                        Date Range
-                      </label>
+                      <label className="t-label block mb-1.5">Date Range</label>
                       <select className="w-full px-3 py-2.5 border border-[var(--gray-3)] rounded-8 text-sm focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] transition">
                         <option>Last 30 Days</option>
                         <option>Last 7 Days</option>
@@ -152,10 +144,10 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
                 {/* Dropdown Menu */}
                 <div className="absolute right-0 top-full mt-2 w-56 bg-[var(--background)] rounded-8 shadow-soft border border-[var(--gray-2)] z-50 overflow-hidden">
                   <div className="py-2">
-                    <button className="w-full text-left px-5 py-3 text-sm text-[var(--gray-7)] hover:bg-[var(--gray-1)] flex items-center gap-3 transition">
+                    <button className="w-full text-left px-5 py-3 t-td hover:bg-[var(--gray-1)] flex items-center gap-3 transition">
                       <span>Export Format (.xls)</span>
                     </button>
-                    <button className="w-full text-left px-5 py-3 text-sm text-[var(--gray-7)] hover:bg-[var(--gray-1)] flex items-center gap-3 transition">
+                    <button className="w-full text-left px-5 py-3 t-td hover:bg-[var(--gray-1)] flex items-center gap-3 transition">
                       <span>Import Data (.xls)</span>
                     </button>
                   </div>

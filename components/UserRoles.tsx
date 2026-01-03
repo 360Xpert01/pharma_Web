@@ -8,6 +8,7 @@ import TableColumnHeader from "@/components/TableColumnHeader";
 import TableLoadingState from "@/components/shared/table/TableLoadingState";
 import TableErrorState from "@/components/shared/table/TableErrorState";
 import TableEmptyState from "@/components/shared/table/TableEmptyState";
+import StatusBadge from "@/components/shared/StatusBadge";
 
 interface Role {
   id: string;
@@ -141,15 +142,7 @@ export default function RolesCardList() {
 
             {/* Status - 20% */}
             <div className="w-[20%]">
-              <span
-                className={`inline-flex items-center gap-2 px-4 py-1 rounded-8 text-xs font-semibold whitespace-nowrap ${
-                  role.status === "active"
-                    ? "bg-[var(--success)] text-[var(--light)]"
-                    : "bg-[var(--gray-3)] text-[var(--light)]"
-                }`}
-              >
-                {role.status === "active" ? "Active" : "Inactive"}
-              </span>
+              <StatusBadge status={role.status} />
             </div>
 
             {/* Actions - 7% */}

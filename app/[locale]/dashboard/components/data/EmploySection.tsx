@@ -118,7 +118,7 @@ export default function SalesTeamTable() {
               <div className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-(--gray-0) transition-all cursor-pointer border border-(--gray-2) mx-4 my-3 rounded-8 bg-[var(--background)]">
                 <div
                   onClick={() => toggleRow(member.id)}
-                  className="w-[15%] text-sm font-bold text-(--gray-9) truncate"
+                  className="w-[15%] t-td-b truncate"
                   title={member.role}
                 >
                   {member.role}
@@ -136,13 +136,10 @@ export default function SalesTeamTable() {
                     className="rounded-8 flex-shrink-0"
                   />
                   <div className="min-w-0 flex-1">
-                    <p className="font-bold text-(--gray-9) truncate" title={member.name}>
+                    <p className="t-td-b truncate" title={member.name}>
                       {member.name}
                     </p>
-                    <span
-                      className="text-xs text-(--gray-5) font-medium truncate block"
-                      title={member.roleBy}
-                    >
+                    <span className="t-cap truncate block" title={member.roleBy}>
                       {member.roleBy}
                     </span>
                   </div>
@@ -150,7 +147,7 @@ export default function SalesTeamTable() {
 
                 <div
                   onClick={() => toggleRow(member.id)}
-                  className="w-[20%] text-sm text-(--gray-6) truncate"
+                  className="w-[20%] t-td truncate"
                   title={member.email}
                 >
                   {member.email}
@@ -161,12 +158,12 @@ export default function SalesTeamTable() {
                   className="w-[20%] truncate"
                   title={member.phone}
                 >
-                  <span className="font-bold text-(--gray-9)">{member.phone}</span>
+                  <span className="t-td-b">{member.phone}</span>
                 </div>
 
                 <div
                   onClick={() => toggleRow(member.id)}
-                  className="w-[20%] text-sm font-bold text-(--gray-9) truncate"
+                  className="w-[20%] t-td-b truncate"
                   title={member.supervisor}
                 >
                   {member.supervisor}
@@ -176,7 +173,7 @@ export default function SalesTeamTable() {
                   href="/dashboard/Employee-Profile"
                   className="w-[10%] ml-auto cursor-pointer flex-shrink-0"
                 >
-                  <button className="flex items-center cursor-pointer gap-1 text-sm text-(--gray-5) whitespace-nowrap">
+                  <button className="flex items-center cursor-pointer gap-1 t-sm whitespace-nowrap">
                     View Details
                     <ChevronRight className="w-6 h-6 text-(--primary)" />
                   </button>

@@ -46,20 +46,20 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
 
             <div>
               <div className="flex item-center gap-3 mb-2 ">
-                <div className="bg-(--primary) w-[60%] text-(--light) text-[10px] font-regular px-3 py-1.5 rounded-8">
+                <div className="bg-(--primary) w-[60%] text-(--light) t-cap px-3 py-1.5 rounded-8">
                   EMP-000124
                 </div>
-                <span className="text-[12px] bg-(--light) my-auto">|</span>
-                <span className="text-[12px] my-auto"> 000124</span>
+                <span className="t-sm bg-(--light) my-auto">|</span>
+                <span className="t-sm my-auto"> 000124</span>
               </div>
-              <h2 className="text-2xl font-bold text-(--gray-9)">{candidate.name}</h2>
-              <p className="text-(--gray-9) mt-1 mb-2 font-semibold text-[13px]">
+              <h2 className="t-h2">{candidate.name}</h2>
+              <p className="t-label mt-1 mb-2">
                 Repoting Manager
-                <span className="text-(--gray-4) text-[13px] font-normal"> Saboor raza</span>
+                <span className="t-sm"> Saboor raza</span>
               </p>
-              <p className="text-(--gray-6) text-[13px]">{candidate.email}</p>
-              <p className="text-(--gray-6) text-[13px]">{candidate.phone}</p>
-              <p className="text-(--gray-6) text-[13px] ">19th January 97</p>
+              <p className="t-sm">{candidate.email}</p>
+              <p className="t-sm">{candidate.phone}</p>
+              <p className="t-sm">19th January 97</p>
             </div>
           </div>
           <div className="flex flex-col justify-between h-full">
@@ -70,14 +70,14 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
                 variant="primary"
                 size="sm"
                 rounded="full"
-                className="w-[50%] text-[13px]"
+                className="w-[50%] t-sm"
               >
                 Edit Employee
               </Button>
             </div>
             <div>
-              <p className="font-semibold text-[15px]">Full Address</p>
-              <p className="text-[12px]">B-121, Block-2, Gulshan-e-Iqbal, Karachi, Pakistan</p>
+              <p className="t-label-b">Full Address</p>
+              <p className="t-sm">B-121, Block-2, Gulshan-e-Iqbal, Karachi, Pakistan</p>
             </div>
           </div>
         </div>
@@ -87,49 +87,47 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
         <div className="flex justify-between gap-15 w-[60%] bg-(--background) rounded-8 shadow-soft p-4 border border-(--gray-2) ">
           <div className="space-y-14">
             <div>
-              <p className="text-[10px] text-(--gray-5) uppercase tracking-wider">Campaign</p>
-              <p className="font-semibold text-xl text-(--gray-9)">{candidate.campaign}</p>
+              <p className="t-over">Campaign</p>
+              <p className="t-val-sm">{candidate.campaign}</p>
             </div>
             <div>
-              <p className="text-[10px] text-(--gray-5) uppercase tracking-wider">Total Call</p>
-              <p className="font-semibold text-xl text-(--gray-9)">{candidate.totalCalls}</p>
+              <p className="t-over">Total Call</p>
+              <p className="t-val-sm">{candidate.totalCalls}</p>
             </div>
           </div>
 
           {/* Middle Right */}
           <div className="space-y-14">
             <div>
-              <p className="text-[10px] text-(--gray-5) uppercase tracking-wider">
-                Requested Month
-              </p>
-              <p className="font-semibold text-xl text-(--gray-9)">{candidate.requestedMonth}</p>
+              <p className="t-over">Requested Month</p>
+              <p className="t-val-sm">{candidate.requestedMonth}</p>
             </div>
             <div>
-              <p className="text-[10px] text-(--gray-5) uppercase tracking-wider">Total Call</p>
-              <p className="font-semibold text-xl text-(--gray-9)">{candidate.totalCalls}</p>
+              <p className="t-over">Total Call</p>
+              <p className="t-val-sm">{candidate.totalCalls}</p>
             </div>
           </div>
 
           <div className="space-y-4">
             <div>
-              <p className="text-[10px] text-(--gray-5) uppercase tracking-wider">Channal</p>
-              <p className="font-semibold text-xl text-(--gray-9)">{candidate.channel}</p>
+              <p className="t-over">Channal</p>
+              <p className="t-val-sm">{candidate.channel}</p>
             </div>
           </div>
 
           <div className="space-y-4">
             <div>
-              <p className="text-[10px] text-(--gray-5) uppercase tracking-wider">Total Call</p>
-              <p className="font-semibold text-xl text-(--gray-9)">{candidate.totalCalls}</p>
+              <p className="t-over">Total Call</p>
+              <p className="t-val-sm">{candidate.totalCalls}</p>
             </div>
           </div>
 
           {/* Right - Status + Calls */}
           <div className=" space-y-4">
             <div>
-              <p className="text-xs text-(--gray-5) uppercase tracking-wider">Status</p>
+              <p className="t-over">Status</p>
               <span
-                className={`inline-block px-4 py-1.5 rounded-8 text-xs font-medium text-(--light) mt-1 ${
+                className={`inline-block px-4 py-1.5 rounded-8 t-cap font-medium text-(--light) mt-1 ${
                   candidate.status.toLowerCase() === "active" ||
                   candidate.status.toLowerCase() === "approved"
                     ? "bg-(--success)"

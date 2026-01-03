@@ -82,43 +82,43 @@ export default function PlanRequestCalendar() {
           <div className="flex items-center gap-6">
             <Image width={100} height={100} src="/capMan.svg" alt="Candidate" />
             <div>
-              <h2 className="text-2xl font-bold text-(--gray-9)">{candidate.name}</h2>
-              <p className="text-(--gray-6)">{candidate.email}</p>
-              <p className="text-(--gray-6)">{candidate.phone}</p>
+              <h2 className="t-h2">{candidate.name}</h2>
+              <p className="t-md">{candidate.email}</p>
+              <p className="t-md">{candidate.phone}</p>
             </div>
           </div>
 
           <div className=" space-y-4">
             <div>
-              <p className="text-xs text-(--gray-5)">Reporting Manager</p>
-              <p className="font-semibold text-xl">{candidate.reportingManager}</p>
+              <p className="t-cap">Reporting Manager</p>
+              <p className="t-val">{candidate.reportingManager}</p>
             </div>
             <div>
-              <p className="text-xs text-(--gray-5)">Campaign</p>
-              <p className="font-semibold text-xl">{candidate.campaign}</p>
+              <p className="t-cap">Campaign</p>
+              <p className="t-val">{candidate.campaign}</p>
             </div>
           </div>
 
           <div className=" space-y-4">
             <div>
-              <p className="text-xs text-(--gray-5)">Requested Month</p>
-              <p className="font-semibold text-xl">{candidate.requestedMonth}</p>
+              <p className="t-cap">Requested Month</p>
+              <p className="t-val">{candidate.requestedMonth}</p>
             </div>
             <div>
-              <p className="text-xs text-(--gray-5)">Channel</p>
-              <p className="font-semibold text-xl">{candidate.channel}</p>
+              <p className="t-cap">Channel</p>
+              <p className="t-val">{candidate.channel}</p>
             </div>
           </div>
 
           <div className="">
             <div>
-              <p className="text-xs text-(--gray-5)">Status</p>
-              <span className="inline-block bg-(--warning) text-(--light) px-4 py-1 rounded-8 text-xs">
+              <p className="t-cap">Status</p>
+              <span className="inline-block bg-(--warning) text-(--light) px-4 py-1 rounded-8 t-cap">
                 {candidate.status}
               </span>
             </div>
-            <p className="text-xs text-(--gray-5) mt-3">Total Calls</p>
-            <p className="text-xl font-bold">{candidate.totalCalls}</p>
+            <p className="t-cap mt-3">Total Calls</p>
+            <p className="t-val">{candidate.totalCalls}</p>
           </div>
         </div>
       </div>
@@ -126,7 +126,7 @@ export default function PlanRequestCalendar() {
       {/* Calendar */}
       <div className="bg-(--background) rounded-8 shadow-soft p-6 mt-6">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-3xl font-bold text-(--gray-9)">{monthName}</h3>
+          <h3 className="t-h1">{monthName}</h3>
           <div className="flex items-center bg-(--gray-1) rounded-8 border border-(--gray-2)">
             <button onClick={previousMonth} className="p-3 hover:bg-(--gray-2) rounded-8">
               <ChevronLeft className="w-5 h-5" />
@@ -140,7 +140,7 @@ export default function PlanRequestCalendar() {
 
         <div className="grid grid-cols-7 gap-2 text-center">
           {["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"].map((d) => (
-            <div key={d} className="font-bold text-(--gray-5) py-3 text-lg">
+            <div key={d} className="t-label-b py-3">
               {d}
             </div>
           ))}
@@ -160,9 +160,9 @@ export default function PlanRequestCalendar() {
               >
                 {day && (
                   <>
-                    <span className="text-3xl font-medium">{day}</span>
+                    <span className="t-val-lg">{day}</span>
                     {calls !== null ? (
-                      <span className={`text-sm ${isZero ? "text-(--light)" : "text-(--gray-5)"}`}>
+                      <span className={`t-sm ${isZero ? "text-(--light)" : ""}`}>
                         {isZero ? "0 Calls" : `${calls} Calls`}
                       </span>
                     ) : null}

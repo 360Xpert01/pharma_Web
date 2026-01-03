@@ -156,4 +156,9 @@ export interface DashboardProps {
   AddAllocateGiveaway?: boolean;
   bricksHierarchy?: boolean;
   roleHierarchy?: boolean;
+  allocatedGiveawaysTable?: boolean;
+  productCategoriesD?: boolean;
+  productCategoriesTrue?: boolean;
+  specializationsD?: boolean;
+  specializationsTrue?: boolean;
 }

@@ -27,7 +27,7 @@ export default function GiveawaysDetail() {
   return (
     <div className="">
       <div className="mt-3">
-        <h2 className="text-xl font-bold text-(--employee-detail-tab-heading) mb-6">Giveaways</h2>
+        <h2 className="t-h3 mb-6">Giveaways</h2>
 
         <div className="space-y-3">
           {giveawaysData.map((giveaway) => (
@@ -50,24 +50,24 @@ export default function GiveawaysDetail() {
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-(--gray-9)">{giveaway.name}</h3>
-                  <p className="text-sm text-(--gray-5)">{giveaway.description}</p>
+                  <h3 className="t-label-b">{giveaway.name}</h3>
+                  <p className="t-sm">{giveaway.description}</p>
                 </div>
               </div>
 
               {/* Center: Total QTY */}
               <div className="flex-1 flex justify-center">
                 <div className="text-center">
-                  <p className="text-xs text-(--gray-4)">Total QTY</p>
-                  <p className="text-lg font-bold text-(--success)">{giveaway.totalQty}</p>
+                  <p className="t-cap">Total QTY</p>
+                  <p className="t-val-sm t-ok">{giveaway.totalQty}</p>
                 </div>
               </div>
 
               {/* Right: QTY Left */}
               <div className="flex-1 flex justify-center">
                 <div className="text-center">
-                  <p className="text-xs text-(--gray-4)">QTY Left</p>
-                  <p className="text-lg font-bold text-(--destructive)">{giveaway.qtyLeft}</p>
+                  <p className="t-cap">QTY Left</p>
+                  <p className="t-val-sm t-err">{giveaway.qtyLeft}</p>
                 </div>
               </div>
             </div>

@@ -62,7 +62,7 @@ const Navbar = () => {
         { label: "Products", href: "/dashboard/product-Management" },
         { label: "Target View", href: "/dashboard/target-listview" },
         { label: "Set Target", href: "/dashboard/SetTarget" },
-        { label: "Allocate Giveaways & Samples", href: "/dashboard/AllocateGiveawaysSamples" },
+        { label: "Allocate Giveaways & Samples", href: "/dashboard/allocate-giveways-sample" },
 
         {
           label: "Promotional Materials",
@@ -218,6 +218,8 @@ const Navbar = () => {
             { label: "Organization Hierarchy", href: "/dashboard/role-hierarchy" },
             { label: "Channels", href: "/dashboard/Channals" },
             { label: "Call Points", href: "/dashboard/Add-Call-points" },
+            { label: "Product Categories", href: "/dashboard/product-categories" },
+            { label: "Doctor Specializations", href: "/dashboard/doctor-specializations" },
             { label: "Add Prefix", href: "/dashboard/AddPrefix" },
           ],
         },
@@ -479,8 +481,8 @@ const Navbar = () => {
                   />
                 </div>
                 <div>
-                  <div className="text-sm font-medium">Nirma Amir</div>
-                  <div className="text-xs text-(--gray-5)">namraamir@ceturo.com</div>
+                  <div className="t-label">Nirma Amir</div>
+                  <div className="t-cap">namraamir@ceturo.com</div>
                 </div>
               </div>
 
@@ -500,8 +502,8 @@ const Navbar = () => {
                         />
                       </div>
                       <div className="flex-1">
-                        <div className="text-sm font-semibold text-(--gray-9)">Nirma Amir</div>
-                        <div className="text-xs text-(--gray-5)">namraamir@ceturo.com</div>
+                        <div className="t-label-b">Nirma Amir</div>
+                        <div className="t-cap">namraamir@ceturo.com</div>
                       </div>
                     </div>
                   </div>

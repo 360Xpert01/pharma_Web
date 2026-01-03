@@ -63,8 +63,8 @@ export default function SalesRepCard({
 
           {/* Name and Role */}
           <div>
-            <p className="font-bold text-(--gray-9) text-lg">{rep.name}</p>
-            <p className="text-sm text-(--gray-5)">{rep.role}</p>
+            <p className="t-val-sm">{rep.name}</p>
+            <p className="t-sm">{rep.role}</p>
           </div>
         </div>
 
@@ -124,14 +124,12 @@ export default function SalesRepCard({
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4 flex-1">
                       {/* Product Name */}
-                      <span className="font-semibold text-(--gray-9) text-sm min-w-[120px]">
-                        {leftProduct.name}
-                      </span>
+                      <span className="t-label min-w-[120px]">{leftProduct.name}</span>
                       {/* Target Quantity */}
-                      <span className="text-sm text-(--gray-5)">{leftProduct.targetQuantity}</span>
+                      <span className="t-sm">{leftProduct.targetQuantity}</span>
                       {/* Percentage */}
                       <span
-                        className={`text-sm font-bold ${getPercentageColor(leftProduct.completionPercentage)}`}
+                        className={`t-label ${getPercentageColor(leftProduct.completionPercentage)}`}
                       >
                         {leftProduct.completionPercentage}%
                       </span>
@@ -193,7 +191,7 @@ export default function SalesRepCard({
           className="flex items-center gap-2 px-5 py-3 bg-(--destructive-0) cursor-pointer hover:bg-(--destructive-0) transition-colors"
         >
           <AlertTriangle className="w-4 h-4 text-(--destructive) flex-shrink-0" />
-          <p className="text-sm text-(--destructive) font-medium">Conflicts In Sales Allocation</p>
+          <p className="t-md t-err">Conflicts In Sales Allocation</p>
         </div>
       )}
     </div>

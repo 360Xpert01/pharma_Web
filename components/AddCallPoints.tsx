@@ -104,7 +104,7 @@ export default function AddCallPointForm() {
                 type="text"
                 value={generatedPrefix || ""}
                 onChange={() => {}}
-                placeholder={prefixLoading ? "Generating..." : "PLS_CP_000001"}
+                placeholder={prefixLoading ? "Generating..." : "CP_000001"}
                 readOnly
                 error={prefixError || ""}
               />

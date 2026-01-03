@@ -50,9 +50,7 @@ export default function TableColumnHeader({
         <div className={innerContainerClasses}>
           {columns.map((column, index) => (
             <div key={index} className={column.className || ""}>
-              <p className="font-semibold text-sm text-[var(--gray-6)] capitalize tracking-wider">
-                {column.label}
-              </p>
+              <p className="t-th capitalize tracking-wider">{column.label}</p>
             </div>
           ))}
         </div>

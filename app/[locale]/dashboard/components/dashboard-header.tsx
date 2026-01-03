@@ -34,10 +34,8 @@ export function DashboardHeader({
     <div className="flex text-(--dark) flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
       {/* Heading */}
       <div className="flex-1">
-        <h1 className="text-3xl font-bold  tracking-tight">{heading || "plans Management"}</h1>
-        <p className="text-muted-foreground">
-          {description || "Unlock the potential of your candidates"}
-        </p>
+        <h1 className="t-h1 tracking-tight">{heading || "plans Management"}</h1>
+        <p className="t-md">{description || "Unlock the potential of your candidates"}</p>
       </div>
 
       {/* Action Buttons */}

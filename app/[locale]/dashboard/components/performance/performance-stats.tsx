@@ -67,15 +67,15 @@ export function PerformanceStats({ data, isLoading = false }: PerformanceStatsPr
   return (
     <section>
       <div className="mb-6">
-        <h2 className="text-2xl font-bold">{t("performance.title")}</h2>
+        <h2 className="t-h2">{t("performance.title")}</h2>
       </div>
       <BaseGrid columns={{ sm: 1, md: 2, lg: 4 }}>
         {performanceStats.map((stat, index) => (
           <Card key={index}>
             <CardContent className="p-6">
               <div className="text-center">
-                <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
-                <p className="text-sm text-muted-foreground">{stat.label}</p>
+                <p className={`t-val ${stat.color}`}>{stat.value}</p>
+                <p className="t-md">{stat.label}</p>
               </div>
             </CardContent>
           </Card>

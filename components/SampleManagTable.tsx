@@ -83,34 +83,22 @@ export default function SampleManagTable() {
                 className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-4 my-3 rounded-8 bg-[var(--background)]"
               >
                 {/* Pulse Code */}
-                <div
-                  className="w-[20%] text-sm font-bold text-[var(--gray-9)] truncate"
-                  title={item.pulseCode || "N/A"}
-                >
+                <div className="w-[20%] t-td-b truncate" title={item.pulseCode || "N/A"}>
                   {item.pulseCode || "N/A"}
                 </div>
 
                 {/* Date */}
-                <div
-                  className="w-[20%] text-sm font-bold text-[var(--gray-9)] truncate"
-                  title={formatDate(item.createdAt)}
-                >
+                <div className="w-[20%] t-td-b truncate" title={formatDate(item.createdAt)}>
                   {formatDate(item.createdAt)}
                 </div>
 
                 {/* Product Name */}
-                <div
-                  className="w-[25%] text-sm font-bold text-[var(--gray-9)] truncate"
-                  title={item.name || "N/A"}
-                >
+                <div className="w-[25%] t-td-b truncate" title={item.name || "N/A"}>
                   {item.name || "N/A"}
                 </div>
 
                 {/* Category */}
-                <div
-                  className="w-[27%] text-sm font-bold text-[var(--gray-9)] truncate"
-                  title={item.productCategory || "N/A"}
-                >
+                <div className="w-[27%] t-td-b truncate" title={item.productCategory || "N/A"}>
                   {item.productCategory || "N/A"}
                 </div>
 
@@ -132,7 +120,7 @@ export default function SampleManagTable() {
                             console.log("Edit", item.id);
                             setOpenId(null);
                           }}
-                          className="w-full text-left px-4 py-2 text-sm hover:bg-[var(--gray-1)] cursor-pointer transition"
+                          className="w-full text-left px-4 py-2 t-td hover:bg-[var(--gray-1)] cursor-pointer transition"
                         >
                           Edit
                         </button>
@@ -141,7 +129,7 @@ export default function SampleManagTable() {
                             console.log("Duplicate", item.id);
                             setOpenId(null);
                           }}
-                          className="w-full text-left px-4 py-2 text-sm hover:bg-[var(--gray-1)] cursor-pointer transition"
+                          className="w-full text-left px-4 py-2 t-td hover:bg-[var(--gray-1)] cursor-pointer transition"
                         >
                           Duplicate
                         </button>
@@ -150,7 +138,7 @@ export default function SampleManagTable() {
                             console.log("Delete", item.id);
                             setOpenId(null);
                           }}
-                          className="w-full text-left px-4 py-2 text-sm text-[var(--destructive)] hover:bg-[var(--gray-1)] cursor-pointer transition"
+                          className="w-full text-left px-4 py-2 t-td t-err hover:bg-[var(--gray-1)] cursor-pointer transition"
                         >
                           Delete
                         </button>

@@ -53,7 +53,7 @@ export default function DeviceList() {
   return (
     <div className="">
       <div className="mt-3">
-        <h2 className="text-xl font-bold text-(--employee-detail-tab-heading) mb-6">Devices</h2>
+        <h2 className="t-h3 mb-6">Devices</h2>
 
         <div className="space-y-3">
           {devices.map((device) => (
@@ -70,16 +70,16 @@ export default function DeviceList() {
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-(--gray-9)">{device.deviceName}</h3>
-                  <p className="text-sm text-(--gray-5)">{device.platform}</p>
+                  <h3 className="t-label-b">{device.deviceName}</h3>
+                  <p className="t-sm">{device.platform}</p>
                 </div>
               </div>
 
               {/* Center: Device ID */}
               <div className="flex-1 flex justify-center">
                 <div className="text-center">
-                  <p className="text-xs text-(--gray-4)">Device ID</p>
-                  <p className="text-lg font-bold text-(--gray-9)">{device.deviceId}</p>
+                  <p className="t-cap">Device ID</p>
+                  <p className="t-val-sm">{device.deviceId}</p>
                 </div>
               </div>
 
@@ -131,7 +131,7 @@ export default function DeviceList() {
         {devices.length === 0 && (
           <div className="text-center py-12">
             <Smartphone className="w-16 h-16 mx-auto text-(--gray-3) mb-4" />
-            <p className="text-lg text-(--gray-4)">No devices registered</p>
+            <p className="t-lg">No devices registered</p>
           </div>
         )}
       </div>

@@ -199,8 +199,8 @@ function HierarchyNode({
         </div>
 
         <div className="flex-1">
-          <p className="font-semibold text-[var(--gray-9)]">{node.fullName}</p>
-          <p className="text-sm text-[var(--gray-5)]">{node.roleName}</p>
+          <p className="t-td-b">{node.fullName}</p>
+          <p className="t-md">{node.roleName}</p>
         </div>
 
         {node.isSalesRep && (
@@ -575,7 +575,7 @@ export default function CreateCampaignForm() {
       <div className="bg-[var(--light)] rounded-8 shadow-soft p-8 space-y-10">
         {/* Team Name Section */}
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-[var(--gray-9)]">Team Name</h2>
+          <h2 className="t-h2">Team Name</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
             <FormInput
@@ -584,7 +584,7 @@ export default function CreateCampaignForm() {
               type="text"
               value={generatedPrefix || ""}
               onChange={() => {}}
-              placeholder={prefixLoading ? "Generating..." : "PLS_TEM_072384"}
+              placeholder={prefixLoading ? "Generating..." : "TEM_072384"}
               required
               readOnly
               className="cursor-not-allowed"
@@ -657,7 +657,7 @@ export default function CreateCampaignForm() {
         {/* Assign Members */}
         <div className="space-y-6 py-8">
           <div>
-            <h2 className="text-2xl font-bold text-[var(--gray-9)] mb-4">Assign Members</h2>
+            <h2 className="t-h2 mb-4">Assign Members</h2>
 
             <MemberSearch
               allMembers={
@@ -726,13 +726,13 @@ export default function CreateCampaignForm() {
 
           {hierarchyLoading && (
             <div className="flex items-center justify-center py-8">
-              <div className="text-[var(--gray-5)]">Loading hierarchy...</div>
+              <div className="t-mute">Loading hierarchy...</div>
             </div>
           )}
 
           {mergedHierarchy.length === 0 && !hierarchyLoading && selectedMembers.length > 0 && (
             <div className="flex items-center justify-center py-8">
-              <div className="text-[var(--gray-5)]">No hierarchy data found</div>
+              <div className="t-mute">No hierarchy data found</div>
             </div>
           )}
         </div>

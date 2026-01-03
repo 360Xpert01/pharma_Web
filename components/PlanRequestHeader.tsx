@@ -20,8 +20,8 @@ export default function PlanRequestHeader() {
   return (
     <div className="flex items-start justify-between mb-6">
       <div>
-        <h1 className="text-3xl font-bold text-(--gray-9)">Plan Request</h1>
-        <p className="text-(--gray-5) mt-1">Unlock the potential of your candidates</p>
+        <h1 className="t-h1">Plan Request</h1>
+        <p className="t-md mt-1">Unlock the potential of your candidates</p>
       </div>
 
       <div className="flex space-x-1 mt-5">

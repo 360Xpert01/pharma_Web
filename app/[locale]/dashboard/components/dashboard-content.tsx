@@ -45,6 +45,11 @@ import EmployeeProfileTabs from "@/components/EmployeeProfileTabs";
 import AddAllocateGivewaySample from "@/components/AddAllocateGivewaySample";
 import BricksHierarchyWrapper from "@/components/BricksHierarchyWrapper";
 import RoleHierarchyWrapper from "@/components/RoleHierarchyWrapper";
+import AllocatedGiveawaysTable from "@/components/AllocatedGiveawaysTable";
+import ProductCategories from "@/components/ProductCategories";
+import AllProductCategories from "@/components/AllProductCategories";
+import DoctorSpecializations from "@/components/DoctorSpecializations";
+import AllSpecializations from "@/components/AllSpecializations";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -98,6 +103,11 @@ export function DashboardContent({
   AddAllocateGiveaway,
   bricksHierarchy,
   roleHierarchy,
+  allocatedGiveawaysTable,
+  productCategoriesD,
+  productCategoriesTrue,
+  specializationsD,
+  specializationsTrue,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -357,6 +367,33 @@ export function DashboardContent({
         )}
 
         {roleHierarchy && <RoleHierarchyWrapper />}
+
+        {allocatedGiveawaysTable && (
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
+            <TableHeader campHeading={campHeading} filterT={filterT} />
+            <AllocatedGiveawaysTable />
+          </div>
+        )}
+
+        {productCategoriesTrue && (
+          <div>
+            <ProductCategories />
+            <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
+              <TableHeader campHeading="Product Categories" filterT={filterT} />
+              <AllProductCategories />
+            </div>
+          </div>
+        )}
+
+        {specializationsTrue && (
+          <div>
+            <DoctorSpecializations />
+            <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
+              <TableHeader campHeading="Doctor Specializations" filterT={filterT} />
+              <AllSpecializations />
+            </div>
+          </div>
+        )}
 
         {/* Quick Stats Footer */}
         {/* <PerformanceStats isLoading={combinedLoading} /> */}

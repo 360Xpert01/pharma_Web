@@ -160,94 +160,94 @@ export default function DcrTable() {
         <>
           <TableColumnHeader
             columns={dcrColumns}
-            containerClassName="flex items-center gap-6 w-full"
+            containerClassName="flex w-full px-3"
+            showBackground={false}
           />
 
-          <div className="space-y-3">
+          <div>
             {paginatedData.map((row) => (
-              <div
-                key={row.id}
-                className="bg-[var(--background)] rounded-8 border border-(--gray-2) shadow-soft hover:shadow-soft transition-shadow"
-              >
-                <div className="px-3 py-3">
-                  {/* 12-column grid */}
-                  <div className="w-[100%] flex justify-between items-center text-sm">
-                    {/* Employee 1 – Left aligned */}
-                    <div className="w-[17%] flex  items-center gap-3">
-                      <img
-                        src={DEFAULT_AVATAR}
-                        alt={row.employee1.name}
-                        className="w-12 h-12 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
-                      />
-                      <div>
-                        <p className="font-bold text-(--gray-9)">{row.employee1.name}</p>
-                        <p className="text-xs text-(--gray-5)">{row.employee1.role}</p>
+              <div key={row.id} className="px-3 py-1">
+                <div className="bg-[var(--background)] rounded-8 border border-(--gray-2) hover:bg-(--gray-0) transition-all cursor-pointer">
+                  <div className="px-3 py-3">
+                    {/* Flex layout */}
+                    <div className="w-full flex items-center text-sm">
+                      {/* Employee 1 – Left aligned */}
+                      <div className="w-[17%] flex  items-center gap-3">
+                        <img
+                          src={DEFAULT_AVATAR}
+                          alt={row.employee1.name}
+                          className="w-12 h-12 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
+                        />
+                        <div>
+                          <p className="t-td-b">{row.employee1.name}</p>
+                          <p className="t-cap">{row.employee1.role}</p>
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Employee 2 – Left aligned */}
-                    <div className="w-[17%] flex items-center gap-3">
-                      <img
-                        src={DEFAULT_AVATAR}
-                        alt={row.employee2.name}
-                        className="w-12 h-12 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
-                      />
-                      <div>
-                        <p className="font-bold text-(--gray-9)">{row.employee2.name}</p>
-                        <p className="text-xs text-(--gray-5)">{row.employee2.role}</p>
+                      {/* Employee 2 – Left aligned */}
+                      <div className="w-[17%] flex items-center gap-3">
+                        <img
+                          src={DEFAULT_AVATAR}
+                          alt={row.employee2.name}
+                          className="w-12 h-12 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
+                        />
+                        <div>
+                          <p className="t-td-b">{row.employee2.name}</p>
+                          <p className="t-cap">{row.employee2.role}</p>
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Specialty – Left aligned */}
-                    <div className="w-[10%]">
-                      <p className="font-semibold text-(--gray-8)">{row.specialty}</p>
-                    </div>
+                      {/* Specialty – Left aligned */}
+                      <div className="w-[10%]">
+                        <p className="t-label">{row.specialty}</p>
+                      </div>
 
-                    {/* Area – Left aligned */}
-                    <div className="w-[13%]">
-                      <p className="font-semibold text-(--gray-7)">{row.area}</p>
-                    </div>
+                      {/* Area – Left aligned */}
+                      <div className="w-[13%]">
+                        <p className="t-label">{row.area}</p>
+                      </div>
 
-                    {/* Doctor – Left aligned */}
-                    <div className="w-[15%]">
-                      <p className="font-bold text-(--gray-9)">{row.doctor}</p>
-                    </div>
+                      {/* Doctor – Left aligned */}
+                      <div className="w-[15%]">
+                        <p className="t-td-b">{row.doctor}</p>
+                      </div>
 
-                    {/* Medicine – Left aligned */}
-                    <div className="w-[10%]">
-                      <p className="font-bold text-(--gray-9)">{row.medicine}</p>
-                    </div>
+                      {/* Medicine – Left aligned */}
+                      <div className="w-[10%]">
+                        <p className="t-td-b">{row.medicine}</p>
+                      </div>
 
-                    {/* Strengths – Chips start from left */}
-                    <div className="w-[20%] flex flex-wrap gap-2">
-                      {row.strengths.map((s, i) => (
-                        <span
-                          key={i}
-                          className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-8 text-xs font-medium whitespace-nowrap"
-                        >
-                          {s}
-                        </span>
-                      ))}
+                      {/* Strengths – Chips start from left */}
+                      <div className="w-[20%] flex flex-wrap gap-2">
+                        {row.strengths.map((s, i) => (
+                          <span
+                            key={i}
+                            className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-8 text-xs font-medium whitespace-nowrap"
+                          >
+                            {s}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             ))}
-
-            {/* Pagination */}
-            {tableData.length > 0 && (
-              <TablePagination
-                currentPage={currentPage}
-                totalItems={tableData.length}
-                itemsPerPage={itemsPerPage}
-                onPageChange={handlePageChange}
-                onItemsPerPageChange={handleItemsPerPageChange}
-                pageSizeOptions={[10, 20, 30, 50]}
-                showPageInfo={true}
-                showItemsPerPageSelector={true}
-              />
-            )}
           </div>
+
+          {/* Pagination */}
+          {tableData.length > 0 && (
+            <TablePagination
+              currentPage={currentPage}
+              totalItems={tableData.length}
+              itemsPerPage={itemsPerPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+              pageSizeOptions={[10, 20, 30, 50]}
+              showPageInfo={true}
+              showItemsPerPageSelector={true}
+            />
+          )}
         </>
       )}
     </div>

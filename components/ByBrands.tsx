@@ -6,7 +6,7 @@ interface ByBrandsProps {
 export default function ByBrands({ height }: ByBrandsProps) {
   return (
     <div className="bg-(--background)  rounded-8 shadow-soft p-4">
-      <h2 className="text-lg font-semibold mb-4">By Brands</h2>
+      <h2 className="t-h4 mb-4">By Brands</h2>
       <ResponsiveContainer width="100%" height={height}>
         <PieChart>
           <Pie
@@ -30,7 +30,7 @@ export default function ByBrands({ height }: ByBrandsProps) {
           <button
             key={b.name}
             style={{ backgroundColor: b.color }}
-            className="text-(--light) text-sm p-3 rounded cursor-pointer"
+            className="text-(--light) t-sm p-3 rounded cursor-pointer"
           >
             {b.name}
           </button>

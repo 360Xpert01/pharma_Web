@@ -3,10 +3,12 @@
 import React, { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import TableColumnHeader from "@/components/TableColumnHeader";
 import TableLoadingState from "@/components/shared/table/TableLoadingState";
 import TableErrorState from "@/components/shared/table/TableErrorState";
 import TableEmptyState from "@/components/shared/table/TableEmptyState";
 import TablePagination from "@/components/TablePagination";
+import StatusBadge from "@/components/shared/StatusBadge";
 
 interface CampaignItem {
   id: string;
@@ -139,55 +141,61 @@ export default function CampaignApprovalTable() {
         />
       ) : (
         <>
+          <TableColumnHeader
+            columns={[
+              { label: "Name", className: "w-[15%]" },
+              { label: "Month", className: "w-[15%]" },
+              { label: "Date", className: "w-[12%]" },
+              { label: "Condition", className: "w-[15%]" },
+              { label: "Channel", className: "w-[15%]" },
+              { label: "Status", className: "w-[15%] text-center" },
+              { label: "", className: "w-[13%]" },
+            ]}
+            containerClassName="flex w-full px-4"
+            showBackground={false}
+          />
+
           {paginatedCampaigns.map((item) => (
             <div key={item.id} className="px-4 py-1">
-              <div className="w-full bg-[var(--background)] rounded-8 p-3  border border-(--gray-2)">
-                <div className="flex items-center justify-between text-sm">
-                  {/* Name */}
-                  <div className="w-48 font-bold text-(--gray-9)">{item.name}</div>
-
-                  {/* Month */}
-                  <div className="flex-1 font-bold min-w-40 text-(--gray-6)">{item.month}</div>
-
-                  {/* Date */}
-                  <div className="w-36 text-(--gray-5) text-center">{item.date}</div>
-
-                  {/* Condition */}
-                  <div className="flex-1 min-w-32 font-medium text-(--gray-9) text-center">
-                    {item.condition}
-                  </div>
-
-                  {/* Channel */}
-                  <div className="flex-1 min-w-40 font-bold text-(--gray-7) text-center">
-                    {item.channel}
-                  </div>
-
-                  {/* Status Badge */}
-                  <div className="w-40 flex justify-center">
-                    <span
-                      className={`px-6 py-1 rounded-8 text-xs text-(--light) shadow-soft ${
-                        item.status === "Approved"
-                          ? "bg-(--success)"
-                          : item.status === "Rejected"
-                            ? "bg-(--destructive)"
-                            : "bg-(--warning)"
-                      }`}
-                    >
-                      {item.status}
-                    </span>
-                  </div>
-
-                  {/* View Details */}
-                  <Link
-                    href={`/dashboard/plan-Request`}
-                    className="w-40 flex justify-end items-center gap-2"
-                  >
-                    <span className="text-(--primary) font-medium cursor-pointer hover:text-(--gray-7)">
-                      View Details
-                    </span>
-                    <ChevronRight className="w-5 h-8 text-(--primary)" />
-                  </Link>
+              <div className="w-full bg-[var(--background)] rounded-8 p-3 border border-(--gray-2) flex items-center hover:bg-(--gray-0) transition-all cursor-pointer">
+                {/* Name */}
+                <div className="w-[15%] t-td-b truncate" title={item.name}>
+                  {item.name}
                 </div>
+
+                {/* Month */}
+                <div className="w-[15%] t-td truncate" title={item.month}>
+                  {item.month}
+                </div>
+
+                {/* Date */}
+                <div className="w-[12%] t-mute truncate" title={item.date}>
+                  {item.date}
+                </div>
+
+                {/* Condition */}
+                <div className="w-[15%] t-label truncate" title={item.condition}>
+                  {item.condition}
+                </div>
+
+                {/* Channel */}
+                <div className="w-[15%] t-td-b truncate" title={item.channel}>
+                  {item.channel}
+                </div>
+
+                {/* Status Badge */}
+                <div className="w-[15%] flex justify-center">
+                  <StatusBadge status={item.status} />
+                </div>
+
+                {/* View Details */}
+                <Link
+                  href={`/dashboard/plan-Request`}
+                  className="w-[13%] flex justify-end items-center gap-1"
+                >
+                  <span className="t-sm cursor-pointer whitespace-nowrap">View Details</span>
+                  <ChevronRight className="w-6 h-6 text-(--primary)" />
+                </Link>
               </div>
             </div>
           ))}

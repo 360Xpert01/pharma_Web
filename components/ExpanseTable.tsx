@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import TableColumnHeader from "@/components/TableColumnHeader";
 import TableLoadingState from "@/components/shared/table/TableLoadingState";
 import TableErrorState from "@/components/shared/table/TableErrorState";
 import TableEmptyState from "@/components/shared/table/TableEmptyState";
@@ -118,6 +119,16 @@ export default function ExpenseApprovalTable() {
   const endIndex = startIndex + itemsPerPage;
   const paginatedExpenses = expenseData.slice(startIndex, endIndex);
 
+  // Define columns for table header
+  const expenseColumns = [
+    { label: "Employee", className: "w-[20%]" },
+    { label: "Doctor", className: "w-[20%]" },
+    { label: "Total Expense", className: "w-[12%] text-center" },
+    { label: "Approved", className: "w-[12%] text-center" },
+    { label: "Rejected", className: "w-[12%] text-center" },
+    { label: "Actions", className: "w-[24%] text-center" },
+  ];
+
   return (
     <div className="w-full bg-(--gray-0)/50">
       {loading ? (
@@ -137,69 +148,72 @@ export default function ExpenseApprovalTable() {
           description="There are currently no expense records to display."
         />
       ) : (
-        <div className="space-y-1 p-4 ">
+        <div className="space-y-1 p-4">
+          <TableColumnHeader
+            columns={expenseColumns}
+            containerClassName="flex w-full"
+            showBackground={false}
+          />
+
           {paginatedExpenses.map((row) => (
             <div
               key={row.id}
-              className="bg-[var(--background)] rounded-8 border border-(--gray-2) "
+              className="bg-[var(--background)] rounded-8 border border-(--gray-2) hover:bg-(--gray-0) transition-all cursor-pointer"
             >
               <div className="px-3 py-3">
-                <div className="flex items-center justify-between gap-6 text-sm">
+                <div className="flex items-center text-sm">
                   {/* Employee 1 */}
-                  <div className="flex w-40 items-center gap-3 ">
+                  <div className="w-[20%] flex items-center gap-3">
                     <img
                       src={row.employee1.avatar || DEFAULT_AVATAR}
                       alt={row.employee1.name}
-                      className="w-12 h-12 rounded-8 object-cover border-2 border-(--light) shadow-soft"
+                      className="w-10 h-10 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
                     />
                     <div className="truncate">
-                      <div className="font-bold text-(--gray-9) truncate">{row.employee1.name}</div>
-                      <div className="text-xs text-(--gray-5) truncate">{row.employee1.role}</div>
+                      <div className="t-td-b truncate">{row.employee1.name}</div>
+                      <div className="t-cap truncate">{row.employee1.role}</div>
                     </div>
                   </div>
 
                   {/* Employee 2 */}
-                  <div className="flex items-center gap-3 ">
+                  <div className="w-[20%] flex items-center gap-3">
                     <img
                       src={row.employee2.avatar || DEFAULT_AVATAR}
                       alt={row.employee2.name}
-                      className="w-12 h-12 rounded-8 object-cover border-2 border-(--light) shadow-soft"
+                      className="w-10 h-10 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
                     />
                     <div className="truncate">
-                      <div className="font-bold text-(--gray-9) truncate">{row.employee2.name}</div>
-                      <div className="text-xs text-(--gray-5) truncate">{row.employee2.role}</div>
+                      <div className="t-td-b truncate">{row.employee2.name}</div>
+                      <div className="t-cap truncate">{row.employee2.role}</div>
                     </div>
                   </div>
 
                   {/* Total Expense */}
-                  <div className="text-center">
-                    <div className="text-xs text-(--gray-5)">Total Expense</div>
-                    <div className="font-bold text-(--warning-2) text-lg">
+                  <div className="w-[12%] text-center">
+                    <div className="t-val-sm t-warn">
                       {row.totalExpense.toLocaleString()}
-                      <span className="font-bold text-(--warning-2) pl-1 text-sm">PKR</span>
+                      <span className="t-sm t-warn pl-1">PKR</span>
                     </div>
                   </div>
 
                   {/* Approved */}
-                  <div className="text-center">
-                    <div className="text-xs text-(--gray-5)">Approved</div>
-                    <div className="font-bold text-(--success) text-lg">
+                  <div className="w-[12%] text-center">
+                    <div className="t-val-sm t-ok">
                       {row.approved.toLocaleString()}
-                      <span className="font-bold text-(--success) pl-1 text-sm">PKR</span>
+                      <span className="t-sm t-ok pl-1">PKR</span>
                     </div>
                   </div>
 
                   {/* Rejected */}
-                  <div className="text-center">
-                    <div className="text-xs text-(--gray-5)">Rejected</div>
-                    <div className="font-bold text-(--destructive) text-lg">
+                  <div className="w-[12%] text-center">
+                    <div className="t-val-sm t-err">
                       {row.rejected.toLocaleString()}
-                      <span className="font-bold text-(--destructive) pl-1 text-sm">PKR</span>
+                      <span className="t-sm t-err pl-1">PKR</span>
                     </div>
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex gap-3">
+                  <div className="w-[24%] flex gap-3 justify-center">
                     <button className="px-6 py-1 bg-(--primary) text-(--light) font-medium rounded-8 hover:bg-(--primary-2) transition shadow-soft">
                       Approve
                     </button>

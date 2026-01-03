@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import { Mail, Phone, MapPin, Eye, MoreVertical, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import TableColumnHeader from "@/components/TableColumnHeader";
 import TableLoadingState from "@/components/shared/table/TableLoadingState";
 import TableErrorState from "@/components/shared/table/TableErrorState";
 import TableEmptyState from "@/components/shared/table/TableEmptyState";
 import TablePagination from "@/components/TablePagination";
+import StatusBadge from "@/components/shared/StatusBadge";
 
 interface Doctor {
   id: string;
@@ -94,13 +95,13 @@ export default function DoctorsTable() {
 
   // Define columns for the table header
   const doctorColumns = [
-    { label: "Name", className: "col-span-2" },
-    { label: "Specialization", className: "col-span-2" },
-    { label: "Email", className: "col-span-2" },
-    { label: "Phone No", className: "col-span-2" },
-    { label: "Location", className: "col-span-1" },
-    { label: "Status", className: "col-span-2 text-center" },
-    { label: "", className: "col-span-1" }, // Empty for action buttons
+    { label: "Name", className: "w-[15%]" },
+    { label: "Specialization", className: "w-[15%]" },
+    { label: "Email", className: "w-[20%]" },
+    { label: "Phone No", className: "w-[15%]" },
+    { label: "Location", className: "w-[10%]" },
+    { label: "Status", className: "w-[12%] text-center" },
+    { label: "", className: "w-[13%]" }, // Empty for action buttons
   ];
 
   const handleRetry = () => {
@@ -125,7 +126,7 @@ export default function DoctorsTable() {
   return (
     <div className="w-full overflow-hidden">
       {loading ? (
-        <div className="px-7">
+        <div className="px-4">
           <TableLoadingState variant="skeleton" rows={5} columns={7} message="Loading doctors..." />
         </div>
       ) : error ? (
@@ -137,56 +138,51 @@ export default function DoctorsTable() {
         />
       ) : (
         <>
-          <TableColumnHeader columns={doctorColumns} gridCols={12} />
+          <TableColumnHeader
+            columns={doctorColumns}
+            containerClassName="flex w-full px-3"
+            showBackground={false}
+          />
 
-          {paginatedDoctors.map((doctor, index) => (
-            <div
-              key={doctor.id}
-              className={`px-3 py-3 hover:bg-(--gray-0) transition-colors flex items-center ${
-                index !== paginatedDoctors.length - 1 ? "" : ""
-              }`}
-            >
-              <div className="w-full bg-[var(--background)] rounded-8 p-3 border border-(--gray-2) grid grid-cols-12 gap-4 text-sm">
+          {paginatedDoctors.map((doctor) => (
+            <div key={doctor.id} className="px-3 py-1">
+              <div className="w-full bg-[var(--background)] rounded-8 p-3 border border-(--gray-2) flex items-center hover:bg-(--gray-0) transition-all cursor-pointer">
                 {/* Name */}
-                <div className="col-span-2 font-bold text-(--gray-9)">{doctor.name}</div>
+                <div className="w-[15%] t-td-b truncate" title={doctor.name}>
+                  {doctor.name}
+                </div>
 
                 {/* Specialty */}
-                <div className="col-span-2 text-(--gray-6)">{doctor.specialty}</div>
+                <div className="w-[15%] t-td truncate" title={doctor.specialty}>
+                  {doctor.specialty}
+                </div>
 
                 {/* Email */}
-                <div className="col-span-2 font-bold text-(--gray-9) flex items-center gap-2">
+                <div className="w-[20%] t-td-b truncate" title={doctor.email}>
                   {doctor.email}
                 </div>
 
                 {/* Phone */}
-                <div className="col-span-2 text-(--gray-9) flex items-center gap-2">
+                <div className="w-[15%] t-td truncate" title={doctor.phone}>
                   {doctor.phone}
                 </div>
 
                 {/* City */}
-                <div className="col-span-1 font-bold text-(--gray-9) flex items-center gap-2">
+                <div className="w-[10%] t-td-b truncate" title={doctor.city}>
                   {doctor.city}
                 </div>
 
                 {/* Status */}
-                <div className="col-span-2 flex justify-center">
-                  <span
-                    className={`px-12 py-1 rounded-8 text-sm font-medium ${
-                      doctor.status === "Active"
-                        ? "bg-(--success-0) text-(--success)"
-                        : "bg-(--gray-1) text-(--gray-6)"
-                    }`}
-                  >
-                    {doctor.status}
-                  </span>
+                <div className="w-[12%] flex justify-center">
+                  <StatusBadge status={doctor.status} />
                 </div>
 
                 {/* View Details + More */}
                 <Link
                   href={`/dashboard/doctor-profile`}
-                  className="col-span-1 flex items-center justify-end gap-2"
+                  className="w-[13%] flex items-center justify-end gap-1"
                 >
-                  <button className="text-(--gray-4) text-sm   flex items-center gap-1 whitespace-nowrap">
+                  <button className="t-sm flex items-center gap-1 whitespace-nowrap">
                     View Details
                   </button>
                   <ChevronRight className="w-6 h-6 text-(--primary)" />

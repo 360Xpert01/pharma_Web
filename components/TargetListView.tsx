@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Search, SlidersHorizontal, ChevronDown } from "lucide-react";
 import { EmployeeTarget, GroupedTargets } from "@/types/target";
 import TargetEmployeeCard from "./TargetEmployeeCard";
 import TableColumnHeader from "@/components/TableColumnHeader";
+import TablePagination from "@/components/TablePagination";
 
 // Mock data for demonstration
 const mockTargetData: EmployeeTarget[] = [
@@ -59,6 +59,14 @@ const mockTargetData: EmployeeTarget[] = [
         targetPackets: 760,
         achievedPackets: 76,
         achievementPercentage: 10,
+        status: "pending",
+      },
+      {
+        id: "p6",
+        productName: "Klinex 250mg",
+        targetPackets: 500,
+        achievedPackets: 100,
+        achievementPercentage: 20,
         status: "pending",
       },
     ],
@@ -213,6 +221,18 @@ const mockTargetData: EmployeeTarget[] = [
 
 export default function TargetListView() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1);
+  };
 
   // Group targets by month
   const groupedTargets = useMemo(() => {
@@ -234,6 +254,33 @@ export default function TargetListView() {
     return grouped;
   }, [searchQuery]);
 
+  // Flatten grouped targets for pagination
+  const allTargets = useMemo(() => {
+    return Object.entries(groupedTargets).flatMap(([month, targets]) =>
+      targets.map((target) => ({ ...target, month }))
+    );
+  }, [groupedTargets]);
+
+  // Calculate total items
+  const totalItems = allTargets.length;
+
+  // Apply pagination
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedTargets = allTargets.slice(startIndex, endIndex);
+
+  // Group paginated targets by month
+  const paginatedGroupedTargets = useMemo(() => {
+    const grouped: GroupedTargets = {};
+    paginatedTargets.forEach((target) => {
+      if (!grouped[target.month]) {
+        grouped[target.month] = [];
+      }
+      grouped[target.month].push(target);
+    });
+    return grouped;
+  }, [paginatedTargets]);
+
   return (
     <div>
       {/* Column Headers */}
@@ -252,12 +299,12 @@ export default function TargetListView() {
 
       {/* Employee Cards Grouped by Month */}
       <div>
-        {Object.keys(groupedTargets).length === 0 ? (
+        {Object.keys(paginatedGroupedTargets).length === 0 ? (
           <div className="bg-[var(--gray-0)] rounded-8 p-12 text-center mx-4 my-3">
-            <p className="text-[var(--gray-5)] text-lg">No targets found matching your criteria</p>
+            <p className="t-lg">No targets found matching your criteria</p>
           </div>
         ) : (
-          Object.entries(groupedTargets).map(([month, targets]) => (
+          Object.entries(paginatedGroupedTargets).map(([month, targets]) => (
             <div key={month} className="space-y-0 mb-3">
               {targets.map((target) => (
                 <div key={target.id} className="mx-4 my-3">
@@ -268,6 +315,22 @@ export default function TargetListView() {
           ))
         )}
       </div>
+
+      {/* Pagination */}
+      {totalItems > 0 && (
+        <div className="mx-4 mb-4">
+          <TablePagination
+            currentPage={currentPage}
+            totalItems={totalItems}
+            itemsPerPage={itemsPerPage}
+            onPageChange={handlePageChange}
+            onItemsPerPageChange={handleItemsPerPageChange}
+            pageSizeOptions={[5, 10, 20, 30, 50]}
+            showPageInfo={true}
+            showItemsPerPageSelector={true}
+          />
+        </div>
+      )}
     </div>
   );
 }

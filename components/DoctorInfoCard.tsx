@@ -2,34 +2,34 @@
 export default function DoctorInfoCard() {
   return (
     <div className="shadow-soft  rounded-8 p-6 space-y-6">
-      <h2 className="text-2xl font-semibold text-(--gray-8)">Doctor Details</h2>
+      <h2 className="t-h2">Doctor Details</h2>
 
       <div className="border-b"></div>
 
       <div className="grid grid-cols-6 gap-5  text-sm">
         <div>
-          <p className="text-(--gray-5)">Email Address</p>
-          <p className="font-bold text-lg text-(--gray-9)">sarah@gmail.com</p>
+          <p className="t-sm">Email Address</p>
+          <p className="t-val-sm">sarah@gmail.com</p>
         </div>
         <div>
-          <p className="text-(--gray-5)">Specialization</p>
-          <p className="font-bold text-lg text-(--gray-9)">Cardiologist</p>
+          <p className="t-sm">Specialization</p>
+          <p className="t-val-sm">Cardiologist</p>
         </div>
         <div>
-          <p className="text-(--gray-5)">Contact Number</p>
-          <p className="font-bold text-lg text-(--gray-9)">0310-33241-324</p>
+          <p className="t-sm">Contact Number</p>
+          <p className="t-val-sm">0310-33241-324</p>
         </div>
         <div>
-          <p className="text-(--gray-5)">License Number</p>
-          <p className="font-bold text-lg text-(--gray-9)">5A-256F5-EE1G</p>
+          <p className="t-sm">License Number</p>
+          <p className="t-val-sm">5A-256F5-EE1G</p>
         </div>
         <div>
-          <p className="text-(--gray-5)">Clinic Name</p>
-          <p className="font-bold text-lg text-(--gray-9)">AKUH</p>
+          <p className="t-sm">Clinic Name</p>
+          <p className="t-val-sm">AKUH</p>
         </div>
         <div>
-          <p className="text-(--gray-5)">Date Of Birth</p>
-          <p className="font-bold text-lg text-(--gray-9)">19/5/1998</p>
+          <p className="t-sm">Date Of Birth</p>
+          <p className="t-val-sm">19/5/1998</p>
         </div>
       </div>
 

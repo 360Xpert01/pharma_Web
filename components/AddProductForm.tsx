@@ -7,14 +7,14 @@ import {
   generatePrefix,
   resetGeneratePrefixState,
 } from "@/store/slices/preFix/generatePrefixSlice";
-import { getProductCategories } from "@/store/slices/product/getProductCategoriesSlice";
+import { getAllProductCategories } from "@/store/slices/productCategory/getAllProductCategoriesSlice";
 import { createProduct, resetProductState } from "@/store/slices/product/createProductSlice";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { productSchema } from "@/validations";
 import ConflictModal from "./ConflictModal";
 import { uploadImageFile } from "@/utils/uploadImage";
-import { ProfileImageUpload, FormInput, FormSelect } from "@/components/form";
+import { ProfileImageUpload, FormInput, FormSelect, StatusToggle } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
 
 export default function AddProductForm() {
@@ -27,8 +27,8 @@ export default function AddProductForm() {
     loading: prefixLoading,
     error: prefixError,
   } = useAppSelector((state) => state.generatePrefix);
-  const { categories, loading: categoriesLoading } = useAppSelector(
-    (state) => state.productCategories
+  const { productCategories: categories, loading: categoriesLoading } = useAppSelector(
+    (state) => state.allProductCategories
   );
   const {
     loading: productLoading,
@@ -46,6 +46,7 @@ export default function AddProductForm() {
   const [categoryId, setCategoryId] = useState("");
   const [chemicalFormula, setChemicalFormula] = useState("");
   const [description, setDescription] = useState("");
+  const [status, setStatus] = useState<"Active" | "Inactive">("Active");
   const [skus, setSkus] = useState<string[]>(["500mg", "750mg", "1000mg"]);
   const [isConflictModalOpen, setIsConflictModalOpen] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
@@ -54,7 +55,7 @@ export default function AddProductForm() {
   // Fetch product categories and generate prefix on mount
   useEffect(() => {
     dispatch(generatePrefix({ entity: "Product" }));
-    dispatch(getProductCategories());
+    dispatch(getAllProductCategories());
 
     return () => {
       dispatch(resetGeneratePrefixState());
@@ -176,7 +177,7 @@ export default function AddProductForm() {
       productFormula: chemicalFormula.trim(),
       imageUrl: uploadedImageUrl,
       description: description.trim(),
-      status: "active" as const,
+      status: status.toLowerCase() as "active" | "inactive",
       productSkus,
     };
 
@@ -219,7 +220,7 @@ export default function AddProductForm() {
 
               {/* Image Upload Status */}
               {imageUploading && (
-                <div className="flex items-center gap-2 text-sm text-[var(--primary)]">
+                <div className="flex items-center gap-2 t-sm text-(--primary)">
                   <Loader2 className="w-4 h-4 animate-spin" />
                   <span>Uploading image to cloud...</span>
                 </div>
@@ -236,7 +237,7 @@ export default function AddProductForm() {
                   type="text"
                   value={generatedPrefix || ""}
                   onChange={() => {}}
-                  placeholder="PLS_PRD_001247"
+                  placeholder="PRD_001247"
                   required
                   readOnly
                   error={getErrorMessage("pulseCode")}
@@ -269,9 +270,9 @@ export default function AddProductForm() {
                   }}
                   options={categories.map((cat) => ({
                     value: cat.id,
-                    label: cat.productCategory,
+                    label: cat.name,
                   }))}
-                  placeholder="e.g. Doctor, Heart..."
+                  placeholder="e.g. Antibiotics, Painkillers..."
                   required
                   loading={categoriesLoading}
                   error={getErrorMessage("productCategoryId")}
@@ -321,10 +322,18 @@ export default function AddProductForm() {
                 error={getErrorMessage("description")}
               />
 
+              {/* Status Toggle */}
+              <div className="flex flex-col gap-2">
+                <label className="t-label">
+                  Status <span className="text-(--destructive)">*</span>
+                </label>
+                <StatusToggle status={status} onChange={(newStatus) => setStatus(newStatus)} />
+              </div>
+
               {/* SKU SECTION */}
               <div>
-                <label className="block text-sm font-medium text-[var(--gray-7)] mb-2">
-                  Add Product SKU's<span className="text-[var(--destructive)]">*</span>
+                <label className="block t-label mb-2">
+                  Add Product SKU's<span className="text-(--destructive)">*</span>
                 </label>
 
                 {/* Input + Button side by side */}
@@ -359,9 +368,7 @@ export default function AddProductForm() {
                   </Button>
                 </div>
                 {hasError("productSkus") && (
-                  <p className="mt-1 text-sm text-[var(--destructive)]">
-                    {getErrorMessage("productSkus")}
-                  </p>
+                  <p className="mt-1 t-sm t-err">{getErrorMessage("productSkus")}</p>
                 )}
 
                 {/* SKU Chips Display */}

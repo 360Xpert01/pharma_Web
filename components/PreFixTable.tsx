@@ -75,15 +75,15 @@ export default function PrefixListComponent() {
               key={index}
               className="py-3 w-[98%] flex items-center hover:bg-(--gray-0) transition-all cursor-pointer border border-(--gray-2) mx-4 my-3 rounded-8 bg-[var(--background)]"
             >
-              <div className="w-[35%] text-sm font-bold text-(--gray-9) pl-4" title={item.entity}>
+              <div className="w-[35%] t-td-b pl-4" title={item.entity}>
                 {item.entity}
               </div>
 
-              <div className="w-[35%] text-sm text-(--gray-6) text-center" title={item.code}>
+              <div className="w-[35%] t-td text-center" title={item.code}>
                 {item.code}
               </div>
 
-              <div className="w-[30%] text-sm font-bold text-(--gray-9) text-right pr-6">
+              <div className="w-[30%] t-td-b text-right pr-6">
                 {item.code}-{String(startIndex + index + 1).padStart(2, "0")}
               </div>
             </div>

@@ -44,14 +44,14 @@ export default function TablePagination({
       className={`flex items-center justify-between gap-4 px-4 py-3 bg-[var(--background)] rounded-8 mt-3 ${className}`}
     >
       {/* Left: Records info and rows per page */}
-      <div className="flex items-center gap-4 text-sm text-[var(--gray-6)]">
+      <div className="flex items-center gap-4 t-md">
         <div className="flex items-center gap-2">
           <span>Records:</span>
-          <span className="text-[var(--gray-8)] font-medium">
+          <span className="t-label">
             {startItem}-{String(endItem).padStart(2, "0")}
           </span>
           <span>of</span>
-          <span className="text-[var(--gray-8)] font-medium">{totalItems}</span>
+          <span className="t-label">{totalItems}</span>
         </div>
 
         {/* Rows per page dropdown */}
@@ -103,7 +103,7 @@ export default function TablePagination({
         </button>
 
         {/* Page label */}
-        <span className="text-sm text-[var(--gray-6)]">Page:</span>
+        <span className="t-md">Page:</span>
 
         {/* Page Dropdown */}
         <select

@@ -104,9 +104,7 @@ export default function ExpenseApprovalList() {
     <div className="">
       <div className="mt-3">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-(--employee-detail-tab-heading)">
-            Weekly Expenses
-          </h2>
+          <h2 className="t-h3">Weekly Expenses</h2>
           <div className="flex items-center gap-2 text-(--primary) text-sm font-medium cursor-pointer">
             <ChevronLeft className="w-4 h-4" />
             <span>01 - 07 Sept, 2025</span>
@@ -135,9 +133,9 @@ export default function ExpenseApprovalList() {
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-(--gray-9)">{item.name}</h3>
+                  <h3 className="t-label-b">{item.name}</h3>
                   <div className="flex items-center gap-2">
-                    <p className="text-sm text-(--gray-5)">{item.role}</p>
+                    <p className="t-sm">{item.role}</p>
                     <span
                       className={`px-2 py-0.5 text-xs font-medium rounded-8 ${
                         item.status === "Review"
@@ -154,24 +152,24 @@ export default function ExpenseApprovalList() {
               {/* Center: Expense Breakdown - Three evenly distributed columns */}
               <div className="flex items-center flex-1">
                 <div className="w-1/3 text-center">
-                  <p className="text-xs text-(--gray-4)">Total Expense</p>
-                  <p className="text-lg font-bold text-(--warning-2)">
+                  <p className="t-cap">Total Expense</p>
+                  <p className="t-val-sm t-warn">
                     {item.total.toLocaleString()}
-                    <span className="text-xs font-medium text-(--warning-2) ml-1">PKR</span>
+                    <span className="t-sm t-warn ml-1">PKR</span>
                   </p>
                 </div>
                 <div className="w-1/3 text-center">
-                  <p className="text-xs text-(--gray-4)">Approved</p>
-                  <p className="text-lg font-bold text-(--success)">
+                  <p className="t-cap">Approved</p>
+                  <p className="t-val-sm t-ok">
                     {item.approved.toLocaleString()}
-                    <span className="text-xs font-medium text-(--success) ml-1">PKR</span>
+                    <span className="t-sm t-ok ml-1">PKR</span>
                   </p>
                 </div>
                 <div className="w-1/3 text-center">
-                  <p className="text-xs text-(--gray-4)">Rejected</p>
-                  <p className="text-lg font-bold text-(--destructive)">
+                  <p className="t-cap">Rejected</p>
+                  <p className="t-val-sm t-err">
                     {item.rejected.toLocaleString()}
-                    <span className="text-xs font-medium text-(--destructive) ml-1">PKR</span>
+                    <span className="t-sm t-err ml-1">PKR</span>
                   </p>
                 </div>
               </div>

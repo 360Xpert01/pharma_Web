@@ -40,14 +40,14 @@ export function ChartCard({
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             {Icon && <Icon className="h-4 w-4" />}
-            <CardTitle className="text-base">{title}</CardTitle>
+            <CardTitle className="t-label">{title}</CardTitle>
             {badge && (
               <Badge variant="secondary" className="text-xs">
                 {badge}
               </Badge>
             )}
           </div>
-          {description && <p className="text-sm text-muted-foreground">{description}</p>}
+          {description && <p className="t-md">{description}</p>}
         </div>
         {showViewAll && (
           <Button variant="outline" size="sm" onClick={onViewAll}>

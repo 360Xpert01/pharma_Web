@@ -49,7 +49,7 @@ export default function FormInput({
 
   return (
     <div className={className}>
-      <label className="block text-sm font-medium text-(--gray-7)">
+      <label className="t-label">
         {label}
         {required && <span className="text-(--destructive)">*</span>}
       </label>
@@ -63,7 +63,7 @@ export default function FormInput({
         readOnly={readOnly}
         className={`${getInputClasses()} ${inputClassName}`}
       />
-      {hasError && <p className="mt-1 text-sm text-(--destructive)">{error}</p>}
+      {hasError && <p className="mt-1 t-sm t-err">{error}</p>}
     </div>
   );
 }

@@ -32,6 +32,10 @@ import createProductReducer from "./slices/product/createProductSlice";
 import allTeamsReducer from "./slices/team/getAllTeamsSlice";
 import createTeamReducer from "./slices/team/createTeamSlice";
 import brickListReducer from "./slices/brick/getBrickListSlice";
+import allProductCategoriesReducer from "./slices/productCategory/getAllProductCategoriesSlice";
+import createProductCategoryReducer from "./slices/productCategory/createProductCategorySlice";
+import allSpecializationsReducer from "./slices/specialization/getAllSpecializationsSlice";
+import createSpecializationReducer from "./slices/specialization/createSpecializationSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -62,6 +66,10 @@ const rootReducer = combineReducers({
   allTeams: allTeamsReducer,
   createTeam: createTeamReducer,
   brickList: brickListReducer,
+  allProductCategories: allProductCategoriesReducer,
+  createProductCategory: createProductCategoryReducer,
+  allSpecializations: allSpecializationsReducer,
+  createSpecialization: createSpecializationReducer,
 });
 
 const persistConfig = {
