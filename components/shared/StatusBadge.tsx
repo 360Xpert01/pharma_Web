@@ -17,6 +17,7 @@ interface StatusBadgeProps {
   status: StatusType | string;
   className?: string;
   variant?: "default" | "pill";
+  label?: string; // Custom label to display instead of status
 }
 
 /**
@@ -26,12 +27,19 @@ interface StatusBadgeProps {
  * @param status - The status to display (active, inactive, pending, etc.)
  * @param className - Additional CSS classes to apply
  * @param variant - Badge variant: "default" (rounded-8) or "pill" (rounded-full)
+ * @param label - Custom label to display instead of the default status text
  *
  * @example
  * <StatusBadge status="active" />
  * <StatusBadge status="inactive" variant="pill" />
+ * <StatusBadge status="active" label="In Stock" />
  */
-const StatusBadge: React.FC<StatusBadgeProps> = ({ status, className = "", variant = "pill" }) => {
+const StatusBadge: React.FC<StatusBadgeProps> = ({
+  status,
+  className = "",
+  variant = "pill",
+  label,
+}) => {
   const normalizedStatus = status.toLowerCase().replace(/\s+/g, "");
 
   // Define status color mappings with proper CSS variable syntax
@@ -54,10 +62,12 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, className = "", varia
   const radiusClass = variant === "pill" ? "rounded-full" : "rounded-lg";
 
   // Capitalize first letter of each word for display
-  const displayStatus = status
-    .split(/(?=[A-Z])|[\s_-]/) // Split on capital letters or separators
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(" ");
+  const displayStatus =
+    label ||
+    status
+      .split(/(?=[A-Z])|[\s_-]/) // Split on capital letters or separators
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
 
   return (
     <span

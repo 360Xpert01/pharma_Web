@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import CenturoTable from "@/components/shared/table/CenturoTable";
+import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import TableActionDropdown from "@/components/shared/table/TableActionDropdown";
 import { useDispatch, useSelector } from "react-redux";

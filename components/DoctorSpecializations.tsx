@@ -2,77 +2,59 @@
 
 import React, { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "@/store/index";
-import {
-  createSpecialization,
-  resetSpecializationState,
-} from "@/store/slices/specialization/createSpecializationSlice";
-import { getAllSpecializations } from "@/store/slices/specialization/getAllSpecializationsSlice";
-import {
-  generatePrefix,
-  resetGeneratePrefixState,
-} from "@/store/slices/preFix/generatePrefixSlice";
 import { FormInput } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
 
+interface Specialization {
+  id: string;
+  pulseCode: string;
+  name: string;
+  isActive: boolean;
+}
+
 export default function AddSpecializationsCard() {
-  const dispatch = useAppDispatch();
-  const { loading, success, error, message } = useAppSelector(
-    (state) => state.createSpecialization
-  );
-  const {
-    generatedPrefix,
-    loading: prefixLoading,
-    error: prefixError,
-  } = useAppSelector((state) => state.generatePrefix);
-
   const [specializationName, setSpecializationName] = useState("");
-
-  // Generate prefix on mount
-  useEffect(() => {
-    dispatch(generatePrefix({ entity: "Specialization" }));
-
-    return () => {
-      dispatch(resetGeneratePrefixState());
-    };
-  }, [dispatch]);
-
-  // Reset state and refresh specializations list on success
-  useEffect(() => {
-    if (success) {
-      // Clear form
-      setSpecializationName("");
-
-      // Refresh specializations list
-      dispatch(getAllSpecializations());
-
-      // Regenerate prefix for next specialization
-      dispatch(generatePrefix({ entity: "Specialization" }));
-
-      // Reset state after a delay
-      setTimeout(() => {
-        dispatch(resetSpecializationState());
-      }, 3000);
-    }
-  }, [success, dispatch]);
+  const [pulseCode, setPulseCode] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [specializations, setSpecializations] = useState<Specialization[]>([
+    { id: "1", pulseCode: "SP01", name: "Cardiologist", isActive: true },
+    { id: "2", pulseCode: "SP02", name: "Dermatologist", isActive: true },
+    { id: "3", pulseCode: "SP03", name: "Neurologist", isActive: true },
+    { id: "4", pulseCode: "SP04", name: "Pediatrician", isActive: true },
+    { id: "5", pulseCode: "SP05", name: "Orthopedic Surgeon", isActive: true },
+    { id: "6", pulseCode: "SP06", name: "Gynecologist", isActive: true },
+    { id: "7", pulseCode: "SP07", name: "Ophthalmologist", isActive: true },
+    { id: "8", pulseCode: "SP08", name: "Psychiatrist", isActive: true },
+    { id: "9", pulseCode: "SP09", name: "Endocrinologist", isActive: true },
+    { id: "10", pulseCode: "SP10", name: "Gastroenterologist", isActive: true },
+  ]);
 
   const handleAddSpecialization = async () => {
     if (!specializationName.trim()) return;
 
-    // Validate pulse code is generated
-    if (!generatedPrefix) {
-      console.error("Pulse code not generated yet");
-      return;
-    }
+    setLoading(true);
 
-    const specializationData = {
-      name: specializationName.trim(),
-      pulseCode: generatedPrefix,
-      isActive: true,
-    };
+    // Simulate API call
+    setTimeout(() => {
+      const newSpecialization: Specialization = {
+        id: (specializations.length + 1).toString(),
+        pulseCode: pulseCode.trim() || "SP11",
+        name: specializationName.trim(),
+        isActive: true,
+      };
 
-    // Dispatch to API
-    dispatch(createSpecialization(specializationData));
+      setSpecializations([...specializations, newSpecialization]);
+      setSpecializationName("");
+      setPulseCode("");
+      setSuccess(true);
+      setLoading(false);
+
+      // Reset success message after 3 seconds
+      setTimeout(() => {
+        setSuccess(false);
+      }, 3000);
+    }, 500);
   };
 
   return (
@@ -85,6 +67,13 @@ export default function AddSpecializationsCard() {
             <p className="t-sm mt-1">Manage doctor specializations for your organization</p>
           </div>
 
+          {/* Success Message */}
+          {success && (
+            <div className="bg-[var(--success-0)] border border-[var(--success)] text-[var(--success)] px-4 py-3 rounded-8">
+              Specialization added successfully!
+            </div>
+          )}
+
           {/* Add New Specialization Form */}
           <div className="flex gap-6 items-end">
             {/* Input Fields Grid */}
@@ -94,10 +83,9 @@ export default function AddSpecializationsCard() {
                 label="Pulse Code"
                 name="pulseCode"
                 type="text"
-                value={generatedPrefix || ""}
-                onChange={() => {}}
-                placeholder={prefixLoading ? "Generating..." : "SP_000001"}
-                readOnly
+                value={pulseCode}
+                onChange={setPulseCode}
+                placeholder="SP11"
                 required
               />
 

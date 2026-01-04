@@ -1,12 +1,12 @@
 // components/DoctorInfoCard.tsx
 export default function DoctorInfoCard() {
   return (
-    <div className="shadow-soft rounded-8 p-6 space-y-6 bg-(--background)">
+    <div className="shadow-soft rounded-8 p-5 bg-(--background)">
       <h2 className="t-h2">Doctor Details</h2>
 
-      <div className="border-b"></div>
+      <div className="border-b my-4"></div>
 
-      <div className="grid grid-cols-6 gap-5  text-sm">
+      <div className="grid grid-cols-6 gap-5 text-sm mb-6">
         <div>
           <p className="t-sm">Email Address</p>
           <p className="t-val-sm">sarah@gmail.com</p>

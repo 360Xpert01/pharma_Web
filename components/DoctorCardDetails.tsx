@@ -1,10 +1,12 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, TrendingDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DoctorCardDetailsProps {
   title: string;
+  headerLabel?: string;
+  headerTrend?: "up" | "down";
   value: string | number;
   valueLabel: string;
   subtitle: string;
@@ -16,21 +18,23 @@ interface DoctorCardDetailsProps {
 }
 
 const colorClasses = {
-  "1": "bg-chart-1",
-  "2": "bg-chart-2",
-  "3": "bg-chart-3",
-  "4": "bg-chart-4",
+  "1": "bg-(--primary)",
+  "2": "bg-(--success)",
+  "3": "bg-(--destructive-1)",
+  "4": "bg-(--chart-4)",
 };
 
 const valueColorClasses = {
-  "1": "text-chart-1",
-  "2": "text-chart-2",
-  "3": "text-chart-3",
+  "1": "text-(--primary)",
+  "2": "text-(--success)",
+  "3": "text-(--destructive-1)",
   "4": "text-chart-4",
 };
 
 export function DoctorCardDetails({
   title,
+  headerLabel,
+  headerTrend,
   value,
   valueLabel,
   subtitle,
@@ -40,10 +44,19 @@ export function DoctorCardDetails({
   colorVariant = "1",
   className,
 }: DoctorCardDetailsProps) {
+  const HeaderIcon = headerTrend === "up" ? TrendingUp : TrendingDown;
   return (
     <Card className={cn("shadow-soft", className)}>
-      <CardHeader className="">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <h3 className="t-h3">{title}</h3>
+        {(headerLabel || headerTrend) && (
+          <div className="flex items-center gap-2 t-mute text-xs font-normal">
+            <span>{headerLabel}</span>
+            {headerTrend && (
+              <HeaderIcon className={cn("h-4 w-4", valueColorClasses[colorVariant])} />
+            )}
+          </div>
+        )}
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex items-baseline gap-2">

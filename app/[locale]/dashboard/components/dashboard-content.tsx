@@ -144,7 +144,7 @@ export function DashboardContent({
       {/* Dashboard Header with Actions */}
       {/* shadow-[0px_0.63px_5.5px_0px_rgba(0,0,0,0.1)] */}
 
-      {!channalTrue && (
+      {!channalTrue && !productCategoriesTrue && !specializationsTrue && (
         <DashboardHeader
           onRefresh={handleRefresh}
           onSettings={handleSettings}

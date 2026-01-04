@@ -20,7 +20,7 @@ export default function DoctorDetail() {
         </div>
       </div>
       <div className="bg-(--background) rounded-8 px-3 py-1 shadow-soft mt-7 border border-gray-200">
-        <TableHeader campHeading={"plan"} filterT={false} />
+        <TableHeader campHeading={"Plans"} filterT={false} />
         <DoctordetailDrop />
       </div>
     </div>
