@@ -14,6 +14,22 @@
     border-radius: 8px;
   }
 
+  .rounded-tl-8 {
+    border-radius: 8px;
+  }
+
+  .rounded-tr-8 {
+    border-radius: 8px;
+  }
+
+  .rounded-br-8 {
+    border-radius: 8px;
+  }
+
+  .rounded-bl-8 {
+    border-radius: 8px;
+  }
+
   /* ============================================
      TYPOGRAPHY SYSTEM
      Consistent text styles for the entire app
@@ -171,6 +187,19 @@
     font-size: 0.875rem;
     font-weight: 500;
     /* color: var(--gray-9); */
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari and Opera */
   }
 }
 
