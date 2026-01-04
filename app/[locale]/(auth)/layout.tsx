@@ -43,7 +43,7 @@ export default function AuthLayout({ children }: PropsWithChildren) {
           </div>
 
           {/* Footer - Fixed at Bottom */}
-          <div className="relative z-10 pb-4 text-[12px] text-white/80 text-sm text-end pr-30">
+          <div className="relative z-10 pb-4 text-[12px] text-white/80 text-sm text-end pr-40">
             Pulse by CRM | © 2024 All Rights Reserved
           </div>
         </div>

@@ -176,6 +176,11 @@ export default function LoginScreen() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && email.includes("@") && !loading) {
+                    handleSendOTP();
+                  }
+                }}
                 placeholder="Enter your email"
                 disabled={loading}
                 className="w-full h-12 px-4 py-3 border border-[var(--gray-2)] rounded-8 outline-none transition-all focus:ring-2 focus:ring-[var(--primary-1)] focus:border-[var(--primary-1)] disabled:bg-[var(--gray-1)] disabled:cursor-not-allowed bg-white text-sm"
@@ -196,7 +201,7 @@ export default function LoginScreen() {
             <button
               onClick={handleSendOTP}
               disabled={loading || !email.includes("@")}
-              className="w-full h-12 bg-[var(--primary-1)] hover:bg-[var(--primary)] text-[var(--primary-foreground)] font-semibold rounded-8 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full h-12 bg-gradient-to-r from-[var(--primary-gradient-start)] to-[var(--primary-gradient-end)] hover:from-[var(--primary-gradient-start-hover)] hover:to-[var(--primary-gradient-end-hover)] text-white font-semibold rounded-8 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Sending..." : "Send OTP"}
             </button>
