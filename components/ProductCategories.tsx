@@ -2,77 +2,74 @@
 
 import React, { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "@/store/index";
-import {
-  createProductCategory,
-  resetProductCategoryState,
-} from "@/store/slices/productCategory/createProductCategorySlice";
-import { getAllProductCategories } from "@/store/slices/productCategory/getAllProductCategoriesSlice";
-import {
-  generatePrefix,
-  resetGeneratePrefixState,
-} from "@/store/slices/preFix/generatePrefixSlice";
 import { FormInput } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
 
+interface ProductCategory {
+  id: string;
+  pulseCode: string;
+  name: string;
+  isActive: boolean;
+}
+
 export default function AddProductCategoriesCard() {
-  const dispatch = useAppDispatch();
-  const { loading, success, error, message } = useAppSelector(
-    (state) => state.createProductCategory
-  );
-  const {
-    generatedPrefix,
-    loading: prefixLoading,
-    error: prefixError,
-  } = useAppSelector((state) => state.generatePrefix);
+  const [categories, setCategories] = useState<ProductCategory[]>([
+    { id: "1", pulseCode: "PC_000001", name: "Antibiotics", isActive: true },
+    { id: "2", pulseCode: "PC_000002", name: "Pain Relief", isActive: true },
+    { id: "3", pulseCode: "PC_000003", name: "Vitamins", isActive: true },
+    { id: "4", pulseCode: "PC_000004", name: "Cardiovascular", isActive: true },
+    { id: "5", pulseCode: "PC_000005", name: "Diabetes Care", isActive: true },
+    { id: "6", pulseCode: "PC_000006", name: "Respiratory", isActive: true },
+    { id: "7", pulseCode: "PC_000007", name: "Gastrointestinal", isActive: true },
+    { id: "8", pulseCode: "PC_000008", name: "Dermatology", isActive: true },
+    { id: "9", pulseCode: "PC_000009", name: "Eye Care", isActive: true },
+    { id: "10", pulseCode: "PC_000010", name: "Nutritional Supplements", isActive: true },
+  ]);
 
   const [categoryName, setCategoryName] = useState("");
+  const [generatedPrefix, setGeneratedPrefix] = useState("PC_000011");
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  // Generate prefix on mount
+  // Auto-generate next pulse code
   useEffect(() => {
-    dispatch(generatePrefix({ entity: "ProductCategory" }));
+    if (categories.length > 0) {
+      const lastPulseCode = categories[categories.length - 1].pulseCode;
+      const lastNumber = parseInt(lastPulseCode.split("_")[1]);
+      const nextNumber = (lastNumber + 1).toString().padStart(6, "0");
+      setGeneratedPrefix(`PC_${nextNumber}`);
+    }
+  }, [categories]);
 
-    return () => {
-      dispatch(resetGeneratePrefixState());
-    };
-  }, [dispatch]);
-
-  // Reset state and refresh categories list on success
+  // Clear success message after 3 seconds
   useEffect(() => {
     if (success) {
-      // Clear form
-      setCategoryName("");
-
-      // Refresh categories list
-      dispatch(getAllProductCategories());
-
-      // Regenerate prefix for next category
-      dispatch(generatePrefix({ entity: "ProductCategory" }));
-
-      // Reset state after a delay
-      setTimeout(() => {
-        dispatch(resetProductCategoryState());
+      const timer = setTimeout(() => {
+        setSuccess(false);
       }, 3000);
+      return () => clearTimeout(timer);
     }
-  }, [success, dispatch]);
+  }, [success]);
 
   const handleAddCategory = async () => {
     if (!categoryName.trim()) return;
 
-    // Validate pulse code is generated
-    if (!generatedPrefix) {
-      console.error("Pulse code not generated yet");
-      return;
-    }
+    setLoading(true);
 
-    const categoryData = {
-      name: categoryName.trim(),
-      pulseCode: generatedPrefix,
-      isActive: true,
-    };
+    // Simulate API call
+    setTimeout(() => {
+      const newCategory: ProductCategory = {
+        id: (categories.length + 1).toString(),
+        pulseCode: generatedPrefix,
+        name: categoryName.trim(),
+        isActive: true,
+      };
 
-    // Dispatch to API
-    dispatch(createProductCategory(categoryData));
+      setCategories([...categories, newCategory]);
+      setCategoryName("");
+      setSuccess(true);
+      setLoading(false);
+    }, 500);
   };
 
   return (
@@ -85,6 +82,13 @@ export default function AddProductCategoriesCard() {
             <p className="t-sm mt-1">Manage product categories for your organization</p>
           </div>
 
+          {/* Success Message */}
+          {success && (
+            <div className="p-4 bg-[var(--success)]/10 text-[var(--success)] rounded-8 border border-[var(--success)]/20">
+              Category added successfully!
+            </div>
+          )}
+
           {/* Add New Category Form */}
           <div className="flex gap-6 items-end">
             {/* Input Fields Grid */}
@@ -94,9 +98,9 @@ export default function AddProductCategoriesCard() {
                 label="Pulse Code"
                 name="pulseCode"
                 type="text"
-                value={generatedPrefix || ""}
+                value={generatedPrefix}
                 onChange={() => {}}
-                placeholder={prefixLoading ? "Generating..." : "PC_000001"}
+                placeholder="PC_000001"
                 readOnly
                 required
               />

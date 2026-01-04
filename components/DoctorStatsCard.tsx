@@ -5,30 +5,37 @@ export default function DoctorStatsCard() {
   const topHcps = [
     {
       title: "Sales Report",
-      value: 430000,
+      headerLabel: "Sales Completion Rate",
+      headerTrend: "down" as const,
+      value: "43,000",
       valueLabel: "",
       subtitle: "Sales Completion Rate",
-      detailValue: "180K",
-      progress: 75,
-      colorVariant: "1",
+      detailLabel: "",
+      detailValue: "",
+      progress: 30,
+      colorVariant: "1" as const,
     },
     {
       title: "Samples",
-      value: 800,
+      value: "800",
       valueLabel: "",
       subtitle: "Samples Completion Rate",
-      detailValue: "195K",
-      progress: 30,
-      colorVariant: "2",
+      detailLabel: "",
+      detailValue: "",
+      progress: 50,
+      colorVariant: "2" as const,
     },
     {
       title: "Giveaways",
-      value: 200,
+      headerLabel: "120 Returned",
+      headerTrend: "down" as const,
+      value: "200",
       valueLabel: "",
       subtitle: "Distributed Items",
-      detailValue: "142K",
-      progress: 60,
-      colorVariant: "3",
+      detailLabel: "",
+      detailValue: "",
+      progress: 70,
+      colorVariant: "3" as const,
     },
   ];
 
@@ -39,6 +46,8 @@ export default function DoctorStatsCard() {
           <DoctorCardDetails
             key={index}
             title={hcp.title}
+            headerLabel={hcp.headerLabel}
+            headerTrend={hcp.headerTrend}
             value={hcp.value}
             valueLabel={hcp.valueLabel}
             subtitle={hcp.subtitle}

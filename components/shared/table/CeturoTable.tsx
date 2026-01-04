@@ -10,8 +10,10 @@ import {
   useReactTable,
   SortingState,
   ExpandedState,
+  SortingFn,
+  sortingFns,
 } from "@tanstack/react-table";
-import { ChevronUp, ChevronDown } from "lucide-react";
+import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 
 interface CenturoTableProps<T> {
   data: T[];
@@ -26,6 +28,7 @@ interface CenturoTableProps<T> {
   emptyMessage?: string;
   renderExpandedRow?: (row: T) => React.ReactNode;
   onRowClick?: (row: T) => void;
+  sortingFns?: Record<string, SortingFn<T>>;
   PaginationComponent?: React.ComponentType<{
     currentPage: number;
     totalItems: number;
@@ -36,6 +39,29 @@ interface CenturoTableProps<T> {
     showPageInfo?: boolean;
   }>;
 }
+
+// Custom sorting function for case-insensitive alphabetic sorting
+const alphanumericSorting: SortingFn<any> = (rowA, rowB, columnId) => {
+  const a = rowA.getValue(columnId);
+  const b = rowB.getValue(columnId);
+
+  // Handle null/undefined
+  if (a == null && b == null) return 0;
+  if (a == null) return 1;
+  if (b == null) return -1;
+
+  // If both are numbers, compare numerically
+  const aNum = Number(a);
+  const bNum = Number(b);
+  if (!isNaN(aNum) && !isNaN(bNum)) {
+    return aNum - bNum;
+  }
+
+  // Otherwise, compare as strings (case-insensitive)
+  const aStr = String(a).toLowerCase();
+  const bStr = String(b).toLowerCase();
+  return aStr.localeCompare(bStr);
+};
 
 export default function CenturoTable<T>({
   data,
@@ -50,6 +76,7 @@ export default function CenturoTable<T>({
   emptyMessage = "No data found",
   renderExpandedRow,
   onRowClick,
+  sortingFns: customSortingFns,
   PaginationComponent,
 }: CenturoTableProps<T>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -65,9 +92,18 @@ export default function CenturoTable<T>({
     return data.slice(startIndex, endIndex);
   }, [data, currentPage, itemsPerPage, enablePagination]);
 
+  // Set default sorting function for all columns that don't have one
+  const columnsWithDefaultSorting = React.useMemo(() => {
+    return columns.map((col) => ({
+      ...col,
+      enableSorting: col.enableSorting !== false, // Enable by default unless explicitly disabled
+      sortingFn: col.sortingFn || "alphanumeric", // Use alphanumeric as default
+    }));
+  }, [columns]);
+
   const table = useReactTable({
     data: paginatedData,
-    columns,
+    columns: columnsWithDefaultSorting,
     state: {
       sorting: enableSorting ? sorting : [],
       expanded: enableExpanding ? expanded : {},
@@ -77,9 +113,14 @@ export default function CenturoTable<T>({
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: enableSorting ? getSortedRowModel() : undefined,
     getExpandedRowModel: enableExpanding ? getExpandedRowModel() : undefined,
+    sortingFns: {
+      ...sortingFns,
+      alphanumeric: alphanumericSorting,
+      ...customSortingFns,
+    },
   });
 
-  const columnCount = columns.length;
+  const columnCount = columnsWithDefaultSorting.length;
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -97,7 +138,7 @@ export default function CenturoTable<T>({
         <table className="w-full border-collapse">
           <thead className="bg-(--gray-0) border-b border-(--gray-2)">
             <tr>
-              {columns.map((_, index) => (
+              {columnsWithDefaultSorting.map((_, index) => (
                 <th key={index} className="px-4 py-3 text-left">
                   <div className="h-3 bg-(--gray-3) rounded-8 animate-pulse w-2/3"></div>
                 </th>
@@ -107,7 +148,7 @@ export default function CenturoTable<T>({
           <tbody>
             {[...Array(5)].map((_, rowIndex) => (
               <tr key={rowIndex} className="border-b border-(--gray-2)">
-                {columns.map((_, colIndex) => (
+                {columnsWithDefaultSorting.map((_, colIndex) => (
                   <td key={colIndex} className="px-4 py-3">
                     <div className="h-6 bg-(--gray-1) rounded-8 animate-pulse w-full"></div>
                   </td>
@@ -161,21 +202,33 @@ export default function CenturoTable<T>({
                   return (
                     <th
                       key={header.id}
-                      onClick={canSort ? header.column.getToggleSortingHandler() : undefined}
                       className={`px-4 py-3 text-left t-th ${
-                        canSort ? "cursor-pointer select-none hover:bg-(--gray-1)" : ""
+                        canSort ? "cursor-pointer select-none" : ""
                       }`}
                     >
-                      <div className="flex items-center gap-2">
-                        {flexRender(header.column.columnDef.header, header.getContext())}
-                        {canSort && (
-                          <span className="ml-auto">
-                            {isSorted === "asc" && <ChevronUp className="w-4 h-4" />}
-                            {isSorted === "desc" && <ChevronDown className="w-4 h-4" />}
-                            {!isSorted && <ChevronUp className="w-4 h-4 opacity-20" />}
+                      {canSort ? (
+                        <div
+                          onClick={header.column.getToggleSortingHandler()}
+                          className="flex items-center justify-between gap-2 group"
+                        >
+                          <span>
+                            {flexRender(header.column.columnDef.header, header.getContext())}
                           </span>
-                        )}
-                      </div>
+                          <div className="flex flex-col">
+                            {!isSorted && (
+                              <ArrowUpDown className="w-4 h-4 text-(--gray-4) group-hover:text-(--gray-6) transition-colors" />
+                            )}
+                            {isSorted === "asc" && (
+                              <ArrowUp className="w-4 h-4 text-(--gray-4) group-hover:text-(--gray-6) transition-colors" />
+                            )}
+                            {isSorted === "desc" && (
+                              <ArrowDown className="w-4 h-4 text-(--gray-4) group-hover:text-(--gray-6) transition-colors" />
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        flexRender(header.column.columnDef.header, header.getContext())
+                      )}
                     </th>
                   );
                 })}

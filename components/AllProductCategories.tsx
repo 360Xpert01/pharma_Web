@@ -1,40 +1,48 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { MoreVertical } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "@/store/index";
-import { getAllProductCategories } from "@/store/slices/productCategory/getAllProductCategoriesSlice";
 import TableColumnHeader from "@/components/TableColumnHeader";
-import TableLoadingState from "@/components/shared/table/TableLoadingState";
-import TableErrorState from "@/components/shared/table/TableErrorState";
-import TableEmptyState from "@/components/shared/table/TableEmptyState";
 import StatusToggle from "@/components/form/StatusToggle";
 
-export default function ProductCategoriesManager() {
-  const dispatch = useAppDispatch();
-  const { productCategories, loading, error } = useAppSelector(
-    (state) => state.allProductCategories
-  );
-  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+interface ProductCategory {
+  id: string;
+  pulseCode: string;
+  name: string;
+  isActive: boolean;
+}
 
-  // Fetch product categories on component mount
-  useEffect(() => {
-    dispatch(getAllProductCategories());
-  }, [dispatch]);
+export default function ProductCategoriesManager() {
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [productCategories, setProductCategories] = useState<ProductCategory[]>([
+    { id: "1", pulseCode: "PC_000001", name: "Antibiotics", isActive: true },
+    { id: "2", pulseCode: "PC_000002", name: "Pain Relief", isActive: true },
+    { id: "3", pulseCode: "PC_000003", name: "Vitamins", isActive: true },
+    { id: "4", pulseCode: "PC_000004", name: "Cardiovascular", isActive: true },
+    { id: "5", pulseCode: "PC_000005", name: "Diabetes Care", isActive: true },
+    { id: "6", pulseCode: "PC_000006", name: "Respiratory", isActive: true },
+    { id: "7", pulseCode: "PC_000007", name: "Gastrointestinal", isActive: true },
+    { id: "8", pulseCode: "PC_000008", name: "Dermatology", isActive: true },
+    { id: "9", pulseCode: "PC_000009", name: "Eye Care", isActive: true },
+    { id: "10", pulseCode: "PC_000010", name: "Nutritional Supplements", isActive: true },
+    { id: "11", pulseCode: "PC_000011", name: "Oncology", isActive: true },
+    { id: "12", pulseCode: "PC_000012", name: "Neurology", isActive: true },
+    { id: "13", pulseCode: "PC_000013", name: "Immunology", isActive: false },
+    { id: "14", pulseCode: "PC_000014", name: "Pediatric Care", isActive: true },
+    { id: "15", pulseCode: "PC_000015", name: "Women's Health", isActive: true },
+  ]);
 
   const toggleStatus = (id: string) => {
-    // TODO: Implement API call to update product category status
-    console.log("Toggle status for product category:", id);
+    setProductCategories(
+      productCategories.map((category) =>
+        category.id === id ? { ...category, isActive: !category.isActive } : category
+      )
+    );
   };
 
   const deleteCategory = (id: string) => {
-    // TODO: Implement API call to delete product category
-    console.log("Delete product category:", id);
+    setProductCategories(productCategories.filter((category) => category.id !== id));
     setOpenMenuId(null);
-  };
-
-  const handleRetry = () => {
-    dispatch(getAllProductCategories());
   };
 
   // Define columns for the table header
@@ -47,26 +55,13 @@ export default function ProductCategoriesManager() {
 
   return (
     <div className="w-full overflow-hidden bg-(--background)">
-      {loading ? (
-        <div className="px-4">
-          <TableLoadingState
-            variant="skeleton"
-            rows={5}
-            columns={3}
-            message="Loading product categories..."
-          />
+      {productCategories.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <p className="t-h3 text-[var(--gray-6)]">No product categories found</p>
+          <p className="t-sm text-[var(--gray-5)] mt-2">
+            There are currently no product categories in the system.
+          </p>
         </div>
-      ) : error ? (
-        <TableErrorState
-          error={error}
-          onRetry={handleRetry}
-          title="Failed to load product categories"
-        />
-      ) : productCategories.length === 0 ? (
-        <TableEmptyState
-          message="No product categories found"
-          description="There are currently no product categories in the system."
-        />
       ) : (
         <div>
           {/* Column Headers */}

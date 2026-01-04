@@ -31,6 +31,10 @@ const Navbar = () => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const profileRef = useRef<HTMLDivElement | null>(null);
+  const [dropdownAlignment, setDropdownAlignment] = useState<{ [key: string]: "left" | "right" }>(
+    {}
+  );
+  const [submenuAlignment, setSubmenuAlignment] = useState<{ [key: string]: "left" | "right" }>({});
 
   const navItems: NavItem[] = [
     {
@@ -281,8 +285,23 @@ const Navbar = () => {
     setHoveredItem(null); // click overrides hover
   };
 
-  // Determine which one is active
+  // Determine which one is active - MUST BE DECLARED BEFORE renderDropdownItems
   const activeDropdown = hoveredItem || clickedItem;
+
+  useEffect(() => {
+    if (activeDropdown) {
+      const ref = dropdownRefs.current[activeDropdown];
+      if (ref) {
+        const rect = ref.getBoundingClientRect();
+        const dropdownWidth = 240; // w-60 is 15rem = 240px
+        if (rect.left + dropdownWidth > window.innerWidth) {
+          setDropdownAlignment((prev) => ({ ...prev, [activeDropdown]: "right" }));
+        } else {
+          setDropdownAlignment((prev) => ({ ...prev, [activeDropdown]: "left" }));
+        }
+      }
+    }
+  }, [activeDropdown]);
 
   useEffect(() => {
     return () => {
@@ -357,7 +376,18 @@ const Navbar = () => {
       <div
         key={item.label}
         className="relative group"
-        onMouseEnter={() => item.items && setActiveSubmenu(item.label)}
+        onMouseEnter={(e) => {
+          if (item.items) {
+            setActiveSubmenu(item.label);
+            const rect = e.currentTarget.getBoundingClientRect();
+            const submenuWidth = 232; // w-58 is 14.5rem = 232px
+            if (rect.right + submenuWidth > window.innerWidth) {
+              setSubmenuAlignment((prev) => ({ ...prev, [item.label]: "right" }));
+            } else {
+              setSubmenuAlignment((prev) => ({ ...prev, [item.label]: "left" }));
+            }
+          }
+        }}
         onMouseLeave={() => item.items && setActiveSubmenu(null)}
       >
         {item.href ? (
@@ -405,7 +435,9 @@ const Navbar = () => {
         {/* Flyout Submenu */}
         {item.items && activeSubmenu === item.label && (
           <div
-            className="absolute cursor-pointer left-60 top-0 mt-2 bg-(--background)  w-58 z-50 shadow-soft"
+            className={`absolute cursor-pointer top-0 mt-2 bg-(--background) w-58 z-50 shadow-soft ${
+              submenuAlignment[item.label] === "right" ? "right-full mr-2" : "left-full ml-2"
+            }`}
             style={{ top: -8 }}
             onMouseEnter={() => setActiveSubmenu(item.label)}
             onMouseLeave={() => setActiveSubmenu(null)}
@@ -526,12 +558,14 @@ const Navbar = () => {
       </div>
       <hr className="border-(--header-border)" />
 
-      <div className="flex items-center ml-6 bg-(--background) text-(--gray-7)">
+      <div className="flex items-center ml-1 lg:ml-2 xl:ml-6 bg-(--background) text-(--gray-7)">
         {navItems.map((item) => (
           <div
             key={item.label}
             className="relative"
-            ref={(el) => (dropdownRefs.current[item.label] = el)}
+            ref={(el) => {
+              dropdownRefs.current[item.label] = el;
+            }}
             onMouseEnter={() => item.items && handleMouseEnter(item.label)}
             onMouseLeave={item.items ? handleMouseLeave : undefined}
           >
@@ -541,7 +575,7 @@ const Navbar = () => {
                   e.stopPropagation();
                   item.items && toggleClick(item.label);
                 }}
-                className={`flex items-center gap-1 cursor-pointer px-5 py-3 text-md font-medium transition-all duration-200 hover:bg-(--gray-1) ${
+                className={`flex items-center gap-0.5 lg:gap-1 cursor-pointer px-1 lg:px-2 xl:px-5 py-3 text-md font-medium transition-all duration-200 hover:bg-(--gray-1) ${
                   activeDropdown === item.label ? "bg-(--gray-1)" : "text-(--gray-6)"
                 }`}
               >
@@ -565,7 +599,7 @@ const Navbar = () => {
             ) : (
               <Link
                 href={item.href || "#"}
-                className="flex items-center gap-1 cursor-pointer px-5 py-3 text-md font-medium transition-all duration-200 hover:bg-(--gray-1) text-(--gray-6)"
+                className="flex items-center gap-0.5 lg:gap-1 cursor-pointer px-1 lg:px-2 xl:px-5 py-3 text-md font-medium transition-all duration-200 hover:bg-(--gray-1) text-(--gray-6)"
               >
                 {item.label}
               </Link>
@@ -574,7 +608,9 @@ const Navbar = () => {
             {/* Mega Menu Dropdown */}
             {item.items && activeDropdown === item.label && (
               <div
-                className="absolute shadow-soft top-full left-0 mt-0.5 w-60 bg-(--background) py-3 z-50"
+                className={`absolute shadow-soft top-full mt-0.5 w-60 bg-(--background) py-3 z-50 ${
+                  dropdownAlignment[item.label] === "right" ? "right-0" : "left-0"
+                }`}
                 onMouseEnter={() => hoveredItem && handleMouseEnter(item.label)}
                 onMouseLeave={handleMouseLeave}
               >

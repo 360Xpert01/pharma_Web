@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { ColumnDef } from "@tanstack/react-table";
-import CenturoTable from "@/components/shared/table/CenturoTable";
+import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import StatusBadge from "@/components/shared/StatusBadge";
 

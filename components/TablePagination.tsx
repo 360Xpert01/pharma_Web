@@ -41,7 +41,7 @@ export default function TablePagination({
 
   return (
     <div
-      className={`flex items-center justify-between gap-4 px-4 py-3 bg-[var(--background)] rounded-8 mt-3 ${className}`}
+      className={`flex items-center justify-between gap-4 px-4 py-3 bg-[var(--background)]  mt-3 ${className}`}
     >
       {/* Left: Records info and rows per page */}
       <div className="flex items-center gap-4 t-md">

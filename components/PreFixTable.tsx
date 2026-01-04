@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ColumnDef } from "@tanstack/react-table";
-import CenturoTable from "@/components/shared/table/CenturoTable";
+import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import { getAllPrefixes } from "@/store/slices/preFix/getAllPrefixesSlice";
 

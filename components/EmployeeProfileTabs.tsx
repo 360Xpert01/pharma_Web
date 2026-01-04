@@ -13,6 +13,7 @@ import TodaysAppointments from "@/components/TodayAppoinment";
 import SamplesDetail from "@/components/SamplesDetail";
 import GiveawaysDetail from "@/components/GiveawaysDetail";
 import DeviceList from "@/components/DeviceList";
+import AnimatedTabs from "@/components/shared/AnimatedTabs";
 
 type TabType = "Appointments" | "Attendance" | "Expenses" | "Samples" | "Giveaways" | "Devices";
 
@@ -33,13 +34,13 @@ interface EmployeeProfileTabsProps {
 export default function EmployeeProfileTabs({ candidate }: EmployeeProfileTabsProps) {
   const [activeTab, setActiveTab] = useState<TabType>("Appointments");
 
-  const tabs: TabType[] = [
-    "Appointments",
-    "Attendance",
-    "Expenses",
-    "Samples",
-    "Giveaways",
-    "Devices",
+  const tabs = [
+    { id: "Appointments" as TabType, label: "Appointments" },
+    { id: "Attendance" as TabType, label: "Attendance" },
+    { id: "Expenses" as TabType, label: "Expenses" },
+    { id: "Samples" as TabType, label: "Samples" },
+    { id: "Giveaways" as TabType, label: "Giveaways" },
+    { id: "Devices" as TabType, label: "Devices" },
   ];
 
   return (
@@ -80,21 +81,14 @@ export default function EmployeeProfileTabs({ candidate }: EmployeeProfileTabsPr
       {/* Tab Content */}
       <div className="transition-all bg-(--background) shadow-soft p-5 rounded-8 duration-300">
         {/* Tab Navigation */}
-        <div className="flex gap-2 bg-(--muted) rounded-8 my-5 p-2 w-fit">
-          {tabs.map((tab) => (
-            <Button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              variant={activeTab === tab ? "primary" : "ghost"}
-              size="sm"
-              rounded="full"
-              className={`px-4 py-2.5 font-medium transition-all duration-200 ${
-                activeTab === tab ? "shadow-soft" : "text-(--gray-6) hover:bg-(--gray-1)"
-              }`}
-            >
-              {tab}
-            </Button>
-          ))}
+        <div className="my-5">
+          <AnimatedTabs
+            tabs={tabs}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            variant="secondary"
+            size="md"
+          />
         </div>
 
         {activeTab === "Appointments" && (

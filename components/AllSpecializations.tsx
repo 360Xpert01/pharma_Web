@@ -1,38 +1,46 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { MoreVertical } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "@/store/index";
-import { getAllSpecializations } from "@/store/slices/specialization/getAllSpecializationsSlice";
 import TableColumnHeader from "@/components/TableColumnHeader";
-import TableLoadingState from "@/components/shared/table/TableLoadingState";
-import TableErrorState from "@/components/shared/table/TableErrorState";
-import TableEmptyState from "@/components/shared/table/TableEmptyState";
 import StatusToggle from "@/components/form/StatusToggle";
 
-export default function SpecializationsManager() {
-  const dispatch = useAppDispatch();
-  const { specializations, loading, error } = useAppSelector((state) => state.allSpecializations);
-  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+interface Specialization {
+  id: string;
+  pulseCode: string;
+  name: string;
+  isActive: boolean;
+}
 
-  // Fetch specializations on component mount
-  useEffect(() => {
-    dispatch(getAllSpecializations());
-  }, [dispatch]);
+export default function SpecializationsManager() {
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [specializations, setSpecializations] = useState<Specialization[]>([
+    { id: "1", pulseCode: "SP01", name: "Cardiologist", isActive: true },
+    { id: "2", pulseCode: "SP02", name: "Dermatologist", isActive: true },
+    { id: "3", pulseCode: "SP03", name: "Neurologist", isActive: true },
+    { id: "4", pulseCode: "SP04", name: "Pediatrician", isActive: true },
+    { id: "5", pulseCode: "SP05", name: "Orthopedic Surgeon", isActive: true },
+    { id: "6", pulseCode: "SP06", name: "Gynecologist", isActive: true },
+    { id: "7", pulseCode: "SP07", name: "Ophthalmologist", isActive: true },
+    { id: "8", pulseCode: "SP08", name: "Psychiatrist", isActive: true },
+    { id: "9", pulseCode: "SP09", name: "Endocrinologist", isActive: true },
+    { id: "10", pulseCode: "SP10", name: "Gastroenterologist", isActive: true },
+    { id: "11", pulseCode: "SP11", name: "Pulmonologist", isActive: true },
+    { id: "12", pulseCode: "SP12", name: "Rheumatologist", isActive: false },
+    { id: "13", pulseCode: "SP13", name: "Urologist", isActive: true },
+    { id: "14", pulseCode: "SP14", name: "ENT Specialist", isActive: true },
+    { id: "15", pulseCode: "SP15", name: "Nephrologist", isActive: true },
+  ]);
 
   const toggleStatus = (id: string) => {
-    // TODO: Implement API call to update specialization status
-    console.log("Toggle status for specialization:", id);
+    setSpecializations(
+      specializations.map((spec) => (spec.id === id ? { ...spec, isActive: !spec.isActive } : spec))
+    );
   };
 
   const deleteSpecialization = (id: string) => {
-    // TODO: Implement API call to delete specialization
-    console.log("Delete specialization:", id);
+    setSpecializations(specializations.filter((spec) => spec.id !== id));
     setOpenMenuId(null);
-  };
-
-  const handleRetry = () => {
-    dispatch(getAllSpecializations());
   };
 
   // Define columns for the table header
@@ -45,26 +53,13 @@ export default function SpecializationsManager() {
 
   return (
     <div className="w-full overflow-hidden bg-(--background)">
-      {loading ? (
-        <div className="px-4">
-          <TableLoadingState
-            variant="skeleton"
-            rows={5}
-            columns={3}
-            message="Loading specializations..."
-          />
+      {specializations.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <p className="t-h3 text-[var(--gray-6)]">No specializations found</p>
+          <p className="t-sm text-[var(--gray-5)] mt-2">
+            There are currently no specializations in the system.
+          </p>
         </div>
-      ) : error ? (
-        <TableErrorState
-          error={error}
-          onRetry={handleRetry}
-          title="Failed to load specializations"
-        />
-      ) : specializations.length === 0 ? (
-        <TableEmptyState
-          message="No specializations found"
-          description="There are currently no specializations in the system."
-        />
       ) : (
         <div>
           {/* Column Headers */}

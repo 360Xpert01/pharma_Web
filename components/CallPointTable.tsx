@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from "react";
 import { MoreVertical } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
-import CenturoTable from "@/components/shared/table/CenturoTable";
+import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import { useAppDispatch, useAppSelector } from "@/store/index";
 import { getAllCallPoints } from "@/store/slices/callPoint/getAllCallPointsSlice";

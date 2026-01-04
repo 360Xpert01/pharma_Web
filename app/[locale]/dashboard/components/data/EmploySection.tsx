@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import SalesDashboard1 from "../SalesDashboard1";
-import CenturoTable from "@/components/shared/table/CenturoTable";
+import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -55,12 +55,10 @@ export default function SalesTeamTable() {
       {
         accessorKey: "role",
         header: "ID",
-        enableSorting: false,
       },
       {
         accessorKey: "name",
         header: "Name",
-        enableSorting: true,
         cell: ({ row }) => (
           <Link
             href={`/dashboard/Employee-Profile?id=${row.original.id}`}
@@ -86,7 +84,6 @@ export default function SalesTeamTable() {
       {
         accessorKey: "email",
         header: "Email",
-        enableSorting: false,
         cell: ({ row }) => (
           <span className="text-[var(--muted-foreground)]">{row.original.email}</span>
         ),
@@ -94,16 +91,15 @@ export default function SalesTeamTable() {
       {
         accessorKey: "phone",
         header: "Contact No #",
-        enableSorting: false,
       },
       {
         accessorKey: "supervisor",
         header: "Supervisor",
-        enableSorting: false,
       },
       {
         id: "expand",
         header: "",
+        enableSorting: false, // Explicitly disable sorting for action column
         cell: ({ row }) => (
           <button
             onClick={(e) => {
@@ -112,7 +108,7 @@ export default function SalesTeamTable() {
             }}
             className="flex items-center gap-1 text-sm cursor-pointer text-[var(--muted-foreground)] hover:opacity-80 transition-opacity"
           >
-            {row.getIsExpanded() ? "View Statistics" : "View Statistics"}
+            {row.getIsExpanded() ? "Quick Statistics" : "Quick Statistics"}
             <ChevronRight
               className={`w-4 h-4 transition-transform text-[var(--primary)] hover:opacity-80 transition-opacity ${
                 row.getIsExpanded() ? "rotate-90" : ""
