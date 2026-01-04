@@ -7,21 +7,19 @@ export default function DoctorStatsCard() {
       title: "Sales Report",
       headerLabel: "Sales Completion Rate",
       headerTrend: "down" as const,
-      value: "43,000",
+      value: 43000,
       valueLabel: "",
       subtitle: "Sales Completion Rate",
-      detailLabel: "",
-      detailValue: "",
+      detailValue: "180K",
       progress: 30,
       colorVariant: "1" as const,
     },
     {
       title: "Samples",
-      value: "800",
-      valueLabel: "",
+      value: 800,
+      valueLabel: "Units",
       subtitle: "Samples Completion Rate",
-      detailLabel: "",
-      detailValue: "",
+      detailValue: "142K",
       progress: 50,
       colorVariant: "2" as const,
     },
@@ -29,18 +27,17 @@ export default function DoctorStatsCard() {
       title: "Giveaways",
       headerLabel: "120 Returned",
       headerTrend: "down" as const,
-      value: "200",
-      valueLabel: "",
+      value: 200,
+      valueLabel: "Items",
       subtitle: "Distributed Items",
-      detailLabel: "",
-      detailValue: "",
+      detailValue: "168K",
       progress: 70,
       colorVariant: "3" as const,
     },
   ];
 
   return (
-    <div className="grid  gap-6 grid-cols-3">
+    <div className="grid gap-6 grid-cols-3">
       {topHcps?.length &&
         topHcps.map((hcp, index) => (
           <DoctorCardDetails
@@ -51,7 +48,6 @@ export default function DoctorStatsCard() {
             value={hcp.value}
             valueLabel={hcp.valueLabel}
             subtitle={hcp.subtitle}
-            detailLabel={hcp.detailLabel || ""}
             detailValue={hcp.detailValue}
             progress={hcp.progress}
             colorVariant={hcp.colorVariant}

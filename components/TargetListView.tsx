@@ -1,9 +1,12 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { EmployeeTarget, GroupedTargets } from "@/types/target";
-import TargetEmployeeCard from "./TargetEmployeeCard";
-import TableColumnHeader from "@/components/TableColumnHeader";
+import Image from "next/image";
+import { ChevronDown } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ColumnDef } from "@tanstack/react-table";
+import { EmployeeTarget } from "@/types/target";
+import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 
 // Mock data for demonstration
@@ -220,117 +223,170 @@ const mockTargetData: EmployeeTarget[] = [
 ];
 
 export default function TargetListView() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const handleItemsPerPageChange = (newItemsPerPage: number) => {
-    setItemsPerPage(newItemsPerPage);
-    setCurrentPage(1);
-  };
-
-  // Group targets by month
-  const groupedTargets = useMemo(() => {
-    const filtered = mockTargetData.filter((target) => {
+  const filteredTargets = useMemo(() => {
+    return mockTargetData.filter((target) => {
       const matchesSearch =
         target.employeeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         target.teamName.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesSearch;
     });
-
-    const grouped: GroupedTargets = {};
-    filtered.forEach((target) => {
-      if (!grouped[target.month]) {
-        grouped[target.month] = [];
-      }
-      grouped[target.month].push(target);
-    });
-
-    return grouped;
   }, [searchQuery]);
 
-  // Flatten grouped targets for pagination
-  const allTargets = useMemo(() => {
-    return Object.entries(groupedTargets).flatMap(([month, targets]) =>
-      targets.map((target) => ({ ...target, month }))
-    );
-  }, [groupedTargets]);
+  const handleViewDetails = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    router.push(`/dashboard/SetTarget`);
+  };
 
-  // Calculate total items
-  const totalItems = allTargets.length;
+  const getStatusBadgeColor = (tag: string) => {
+    switch (tag) {
+      case "L43":
+        return "bg-[var(--destructive)]/10 text-[var(--destructive)]";
+      case "L02":
+        return "bg-[var(--primary)] text-[var(--light)]";
+      case "E74":
+        return "bg-[var(--primary)] text-[var(--light)]";
+      default:
+        return "bg-[var(--gray-0)] text-[var(--gray-6)]";
+    }
+  };
 
-  // Apply pagination
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedTargets = allTargets.slice(startIndex, endIndex);
-
-  // Group paginated targets by month
-  const paginatedGroupedTargets = useMemo(() => {
-    const grouped: GroupedTargets = {};
-    paginatedTargets.forEach((target) => {
-      if (!grouped[target.month]) {
-        grouped[target.month] = [];
-      }
-      grouped[target.month].push(target);
-    });
-    return grouped;
-  }, [paginatedTargets]);
-
-  return (
-    <div>
-      {/* Column Headers */}
-      <TableColumnHeader
-        columns={[
-          { label: "Month", className: "w-[20%] ml-3" },
-          { label: "Employee", className: "w-[18%]" },
-          { label: "Team Name", className: "w-[24%]" },
-          { label: "Channel", className: "w-[24%]" },
-          { label: "Supervisor", className: "w-[0%]" },
-          { label: "", className: "w-[0%]" }, // View Details
-        ]}
-        containerClassName="flex w-[80%]"
-        showBackground={false}
-      />
-
-      {/* Employee Cards Grouped by Month */}
-      <div>
-        {Object.keys(paginatedGroupedTargets).length === 0 ? (
-          <div className="bg-[var(--gray-0)] rounded-8 p-12 text-center mx-4 my-3">
-            <p className="t-lg">No targets found matching your criteria</p>
+  const columns: ColumnDef<EmployeeTarget>[] = [
+    {
+      header: "Month",
+      accessorKey: "month",
+      cell: ({ row }) => <div className="t-label-b">{row.original.month}</div>,
+    },
+    {
+      header: "Employee",
+      accessorKey: "employeeName",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-3 min-w-0">
+          <Image
+            src={row.original.profilePicture || "/girlPic.svg"}
+            alt={row.original.employeeName}
+            width={40}
+            height={40}
+            className="rounded-8 flex-shrink-0"
+          />
+          <div className="min-w-0 flex-1">
+            <h3 className="t-label-b truncate" title={row.original.employeeName}>
+              {row.original.employeeName}
+            </h3>
+            <p className="t-cap truncate" title={row.original.employeeRole}>
+              {row.original.employeeRole}
+            </p>
           </div>
-        ) : (
-          Object.entries(paginatedGroupedTargets).map(([month, targets]) => (
-            <div key={month} className="space-y-0 mb-3">
-              {targets.map((target) => (
-                <div key={target.id} className="mx-4 my-3">
-                  <TargetEmployeeCard target={target} month={month} />
-                </div>
+        </div>
+      ),
+    },
+    {
+      header: "Team Name",
+      accessorKey: "teamName",
+      cell: ({ row }) => (
+        <div className="t-td-b truncate" title={row.original.teamName}>
+          {row.original.teamName}
+        </div>
+      ),
+    },
+    {
+      header: "Channel",
+      accessorKey: "channelName",
+      cell: ({ row }) => (
+        <div className="t-td-b truncate" title={row.original.channelName}>
+          {row.original.channelName}
+        </div>
+      ),
+    },
+    {
+      header: "Supervisor",
+      accessorKey: "lineManager",
+      cell: ({ row }) => (
+        <div className="t-td-b truncate" title={row.original.lineManager}>
+          {row.original.lineManager}
+        </div>
+      ),
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row, table }) => (
+        <div className="flex justify-end">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              row.toggleExpanded();
+            }}
+            className="flex items-center gap-2 t-sm hover:text-[var(--gray-9)] transition whitespace-nowrap cursor-pointer"
+          >
+            <span className="font-medium">View Details</span>
+            <ChevronDown
+              className={`w-4 h-4 transition-transform ${row.getIsExpanded() ? "rotate-180" : ""}`}
+            />
+          </button>
+        </div>
+      ),
+    },
+  ];
+
+  const renderExpandedRow = (target: EmployeeTarget) => {
+    return (
+      <div className="px-6 py-5 bg-[var(--gray-0)]">
+        {/* Tags */}
+        <div className="mb-5 flex items-center justify-end border-b border-[var(--gray-2)] pb-4">
+          {target.tags && target.tags.length > 0 && (
+            <div className="flex gap-2">
+              {target.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className={`px-3 py-1 rounded-8 text-xs font-semibold ${getStatusBadgeColor(tag)}`}
+                >
+                  {tag}
+                </span>
               ))}
             </div>
-          ))
-        )}
-      </div>
-
-      {/* Pagination */}
-      {totalItems > 0 && (
-        <div className="mx-4 mb-4">
-          <TablePagination
-            currentPage={currentPage}
-            totalItems={totalItems}
-            itemsPerPage={itemsPerPage}
-            onPageChange={handlePageChange}
-            onItemsPerPageChange={handleItemsPerPageChange}
-            pageSizeOptions={[5, 10, 20, 30, 50]}
-            showPageInfo={true}
-            showItemsPerPageSelector={true}
-          />
+          )}
         </div>
-      )}
+
+        {/* Product Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {target.products.map((product) => (
+            <div
+              key={product.id}
+              className="rounded-8 px-4 py-3 border-2 bg-[var(--background)] border-[var(--gray-2)]"
+            >
+              <div className="flex items-center justify-between w-full">
+                <div className="flex-1">
+                  <p className="t-label-b text-[var(--gray-9)]">{product.productName}</p>
+                </div>
+                <div className="flex-1 text-center">
+                  <p className="t-label-b text-[var(--gray-9)]">{product.targetPackets} Packets</p>
+                </div>
+                <div className="flex-1 text-right">
+                  <p className="t-label-b text-[var(--gray-9)]">{product.achievementPercentage}%</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="w-full">
+      <CenturoTable
+        data={filteredTargets}
+        columns={columns}
+        enablePagination={true}
+        pageSize={10}
+        PaginationComponent={TablePagination}
+        enableExpanding={true}
+        renderExpandedRow={renderExpandedRow}
+        emptyMessage="No targets found"
+      />
     </div>
   );
 }

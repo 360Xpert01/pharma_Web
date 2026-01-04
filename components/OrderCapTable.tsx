@@ -186,7 +186,7 @@ export default function BookingTable() {
           {row.original.dosages.map((dose, idx) => (
             <span
               key={idx}
-              className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-8 t-sm font-medium whitespace-nowrap"
+              className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-8 t-sm whitespace-nowrap"
             >
               {dose}
             </span>

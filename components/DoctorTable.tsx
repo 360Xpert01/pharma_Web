@@ -256,12 +256,12 @@ export default function DoctorsTable() {
     {
       header: "ID",
       accessorKey: "id",
-      cell: ({ row }) => <span className="font-medium">{row.original.id}</span>,
+      cell: ({ row }) => <span>{row.original.id}</span>,
     },
     {
       header: "Name",
       accessorKey: "name",
-      cell: ({ row }) => <span className="font-medium">{row.original.name}</span>,
+      cell: ({ row }) => <span>{row.original.name}</span>,
     },
     {
       header: "Specialization",
@@ -273,7 +273,7 @@ export default function DoctorsTable() {
     {
       header: "Email",
       accessorKey: "email",
-      cell: ({ row }) => <span className="font-medium">{row.original.email}</span>,
+      cell: ({ row }) => <span>{row.original.email}</span>,
     },
     {
       header: "Phone No",
@@ -285,7 +285,7 @@ export default function DoctorsTable() {
     {
       header: "Location",
       accessorKey: "city",
-      cell: ({ row }) => <span className="font-medium">{row.original.city}</span>,
+      cell: ({ row }) => <span>{row.original.city}</span>,
     },
     {
       header: "Status",

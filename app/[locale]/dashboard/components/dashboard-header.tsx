@@ -31,7 +31,7 @@ export function DashboardHeader({
   const t = useTranslations("dashboard");
   const heading = title;
   return (
-    <div className="flex text-(--dark) flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
+    <div className="flex text-(--dark) flex-col gap-2 sm:flex-row sm:items-start sm:gap-6">
       {/* Heading */}
       <div className="flex-1">
         <h1 className="t-h1 tracking-tight">{heading || "plans Management"}</h1>

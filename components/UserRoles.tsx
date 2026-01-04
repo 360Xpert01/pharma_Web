@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { MoreVertical } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { ColumnDef } from "@tanstack/react-table";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllRoles } from "@/store/slices/role/getAllRolesSlice";
-import TableColumnHeader from "@/components/TableColumnHeader";
-import TableLoadingState from "@/components/shared/table/TableLoadingState";
-import TableErrorState from "@/components/shared/table/TableErrorState";
-import TableEmptyState from "@/components/shared/table/TableEmptyState";
+import CenturoTable from "@/components/shared/table/CeturoTable";
+import TablePagination from "@/components/TablePagination";
+import TableActionDropdown from "@/components/shared/table/TableActionDropdown";
 import StatusBadge from "@/components/shared/StatusBadge";
 
 interface Role {
@@ -22,6 +21,7 @@ interface Role {
 export default function RolesCardList() {
   const dispatch = useAppDispatch();
   const { roles, loading, error } = useAppSelector((state) => state.allRoles);
+  const [openId, setOpenId] = useState<string | null>(null);
 
   useEffect(() => {
     dispatch(getAllRoles());
@@ -39,121 +39,93 @@ export default function RolesCardList() {
     status: role.status || "active",
   }));
 
-  // Define columns for the table header
-  const columns = [
-    { label: "Role ID", className: "w-[20%] ml-3" },
-    { label: "Date", className: "w-[22%]" },
-    { label: "Role Title", className: "w-[24%]" },
-    { label: "Permissions", className: "w-[24%]" },
-    { label: "Status", className: "w-[0%]" },
-    { label: "", className: "w-[0%]" },
-  ];
-
   const handleRetry = () => {
     dispatch(getAllRoles());
   };
 
-  // Loading state
-  if (loading) {
-    return (
-      <div className="w-full overflow-hidden bg-[var(--background)]">
-        <TableColumnHeader
-          columns={columns}
-          containerClassName="flex w-[80%]"
-          showBackground={false}
-        />
-        <div className="px-3">
-          <TableLoadingState variant="skeleton" rows={5} columns={5} message="Loading roles..." />
+  const columns: ColumnDef<Role>[] = [
+    {
+      header: "Role ID",
+      accessorKey: "roleId",
+      cell: ({ row }) => (
+        <div className="t-td-b truncate" title={row.original.roleId}>
+          {row.original.roleId}
         </div>
-      </div>
-    );
-  }
-
-  // Error state
-  if (error) {
-    return (
-      <div className="w-full overflow-hidden bg-[var(--background)]">
-        <TableColumnHeader
-          columns={columns}
-          containerClassName="flex w-[80%]"
-          showBackground={false}
-        />
-        <TableErrorState error={error} onRetry={handleRetry} title="Failed to load roles" />
-      </div>
-    );
-  }
-
-  // Empty state
-  if (rolesData.length === 0) {
-    return (
-      <div className="w-full overflow-hidden bg-[var(--background)]">
-        <TableColumnHeader
-          columns={columns}
-          containerClassName="flex w-[80%]"
-          showBackground={false}
-        />
-        <TableEmptyState
-          message="No roles found"
-          description="There are currently no roles in the system."
-        />
-      </div>
-    );
-  }
+      ),
+    },
+    {
+      header: "Date",
+      accessorKey: "created",
+      cell: ({ row }) => (
+        <div className="t-td truncate" title={row.original.created}>
+          {row.original.created}
+        </div>
+      ),
+    },
+    {
+      header: "Role Title",
+      accessorKey: "title",
+      cell: ({ row }) => (
+        <div className="t-td-b truncate" title={row.original.title}>
+          {row.original.title}
+        </div>
+      ),
+    },
+    {
+      header: "Permissions",
+      accessorKey: "responsibilities",
+      cell: ({ row }) => (
+        <div className="t-td-b truncate">{row.original.responsibilities} Responsibilities</div>
+      ),
+    },
+    {
+      header: "Status",
+      accessorKey: "status",
+      cell: ({ row }) => (
+        <div className="flex items-center">
+          <StatusBadge status={row.original.status} />
+        </div>
+      ),
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => (
+        <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
+          <TableActionDropdown
+            isOpen={openId === row.original.id}
+            onToggle={() => setOpenId(openId === row.original.id ? null : row.original.id)}
+            onClose={() => setOpenId(null)}
+            items={[
+              {
+                label: "Edit",
+                onClick: () => console.log("Edit", row.original.id),
+              },
+              {
+                label: "Delete",
+                onClick: () => console.log("Delete", row.original.id),
+                variant: "danger",
+              },
+            ]}
+          />
+        </div>
+      ),
+    },
+  ];
 
   return (
-    <div className="w-full overflow-hidden bg-[var(--background)]">
-      {/* Table Header */}
-      <TableColumnHeader
+    <div className="w-full">
+      <CenturoTable
+        data={rolesData}
         columns={columns}
-        containerClassName="flex w-[80%]"
-        showBackground={false}
+        loading={loading}
+        error={error}
+        onRetry={handleRetry}
+        enablePagination={true}
+        pageSize={10}
+        PaginationComponent={TablePagination}
+        emptyMessage="No roles found"
       />
-
-      {/* Card List */}
-      <div>
-        {rolesData.map((role) => (
-          <div
-            key={role.id}
-            className="px-3 py-3 w-[98%] flex items-center gap-6 hover:bg-[var(--gray-0)] transition-all cursor-pointer border border-[var(--gray-2)] mx-4 my-3 rounded-8 bg-[var(--background)]"
-          >
-            {/* Role ID - 15% */}
-            <div className="w-[15%]">
-              <p className="font-semibold text-sm text-[var(--gray-9)] truncate">{role.roleId}</p>
-            </div>
-
-            {/* Created Date - 18% */}
-            <div className="w-[18%]">
-              <p className="text-sm text-[var(--gray-5)] truncate">{role.created}</p>
-            </div>
-
-            {/* Title - 20% */}
-            <div className="w-[20%]">
-              <p className="font-semibold text-sm text-[var(--gray-9)] truncate" title={role.title}>
-                {role.title}
-              </p>
-            </div>
-
-            {/* Responsibilities - 20% */}
-            <div className="w-[20%]">
-              <p className="font-semibold text-sm text-[var(--gray-9)] truncate">
-                {role.responsibilities} Responsibilities
-              </p>
-            </div>
-
-            {/* Status - 20% */}
-            <div className="w-[20%]">
-              <StatusBadge status={role.status} />
-            </div>
-
-            {/* Actions - 7% */}
-            <div className="w-[7%] flex justify-end">
-              <button className="text-[var(--gray-4)] hover:text-[var(--gray-7)] transition">
-                <MoreVertical className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
     </div>
   );
 }

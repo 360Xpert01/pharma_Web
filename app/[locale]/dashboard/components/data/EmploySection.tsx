@@ -70,7 +70,7 @@ export default function SalesTeamTable() {
               alt={row.original.name}
               width={36}
               height={36}
-              className="rounded-lg"
+              className="rounded-8"
             />
             <div className="min-w-0">
               <p className="text-[var(--primary)] underline truncate font-medium">

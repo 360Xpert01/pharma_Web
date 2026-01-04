@@ -41,7 +41,7 @@ export function MetricsSection({
   return (
     <div
       className={cn(
-        "bg-(--background) border border-(--gray-2) rounded-8 p-4 shadow-soft",
+        "bg-(--background) border border-(--gray-2) rounded-8 p-4 shadow-soft mt-8",
         className
       )}
     >

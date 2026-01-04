@@ -46,7 +46,7 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
 
             <div>
               <div className="flex item-center gap-3 mb-2 ">
-                <div className="bg-(--primary) w-[60%] text-(--background) t-cap px-3 py-1.5 rounded-8">
+                <div className="bg-(--primary) w-[60%] text-(--background) t-cap px-2 py-1.5 rounded-8 text-center">
                   EMP-000124
                 </div>
                 <span className="t-sm bg-(--light) my-auto">|</span>
