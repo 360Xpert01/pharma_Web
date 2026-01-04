@@ -246,7 +246,7 @@ export default function CenturoTable<T>({
                   } ${row.getIsExpanded() ? "bg-(--gray-0)" : ""}`}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-4 py-3 t-td">
+                    <td key={cell.id} className="px-4 py-3 t-td t-td-b">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}

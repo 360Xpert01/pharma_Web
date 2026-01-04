@@ -10,8 +10,8 @@ export default function DashboardPage() {
     campaign: "Diabetics",
     requestedMonth: "January 2025",
     channel: "Doctor",
-    status: "Under Review",
     totalCalls: "248",
+    status: "Under Review",
   };
 
   return (

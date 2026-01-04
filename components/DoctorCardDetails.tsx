@@ -1,6 +1,4 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { TrendingUp, TrendingDown } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DoctorCardDetailsProps {
@@ -17,18 +15,18 @@ interface DoctorCardDetailsProps {
   className?: string;
 }
 
-const colorClasses = {
-  "1": "bg-(--primary)",
-  "2": "bg-(--success)",
-  "3": "bg-(--destructive-1)",
-  "4": "bg-(--chart-4)",
+const progressColorClasses = {
+  "1": "bg-[#0F72F4]",
+  "2": "bg-[#10B981]",
+  "3": "bg-[#06B6D4]",
+  "4": "bg-[#EF4444]",
 };
 
 const valueColorClasses = {
-  "1": "text-(--primary)",
-  "2": "text-(--success)",
-  "3": "text-(--destructive-1)",
-  "4": "text-chart-4",
+  "1": "text-[#0F72F4]",
+  "2": "text-[#10B981]",
+  "3": "text-[#06B6D4]",
+  "4": "text-[#EF4444]",
 };
 
 export function DoctorCardDetails({
@@ -44,52 +42,61 @@ export function DoctorCardDetails({
   colorVariant = "1",
   className,
 }: DoctorCardDetailsProps) {
-  const HeaderIcon = headerTrend === "up" ? TrendingUp : TrendingDown;
   return (
-    <Card className={cn("shadow-soft", className)}>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <h3 className="t-h3">{title}</h3>
-        {(headerLabel || headerTrend) && (
-          <div className="flex items-center gap-2 t-mute text-xs font-normal">
-            <span>{headerLabel}</span>
+    <div
+      className={cn(
+        "bg-(--background) border border-(--gray-2) rounded-8 p-4 shadow-soft mt-8",
+        className
+      )}
+    >
+      {/* Header with Title and Label/Trend */}
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="t-label font-bold text-(--dark)">{title}</h3>
+        {headerLabel && (
+          <div className="flex items-center gap-1">
+            <span className="t-sm text-(--gray-6)">{headerLabel}</span>
             {headerTrend && (
-              <HeaderIcon className={cn("h-4 w-4", valueColorClasses[colorVariant])} />
+              <TrendingUp
+                className={cn(
+                  "h-4 w-4",
+                  headerTrend === "down" ? "rotate-180" : "",
+                  valueColorClasses[colorVariant]
+                )}
+              />
             )}
           </div>
         )}
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="flex items-baseline gap-2">
+      </div>
+
+      {/* Value Section */}
+      <div className="mb-3">
+        <div className="flex items-baseline gap-2 mb-1">
           <span className={cn("t-val-lg", valueColorClasses[colorVariant])}>{value}</span>
-          <span className="t-md">{valueLabel}</span>
+          <span className="t-md text-(--gray-7)">{valueLabel}</span>
         </div>
 
-        <div className="flex items-center justify-between t-md">
-          <span>{subtitle}</span>
-          <div className="flex items-center gap-5">
-            <span>{detailValue}</span>
-            <TrendingUp className={cn("h-6 w-6", valueColorClasses[colorVariant])} />
-          </div>
+        {/* Subtitle with detail on right */}
+        <div className="flex items-center justify-between">
+          <span className="t-sm text-(--gray-6)">{subtitle}</span>
+          {detailValue && (
+            <div className="flex items-center gap-1">
+              <span className="t-sm text-(--gray-9) font-medium">{detailValue}</span>
+              <TrendingUp className={cn("h-4 w-4", valueColorClasses[colorVariant])} />
+            </div>
+          )}
         </div>
+      </div>
 
-        {detailLabel && detailValue && (
-          <div className="flex items-center justify-between t-md">
-            <span className="t-mute">{detailLabel}</span>
-            <span className="t-label">{detailValue}</span>
-          </div>
-        )}
-
-        <div className="relative">
-          <Progress value={progress} className="h-3 bg-(--gray-2)" />
-          <div
-            className={cn(
-              "absolute inset-0 h-3 rounded-8 transition-all",
-              colorClasses[colorVariant]
-            )}
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-      </CardContent>
-    </Card>
+      {/* Progress Bar */}
+      <div className="relative w-full h-2 bg-(--gray-1) rounded-full overflow-hidden">
+        <div
+          className={cn(
+            "absolute inset-y-0 left-0 rounded-full transition-all",
+            progressColorClasses[colorVariant]
+          )}
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+    </div>
   );
 }

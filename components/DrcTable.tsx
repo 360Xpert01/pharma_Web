@@ -180,7 +180,7 @@ export default function DcrTable() {
           {row.original.strengths.map((s, i) => (
             <span
               key={i}
-              className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-8 text-xs font-medium whitespace-nowrap"
+              className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-8 text-xs whitespace-nowrap"
             >
               {s}
             </span>
