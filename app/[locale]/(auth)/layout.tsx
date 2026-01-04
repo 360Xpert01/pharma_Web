@@ -4,6 +4,7 @@ import { useLayout } from "@/contexts/layout-context";
 import Logo from "@/components/svgs/logo";
 import LoginFrame from "@/components/svgs/login-frame";
 import FormBg from "@/components/svgs/form-bg";
+import LoginLine from "@/components/svgs/login-line";
 
 export default function AuthLayout({ children }: PropsWithChildren) {
   const { setHeader } = useLayout();
@@ -42,9 +43,12 @@ export default function AuthLayout({ children }: PropsWithChildren) {
             <div className="w-full max-w-sm">{children}</div>
           </div>
 
-          {/* Footer - Fixed at Bottom */}
-          <div className="relative z-10 pb-4 text-[12px] text-white/80 text-sm text-end pr-40">
-            Pulse by CRM | © 2024 All Rights Reserved
+          {/* Footer with Line Separator */}
+          <div className="relative z-10 pb-4 pr-40 flex items-center justify-end gap-2">
+            <LoginLine />
+            <div className="text-background text-xs whitespace-nowrap">
+              Pulse by CRM | © 2024 All Rights Reserved
+            </div>
           </div>
         </div>
       </div>
