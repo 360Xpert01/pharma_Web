@@ -50,7 +50,7 @@ export default function GiveawayTable() {
 
   const columns: ColumnDef<Giveaway>[] = [
     {
-      header: "Pulse Code",
+      header: "ID",
       accessorKey: "pulseCode",
       cell: ({ row }) => (
         <div className="t-td-b truncate" title={row.original.pulseCode || "N/A"}>

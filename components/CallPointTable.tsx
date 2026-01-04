@@ -36,7 +36,7 @@ export default function CallPointsList() {
 
   const columns: ColumnDef<CallPoint>[] = [
     {
-      header: "Pulse Code",
+      header: "ID",
       accessorKey: "pulseCode",
       cell: ({ row }) => (
         <div className="t-td-b truncate" title={row.original.pulseCode || "N/A"}>

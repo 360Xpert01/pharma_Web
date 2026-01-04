@@ -44,7 +44,7 @@ export default function ChannelsManager() {
 
   const columns: ColumnDef<Channel>[] = [
     {
-      header: "Pulse Code",
+      header: "ID",
       accessorKey: "pulseCode",
       cell: ({ row }) => (
         <div className="t-td-b truncate" title={row.original.pulseCode || "N/A"}>
@@ -115,6 +115,7 @@ export default function ChannelsManager() {
         loading={loading}
         error={error}
         onRetry={handleRetry}
+        enableSorting={false}
         enablePagination={true}
         pageSize={10}
         PaginationComponent={TablePagination}
