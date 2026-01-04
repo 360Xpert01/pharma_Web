@@ -35,7 +35,7 @@ export default function CampaignsTable() {
 
   const columns: ColumnDef<Team>[] = [
     {
-      header: "Pulse Code",
+      header: "ID",
       accessorKey: "pulseCode",
       cell: ({ row }) => (
         <div className="t-td-b " title={row.original.pulseCode || "N/A"}>

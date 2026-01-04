@@ -33,7 +33,7 @@ export default function SampleManagTable() {
 
   const columns: ColumnDef<Product>[] = [
     {
-      header: "Pulse Code",
+      header: "ID",
       accessorKey: "pulseCode",
       cell: ({ row }) => (
         <div className="t-td-b truncate" title={row.original.pulseCode || "N/A"}>

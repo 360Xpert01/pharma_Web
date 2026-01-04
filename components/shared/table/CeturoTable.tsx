@@ -96,10 +96,11 @@ export default function CenturoTable<T>({
   const columnsWithDefaultSorting = React.useMemo(() => {
     return columns.map((col) => ({
       ...col,
-      enableSorting: col.enableSorting !== false, // Enable by default unless explicitly disabled
+      // If enableSorting is false at table level, disable sorting for all columns
+      enableSorting: enableSorting && col.enableSorting !== false,
       sortingFn: col.sortingFn || "alphanumeric", // Use alphanumeric as default
     }));
-  }, [columns]);
+  }, [columns, enableSorting]);
 
   const table = useReactTable({
     data: paginatedData,

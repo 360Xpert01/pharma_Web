@@ -39,7 +39,7 @@ export default function MedicineTable() {
 
   const columns: ColumnDef<Product>[] = [
     {
-      header: "Pulse Code",
+      header: "ID",
       accessorKey: "pulseCode",
       cell: ({ row }) => (
         <div className="t-td-b" title={row.original.pulseCode}>
