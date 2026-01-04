@@ -160,10 +160,10 @@ export default function LoginScreen() {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg px-12 py-10 space-y-6 max-w-md mx-auto my-8">
+    <div className="bg-[var(--background)] rounded-8 shadow-soft px-14 py-14 space-y-6 w-full">
       <div className="text-center space-y-1">
-        <h1 className="text-3xl font-bold text-gray-900">Welcome</h1>
-        <p className="text-gray-500 text-sm">Login with your email</p>
+        <h1 className="t-h2 text-[var(--gray-9)]">Welcome</h1>
+        <p className="t-sm text-[var(--gray-5)]">Login with your email</p>
       </div>
 
       <div className="space-y-5">
@@ -171,27 +171,32 @@ export default function LoginScreen() {
           <>
             {/* Email Input */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-900">Email</label>
+              <label className="t-label text-[var(--gray-9)]">Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
                 disabled={loading}
-                className="w-full h-12 px-4 py-3 border border-gray-300 rounded-lg outline-none transition-all focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                className="w-full h-12 px-4 py-3 border border-[var(--gray-2)] rounded-8 outline-none transition-all focus:ring-2 focus:ring-[var(--primary-1)] focus:border-[var(--primary-1)] disabled:bg-[var(--gray-1)] disabled:cursor-not-allowed bg-white text-sm"
               />
-              {(userNotFound || otpSentState) && (
-                <p className="text-red-500 text-xs mt-1">
-                  {userNotFound ? "User not found" : "An OTP has already been sent to this email."}
-                </p>
-              )}
+              {/* Error message with reserved space */}
+              <div className="min-h-[20px]">
+                {(userNotFound || otpSentState) && (
+                  <p className="t-sm text-[var(--destructive)]">
+                    {userNotFound
+                      ? "User not found"
+                      : "An OTP has already been sent to this email."}
+                  </p>
+                )}
+              </div>
             </div>
 
             {/* Send OTP Button */}
             <button
               onClick={handleSendOTP}
               disabled={loading || !email.includes("@")}
-              className="w-full h-12 bg-linear-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+              className="w-full h-12 bg-[var(--primary-1)] hover:bg-[var(--primary)] text-[var(--primary-foreground)] font-semibold rounded-8 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Sending..." : "Send OTP"}
             </button>
@@ -200,7 +205,7 @@ export default function LoginScreen() {
           <>
             {/* OTP Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-4 text-center">
+              <label className="t-label text-[var(--gray-7)] mb-4 text-center block">
                 Enter 4-Digit OTP
               </label>
               <div className="flex justify-center gap-3">
@@ -217,22 +222,22 @@ export default function LoginScreen() {
                     onChange={(e) => handleOtpChange(index, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(index, e)}
                     disabled={isVerifying}
-                    className="w-14 h-14 text-center text-2xl font-bold border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-4 focus:ring-primary/20 outline-none transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    className="w-14 h-14 text-center text-2xl font-bold border-2 border-[var(--gray-3)] rounded-8 focus:border-[var(--primary)] focus:ring-4 focus:ring-[var(--primary-0)] outline-none transition-all disabled:bg-[var(--gray-1)] disabled:cursor-not-allowed"
                   />
                 ))}
               </div>
 
               {/* Verification Status */}
               {isVerifying && (
-                <div className="mt-4 flex items-center justify-center gap-2 text-primary">
+                <div className="mt-4 flex items-center justify-center gap-2 text-[var(--primary)]">
                   <RotateCw className="w-5 h-5 animate-spin" />
-                  <span className="text-sm font-medium">Verifying OTP...</span>
+                  <span className="t-sm font-medium">Verifying OTP...</span>
                 </div>
               )}
 
               {/* Error Message */}
               {invalidOtp && (
-                <p className="mt-4 text-destructive text-sm text-center">
+                <p className="mt-4 t-sm text-[var(--destructive)] text-center">
                   Invalid OTP. Please try again.
                 </p>
               )}
@@ -243,7 +248,7 @@ export default function LoginScreen() {
               <button
                 onClick={handleResendOTP}
                 disabled={loading || isVerifying}
-                className="text-sm text-primary hover:text-primary/80 disabled:text-gray-400 disabled:cursor-not-allowed underline transition"
+                className="t-link text-[var(--primary)] hover:text-[var(--primary-2)] disabled:text-[var(--gray-4)] disabled:cursor-not-allowed underline transition"
               >
                 Resend OTP
               </button>
