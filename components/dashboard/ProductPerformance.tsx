@@ -49,12 +49,13 @@ export default function ProductPerformance({ products, className }: ProductPerfo
             {productData.map((product) => (
               <div key={product.id} className="flex-1 flex flex-col items-center">
                 {/* Bars Container */}
-                <div className="relative w-full h-full flex items-end justify-center gap-2">
+                <div className="relative w-full h-full flex items-end justify-center gap-1.5">
                   {/* Order Captured Bar - First */}
                   <div
-                    className="relative flex-1 bg-(--primary-0) rounded-t-lg transition-all hover:opacity-90 cursor-pointer"
+                    className="relative flex-1 max-w-[12px] rounded-t-lg transition-all hover:opacity-90 cursor-pointer"
                     style={{
                       height: `${(product.orderCaptured / 100) * 200}px`,
+                      backgroundColor: "#9CC8FF",
                     }}
                     onMouseEnter={() => setHoveredBar({ productId: product.id, type: "order" })}
                     onMouseLeave={() => setHoveredBar(null)}
@@ -66,7 +67,10 @@ export default function ProductPerformance({ products, className }: ProductPerfo
                           {product.name} {product.strength}
                         </div>
                         <div className="flex items-center gap-1">
-                          <div className="w-2 h-2 rounded-full bg-(--primary-0)"></div>
+                          <div
+                            className="w-2 h-2 rounded-full"
+                            style={{ backgroundColor: "#9CC8FF" }}
+                          ></div>
                           <span className="t-label-b text-(--primary)">
                             {product.orderCaptured}%
                           </span>
@@ -77,9 +81,10 @@ export default function ProductPerformance({ products, className }: ProductPerfo
 
                   {/* Sample Distributed Bar - Second */}
                   <div
-                    className="relative flex-1 bg-(--primary) rounded-t-lg transition-all hover:opacity-90 cursor-pointer"
+                    className="relative flex-1 max-w-[12px] rounded-t-lg transition-all hover:opacity-90 cursor-pointer"
                     style={{
                       height: `${(product.sampleDistributed / 100) * 200}px`,
+                      backgroundColor: "#438CF1",
                     }}
                     onMouseEnter={() => setHoveredBar({ productId: product.id, type: "sample" })}
                     onMouseLeave={() => setHoveredBar(null)}
@@ -91,7 +96,10 @@ export default function ProductPerformance({ products, className }: ProductPerfo
                           {product.name} {product.strength}
                         </div>
                         <div className="flex items-center gap-1">
-                          <div className="w-2 h-2 rounded-full bg-(--primary)"></div>
+                          <div
+                            className="w-2 h-2 rounded-full"
+                            style={{ backgroundColor: "#438CF1" }}
+                          ></div>
                           <span className="t-label-b text-(--primary)">
                             {product.sampleDistributed}%
                           </span>
