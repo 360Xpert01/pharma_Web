@@ -185,7 +185,7 @@ export default function CalendarFilter({ onDateChange, className }: CalendarFilt
       <div className={cn("relative", className)}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-2 px-4 py-2.5 bg-(--gray-1) text-(--gray-9) rounded-8 border border-(--gray-3) hover:bg-(--gray-2) transition-colors"
+          className="flex items-center gap-2 px-4 py-2.5 bg-(--gray-1) text-(--gray-9) rounded-8 border border-(--gray-3) hover:bg-(--gray-2) transition-colors cursor-pointer"
         >
           <Calendar className="w-4 h-4 text-(--gray-6)" />
           <span className="t-md">{formatDisplayDate()}</span>
