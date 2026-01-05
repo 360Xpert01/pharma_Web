@@ -5,18 +5,29 @@ import TeamLeaderboard from "@/components/dashboard/TeamLeaderboard";
 import DoctorCoverageMap from "@/components/dashboard/DoctorCoverageMap";
 import ProductPerformance from "@/components/dashboard/ProductPerformance";
 import NotificationActivity from "@/components/dashboard/NotificationActivity";
+import TopCards from "@/components/dashboard/TopCard";
+import { DashboardHeader } from "./components/dashboard-header";
 
 export default function DashboardPage() {
+  const handleDateChange = (startDate: Date, endDate: Date) => {
+    console.log("Date range selected:", startDate, endDate);
+    // You can add your date filtering logic here
+  };
+
   return (
-    <div className="bg-(--gray-0) min-h-screen p-6">
-      <div className="w-full space-y-6">
-        {/* Page Title */}
-        <div className="mb-6">
-          <h1 className="t-h2 text-(--gray-9) mb-2">Dashboard</h1>
-          <p className="t-sm text-(--gray-5)">
-            Monitor your territory performance and team rankings
-          </p>
-        </div>
+    <div className="bg-(--gray-0)">
+      <div className="w-full mt-30 space-y-6">
+        {/* Dashboard Header with Calendar Filter */}
+        <DashboardHeader
+          title="Dashboard"
+          description="Unlock the potential of your candidates"
+          showCalendar={true}
+          onDateChange={handleDateChange}
+          btnTrue={true}
+        />
+
+        {/* Top Stats Cards */}
+        <TopCards />
 
         {/* Heatmap and Doctor Coverage Map in one row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

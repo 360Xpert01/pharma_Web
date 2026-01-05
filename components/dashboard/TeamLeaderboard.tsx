@@ -3,9 +3,11 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Award, Medal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { generateTeamMembers, type TeamMember } from "./teamLeaderboardData";
+import Gold from "@/components/svgs/gold";
+import Silver from "@/components/svgs/silver";
+import Bronze from "@/components/svgs/bronze";
 
 interface TeamLeaderboardProps {
   members?: TeamMember[];
@@ -24,11 +26,11 @@ export default function TeamLeaderboard({ members, className }: TeamLeaderboardP
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
-        return <Trophy className="w-5 h-5 text-[#ffa500]" />;
+        return <Gold width={20} height={20} />;
       case 2:
-        return <Award className="w-5 h-5 text-[#c0c0c0]" />;
+        return <Silver width={20} height={20} />;
       case 3:
-        return <Medal className="w-5 h-5 text-[#cd7f32]" />;
+        return <Bronze width={20} height={20} />;
       default:
         return (
           <div className="w-5 h-5 flex items-center justify-center">
