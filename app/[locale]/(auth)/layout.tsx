@@ -33,18 +33,18 @@ export default function AuthLayout({ children }: PropsWithChildren) {
         {/* Right Side - Form with Background Shape */}
         <div className="w-full md:w-1/2 relative overflow-hidden flex flex-col">
           {/* Form Background SVG - Fixed positioning to cover completely */}
-          <div className="absolute inset-0 -right-15">
-            <FormBg className="w-[calc(100%+4rem)] h-full object-cover" />
+          <div className="absolute inset-0 ">
+            <FormBg className="w-[calc(110%+4rem)] h-full" />
           </div>
 
           {/* Form Content - Centered */}
-          <div className="relative z-10 flex-1 flex items-center justify-center pl-38">
+          <div className="relative z-10 flex-1 flex items-center justify-end min-[1200px]:mr-15 min-[1600px]:mr-30 ">
             {/* Children (Login Form) */}
-            <div className="w-[400px]">{children}</div>
+            <div className="min-[1200px]:w-[400px] min-[1600px]:w-[450px]">{children}</div>
           </div>
 
           {/* Footer with Line Separator */}
-          <div className="relative z-10 pb-4 pr-30 flex items-center justify-end gap-2">
+          <div className="relative z-10 pb-4 min-[1200px]:pr-16 min-[1600px]:pr-30 flex items-center justify-end gap-2">
             <LoginLine />
             <div className="text-background text-xs whitespace-nowrap">
               Pulse by CRM | © 2024 All Rights Reserved
