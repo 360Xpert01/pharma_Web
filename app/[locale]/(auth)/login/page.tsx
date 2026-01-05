@@ -160,7 +160,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <div className="bg-background rounded-8 shadow-soft px-18 py-20 space-y-6 w-full">
+    <div className="bg-background rounded-8 shadow-soft px-12 py-20 space-y-6 w-full">
       <div className="text-center space-y-1">
         <h1 className="t-h1 text-[var(--gray-9)]">Welcome</h1>
         <p className="t-sm text-[var(--gray-5)]">Login with your email</p>
