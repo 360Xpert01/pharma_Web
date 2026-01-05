@@ -81,6 +81,29 @@ export default function MapComponent({ locations }: MapComponentProps) {
 
   return (
     <div style={{ height: "100%", width: "100%" }}>
+      <style jsx global>{`
+        .leaflet-popup-content-wrapper {
+          background: white;
+          border-radius: 8px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          padding: 0;
+        }
+        .leaflet-popup-content {
+          margin: 0;
+          min-width: 200px;
+        }
+        .leaflet-popup-tip {
+          background: white;
+        }
+        .leaflet-container a.leaflet-popup-close-button {
+          color: var(--gray-6);
+          font-size: 20px;
+          padding: 8px 8px 0 0;
+        }
+        .leaflet-container a.leaflet-popup-close-button:hover {
+          color: var(--gray-9);
+        }
+      `}</style>
       <MapContainer
         key={`map-${mapKey}`}
         center={mapCenter}
@@ -106,12 +129,12 @@ export default function MapComponent({ locations }: MapComponentProps) {
             icon={customIcon}
           >
             <Popup>
-              <div className="p-2">
-                <h4 className="font-semibold text-sm text-gray-900">{location.name}</h4>
+              <div className="p-4">
+                <h4 className="t-label-b text-(--gray-9)">{location.name}</h4>
                 {location.specialty && (
-                  <p className="text-xs text-blue-600 mt-1">{location.specialty}</p>
+                  <p className="t-sm text-primary mt-2">{location.specialty}</p>
                 )}
-                <p className="text-xs text-gray-600 mt-1">{location.address}</p>
+                <p className="t-sm text-(--gray-6) mt-1">{location.address}</p>
               </div>
             </Popup>
           </Marker>
