@@ -136,11 +136,30 @@ export default function CalendarFilter({ onDateChange, className }: CalendarFilt
 
   const formatDisplayDate = () => {
     if (selectedRange.start && selectedRange.end) {
-      return `${selectedRange.start.toLocaleDateString()} - ${selectedRange.end.toLocaleDateString()}`;
+      const startDay = selectedRange.start.getDate();
+      const startMonth = months[selectedRange.start.getMonth()];
+      const startYear = selectedRange.start.getFullYear();
+
+      const endDay = selectedRange.end.getDate();
+      const endMonth = months[selectedRange.end.getMonth()];
+      const endYear = selectedRange.end.getFullYear();
+
+      return `${startDay} ${startMonth}, ${startYear} - ${endDay} ${endMonth}, ${endYear}`;
     } else if (selectedRange.start) {
-      return selectedRange.start.toLocaleDateString();
+      const day = selectedRange.start.getDate();
+      const month = months[selectedRange.start.getMonth()];
+      const year = selectedRange.start.getFullYear();
+      return `${day} ${month}, ${year}`;
     }
     return `${months[new Date().getMonth()]}, ${new Date().getFullYear()}`;
+  };
+
+  // Format date as "Day, Month" (e.g., "2, January")
+  const formatInputDate = (date: Date | null) => {
+    if (!date) return "";
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    return `${day}, ${month}`;
   };
 
   const isDateInRange = (day: number | null, isPrevMonth: boolean, isNextMonth: boolean) => {
@@ -181,6 +200,30 @@ export default function CalendarFilter({ onDateChange, className }: CalendarFilt
             <div className="p-6 flex gap-6">
               {/* Left Side - Calendar */}
               <div className="flex-1">
+                {/* From/To Input Fields */}
+                <div className="flex gap-4 mb-4">
+                  <div className="flex-1">
+                    <label className="block t-cap text-(--gray-5) mb-1">From</label>
+                    <input
+                      type="text"
+                      value={formatInputDate(selectedRange.start)}
+                      readOnly
+                      placeholder="Select start date"
+                      className="w-full px-3 py-2 bg-(--gray-0) border border-(--gray-3) rounded-8 text-(--gray-9) t-sm focus:outline-none focus:border-primary"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block t-cap text-(--gray-5) mb-1">To</label>
+                    <input
+                      type="text"
+                      value={formatInputDate(selectedRange.end)}
+                      readOnly
+                      placeholder="Select end date"
+                      className="w-full px-3 py-2 bg-(--gray-0) border border-(--gray-3) rounded-8 text-(--gray-9) t-sm focus:outline-none focus:border-primary"
+                    />
+                  </div>
+                </div>
+
                 {/* Month/Year Header */}
                 <div className="flex items-center justify-between mb-4">
                   <button

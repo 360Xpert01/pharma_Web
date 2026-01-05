@@ -264,10 +264,10 @@ export default function TopCards({ cards = defaultCards, className }: TopCardsPr
       )}
     >
       {cards.map((card) => (
-        <Card key={card.id} className="p-4 hover:shadow-md transition-shadow cursor-pointer">
+        <Card key={card.id} className="p-4 shadow-soft cursor-pointer">
           <div className="flex flex-col">
             {/* Title */}
-            <span className="t-sm text-(--gray-6) mb-2">{card.title}</span>
+            <span className="t-h5 mb-2">{card.title}</span>
 
             {/* Value and Chart/Icon in horizontal layout */}
             <div className="flex items-center justify-between">
