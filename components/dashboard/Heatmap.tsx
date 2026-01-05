@@ -59,13 +59,6 @@ export default function Heatmap({ data, config, className }: HeatmapProps) {
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="t-h4 text-[var(--gray-9)]">Territory Performance Heatmap</CardTitle>
-
-          {/* Legend - Three Color Boxes */}
-          <div className="flex items-center gap-2">
-            <div className="w-24 h-8 rounded-8 bg-[#32D74B]" />
-            <div className="w-24 h-8 rounded-8 bg-[#F95D55]" />
-            <div className="w-24 h-8 rounded-8 bg-[#F4BA45]" />
-          </div>
         </div>
       </CardHeader>
 
