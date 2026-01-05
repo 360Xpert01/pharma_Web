@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Edit, Info } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -101,20 +101,36 @@ export default function SalesTeamTable() {
         header: "",
         enableSorting: false, // Explicitly disable sorting for action column
         cell: ({ row }) => (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              row.toggleExpanded();
-            }}
-            className="flex items-center gap-1 text-sm cursor-pointer text-[var(--muted-foreground)] hover:opacity-80 transition-opacity"
-          >
-            {row.getIsExpanded() ? "Quick Statistics" : "Quick Statistics"}
-            <ChevronRight
-              className={`w-4 h-4 transition-transform text-[var(--primary)] hover:opacity-80 transition-opacity ${
-                row.getIsExpanded() ? "rotate-90" : ""
-              }`}
-            />
-          </button>
+          <div className="flex items-center gap-3">
+            {/* Edit Icon */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                // TODO: Add edit functionality
+                console.log("Edit employee:", row.original.id);
+              }}
+              className="p-1.5 hover:bg-(--gray-1) rounded transition-colors"
+              title="Edit Employee"
+            >
+              <Edit className="w-4 h-4 text-(--gray-6) hover:text-(--primary)" />
+            </button>
+
+            {/* Info Icon - Opens Statistics */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                row.toggleExpanded();
+              }}
+              className="p-1.5 hover:bg-(--gray-1) rounded transition-colors"
+              title="View Statistics"
+            >
+              <Info
+                className={`w-4 h-4 transition-colors ${
+                  row.getIsExpanded() ? "text-(--primary)" : "text-(--gray-6)"
+                } hover:text-(--primary)`}
+              />
+            </button>
+          </div>
         ),
       },
     ],
