@@ -19,7 +19,8 @@ export default function Heatmap({ data, config, className }: HeatmapProps) {
   // Use useMemo to generate data only once, preventing color changes on clicks
   const heatmapData = useMemo(() => {
     if (data) return data;
-    return generateHeatmapData(config || { rows: 8, columns: 20 });
+    // Default config: rows aur columns change kar sakte hain
+    return generateHeatmapData(config || { rows: 20, columns: 10 }); // Territory count ke hisaab se adjust karein
   }, [data, config]);
 
   // Dynamically calculate grid dimensions based on actual data
@@ -69,23 +70,26 @@ export default function Heatmap({ data, config, className }: HeatmapProps) {
       </CardHeader>
 
       <CardContent className="pt-0 pb-4">
-        {/* Heatmap Grid */}
-        <div
-          className="grid gap-1.5"
-          style={{
-            gridTemplateColumns: `repeat(${gridDimensions.columns}, minmax(12px, 1fr))`,
-            gridTemplateRows: `repeat(${gridDimensions.rows}, minmax(12px, 1fr))`,
-          }}
-        >
-          {heatmapData.map((cell) => (
-            <div
-              key={cell.id}
-              className="aspect-square rounded-8 cursor-pointer transition-transform hover:scale-110 hover:shadow-md"
-              style={{ backgroundColor: getPerformanceColor(cell.coverage) }}
-              onMouseEnter={(e) => handleMouseEnter(cell, e)}
-              onMouseLeave={handleMouseLeave}
-            />
-          ))}
+        {/* Heatmap Grid - All boxes in square shape filling available space */}
+        <div className="w-full aspect-[2/1] overflow-hidden">
+          <div
+            className="grid h-full w-full"
+            style={{
+              gridTemplateColumns: `repeat(${gridDimensions.columns}, 1fr)`,
+              gridTemplateRows: `repeat(${gridDimensions.rows}, 1fr)`,
+              gap: "0.25rem",
+            }}
+          >
+            {heatmapData.map((cell) => (
+              <div
+                key={cell.id}
+                className="aspect-square rounded-8 cursor-pointer transition-transform hover:scale-105 hover:shadow-md"
+                style={{ backgroundColor: getPerformanceColor(cell.coverage) }}
+                onMouseEnter={(e) => handleMouseEnter(cell, e)}
+                onMouseLeave={handleMouseLeave}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Tooltip */}
