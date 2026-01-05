@@ -32,8 +32,7 @@ function MapInvalidator() {
 export default function MapComponent({ locations }: MapComponentProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [customIcon, setCustomIcon] = useState<L.Icon | null>(null);
-  const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<L.Map | null>(null);
+  const [mapKey, setMapKey] = useState(0);
 
   useEffect(() => {
     // Only run on client side
@@ -62,11 +61,9 @@ export default function MapComponent({ locations }: MapComponentProps) {
 
     // Cleanup function
     return () => {
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
-        mapInstanceRef.current = null;
-      }
       setIsMounted(false);
+      // Force a new map instance on next mount by changing the key
+      setMapKey((prev) => prev + 1);
     };
   }, []);
 
@@ -83,18 +80,14 @@ export default function MapComponent({ locations }: MapComponentProps) {
   }
 
   return (
-    <div ref={mapRef} style={{ height: "100%", width: "100%" }}>
+    <div style={{ height: "100%", width: "100%" }}>
       <MapContainer
+        key={`map-${mapKey}`}
         center={mapCenter}
         zoom={mapZoom}
         scrollWheelZoom={true}
         style={{ height: "100%", width: "100%" }}
         className="z-0"
-        ref={(map) => {
-          if (map && !mapInstanceRef.current) {
-            mapInstanceRef.current = map;
-          }
-        }}
         zoomControl={false}
       >
         <MapInvalidator />
