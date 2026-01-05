@@ -39,10 +39,10 @@ export default function MedicineTable() {
 
   const columns: ColumnDef<Product>[] = [
     {
-      header: "Pulse Code",
+      header: "ID",
       accessorKey: "pulseCode",
       cell: ({ row }) => (
-        <div className="t-td-b truncate" title={row.original.pulseCode}>
+        <div className="t-td-b" title={row.original.pulseCode}>
           {row.original.pulseCode}
         </div>
       ),
@@ -51,7 +51,7 @@ export default function MedicineTable() {
       header: "Name",
       accessorKey: "name",
       cell: ({ row }) => (
-        <div className="t-td-b truncate" title={row.original.name}>
+        <div className="t-td-b" title={row.original.name}>
           {row.original.name}
         </div>
       ),
@@ -60,7 +60,7 @@ export default function MedicineTable() {
       header: "Category",
       accessorKey: "productCategory",
       cell: ({ row }) => (
-        <span className="inline-flex items-center px-3 py-1.5 rounded-8 text-xs font-medium bg-[var(--primary)]/10 text-[var(--primary)]">
+        <span className="inline-flex items-center px-3 py-1.5 rounded-8 text-xs bg-[var(--primary)]/10 text-[var(--primary)]">
           {row.original.productCategory}
         </span>
       ),
@@ -68,7 +68,7 @@ export default function MedicineTable() {
     {
       header: "SKU",
       accessorKey: "skuCount",
-      cell: ({ row }) => <span className="t-val-sm">{row.original.skuCount}</span>,
+      cell: ({ row }) => <span className="t-td-b">{row.original.skuCount}</span>,
     },
     {
       header: "Image",
@@ -95,7 +95,7 @@ export default function MedicineTable() {
       header: "Formula",
       accessorKey: "productFormula",
       cell: ({ row }) => (
-        <div className="t-td-b truncate" title={row.original.productFormula}>
+        <div className="t-td-b" title={row.original.productFormula}>
           {row.original.productFormula}
         </div>
       ),

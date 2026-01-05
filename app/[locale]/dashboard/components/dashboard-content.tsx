@@ -161,7 +161,7 @@ export function DashboardContent({
 
       <div className="space-y-10 ">
         {/* Metrics Cards Section */}
-        <div className="grid mt-8 gap-6 sm:grid-cols-2  lg:grid-cols-4">
+        <div className="grid mt-1 gap-6 sm:grid-cols-2  lg:grid-cols-4">
           {!hideMetrics &&
             (topHcps?.length > 0 ? (
               topHcps.map((hcp, index) => (

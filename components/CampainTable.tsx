@@ -35,10 +35,10 @@ export default function CampaignsTable() {
 
   const columns: ColumnDef<Team>[] = [
     {
-      header: "Pulse Code",
+      header: "ID",
       accessorKey: "pulseCode",
       cell: ({ row }) => (
-        <div className="t-td-b truncate" title={row.original.pulseCode || "N/A"}>
+        <div className="t-td-b " title={row.original.pulseCode || "N/A"}>
           {row.original.pulseCode || "N/A"}
         </div>
       ),
@@ -47,7 +47,7 @@ export default function CampaignsTable() {
       header: "Name",
       accessorKey: "name",
       cell: ({ row }) => (
-        <div className="t-td-b truncate" title={row.original.name}>
+        <div className="t-td-b " title={row.original.name}>
           {row.original.name}
         </div>
       ),
@@ -56,7 +56,7 @@ export default function CampaignsTable() {
       header: "Channel",
       accessorKey: "channelName",
       cell: ({ row }) => (
-        <div className="t-td-b truncate" title={row.original.channelName || "N/A"}>
+        <div className="t-td-b " title={row.original.channelName || "N/A"}>
           {row.original.channelName || "N/A"}
         </div>
       ),
@@ -65,7 +65,7 @@ export default function CampaignsTable() {
       header: "Call Point",
       accessorKey: "callPointName",
       cell: ({ row }) => (
-        <div className="t-td-b truncate" title={row.original.callPointName || "N/A"}>
+        <div className="t-td-b " title={row.original.callPointName || "N/A"}>
           {row.original.callPointName || "N/A"}
         </div>
       ),

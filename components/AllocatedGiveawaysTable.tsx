@@ -105,7 +105,7 @@ const mockAllocations: AllocationRecord[] = [
 export default function AllocatedGiveawaysTable() {
   const columns: ColumnDef<AllocationRecord>[] = [
     {
-      header: "Pulse Code",
+      header: "ID",
       accessorKey: "pulseCode",
       cell: ({ row }) => (
         <div

@@ -61,37 +61,37 @@ export default function SalesPersonCard({
         <div className=" text-sm items-center mt-6 text-(--gray-6) space-y-3">
           <div className="flex justify-between gap-5 ">
             <div>
-              <span className="t-sm">Campaign</span>
+              <span className="t-sm text-(--subheading-color)">Campaign</span>
               <div className="t-val-sm">{campaign}</div>
             </div>
             <div>
-              <span className="t-sm">Requested Month</span>
+              <span className="t-sm text-(--subheading-color)">Requested Month</span>
               <div className="t-val-sm">{requestedMonth}</div>
             </div>
             <div>
-              <span className="t-sm">Channel</span>
+              <span className="t-sm text-(--subheading-color)">Channel</span>
               <div className="t-val-sm">{channel}</div>
             </div>
             <div>
-              <span className="t-sm">Reporting Manager</span>
+              <span className="t-sm text-(--subheading-color)">Reporting Manager</span>
               <div className="t-val-sm">{reportingManager}</div>
             </div>
             <div className="">
-              <p className="mb-1">status</p>
+              <p className="mb-1 text-(--subheading-color)">status</p>
               <StatusBadge status={status} />
             </div>
           </div>
           <div className="flex justify-start gap-8 mt-8 text-lg font-semibold text-(--gray-8)">
             <div>
-              <div className="t-cap">Total Calls</div>
+              <div className="t-cap text-(--subheading-color)">Total Calls</div>
               <div className="t-val-sm">{totalCalls.toLocaleString()}</div>
             </div>
             <div>
-              <div className="t-cap">Total Calls</div>
+              <div className="t-cap text-(--subheading-color)">Total Calls</div>
               <div className="t-val-sm">{totalCalls.toLocaleString()}</div>
             </div>
             <div>
-              <div className="t-cap">Total Calls</div>
+              <div className="t-cap text-(--subheading-color)">Total Calls</div>
               <div className="t-val-sm">{totalCalls.toLocaleString()}</div>
             </div>
           </div>

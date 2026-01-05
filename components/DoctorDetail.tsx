@@ -6,13 +6,13 @@ import TableHeader from "@/components/TableHeader";
 
 export default function DoctorDetail() {
   return (
-    <div className="w-[100%] ">
+    <div className="w-[100%]">
       <div className="w-[100%] flex justify-between ">
         {/* Left - Profile */}
-        <div className="w-[30%]">
+        <div className="w-[40%]">
           <DoctorProfileCard />
         </div>
-        <div className="w-[69%] space-y-5 ">
+        <div className="w-[59%] ">
           <div className="w-[100%]">
             <DoctorInfoCard />
           </div>

@@ -436,7 +436,9 @@ const Navbar = () => {
         {item.items && activeSubmenu === item.label && (
           <div
             className={`absolute cursor-pointer top-0 mt-2 bg-(--background) w-58 z-50 shadow-soft ${
-              submenuAlignment[item.label] === "right" ? "right-full mr-2" : "left-full ml-2"
+              submenuAlignment[item.label] === "right"
+                ? "right-full mr-[1px]"
+                : "left-full ml-[1px]"
             }`}
             style={{ top: -8 }}
             onMouseEnter={() => setActiveSubmenu(item.label)}

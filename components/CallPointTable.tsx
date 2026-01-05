@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import { MoreVertical } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
+import TableActionDropdown from "@/components/shared/table/TableActionDropdown";
 import { useAppDispatch, useAppSelector } from "@/store/index";
 import { getAllCallPoints } from "@/store/slices/callPoint/getAllCallPointsSlice";
 
@@ -20,6 +20,7 @@ export default function CallPointsList() {
   const dispatch = useAppDispatch();
   const { callPoints, loading, error } = useAppSelector((state) => state.allCallPoints);
   const hasFetched = useRef(false);
+  const [openId, setOpenId] = useState<string | null>(null);
 
   // Fetch call points on component mount (prevent double call)
   useEffect(() => {
@@ -35,7 +36,7 @@ export default function CallPointsList() {
 
   const columns: ColumnDef<CallPoint>[] = [
     {
-      header: "Pulse Code",
+      header: "ID",
       accessorKey: "pulseCode",
       cell: ({ row }) => (
         <div className="t-td-b truncate" title={row.original.pulseCode || "N/A"}>
@@ -73,11 +74,24 @@ export default function CallPointsList() {
     {
       id: "actions",
       header: "",
-      cell: () => (
-        <div className="flex items-center justify-end">
-          <button className="p-2 text-[var(--gray-4)] hover:text-[var(--gray-6)] hover:bg-[var(--gray-1)] rounded-8 transition cursor-pointer">
-            <MoreVertical className="w-5 h-5" />
-          </button>
+      cell: ({ row }) => (
+        <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
+          <TableActionDropdown
+            isOpen={openId === row.original.id}
+            onToggle={() => setOpenId(openId === row.original.id ? null : row.original.id)}
+            onClose={() => setOpenId(null)}
+            items={[
+              {
+                label: "Edit",
+                onClick: () => console.log("Edit", row.original.id),
+              },
+              {
+                label: "Delete",
+                onClick: () => console.log("Delete", row.original.id),
+                variant: "danger",
+              },
+            ]}
+          />
         </div>
       ),
     },

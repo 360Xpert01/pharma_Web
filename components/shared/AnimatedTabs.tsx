@@ -52,8 +52,10 @@ export default function AnimatedTabs<T extends string>({
       <div className="relative bg-(--gray-1) rounded-8 p-1 shadow-inner">
         {/* Sliding indicator */}
         <div
-          className={`absolute top-1 h-[calc(100%-8px)] rounded-8 transition-all duration-300 ease-out shadow-soft ${
-            variant === "primary" ? "bg-(--primary)" : "bg-(--background)"
+          className={`absolute top-1 h-[calc(100%-8px)] rounded-8 transition-all  duration-300 ease-out shadow-soft ${
+            variant === "primary"
+              ? "bg-(--primary) text-(--background)"
+              : "bg-(--primary) text-(--background)"
           }`}
           style={{
             width: `${indicatorStyle.width}px`,
@@ -76,7 +78,7 @@ export default function AnimatedTabs<T extends string>({
                 activeTab === tab.id
                   ? variant === "primary"
                     ? "text-(--light)"
-                    : "text-(--gray-9)"
+                    : "text-(--light)"
                   : "text-(--gray-6) hover:text-(--gray-8)"
               }`}
             >
