@@ -21,7 +21,7 @@ export default function DashboardPage() {
         {/* Heatmap and Doctor Coverage Map in one row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Heatmap Component */}
-          <Heatmap />
+          <Heatmap config={{ rows: 20, columns: 20 }} />
 
           {/* Doctor Coverage Map Component */}
           <DoctorCoverageMap />
