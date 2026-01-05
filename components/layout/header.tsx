@@ -435,10 +435,8 @@ const Navbar = () => {
         {/* Flyout Submenu */}
         {item.items && activeSubmenu === item.label && (
           <div
-            className={`absolute cursor-pointer top-0 mt-2 bg-(--background) w-58 z-50 shadow-soft ${
-              submenuAlignment[item.label] === "right"
-                ? "right-full mr-[1px]"
-                : "left-full ml-[1px]"
+            className={`absolute cursor-pointer top-0 bg-(--background) w-58 z-50 shadow-soft ${
+              submenuAlignment[item.label] === "right" ? "right-full" : "left-full"
             }`}
             style={{ top: -8 }}
             onMouseEnter={() => setActiveSubmenu(item.label)}
