@@ -12,7 +12,7 @@ export default function AuthLayout({ children }: PropsWithChildren) {
 
   return (
     <div className="w-screen min-h-screen h-screen flex overflow-hidden ceturo">
-      <div className="w-full max-w-screen-2xl mx-auto flex">
+      <div className="w-full mx-auto flex">
         {/* Left Side - Logo and Illustration */}
         <div className="hidden md:flex md:w-1/2 bg-[var(--background)] relative overflow-hidden flex-col py-8 px-10 lg:py-10 lg:px-14 xl:py-12 xl:px-16">
           {/* Logo and Tagline */}
@@ -33,18 +33,18 @@ export default function AuthLayout({ children }: PropsWithChildren) {
         {/* Right Side - Form with Background Shape */}
         <div className="w-full md:w-1/2 relative overflow-hidden flex flex-col">
           {/* Form Background SVG - Fixed positioning to cover completely */}
-          <div className="absolute inset-0 -right-10">
-            <FormBg className="w-[calc(100%+4rem)] h-full object-cover" />
+          <div className="absolute inset-0 ">
+            <FormBg className="w-[calc(110%+4rem)] h-full" />
           </div>
 
           {/* Form Content - Centered */}
-          <div className="relative z-10 flex-1 flex items-center justify-center pl-40">
+          <div className="relative z-10 flex-1 flex items-center justify-end min-[1200px]:mr-15 min-[1600px]:mr-30 ">
             {/* Children (Login Form) */}
-            <div className="w-full lg:max-w-sm">{children}</div>
+            <div className="min-[1200px]:w-[400px] min-[1600px]:w-[450px]">{children}</div>
           </div>
 
           {/* Footer with Line Separator */}
-          <div className="relative z-10 pb-4 pr-30 flex items-center justify-end gap-2">
+          <div className="relative z-10 pb-4 min-[1200px]:pr-16 min-[1600px]:pr-30 flex items-center justify-end gap-2">
             <LoginLine />
             <div className="text-background text-xs whitespace-nowrap">
               Pulse by CRM | © 2024 All Rights Reserved

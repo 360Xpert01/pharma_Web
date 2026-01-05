@@ -210,7 +210,7 @@ export default function CenturoTable<T>({
                       {canSort ? (
                         <div
                           onClick={header.column.getToggleSortingHandler()}
-                          className="flex items-center justify-between gap-2 group"
+                          className="flex items-center gap-2 group"
                         >
                           <span>
                             {flexRender(header.column.columnDef.header, header.getContext())}
