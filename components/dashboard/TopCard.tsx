@@ -2,8 +2,10 @@
 
 import React from "react";
 import { Card } from "@/components/ui/card";
-import { TrendingUp, Package, DollarSign, FileText, Calendar } from "lucide-react";
+import { TrendingUp, DollarSign, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
+import SampleDistributedIcon from "@/components/svgs/sample-distributed";
+import ExpenseSubmittedIcon from "@/components/svgs/expense-submitted";
 
 interface CardData {
   id: string;
@@ -47,14 +49,14 @@ const defaultCards: CardData[] = [
     title: "Sample Distributed",
     value: "100",
     color: "text-red-400",
-    icon: <Package className="w-8 h-8 text-red-400" />,
+    icon: <SampleDistributedIcon className="w-12 h-12" />,
   },
   {
     id: "expense-submitted",
     title: "Expense Submitted",
     value: "Rs.40k",
     color: "text-purple-500",
-    icon: <FileText className="w-8 h-8 text-purple-500" />,
+    icon: <ExpenseSubmittedIcon className="w-12 h-12" />,
   },
   {
     id: "attendance-compliance",
@@ -186,26 +188,26 @@ const RadialProgress = ({ value, color }: { value: string; color: string }) => {
 // Arc Progress Component (Semi-circle gauge)
 const ArcProgress = ({ value, color }: { value: string; color: string }) => {
   const percentage = parseInt(value);
-  const radius = 20;
+  const radius = 28; // Increased from 20
   const circumference = Math.PI * radius; // Half circle
   const offset = circumference - (percentage / 100) * circumference;
 
   return (
-    <svg width="50" height="30" viewBox="0 0 50 30" className="mt-1">
+    <svg width="70" height="42" viewBox="0 0 70 42" className="mt-1">
       {/* Background arc */}
       <path
-        d="M 5 25 A 20 20 0 0 1 45 25"
+        d="M 7 35 A 28 28 0 0 1 63 35"
         stroke="currentColor"
-        strokeWidth="4"
+        strokeWidth="8"
         fill="none"
         strokeLinecap="round"
         className="text-(--gray-2)"
       />
       {/* Foreground arc */}
       <path
-        d="M 5 25 A 20 20 0 0 1 45 25"
+        d="M 7 35 A 28 28 0 0 1 63 35"
         stroke="currentColor"
-        strokeWidth="4"
+        strokeWidth="8"
         fill="none"
         strokeDasharray={circumference}
         strokeDashoffset={offset}
@@ -264,16 +266,16 @@ export default function TopCards({ cards = defaultCards, className }: TopCardsPr
       )}
     >
       {cards.map((card) => (
-        <Card key={card.id} className="p-4 hover:shadow-md transition-shadow cursor-pointer">
+        <Card key={card.id} className="p-4 shadow-soft cursor-pointer">
           <div className="flex flex-col">
             {/* Title */}
-            <span className="t-sm text-(--gray-6) mb-2">{card.title}</span>
+            <span className="t-h5 mb-2">{card.title}</span>
 
             {/* Value and Chart/Icon in horizontal layout */}
             <div className="flex items-center justify-between">
               {/* Value with inline color */}
               <span
-                className="t-h3 font-bold"
+                className="text-3xl  font-medium "
                 style={{ color: getColorValue(card.color || "text-blue-500") }}
               >
                 {card.value}

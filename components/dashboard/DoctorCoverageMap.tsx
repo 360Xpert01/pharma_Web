@@ -140,7 +140,7 @@ export default function DoctorCoverageMap({
 
   return (
     <Card className={cn("shadow-soft", className)}>
-      <CardHeader className="pb-4">
+      <CardHeader className="">
         <div className="flex items-center justify-between gap-4">
           <CardTitle className="t-h4 text-(--gray-9)">Doctor Coverage Map</CardTitle>
 
@@ -152,9 +152,9 @@ export default function DoctorCoverageMap({
         </div>
       </CardHeader>
 
-      <CardContent className="p-0">
+      <CardContent className="px-6 pt-0">
         {/* Real Map with Leaflet */}
-        <div className="relative w-full h-[300px] rounded-b-8 overflow-hidden">
+        <div className="relative w-full h-[345px] rounded-8 overflow-hidden">
           <MapComponent locations={locations} />
         </div>
       </CardContent>

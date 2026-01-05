@@ -42,65 +42,83 @@ export default function ProductPerformance({ products, className }: ProductPerfo
       </CardHeader>
 
       <CardContent className="pt-0 pb-4">
-        {/* Bar Chart Container with side borders */}
-        <div className="relative h-[260px] flex items-end justify-between gap-4 px-6 border-l border-r border-dashed border-(--gray-3)">
-          {productData.map((product) => (
-            <div key={product.id} className="flex-1 flex flex-col items-center">
-              {/* Bars Container */}
-              <div className="relative w-full h-[200px] flex items-end justify-center gap-2">
-                {/* Order Captured Bar - First */}
-                <div
-                  className="relative flex-1 bg-(--primary-0) rounded-t-lg transition-all hover:opacity-90 cursor-pointer"
-                  style={{
-                    height: `${product.orderCaptured}%`,
-                    minHeight: "20px",
-                  }}
-                  onMouseEnter={() => setHoveredBar({ productId: product.id, type: "order" })}
-                  onMouseLeave={() => setHoveredBar(null)}
-                >
-                  {/* Tooltip for Order Captured */}
-                  {hoveredBar?.productId === product.id && hoveredBar?.type === "order" && (
-                    <div className="bg-white shadow-lg rounded-8 px-3 py-2 whitespace-nowrap z-10 border border-(--gray-2) absolute -top-14 left-1/2 transform -translate-x-1/2">
-                      <div className="text-(--gray-5) t-cap">
-                        {product.name} {product.strength}
+        {/* Bar Chart Container */}
+        <div className="relative">
+          {/* Bars Section with left/right borders */}
+          <div className="relative h-[200px] flex items-end justify-between gap-4 px-6 border-l border-r border-dashed border-(--gray-3)">
+            {productData.map((product) => (
+              <div key={product.id} className="flex-1 flex flex-col items-center">
+                {/* Bars Container */}
+                <div className="relative w-full h-full flex items-end justify-center gap-1.5">
+                  {/* Order Captured Bar - First */}
+                  <div
+                    className="relative flex-1 max-w-[12px] rounded-t-lg transition-all hover:opacity-90 cursor-pointer"
+                    style={{
+                      height: `${(product.orderCaptured / 100) * 200}px`,
+                      backgroundColor: "#9CC8FF",
+                    }}
+                    onMouseEnter={() => setHoveredBar({ productId: product.id, type: "order" })}
+                    onMouseLeave={() => setHoveredBar(null)}
+                  >
+                    {/* Tooltip for Order Captured */}
+                    {hoveredBar?.productId === product.id && hoveredBar?.type === "order" && (
+                      <div className="bg-white shadow-lg rounded-8 px-3 py-2 whitespace-nowrap z-10 border border-(--gray-2) absolute -top-14 left-1/2 transform -translate-x-1/2">
+                        <div className="text-(--gray-5) t-cap">
+                          {product.name} {product.strength}
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <div
+                            className="w-2 h-2 rounded-full"
+                            style={{ backgroundColor: "#9CC8FF" }}
+                          ></div>
+                          <span className="t-label-b text-(--primary)">
+                            {product.orderCaptured}%
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <div className="w-2 h-2 rounded-full bg-(--primary-0)"></div>
-                        <span className="t-label-b text-(--primary)">{product.orderCaptured}%</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                    )}
+                  </div>
 
-                {/* Sample Distributed Bar - Second */}
-                <div
-                  className="relative flex-1 bg-(--primary) rounded-t-lg transition-all hover:opacity-90 cursor-pointer"
-                  style={{
-                    height: `${product.sampleDistributed}%`,
-                    minHeight: "20px",
-                  }}
-                  onMouseEnter={() => setHoveredBar({ productId: product.id, type: "sample" })}
-                  onMouseLeave={() => setHoveredBar(null)}
-                >
-                  {/* Tooltip for Sample Distributed */}
-                  {hoveredBar?.productId === product.id && hoveredBar?.type === "sample" && (
-                    <div className="bg-white shadow-lg rounded-8 px-3 py-2 whitespace-nowrap z-10 border border-(--gray-2) absolute -top-14 left-1/2 transform -translate-x-1/2">
-                      <div className="text-(--gray-5) t-cap">
-                        {product.name} {product.strength}
+                  {/* Sample Distributed Bar - Second */}
+                  <div
+                    className="relative flex-1 max-w-[12px] rounded-t-lg transition-all hover:opacity-90 cursor-pointer"
+                    style={{
+                      height: `${(product.sampleDistributed / 100) * 200}px`,
+                      backgroundColor: "#438CF1",
+                    }}
+                    onMouseEnter={() => setHoveredBar({ productId: product.id, type: "sample" })}
+                    onMouseLeave={() => setHoveredBar(null)}
+                  >
+                    {/* Tooltip for Sample Distributed */}
+                    {hoveredBar?.productId === product.id && hoveredBar?.type === "sample" && (
+                      <div className="bg-white shadow-lg rounded-8 px-3 py-2 whitespace-nowrap z-10 border border-(--gray-2) absolute -top-14 left-1/2 transform -translate-x-1/2">
+                        <div className="text-(--gray-5) t-cap">
+                          {product.name} {product.strength}
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <div
+                            className="w-2 h-2 rounded-full"
+                            style={{ backgroundColor: "#438CF1" }}
+                          ></div>
+                          <span className="t-label-b text-(--primary)">
+                            {product.sampleDistributed}%
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <div className="w-2 h-2 rounded-full bg-(--primary)"></div>
-                        <span className="t-label-b text-(--primary)">
-                          {product.sampleDistributed}%
-                        </span>
-                      </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
+            ))}
+          </div>
 
-              {/* Product Name Label - Two lines: Name + Strength */}
-              <div className="flex flex-col items-center mt-2 w-full">
+          {/* X-axis Dashed Line - Visual Separator */}
+          <div className="w-full border-t border-dashed border-(--gray-3) my-0"></div>
+
+          {/* Product Names Section */}
+          <div className="flex items-start justify-between gap-4 px-6 pb-3">
+            {productData.map((product) => (
+              <div key={product.id} className="flex-1 flex flex-col items-center">
                 <div className="text-(--gray-6) t-sm text-center truncate w-full">
                   {product.name}
                 </div>
@@ -108,12 +126,9 @@ export default function ProductPerformance({ products, className }: ProductPerfo
                   {product.strength}
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-
-        {/* X-axis line - Dashed */}
-        <div className="w-full h-0 border-t border-dashed border-(--gray-3)"></div>
       </CardContent>
     </Card>
   );

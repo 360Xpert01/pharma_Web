@@ -64,6 +64,13 @@
     /* color: var(--gray-9); */
   }
 
+  .t-h5 {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 600;
+    color: var(--gray-8);
+  }
+
   /* Body */
   .t-lg {
     font-size: 1rem;
