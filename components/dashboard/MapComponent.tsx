@@ -96,12 +96,7 @@ export default function MapComponent({ locations }: MapComponentProps) {
           background: white;
         }
         .leaflet-container a.leaflet-popup-close-button {
-          color: var(--gray-6);
-          font-size: 20px;
-          padding: 8px 8px 0 0;
-        }
-        .leaflet-container a.leaflet-popup-close-button:hover {
-          color: var(--gray-9);
+          display: none;
         }
       `}</style>
       <MapContainer
@@ -130,11 +125,11 @@ export default function MapComponent({ locations }: MapComponentProps) {
           >
             <Popup>
               <div className="p-4">
-                <h4 className="t-label-b text-(--gray-9)">{location.name}</h4>
+                <h4 className="t-h4 text-(--gray-9) mb-1">{location.name}</h4>
                 {location.specialty && (
-                  <p className="t-sm text-primary mt-2">{location.specialty}</p>
+                  <p className="t-cap text-primary font-semibold mb-1">{location.specialty}</p>
                 )}
-                <p className="t-sm text-(--gray-6) mt-1">{location.address}</p>
+                <p className="t-sm text-(--gray-6)">{location.address}</p>
               </div>
             </Popup>
           </Marker>
