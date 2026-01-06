@@ -282,7 +282,7 @@ export default function CalendarFilter({ onDateChange, className }: CalendarFilt
                   <button
                     onClick={() => handleQuickFilter("current-month")}
                     className={cn(
-                      "w-full text-left px-3 py-2 rounded-8 transition-colors t-sm",
+                      "w-full text-left px-3 py-2 rounded-8 transition-colors t-sm cursor-pointer",
                       activeFilter === "current-month"
                         ? "text-(--primary) font-medium"
                         : "text-(--gray-6) hover:bg-(--gray-1)"
@@ -293,7 +293,7 @@ export default function CalendarFilter({ onDateChange, className }: CalendarFilt
                   <button
                     onClick={() => handleQuickFilter("past-month")}
                     className={cn(
-                      "w-full text-left px-3 py-2 rounded-8 transition-colors t-sm",
+                      "w-full text-left px-3 py-2 rounded-8 transition-colors t-sm cursor-pointer",
                       activeFilter === "past-month"
                         ? "text-(--primary) font-medium"
                         : "text-(--gray-6) hover:bg-(--gray-1)"
@@ -304,7 +304,7 @@ export default function CalendarFilter({ onDateChange, className }: CalendarFilt
                   <button
                     onClick={() => handleQuickFilter("current-quarter")}
                     className={cn(
-                      "w-full text-left px-3 py-2 rounded-8 transition-colors t-sm",
+                      "w-full text-left px-3 py-2 rounded-8 transition-colors t-sm cursor-pointer",
                       activeFilter === "current-quarter"
                         ? "text-(--primary) font-medium"
                         : "text-(--gray-6) hover:bg-(--gray-1)"
@@ -315,7 +315,7 @@ export default function CalendarFilter({ onDateChange, className }: CalendarFilt
                   <button
                     onClick={() => handleQuickFilter("past-quarter")}
                     className={cn(
-                      "w-full text-left px-3 py-2 rounded-8 transition-colors t-sm",
+                      "w-full text-left px-3 py-2 rounded-8 transition-colors t-sm cursor-pointer",
                       activeFilter === "past-quarter"
                         ? "text-(--primary) font-medium"
                         : "text-(--gray-6) hover:bg-(--gray-1)"
@@ -326,7 +326,7 @@ export default function CalendarFilter({ onDateChange, className }: CalendarFilt
                   <button
                     onClick={() => setActiveFilter("custom")}
                     className={cn(
-                      "w-full text-left px-3 py-2 rounded-8 transition-colors t-sm",
+                      "w-full text-left px-3 py-2 rounded-8 transition-colors t-sm cursor-pointer",
                       activeFilter === "custom"
                         ? "text-(--primary) font-medium"
                         : "text-blue-500 hover:bg-(--gray-1)"
