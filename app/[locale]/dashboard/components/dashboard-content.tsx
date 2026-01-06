@@ -51,6 +51,7 @@ import AllProductCategories from "@/components/AllProductCategories";
 import DoctorSpecializations from "@/components/DoctorSpecializations";
 import AllSpecializations from "@/components/AllSpecializations";
 import DoctorDetail from "@/components/DoctorDetail";
+import CsvUploadMapper from "@/components/CsvUploadMapper";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -110,6 +111,7 @@ export function DashboardContent({
   specializationsD,
   specializationsTrue,
   doctorDetail,
+  csvIMP,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -228,6 +230,13 @@ export function DashboardContent({
             <DoctorsTable />
           </div>
         )}
+
+        {csvIMP && (
+          <div className="rounded-md shadow-soft bg-[var(--background)]">
+            <CsvUploadMapper />
+          </div>
+        )}
+
         {setTargetlist && <SetTargetPage />}
 
         {allocateGiveaways && (

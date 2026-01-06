@@ -247,7 +247,7 @@ const Navbar = () => {
         {
           label: "Integrations",
           items: [
-            { label: "Import / Export (CSV)", href: "/integrations/csv" },
+            { label: "Import (CSV)", href: "/dashboard/csvImports" },
             { label: "CRM API Management", href: "/integrations/api" },
             { label: "Integration / CSV Import Logs", href: "/integrations/import" },
             { label: "BI / Reporting Tools", href: "/integrations/bi" },

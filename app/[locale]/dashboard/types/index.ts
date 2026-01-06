@@ -162,4 +162,5 @@ export interface DashboardProps {
   specializationsD?: boolean;
   specializationsTrue?: boolean;
   doctorDetail?: boolean;
+  csvIMP?: boolean;
 }
