@@ -66,15 +66,9 @@ const Navbar = () => {
       label: "Products",
       items: [
         { label: "Products", href: "/dashboard/product-Management" },
-
-        {
-          label: "Promotional Materials",
-          items: [
-            { label: "Samples & Promotional", href: "/dashboard/sample-Management" },
-            { label: "Gifts / Merchandise", href: "/dashboard/giveaway-Management" },
-            { label: "Allocate Giveaways & Samples", href: "/dashboard/allocate-giveways-sample" },
-          ],
-        },
+        { label: "Samples & Promotional", href: "/dashboard/sample-Management" },
+        { label: "Gifts / Merchandise", href: "/dashboard/giveaway-Management" },
+        { label: "Allocate Giveaways & Samples", href: "/dashboard/allocate-giveways-sample" },
       ],
     },
     {
