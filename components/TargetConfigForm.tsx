@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { FormInput, FormSelect } from "@/components/form";
 
 interface TargetConfigFormProps {
   selectedTeam: string;
@@ -23,56 +24,58 @@ export default function TargetConfigForm({
   onTeamChange,
   onMonthChange,
 }: TargetConfigFormProps) {
+  // Team options
+  const teamOptions = [
+    { value: "team1", label: "High Blood Pressure Team" },
+    { value: "team2", label: "Diabetes Management Team" },
+    { value: "team3", label: "Cardiology Team" },
+  ];
+
+  // Month options
+  const monthOptions = [
+    { value: "january", label: "January 2025" },
+    { value: "february", label: "February 2025" },
+    { value: "march", label: "March 2025" },
+    { value: "april", label: "April 2025" },
+    { value: "may", label: "May 2025" },
+    { value: "june", label: "June 2025" },
+  ];
+
   return (
     <div className="space-y-6">
       {/* Title Section */}
       <div className="mb-6">
-        <h3 className="t-lg">Set Target</h3>
-        <p className="t-sm">Select team</p>
+        <h3 className="t-h2 text-(--gray-9)">Set Target</h3>
+        <p className="t-sm text-(--gray-5)">Select team</p>
       </div>
 
       {/* First Row: Team Selector, Month Selector, Helper Text */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
         {/* Select Team */}
-        <div>
-          <label className="t-label block mb-2">
-            Select Team<span className="text-(--destructive)">*</span>
-          </label>
-          <select
-            value={selectedTeam}
-            onChange={(e) => onTeamChange(e.target.value)}
-            className="w-full px-4 py-3 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none bg-(--light) text-(--gray-7) cursor-pointer"
-          >
-            <option value="">Search teams</option>
-            <option value="team1">High Blood Pressure Team</option>
-            <option value="team2">Diabetes Management Team</option>
-            <option value="team3">Cardiology Team</option>
-          </select>
-        </div>
+        <FormSelect
+          label="Select Team"
+          name="team"
+          value={selectedTeam}
+          onChange={onTeamChange}
+          options={teamOptions}
+          placeholder="Search teams"
+          required
+        />
 
         {/* Target Month */}
-        <div>
-          <label className="t-label block mb-2">
-            Target Month<span className="text-(--destructive)">*</span>
-          </label>
-          <select
-            value={targetMonth}
-            onChange={(e) => onMonthChange(e.target.value)}
-            className="w-full px-4 py-3 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none bg-(--light) text-(--gray-7) cursor-pointer"
-          >
-            <option value="">Select Month</option>
-            <option value="january">January 2025</option>
-            <option value="february">February 2025</option>
-            <option value="march">March 2025</option>
-            <option value="april">April 2025</option>
-            <option value="may">May 2025</option>
-            <option value="june">June 2025</option>
-          </select>
-        </div>
+        <FormSelect
+          label="Target Month"
+          name="month"
+          value={targetMonth}
+          onChange={onMonthChange}
+          options={monthOptions}
+          placeholder="Select Month"
+          required
+        />
 
         {/* Helper Text */}
         <div className="flex items-center mt-6">
-          <p className="t-md leading-relaxed">
+          <p className="t-md text-(--gray-5) leading-relaxed">
             You can easily name the role you want and take on different responsibilities.
           </p>
         </div>
@@ -81,58 +84,45 @@ export default function TargetConfigForm({
       {/* Second Row: Read-only Fields */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Team Role Code */}
-        <div>
-          <label className="t-label block mb-2">
-            Team Role Code<span className="text-(--destructive)">*</span>
-          </label>
-          <input
-            type="text"
-            value={teamRoleCode}
-            readOnly
-            disabled
-            className="w-full px-4 py-3 border border-(--gray-3) rounded-8 bg-(--gray-0) text-(--gray-6) cursor-not-allowed outline-none"
-            placeholder="PL_SPT_017284"
-          />
-        </div>
+        <FormInput
+          label="Team Role Code"
+          name="teamRoleCode"
+          value={teamRoleCode}
+          onChange={() => {}}
+          placeholder="PL_SPT_017284"
+          readOnly
+          required
+        />
 
         {/* Team Name */}
-        <div>
-          <label className="t-label block mb-2">Team Name</label>
-          <input
-            type="text"
-            value={teamName}
-            readOnly
-            disabled
-            className="w-full px-4 py-3 border border-(--gray-3) rounded-8 bg-(--gray-0) text-(--gray-6) cursor-not-allowed outline-none"
-            placeholder="High Blood Pressure"
-          />
-        </div>
+        <FormInput
+          label="Team Name"
+          name="teamName"
+          value={teamName}
+          onChange={() => {}}
+          placeholder="High Blood Pressure"
+          readOnly
+        />
 
         {/* Channel Name */}
-        <div>
-          <label className="t-label block mb-2">Channel Name</label>
-          <input
-            type="text"
-            value={channelName}
-            readOnly
-            disabled
-            className="w-full px-4 py-3 border border-(--gray-3) rounded-8 bg-(--gray-0) text-(--gray-6) cursor-not-allowed outline-none"
-            placeholder="Chain Pharmacy"
-          />
-        </div>
+        <FormInput
+          label="Channel Name"
+          name="channelName"
+          value={channelName}
+          onChange={() => {}}
+          placeholder="Chain Pharmacy"
+          readOnly
+        />
 
         {/* Call Point */}
-        <div>
-          <label className="t-label block mb-2">Call Point</label>
-          <input
-            type="text"
-            value={callPoint}
-            readOnly
-            disabled
-            className="w-full px-4 py-3 border border-(--gray-3) rounded-8 bg-(--gray-0) text-(--gray-6) cursor-not-allowed outline-none"
-            placeholder="36 Export Solutions"
-          />
-        </div>
+        <FormInput
+          label="Call Point"
+          name="callPoint"
+          value={callPoint}
+          onChange={() => {}}
+          placeholder="36 Export Solutions"
+          readOnly
+        />
       </div>
     </div>
   );

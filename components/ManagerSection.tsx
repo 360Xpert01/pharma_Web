@@ -22,15 +22,32 @@ export default function ManagerSection({
   onProductInputChange,
   onConflictClick,
 }: ManagerSectionProps) {
+  // Detect duplicate tags across all sales reps
+  const getConflictTags = () => {
+    const tagCounts: Record<string, number> = {};
+
+    // Count occurrences of each tag
+    manager.salesReps.forEach((rep) => {
+      rep.productTags.forEach((tag) => {
+        tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+      });
+    });
+
+    // Return tags that appear more than once
+    const conflicts = Object.keys(tagCounts).filter((tag) => tagCounts[tag] > 1);
+    console.log("🔍 Manager:", manager.name, "| Tag Counts:", tagCounts, "| Conflicts:", conflicts);
+    return conflicts;
+  };
+
+  const conflictTags = getConflictTags();
+
   return (
     <div className="flex gap-6">
       {/* Left Side: Manager Name (25%) */}
       <div className="w-1/4">
         <div>
-          <p className="text-xs font-medium text-(--gray-5) uppercase tracking-wide mb-1">
-            Sales Manager
-          </p>
-          <p className="text-lg font-bold text-(--gray-9)">{manager.name}</p>
+          <p className="t-over text-(--gray-5) mb-1">Area Manager</p>
+          <p className="t-h3 text-(--gray-9)">{manager.name}</p>
         </div>
       </div>
 
@@ -40,6 +57,7 @@ export default function ManagerSection({
           <SalesRepCard
             key={rep.id}
             rep={rep}
+            conflictTags={conflictTags}
             onDeleteProduct={onDeleteProduct}
             onProductInputChange={onProductInputChange}
             onConflictClick={onConflictClick}
