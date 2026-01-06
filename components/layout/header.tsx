@@ -66,15 +66,13 @@ const Navbar = () => {
       label: "Products",
       items: [
         { label: "Products", href: "/dashboard/product-Management" },
-        { label: "Target View", href: "/dashboard/target-listview" },
-        { label: "Set Target", href: "/dashboard/SetTarget" },
-        { label: "Allocate Giveaways & Samples", href: "/dashboard/allocate-giveways-sample" },
 
         {
           label: "Promotional Materials",
           items: [
             { label: "Samples & Promotional", href: "/dashboard/sample-Management" },
             { label: "Gifts / Merchandise", href: "/dashboard/giveaway-Management" },
+            { label: "Allocate Giveaways & Samples", href: "/dashboard/allocate-giveways-sample" },
           ],
         },
       ],
@@ -90,7 +88,7 @@ const Navbar = () => {
 
           items: [
             { label: "Monthly Work plans", href: "/dashboard/plan-Management" },
-            { label: "Revenue Targets & Achievement", href: "/dashboard/giveaway-Management" },
+            { label: "Revenue Targets", href: "/dashboard/target-listview" },
           ],
         },
         {

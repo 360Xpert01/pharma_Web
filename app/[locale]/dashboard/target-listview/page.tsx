@@ -6,18 +6,17 @@ export default function TargetListViewPage() {
   return (
     <div className="bg-(--gray-0)">
       <DashboardContent
-        sample={"Target listview"}
+        sample={"Revenue Targets"}
         descrip={"Unlock the potential of your candidates"}
         table={"All Employees"}
+        btnAdd={"Set Targets"}
         hideData={false}
         hideHeader={true}
         hideMetrics={true}
-        btnTrue={true}
         targetListView={true}
-        settingsRoute={"/dashboard/addEmployees"}
+        settingsRoute={"/dashboard/SetTarget"}
         settingsRouteRequest={"/dashboard/viewRequestEmployees"}
-        btntextReq={"view Requests"}
-        btnReqquest={true}
+        btnReqquest={false}
       />
     </div>
   );
