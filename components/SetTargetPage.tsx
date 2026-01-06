@@ -4,6 +4,9 @@ import React, { useState } from "react";
 import TargetConfigForm from "./TargetConfigForm";
 import ManagerSection, { Manager } from "./ManagerSection";
 import ConflictModal from "./ConflictModal";
+import { Button } from "@/components/ui/button/button";
+import { FormInput } from "@/components/form";
+import { mockManagers } from "@/data/targetData";
 
 export default function SetTargetPage() {
   // Form state
@@ -17,148 +20,8 @@ export default function SetTargetPage() {
   // Conflict Modal state
   const [isConflictModalOpen, setIsConflictModalOpen] = useState(false);
 
-  // Mock data for demonstration - matches screenshot
-  const [managers, setManagers] = useState<Manager[]>([
-    {
-      id: "manager1",
-      name: "Abdul Aziz Warsi",
-      salesReps: [
-        {
-          id: "rep1",
-          name: "Danish Kumar",
-          role: "Sales Representative",
-          avatar: "/placeholder-avatar.jpg",
-          productTags: ["L40", "L42", "L48", "L57"],
-          products: [
-            {
-              id: "prod1",
-              name: "Dapakan 500mg",
-              targetQuantity: "50 Packets",
-              completionPercentage: 100,
-              inputValue: "Atorvastatin 10mg",
-              hasConflict: false,
-            },
-            {
-              id: "prod2",
-              name: "Medooro 500mg",
-              targetQuantity: "50 Packets",
-              completionPercentage: 50,
-              inputValue: "Elt 250mg",
-              hasConflict: true,
-              conflictMessage: "Conflict with existing target",
-            },
-          ],
-        },
-        {
-          id: "rep2",
-          name: "Majid Hussain",
-          role: "Sales Representative",
-          avatar: "/placeholder-avatar.jpg",
-          productTags: ["L46", "939", "L43", "L52", "874"],
-          products: [
-            {
-              id: "prod1",
-              name: "Dapakan 500mg",
-              targetQuantity: "50 Packets",
-              completionPercentage: 100,
-              inputValue: "",
-              hasConflict: false,
-            },
-            {
-              id: "prod2",
-              name: "Atorvastatin 10gm",
-              targetQuantity: "",
-              completionPercentage: 0,
-              inputValue: "Atorvastatin 10gm",
-              hasConflict: false,
-            },
-            {
-              id: "prod3",
-              name: "Wellprox 500mg",
-              targetQuantity: "50 Packets",
-              completionPercentage: 50,
-              inputValue: "",
-              hasConflict: true,
-              conflictMessage: "Conflicts In Sales Allocation",
-            },
-            {
-              id: "prod4",
-              name: "ER 250mg",
-              targetQuantity: "50 Packets",
-              completionPercentage: 100,
-              inputValue: "ER 250mg",
-              hasConflict: false,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      id: "manager2",
-      name: "Asad Raza",
-      salesReps: [
-        {
-          id: "rep3",
-          name: "Danish Kumar",
-          role: "Sales Representative",
-          avatar: "/placeholder-avatar.jpg",
-          productTags: ["L40", "L42", "L48"],
-          products: [
-            {
-              id: "prod5",
-              name: "Divalol 750mg",
-              targetQuantity: "50 Packets",
-              completionPercentage: 100,
-              inputValue: "",
-              hasConflict: false,
-            },
-          ],
-        },
-        {
-          id: "rep4",
-          name: "Majid Hussain",
-          role: "Sales Representative",
-          avatar: "/placeholder-avatar.jpg",
-          productTags: ["L40", "L42", "L48", "L57"],
-          products: [
-            {
-              id: "prod6",
-              name: "Medooro 100mg",
-              targetQuantity: "50 Packets",
-              completionPercentage: 100,
-              inputValue: "",
-              hasConflict: false,
-            },
-            {
-              id: "prod7",
-              name: "Elt 250mg",
-              targetQuantity: "50 Packets",
-              completionPercentage: 100,
-              inputValue: "",
-              hasConflict: false,
-            },
-          ],
-        },
-        {
-          id: "rep5",
-          name: "Danish Kumar",
-          role: "Sales Representative",
-          avatar: "/placeholder-avatar.jpg",
-          productTags: ["L40", "L48"],
-          products: [
-            {
-              id: "prod8",
-              name: "Divalol 750mg",
-              targetQuantity: "50 Packets",
-              completionPercentage: 100,
-              inputValue: "",
-              hasConflict: false,
-            },
-          ],
-        },
-      ],
-    },
-  ]);
+  // Mock data imported from data file
+  const [managers, setManagers] = useState<Manager[]>(mockManagers);
 
   // Read-only field values (populated when team is selected)
   const teamMetadata = {
@@ -223,7 +86,7 @@ export default function SetTargetPage() {
     <div className="min-h-screen bg-(--gray-0)">
       {/* Centered Content Container */}
       {/* Main White Card */}
-      <div className="bg-(--background) rounded-8 shadow-soft p-8 overflow-hidden">
+      <div className="bg-background rounded-8 shadow-soft p-8 overflow-hidden">
         {/* Target Configuration Form */}
         <TargetConfigForm
           selectedTeam={selectedTeam}
@@ -239,56 +102,52 @@ export default function SetTargetPage() {
         {/* Members Info Section */}
         <div className="space-y-6 pt-6">
           <div>
-            <h2 className="text-xl font-bold text-(--gray-9) mb-6">Members Info</h2>
+            <h2 className="t-h2 text-(--gray-9) mb-6">Members Info</h2>
 
             {/* Manager Selection Input Fields */}
             <div className="grid grid-cols-4 gap-4 mb-8">
               {/* First Manager Input */}
-              <div>
-                <label className="block text-xs font-medium text-(--gray-5) mb-2">
-                  Head of Sales
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={managers.find((m) => m.id === selectedManager1)?.name || ""}
-                    readOnly
-                    className="w-full px-4 py-2.5 pr-10 bg-(--gray-0) border border-(--gray-3) rounded-8 text-sm text-(--gray-7) cursor-default"
-                  />
-                  {selectedManager1 && (
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                      <div className="w-5 h-5 rounded-8 bg-(--gray-4) flex items-center justify-center">
-                        <span className="text-xs text-(--light) font-medium">
-                          {managers.findIndex((m) => m.id === selectedManager1) + 1}
-                        </span>
-                      </div>
+              <div className="relative">
+                <FormInput
+                  label="Head of Sales"
+                  name="headOfSales"
+                  value={managers.find((m) => m.id === selectedManager1)?.name || ""}
+                  onChange={() => {}}
+                  readOnly
+                />
+                {selectedManager1 && (
+                  <div className="absolute right-3 bottom-3">
+                    <div className="w-5 h-5 rounded-full bg-(--gray-4) flex items-center justify-center">
+                      <span className="t-sm text-(--light) font-medium">
+                        {(managers.findIndex((m) => m.id === selectedManager1) + 1)
+                          .toString()
+                          .padStart(2, "0")}
+                      </span>
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
 
               {/* Second Manager Input */}
-              <div>
-                <label className="block text-xs font-medium text-(--gray-5) mb-2">
-                  Sales Manager
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={managers.find((m) => m.id === selectedManager2)?.name || ""}
-                    readOnly
-                    className="w-full px-4 py-2.5 pr-10 bg-(--gray-0) border border-(--gray-3) rounded-8 text-sm text-(--gray-7) cursor-default"
-                  />
-                  {selectedManager2 && (
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                      <div className="w-5 h-5 rounded-8 bg-(--gray-4) flex items-center justify-center">
-                        <span className="text-xs text-(--light) font-medium">
-                          {managers.findIndex((m) => m.id === selectedManager2) + 1}
-                        </span>
-                      </div>
+              <div className="relative">
+                <FormInput
+                  label="Sales Manager"
+                  name="salesManager"
+                  value={managers.find((m) => m.id === selectedManager2)?.name || ""}
+                  onChange={() => {}}
+                  readOnly
+                />
+                {selectedManager2 && (
+                  <div className="absolute right-3 bottom-3">
+                    <div className="w-5 h-5 rounded-full bg-(--gray-4) flex items-center justify-center">
+                      <span className="t-sm text-(--light) font-medium">
+                        {(managers.findIndex((m) => m.id === selectedManager2) + 1)
+                          .toString()
+                          .padStart(2, "0")}
+                      </span>
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
 
               {/* Empty columns to maintain 50% width */}
@@ -318,15 +177,19 @@ export default function SetTargetPage() {
 
         {/* Footer Action Buttons */}
         <div className="flex justify-end gap-4 pt-6 border-t border-(--gray-2)">
-          <button className="px-6 py-3 border border-(--gray-3) text-(--gray-7) rounded-8 hover:bg-(--gray-0) transition cursor-pointer font-medium">
+          <Button type="button" variant="outline" size="lg" rounded="full" className="px-6">
             Discard
-          </button>
-          <button
+          </Button>
+          <Button
+            type="button"
             onClick={handleSetTarget}
-            className="px-8 py-3 bg-(--primary) text-(--light) rounded-8 hover:bg-(--primary-2) transition shadow-soft cursor-pointer font-medium"
+            variant="primary"
+            size="lg"
+            rounded="full"
+            className="px-8 shadow-soft"
           >
             Set Target
-          </button>
+          </Button>
         </div>
       </div>
 

@@ -46,7 +46,7 @@ export function MetricsSection({
       )}
     >
       {/* Title */}
-      <h3 className="t-label font-bold text-(--dark) mb-3">{title}</h3>
+      <h3 className="t-md font-semibold text-(--dark) mb-3">{title}</h3>
 
       {/* Value Section */}
       <div className="mb-3">

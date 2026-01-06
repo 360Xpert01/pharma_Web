@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { ChevronRight, Edit, Info } from "lucide-react";
+import { ChevronRight, Edit, Eye } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -109,10 +109,10 @@ export default function SalesTeamTable() {
                 // TODO: Add edit functionality
                 console.log("Edit employee:", row.original.id);
               }}
-              className="p-1.5 hover:bg-(--gray-1) rounded transition-colors"
+              className="text-primary hover:text-(--primary-2) p-2 hover:bg-(--primary-0) rounded-8 transition cursor-pointer"
               title="Edit Employee"
             >
-              <Edit className="w-4 h-4 text-(--gray-6) hover:text-(--primary)" />
+              <Edit className="w-4 h-4 hover:text-primary" />
             </button>
 
             {/* Info Icon - Opens Statistics */}
@@ -121,14 +121,10 @@ export default function SalesTeamTable() {
                 e.stopPropagation();
                 row.toggleExpanded();
               }}
-              className="p-1.5 hover:bg-(--gray-1) rounded transition-colors"
+              className="text-(--primary) hover:text-(--primary-2) p-2 hover:bg-(--primary-0) rounded-8 transition cursor-pointer"
               title="View Statistics"
             >
-              <Info
-                className={`w-4 h-4 transition-colors ${
-                  row.getIsExpanded() ? "text-(--primary)" : "text-(--gray-6)"
-                } hover:text-(--primary)`}
-              />
+              <Eye className="w-4 h-4 hover:text-primary" />
             </button>
           </div>
         ),
