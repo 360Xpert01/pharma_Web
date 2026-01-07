@@ -63,10 +63,10 @@ const Navbar = () => {
       ],
     },
     {
-      label: "Products",
+      label: "Products & Samples",
       items: [
         { label: "Products", href: "/dashboard/product-Management" },
-        { label: "Samples & Promotional", href: "/dashboard/sample-Management" },
+        { label: "Samples", href: "/dashboard/sample-Management" },
         { label: "Gifts / Merchandise", href: "/dashboard/giveaway-Management" },
         { label: "Allocate Giveaways & Samples", href: "/dashboard/allocate-giveways-sample" },
       ],
@@ -74,9 +74,6 @@ const Navbar = () => {
     {
       label: "DCR & Field Ops",
       items: [
-        { label: "Daily Call Reports", href: "/dashboard/DCR" },
-        { label: "Sample Distribution", href: "/" },
-        { label: "Order Capture Log", href: "/dashboard/DCR-order" },
         {
           label: "Planning",
 
@@ -102,6 +99,15 @@ const Navbar = () => {
             { label: "Requests", href: "/dashboard/request-View" },
           ],
         },
+        {
+          label: "Reports",
+
+          items: [
+            { label: "Daily Call Reports", href: "/dashboard/DCR" },
+            { label: "Sample Distribution", href: "/" },
+            { label: "Order Capture Log", href: "/dashboard/DCR-order" },
+          ],
+        }
       ],
     },
     // {
@@ -146,18 +152,23 @@ const Navbar = () => {
           ],
         },
         {
-          label: "Advanced Insights",
+          label: "Advanced Reports",
           items: [
             { label: "Sales vs Visit Correlation", href: "/dashboard" },
             { label: "Doctor Engagement Trends", href: "/dashboard" },
             { label: "Expense Analysis", href: "/dashboard" },
           ],
         },
-        { label: "BI Dashboards", href: "/analytics/bi" },
-        { label: "Predictive Analytics", href: "/ai/predictive" },
-        { label: "NLP Sentiment", href: "/ai/sentiment" },
-        { label: "Recommendations", href: "/ai/recommendations" },
-        { label: "AI-Generated Summaries", href: "/ai/summaries" },
+        {
+          label: "AI & Insights",
+          items: [
+            { label: "Predictive Analytics", href: "/ai/predictive" },
+            { label: "NLP Sentiment", href: "/ai/sentiment" },
+            { label: "Recommendations", href: "/ai/recommendations" },
+            { label: "AI-Generated Summaries", href: "/ai/summaries" },
+          ],
+        },
+        { label: "BI Dashboards", href: "/analytics/bi" }
       ],
     },
     {
@@ -191,7 +202,7 @@ const Navbar = () => {
     {
       label: "Support",
       items: [
-        { label: "Help Center / Knowledge Base", href: "/support/help" },
+        { label: "Knowledge Base", href: "/support/help" },
         { label: "Training Resources", href: "/support/training" },
         { label: "Submit a Ticket", href: "/support/ticket" },
       ],
@@ -200,16 +211,22 @@ const Navbar = () => {
       label: "Control Center",
       items: [
         {
-          label: "Organization",
+          label: "Organization & Setup",
           items: [
             { label: "Company Profile", href: "/dashboard" },
             { label: "Branches / Divisions", href: "/dashboard/bricks-hierarchy" },
             { label: "Organization Hierarchy", href: "/dashboard/role-hierarchy" },
+            { label: "Document Numbering", href: "/dashboard/AddPrefix" },
+          ],
+        },
+        {
+          label: "Classifications",
+          items: [
             { label: "Channels", href: "/dashboard/Channals" },
             { label: "Call Points", href: "/dashboard/Add-Call-points" },
             { label: "Product Categories", href: "/dashboard/product-categories" },
             { label: "Doctor Specializations", href: "/dashboard/doctor-specializations" },
-            { label: "Add Prefix", href: "/dashboard/AddPrefix" },
+            { label: "Doctor Segments(A/B/C)", href: "/dashboard" },
           ],
         },
         {
@@ -230,7 +247,6 @@ const Navbar = () => {
         {
           label: "Business Rules",
           items: [
-            { label: "Doctor Segments(A/B/C)", href: "/dashboard" },
             { label: "Visit Frequency Rules", href: "/dashboard" },
             { label: "Expense Policies", href: "/dashboard" },
             { label: "Notification Templates", href: "/dashboard" },
@@ -239,9 +255,9 @@ const Navbar = () => {
         {
           label: "Integrations",
           items: [
-            { label: "Import (CSV)", href: "/dashboard/csvImports" },
+            { label: "CSV Import", href: "/dashboard/csvImports" },
             { label: "CRM API Management", href: "/integrations/api" },
-            { label: "Integration / CSV Import Logs", href: "/integrations/import" },
+            { label: "Integration / Import Logs", href: "/integrations/import" },
             { label: "BI / Reporting Tools", href: "/integrations/bi" },
           ],
         },
