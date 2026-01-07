@@ -5,6 +5,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import EditIcon from "@/components/svgs/edit-icon";
 import EyeIcon from "@/components/svgs/eye-icon";
 
@@ -28,6 +29,7 @@ interface TeamMember {
 
 export default function SalesTeamTable() {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const { users, loading, error } = useAppSelector((s) => s.allUsers);
 
   useEffect(() => {
@@ -108,8 +110,7 @@ export default function SalesTeamTable() {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                // TODO: Add edit functionality
-                console.log("Edit employee:", row.original.id);
+                router.push(`/dashboard/UpdateEmployees?id=${row.original.id}`);
               }}
               className="group hover:opacity-80 transition cursor-pointer"
               title="Edit Employee"

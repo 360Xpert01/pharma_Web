@@ -1,5 +1,9 @@
 import EmployeeForm from "./EmployeeForm";
 
-export default function UpdateEmployeeForm() {
-  return <EmployeeForm mode="update" />;
+interface UpdateEmployeeFormProps {
+  employeeId?: string | null;
+}
+
+export default function UpdateEmployeeForm({ employeeId }: UpdateEmployeeFormProps) {
+  return <EmployeeForm mode="update" userId={employeeId || undefined} />;
 }
