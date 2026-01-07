@@ -6,6 +6,7 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 // Types
 interface UpdateEmployeePayload {
   userId: string;
+  status?: string; // Optional: "active" or "inactive"
   email?: string; // Optional: format email
   firstName?: string; // Optional: 2-50 chars
   middleName?: string; // Optional: 2-50 chars
@@ -19,6 +20,7 @@ interface UpdateEmployeePayload {
   dob?: string; // Optional: YYYY-MM-DD format
   supervisorId?: string; // Optional: UUID format
   verifiedDevices?: string[]; // Optional: array of strings
+  blockedDevices?: string[]; // Optional: array of strings
 }
 
 interface UpdateEmployeeResponse {

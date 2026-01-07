@@ -209,12 +209,22 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
     if (validatedData.middleName) payload.middleName = validatedData.middleName;
     if (validatedData.fullAddress) payload.fullAddress = validatedData.fullAddress;
     if (validatedData.roleId) payload.roleId = validatedData.roleId;
-    if (validatedData.pulseCode) payload.pulseCode = validatedData.pulseCode;
+
+    // pulseCode can only be set during registration, not during update
+    if (!isUpdateMode && validatedData.pulseCode) {
+      payload.pulseCode = validatedData.pulseCode;
+    }
+
     if (validatedData.empLegacyCode) payload.empLegacyCode = validatedData.empLegacyCode;
     if (validatedData.profilePicture) payload.profilePicture = validatedData.profilePicture;
     if (validatedData.dob) payload.dob = validatedData.dob;
     if (validatedData.supervisorId) payload.supervisorId = validatedData.supervisorId;
     if (validatedData.verifiedDevices) payload.verifiedDevices = validatedData.verifiedDevices;
+
+    // Add status field (convert to lowercase for API)
+    if (isUpdateMode) {
+      payload.status = status.toLowerCase();
+    }
 
     // Dispatch appropriate action based on mode
     const result = isUpdateMode

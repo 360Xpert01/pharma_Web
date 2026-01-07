@@ -149,6 +149,7 @@ export interface DashboardProps {
   setTargetlist?: boolean;
   ActiveOn?: boolean;
   UpdateEmp?: boolean;
+  employeeId?: string | null;
   prefixPro?: boolean;
   targetListView?: boolean;
   showTabs?: boolean;

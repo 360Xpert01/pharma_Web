@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import { Search, MoreVertical, Trash2, AlertTriangle, Edit } from "lucide-react";
+import { Search, MoreVertical, AlertTriangle } from "lucide-react";
 import Image from "next/image";
 import { ProductTarget } from "./ProductTargetRow";
+import EditIcon from "./svgs/edit-icon";
+import DeleteIcon from "./svgs/delete-icon";
 
 export interface SalesRep {
   id: string;
@@ -201,15 +203,15 @@ export default function SalesRepCard({
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => toggleEdit(leftProduct.id)}
-                          className="text-(--primary) hover:text-(--primary-2) p-2 hover:bg-(--primary-0) rounded-8 transition cursor-pointer"
+                          className="group hover:opacity-80 transition cursor-pointer"
                         >
-                          <Edit className="w-4 h-4" />
+                          <EditIcon />
                         </button>
                         <button
                           onClick={() => onDeleteProduct(rep.id, leftProduct.id)}
-                          className="text-(--destructive-1) hover:text-(--destructive) p-2 hover:bg-(--destructive-0) rounded-8 transition cursor-pointer"
+                          className="group hover:opacity-80 transition cursor-pointer"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <DeleteIcon />
                         </button>
                       </div>
                     </div>
@@ -273,15 +275,15 @@ export default function SalesRepCard({
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => toggleEdit(rightProduct.id)}
-                          className="text-(--primary) hover:text-(--primary-2) p-2 hover:bg-(--primary-0) rounded-8 transition cursor-pointer"
+                          className="group hover:opacity-80 transition cursor-pointer"
                         >
-                          <Edit className="w-4 h-4" />
+                          <EditIcon />
                         </button>
                         <button
                           onClick={() => onDeleteProduct(rep.id, rightProduct.id)}
-                          className="text-(--destructive-1) hover:text-(--destructive) p-2 hover:bg-(--destructive-0) rounded-8 transition cursor-pointer"
+                          className="group hover:opacity-80 transition cursor-pointer"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <DeleteIcon />
                         </button>
                       </div>
                     </div>

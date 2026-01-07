@@ -98,6 +98,7 @@ export function DashboardContent({
   setTargetlist,
   ActiveOn,
   UpdateEmp,
+  employeeId,
   prefixPro,
   targetListView,
   showTabs,
@@ -337,7 +338,7 @@ export function DashboardContent({
         {employeeProfileBtn && showTabs && <EmployeeProfileTabs candidate={candidate} />}
 
         {AddemployeeBtn && <AddEmployeeForm ActiveOn={ActiveOn} />}
-        {UpdateEmp && <UpdateEmployees />}
+        {UpdateEmp && <UpdateEmployees employeeId={employeeId} />}
 
         {AddCallPointTrue && (
           <div>
