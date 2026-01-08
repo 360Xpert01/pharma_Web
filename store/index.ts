@@ -36,6 +36,7 @@ import allProductCategoriesReducer from "./slices/productCategory/getAllProductC
 import createProductCategoryReducer from "./slices/productCategory/createProductCategorySlice";
 import allSpecializationsReducer from "./slices/specialization/getAllSpecializationsSlice";
 import createSpecializationReducer from "./slices/specialization/createSpecializationSlice";
+import scheduleSliceReducer from "./slices/plan-Manage/scheduleSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -70,6 +71,7 @@ const rootReducer = combineReducers({
   createProductCategory: createProductCategoryReducer,
   allSpecializations: allSpecializationsReducer,
   createSpecialization: createSpecializationReducer,
+  schedule: scheduleSliceReducer,
 });
 
 const persistConfig = {
