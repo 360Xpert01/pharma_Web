@@ -29,118 +29,40 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
   };
 
   return (
-    <div className=" ">
-      <div className="flex justify-between w-[100%]   gap-3">
-        {/* Left - Avatar + Basic Info */}
-        <div className="flex justify-between gap-6 w-[39%] bg-(--background) rounded-8 shadow-soft p-4 border border-(--gray-1) ">
-          <div className="flex gap-3 justify-center">
-            <div className="relative w-38 h-38 rounded-8 overflow-hidden  shadow-soft">
-              <Image
-                src="/capMan.svg"
-                alt={candidate.name}
-                width={160}
-                height={170}
-                className="object-cover"
-              />
-            </div>
-
-            <div>
-              <div className="flex item-center gap-3 mb-2 ">
-                <div className="bg-(--primary) w-[60%] text-(--background) t-cap px-2 py-1.5 rounded-8 text-center">
-                  EMP-000124
-                </div>
-                <span className="t-sm bg-(--light) my-auto">|</span>
-                <span className="t-sm my-auto"> 000124</span>
-              </div>
-              <h2 className="t-h2">{candidate.name}</h2>
-              <p className="t-label mt-1 mb-2">
-                Repoting Manager
-                <span className="t-sm"> Saboor raza</span>
-              </p>
-              <p className="t-sm">{candidate.email}</p>
-              <p className="t-sm">{candidate.phone}</p>
-              <p className="t-sm">19th January 97</p>
-            </div>
-          </div>
-          <div className="flex flex-col justify-between h-full">
-            <div className="flex justify-end">
-              <Button
-                onClick={handlePush}
-                icon={PencilLine}
-                variant="primary"
-                size="sm"
-                rounded="full"
-                className="w-[50%] t-sm"
-              >
-                Edit Employee
-              </Button>
-            </div>
-            <div>
-              <p className="t-label-b">Full Address</p>
-              <p className="t-sm">B-121, Block-2, Gulshan-e-Iqbal, Karachi, Pakistan</p>
-            </div>
-          </div>
+    <div className="w-full max-w-[320px]">
+      {/* Compact Profile Card */}
+      <div className="bg-background rounded-16 shadow-soft p-6 border border-gray-1 flex flex-col items-center">
+        {/* Profile Image */}
+        <div className="relative w-24 h-24 rounded-16 overflow-hidden shadow-soft mb-4">
+          <Image
+            src="/capMan.svg"
+            alt={candidate.name}
+            width={96}
+            height={96}
+            className="object-cover"
+          />
         </div>
 
-        {/* Middle Left */}
+        {/* Name */}
+        <h2 className="t-h3 text-center mb-1">{candidate.name}</h2>
 
-        <div className="flex justify-between gap-15 w-[60%] bg-(--background) rounded-8 shadow-soft p-4 border border-(--gray-2) ">
-          <div className="space-y-14">
-            <div>
-              <p className="t-over">Campaign</p>
-              <p className="t-val-sm">{candidate.campaign}</p>
-            </div>
-            <div>
-              <p className="t-over">Total Call</p>
-              <p className="t-val-sm">{candidate.totalCalls}</p>
-            </div>
-          </div>
+        {/* Email */}
+        <p className="t-sm text-gray-6 text-center mb-1">{candidate.email}</p>
 
-          {/* Middle Right */}
-          <div className="space-y-14">
-            <div>
-              <p className="t-over">Requested Month</p>
-              <p className="t-val-sm">{candidate.requestedMonth}</p>
-            </div>
-            <div>
-              <p className="t-over">Total Call</p>
-              <p className="t-val-sm">{candidate.totalCalls}</p>
-            </div>
-          </div>
+        {/* Address */}
+        <p className="t-sm text-gray-6 text-center mb-3">
+          B-121, Block-2, Gulshan-e-Iqbal, Karachi, Pakistan
+        </p>
 
-          <div className="space-y-4">
-            <div>
-              <p className="t-over">Channal</p>
-              <p className="t-val-sm">{candidate.channel}</p>
-            </div>
-          </div>
+        {/* Phone */}
+        <p className="t-sm text-gray-9 font-medium mb-1">{candidate.phone}</p>
 
-          <div className="space-y-4">
-            <div>
-              <p className="t-over">Total Call</p>
-              <p className="t-val-sm">{candidate.totalCalls}</p>
-            </div>
-          </div>
+        {/* Date of Birth */}
+        <p className="t-sm text-gray-6 mb-4">19-Jan-1997</p>
 
-          {/* Right - Status + Calls */}
-          <div className=" space-y-4">
-            <div>
-              <p className="t-over">Status</p>
-              <span
-                className={`inline-block px-4 py-1.5 rounded-8 t-cap font-medium text-(--light) mt-1 ${
-                  candidate.status.toLowerCase() === "active" ||
-                  candidate.status.toLowerCase() === "approved"
-                    ? "bg-(--success)"
-                    : candidate.status.toLowerCase().includes("pending") ||
-                        candidate.status.toLowerCase().includes("review")
-                      ? "bg-(--warning)"
-                      : "bg-(--gray-5)"
-                }`}
-              >
-                {candidate.status}
-              </span>
-            </div>
-          </div>
+        {/* Employee ID Badge */}
+        <div className="bg-primary text-background t-cap px-4 py-1.5 rounded-full text-center font-medium mb-4">
+          ELS-EMP: 000124
         </div>
       </div>
     </div>
