@@ -6,7 +6,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import { persistor } from "@/store";
+import { persistor, useAppDispatch, useAppSelector } from "@/store";
+import { getAllChannels } from "@/store/slices/channel/getAllChannelsSlice";
 
 interface DropdownItem {
   label: string;
@@ -23,6 +24,9 @@ interface NavItem {
 const Navbar = () => {
   const router = useRouter();
   const locale = useLocale();
+  const dispatch = useAppDispatch();
+  const { channels, loading: channelsLoading } = useAppSelector((state) => state.allChannels);
+
   const [hoveredItem, setHoveredItem] = useState<string | null>(null); // for hover
   const [clickedItem, setClickedItem] = useState<string | null>(null); // for click (mobile)
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
@@ -36,6 +40,12 @@ const Navbar = () => {
   );
   const [submenuAlignment, setSubmenuAlignment] = useState<{ [key: string]: "left" | "right" }>({});
 
+  // Fetch channels on component mount
+  useEffect(() => {
+    dispatch(getAllChannels());
+  }, [dispatch]);
+
+  // Dynamic nav items with channels
   const navItems: NavItem[] = [
     {
       label: "Dashboard",
@@ -55,12 +65,13 @@ const Navbar = () => {
     },
     {
       label: "Accounts",
-      items: [
-        { label: "Doctors / HCP Directory", href: "/dashboard/account-Management" },
-        { label: "Pharmacies & Chemists", href: "/dashboard/account-Pharmacies" },
-        { label: "Hospitals / Institutions", href: "/dashboard/account-Hospitals" },
-        { label: "Key Accounts (KAM)", href: "/dashboard/keyAccounts(KAM)" },
-      ],
+      items: channels.map((channel) => ({
+        label: channel.name,
+        href: `/dashboard/${channel.name
+          .toLowerCase()
+          .replace(/[^a-z0-9\s]/g, "")
+          .replace(/\s+/g, "-")}`,
+      })),
     },
     {
       label: "Products",
