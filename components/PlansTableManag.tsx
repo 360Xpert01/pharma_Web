@@ -96,7 +96,10 @@ export default function CampaignApprovalTable() {
       id: "actions",
       header: "",
       cell: ({ row }) => (
-        <Link href={`/dashboard/plan-Request`} className="flex justify-end items-center gap-1">
+        <Link
+          href={`/dashboard/plan-Request/${row.original.id}`}
+          className="flex justify-end items-center gap-1"
+        >
           <span className="t-sm cursor-pointer whitespace-nowrap">View Details</span>
           <ChevronRight className="w-6 h-6 text-(--primary)" />
         </Link>

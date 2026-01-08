@@ -19,7 +19,6 @@ const candidate = {
 // Dynamic Call Data as Object (sub-json style)
 const monthlyCallData: Record<string, Record<number, number | null>> = {
   "2025-9": {
-    // September 2025
     1: 12,
     2: 12,
     3: 18,
@@ -53,7 +52,13 @@ const noCallDays: Record<string, number[]> = {
   "2025-9": [14, 30],
 };
 
-export default function PlanRequestCalendar() {
+export default function PlanRequestCalendar({
+  scheduleDetail,
+  callsCount,
+}: {
+  scheduleDetail: any;
+  callsCount: any;
+}) {
   const [currentMonth, setCurrentMonth] = useState(new Date(2025, 8)); // Sep 2025
 
   const year = currentMonth.getFullYear();
@@ -82,20 +87,20 @@ export default function PlanRequestCalendar() {
           <div className="flex items-center gap-6">
             <Image width={100} height={100} src="/capMan.svg" alt="Candidate" />
             <div>
-              <h2 className="t-h2">{candidate.name}</h2>
-              <p className="t-md">{candidate.email}</p>
-              <p className="t-md">{candidate.phone}</p>
+              <h2 className="t-h2">{scheduleDetail?.fullname}</h2>
+              <p className="t-md">{scheduleDetail?.email}</p>
+              <p className="t-md">{scheduleDetail?.phone}</p>
             </div>
           </div>
 
           <div className=" space-y-4">
             <div>
               <p className="t-cap">Reporting Manager</p>
-              <p className="t-val">{candidate.reportingManager}</p>
+              <p className="t-val">{scheduleDetail?.supervisorName}</p>
             </div>
             <div>
-              <p className="t-cap">Campaign</p>
-              <p className="t-val">{candidate.campaign}</p>
+              <p className="t-cap">Team Name</p>
+              <p className="t-val">{scheduleDetail?.teamName}</p>
             </div>
           </div>
 
@@ -106,7 +111,7 @@ export default function PlanRequestCalendar() {
             </div>
             <div>
               <p className="t-cap">Channel</p>
-              <p className="t-val">{candidate.channel}</p>
+              <p className="t-val">{scheduleDetail?.channelName}</p>
             </div>
           </div>
 
@@ -114,11 +119,11 @@ export default function PlanRequestCalendar() {
             <div>
               <p className="t-cap">Status</p>
               <span className="inline-block bg-(--warning) text-(--light) px-4 py-1 rounded-8 t-cap">
-                {candidate.status}
+                {scheduleDetail?.status}
               </span>
             </div>
             <p className="t-cap mt-3">Total Calls</p>
-            <p className="t-val">{candidate.totalCalls}</p>
+            <p className="t-val">{callsCount}</p>
           </div>
         </div>
       </div>
