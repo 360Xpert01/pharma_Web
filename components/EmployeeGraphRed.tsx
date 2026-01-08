@@ -22,24 +22,24 @@ const lastMonthData = [
 
 export default function MonthlyTargetCard() {
   return (
-    <div className="w-full h-full bg-(--background) rounded-8 shadow-soft border border-(--gray-1) p-6 space-y-8">
+    <div className="w-full h-full bg-(--background) rounded-8 shadow-soft border border-(--gray-1) p-4 space-y-4">
       {/* This Month */}
-      <div className="space-y-3">
-        <p className="text-sm font-medium text-(--gray-5)">Monthly target</p>
-        <div className="flex items-end gap-3">
-          <span className="text-4xl font-bold text-(--primary)">19,8K</span>
+      <div className="space-y-2">
+        <p className="text-lg font-semibold text-(--gray-9)">Monthly target</p>
+        <div className="flex items-end gap-2">
+          <span className="text-3xl font-bold text-(--primary)">19,8K</span>
           <div className="flex items-center gap-1 pb-1">
-            <TrendingUp className="w-4 h-4 text-(--success)" />
-            <span className="text-sm font-semibold text-(--success) bg-(--primary-0) px-2 py-0.5 rounded-8">
+            <TrendingUp className="w-3.5 h-3.5 text-(--success)" />
+            <span className="text-xs font-semibold text-(--success) bg-(--primary-0) px-1.5 py-0.5 rounded-8">
               +12.88%
             </span>
           </div>
         </div>
 
         {/* Chart - This Month */}
-        <div className="h-24  -mb-8 mt-4">
+        <div className="h-14 mt-2">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={monthlyData} margin={{ top: 10, left: 0, right: 0, bottom: 0 }}>
+            <AreaChart data={monthlyData} margin={{ top: 0, left: 0, right: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="gradientBlue" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#0f72f4" stopOpacity={0.4} />
@@ -53,10 +53,10 @@ export default function MonthlyTargetCard() {
                 type="monotone"
                 dataKey="value"
                 stroke="#0f72f4"
-                strokeWidth={3}
+                strokeWidth={2}
                 fill="url(#gradientBlue)"
                 dot={false}
-                activeDot={{ r: 6 }}
+                activeDot={{ r: 4 }}
               />
             </AreaChart>
           </ResponsiveContainer>
@@ -66,22 +66,22 @@ export default function MonthlyTargetCard() {
       <div className="border-t border-(--gray-1) -mx-6" />
 
       {/* Last Month */}
-      <div className="space-y-3">
-        <p className="text-sm font-medium text-(--gray-5)">Last Month</p>
-        <div className="flex items-end gap-3">
+      <div className="space-y-2">
+        <p className="text-lg font-semibold text-(--gray-9)">Last Month</p>
+        <div className="flex items-end gap-2">
           <span className="text-3xl font-bold text-(--destructive)">1,321</span>
           <div className="flex items-center gap-1 pb-1">
-            <TrendingDown className="w-4 h-4 text-(--destructive)" />
-            <span className="text-sm font-semibold text-(--destructive) bg-(--destructive-0) px-2 py-0.5 rounded-8">
+            <TrendingDown className="w-3.5 h-3.5 text-(--destructive)" />
+            <span className="text-xs font-semibold text-(--destructive) bg-(--destructive-0) px-1.5 py-0.5 rounded-8">
               -3.53%
             </span>
           </div>
         </div>
 
         {/* Chart - Last Month */}
-        <div className="h-20 ">
+        <div className="h-14 mt-2">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={lastMonthData} margin={{ top: 10, left: 0, right: 0, bottom: 0 }}>
+            <AreaChart data={lastMonthData} margin={{ top: 0, left: 0, right: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="gradientRed" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#e02723" stopOpacity={0.4} />
@@ -95,7 +95,7 @@ export default function MonthlyTargetCard() {
                 type="monotone"
                 dataKey="value"
                 stroke="#e02723"
-                strokeWidth={3}
+                strokeWidth={2}
                 fill="url(#gradientRed)"
                 dot={false}
               />

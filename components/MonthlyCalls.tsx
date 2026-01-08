@@ -35,17 +35,19 @@ export default function MonthlyCalls({
   const iconColor = isUpTrend ? "text-(--success)" : "text-(--destructive)";
 
   return (
-    <div className="w-full bg-background rounded-8 p-6 shadow-soft border border-gray-1">
+    <div className="w-full bg-background rounded-8 p-4 shadow-soft border border-gray-1">
       {/* Header */}
-      <div className="space-y-3">
-        <p className="text-sm font-medium text-(--gray-5)">Monthly Calls</p>
+      <div className="space-y-2">
+        <p className="text-lg font-semibold text-(--gray-9)">Monthly Calls</p>
 
         {/* Main Number with Trend Badge */}
-        <div className="flex items-end gap-3">
-          <span className={`text-4xl font-bold ${textColor}`}>{totalCalls}</span>
+        <div className="flex items-end gap-2">
+          <span className={`text-3xl font-bold ${textColor}`}>{totalCalls}</span>
           <div className="flex items-center gap-1 pb-1">
-            <TrendIcon className={`w-4 h-4 ${iconColor}`} />
-            <span className={`text-sm font-semibold ${textColor} ${badgeBg} px-2 py-0.5 rounded-8`}>
+            <TrendIcon className={`w-3.5 h-3.5 ${iconColor}`} />
+            <span
+              className={`text-xs font-semibold ${textColor} ${badgeBg} px-1.5 py-0.5 rounded-8`}
+            >
               {isUpTrend ? "+" : "-"}
               {percentageChange}%
             </span>
@@ -53,9 +55,9 @@ export default function MonthlyCalls({
         </div>
 
         {/* Area Chart */}
-        <div className="h-24 -mb-8 mt-4">
+        <div className="h-14 mt-2">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data} margin={{ top: 10, left: 0, right: 0, bottom: 0 }}>
+            <AreaChart data={data} margin={{ top: 0, left: 0, right: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor={strokeColor} stopOpacity={0.4} />
@@ -69,10 +71,10 @@ export default function MonthlyCalls({
                 type="monotone"
                 dataKey="value"
                 stroke={strokeColor}
-                strokeWidth={3}
+                strokeWidth={2}
                 fill={`url(#${gradientId})`}
                 dot={false}
-                activeDot={{ r: 6 }}
+                activeDot={{ r: 4 }}
               />
             </AreaChart>
           </ResponsiveContainer>
