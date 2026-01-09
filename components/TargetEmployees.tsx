@@ -59,7 +59,7 @@ export default function MonthlyTargets({
   return (
     <div className="w-full bg-(--light) rounded-8  p-6 shadow-soft">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-8">
         <h2 className="text-xl font-semibold text-(--dark)">Monthly Targets</h2>
         <div className="flex items-center gap-2">
           <button
@@ -95,7 +95,7 @@ export default function MonthlyTargets({
       </div>
 
       {/* Chart */}
-      <div className="w-full h-64">
+      <div className="w-full h-68">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
             {/* Gradient ko yahan define karo, Bar ke BAHAR */}
