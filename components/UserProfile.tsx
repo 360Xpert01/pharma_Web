@@ -29,41 +29,40 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
   };
 
   return (
-    <div className="w-full max-w-[320px]">
-      {/* Compact Profile Card */}
-      <div className="bg-background rounded-16 shadow-soft p-6 border border-gray-1 flex flex-col items-center">
-        {/* Profile Image */}
-        <div className="relative w-24 h-24 rounded-16 overflow-hidden shadow-soft mb-4">
-          <Image
-            src="/capMan.svg"
-            alt={candidate.name}
-            width={96}
-            height={96}
-            className="object-cover"
-          />
-        </div>
+    <div className="w-full bg-background rounded-8 p-6 shadow-soft border border-gray-1 flex flex-col items-center">
+      {/* Profile Image */}
+      <div className="relative w-36 h-36 rounded-8 overflow-hidden mb-3">
+        <Image
+          src="/capMan.svg"
+          alt={candidate.name}
+          width={144}
+          height={144}
+          className="object-cover"
+        />
+      </div>
 
-        {/* Name */}
-        <h2 className="t-h3 text-center mb-1">{candidate.name}</h2>
+      {/* Name */}
+      <h2 className="text-4xl font-bold text-center text-gray-9 mb-2">{candidate.name}</h2>
 
-        {/* Email */}
-        <p className="t-sm text-gray-6 text-center mb-1">{candidate.email}</p>
+      {/* Email */}
+      <p className="text-lg font-thin text-center mb-2">{candidate.email}</p>
 
-        {/* Address */}
-        <p className="t-sm text-gray-6 text-center mb-3">
-          B-121, Block-2, Gulshan-e-Iqbal, Karachi, Pakistan
-        </p>
+      {/* Address */}
+      <p className="text-lg text-(--gray-5) font-thin text-center mb-3 leading-relaxed">
+        B-121, Block-2, Gulshan-e-Iqbal,
+        <br />
+        Karachi, Pakistan
+      </p>
 
-        {/* Phone */}
-        <p className="t-sm text-gray-9 font-medium mb-1">{candidate.phone}</p>
+      {/* Phone */}
+      <p className="text-lg text-(--gray-5) font-thin text-center mb-2">{candidate.phone}</p>
 
-        {/* Date of Birth */}
-        <p className="t-sm text-gray-6 mb-4">19-Jan-1997</p>
+      {/* Date of Birth */}
+      <p className="text-lg text-(--gray-5) font-thin text-center mb-4">19-Jan-1997</p>
 
-        {/* Employee ID Badge */}
-        <div className="bg-primary text-background t-cap px-4 py-1.5 rounded-full text-center font-medium mb-4">
-          ELS-EMP: 000124
-        </div>
+      {/* Employee ID Badge */}
+      <div className="bg-primary text-white text-sm px-6 py-1.5 rounded-8 font-semibold">
+        PLS_EMP- 000124
       </div>
     </div>
   );
