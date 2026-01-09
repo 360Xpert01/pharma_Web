@@ -29,17 +29,20 @@ export default function PlanRequest({ params }: PageProps) {
     };
   }, [dispatch, id]);
 
-  console.log("Schedule Detail Data:", data);
-
   const saleRep = data?.saleRep;
   const callsCount = data?.callsCount;
+  const scheduleStatus = data?.calls[0]?.schedule?.status;
 
   return (
     <div className="bg-gradient-to-br mt-20 from-slate-50 to-slate-100 p-6 min-h-screen">
-      <PlanRequestHeader id={id} />
+      <PlanRequestHeader id={id} scheduleStatus={scheduleStatus} />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6  mt-8">
         <div className="lg:col-span-2 space-y-6">
-          <PlanRequestCalendar scheduleDetail={saleRep} callsCount={callsCount} />
+          <PlanRequestCalendar
+            scheduleDetail={saleRep}
+            callsCount={callsCount}
+            scheduleStatus={scheduleStatus}
+          />
         </div>
         <PlanRequestMeetings />
       </div>

@@ -19,7 +19,13 @@ const candidate = {
   status: "Under Review",
 };
 
-export default function PlanRequestHeader({ id }: { id: string }) {
+export default function PlanRequestHeader({
+  id,
+  scheduleStatus,
+}: {
+  id: string;
+  scheduleStatus: string;
+}) {
   const dispatch = useDispatch();
   const { loading, success, error } = useSelector((state) => state.scheduleHandle);
 
@@ -71,22 +77,29 @@ export default function PlanRequestHeader({ id }: { id: string }) {
         ))}
       </div>
       <div className="flex mt-5 gap-8">
-        <div className="flex gap-3">
-          <button
-            onClick={handleReject}
-            className="text-(--destructive) border border-(--destructive) rounded-8 flex items-center gap-2 px-4 py-2 bg-(--background) hover:bg-(--destructive-0)"
-          >
-            <X className="w-4" />
-            Reject
+        {scheduleStatus === "Pending" && (
+          <div className="flex gap-3">
+            <button
+              onClick={handleReject}
+              className="text-(--destructive) border border-(--destructive) rounded-8 flex items-center gap-2 px-4 py-2 bg-(--background) hover:bg-(--destructive-0)"
+            >
+              <X className="w-4" />
+              Reject
+            </button>
+            <button
+              onClick={handleAccept}
+              className="bg-(--primary) hover:bg-(--primary-2) text-(--light) rounded-8 flex items-center gap-2 px-4 py-2"
+            >
+              Accept
+              <ChevronRight className="w-4" />
+            </button>
+          </div>
+        )}
+        {scheduleStatus !== "Pending" && (
+          <button className="bg-(--primary) hover:bg-(--primary-2) text-(--light) rounded-8 flex items-center gap-2 px-4 py-2">
+            {scheduleStatus}
           </button>
-          <button
-            onClick={handleAccept}
-            className="bg-(--primary) hover:bg-(--primary-2) text-(--light) rounded-8 flex items-center gap-2 px-4 py-2"
-          >
-            Accept
-            <ChevronRight className="w-4" />
-          </button>
-        </div>
+        )}
       </div>
     </div>
   );
