@@ -1,11 +1,11 @@
 import Cookies from "js-cookie";
 
 const TOKEN_KEY = "auth_token";
-const TOKEN_EXPIRY_DAYS = 7;
+// const TOKEN_EXPIRY_DAYS = 7;
 
 export const setToken = (token: string): void => {
   Cookies.set(TOKEN_KEY, token, {
-    expires: TOKEN_EXPIRY_DAYS,
+    // expires: TOKEN_EXPIRY_DAYS,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
   });
