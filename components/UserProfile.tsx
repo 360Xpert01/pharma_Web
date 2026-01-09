@@ -61,7 +61,7 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
       <p className="text-base text-(--gray-5) font-thin text-center mb-6">19-Jan-1997</p>
 
       {/* Employee ID Badge */}
-      <div className="bg-primary text-white text-sm px-6 py-1.5 rounded-8 font-semibold">
+      <div className="bg-primary text-white text-sm px-6 py-2 rounded-8 font-semibold">
         PLS_EMP- 000124
       </div>
     </div>
