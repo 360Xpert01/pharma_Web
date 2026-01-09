@@ -20,7 +20,8 @@ export default function DashboardPage() {
         sample={"User Profile"}
         descrip={"Unlock the potential of your candidates"}
         table={"All product"}
-        btnTrue={true}
+        btnAdd={"Edit Employee"}
+        settingsRoute={"/dashboard/UpdateEmployees"}
         hideMetrics={true}
         employeeProfileBtn={true}
         candidate={candidate}
