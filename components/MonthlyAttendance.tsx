@@ -6,7 +6,7 @@ export default function MonthlyAttendance() {
   return (
     <div className="w-full bg-(--background) rounded-8 p-6 shadow-soft border border-(--gray-1)">
       {/* Header */}
-      <h2 className="text-base font-bold text-(--gray-9) mb-6">Monthly Attendance</h2>
+      <h2 className="text-base font-bold text-(--gray-9) mb-7">Monthly Attendance</h2>
 
       {/* Date Navigator with Border */}
       <div className="inline-flex items-center gap-3 px-6 py-3 border border-(--gray-2) rounded-8 text-(--gray-9) text-base mb-6">
