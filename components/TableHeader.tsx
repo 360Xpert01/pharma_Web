@@ -122,7 +122,7 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
               checked={showInactive}
               onCheckedChange={(checked) => setShowInactive(checked === true)}
             />
-            <span className="text-sm text-(--gray-9) font-medium">Inactive Users</span>
+            <span className="text-sm text-(--gray-9) font-medium">Show Inactive Users</span>
           </label>
 
           {/* Quick Sort Dropdown */}
