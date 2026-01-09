@@ -37,13 +37,13 @@ export default function MonthlyCalls({
   return (
     <div className="w-full bg-background rounded-8 p-4 shadow-soft border border-gray-1">
       {/* Header */}
-      <div className="space-y-2">
-        <p className="text-lg font-semibold text-(--gray-9)">Monthly Calls</p>
+      <div className="space-y-1.5">
+        <p className="text-base font-semibold text-(--gray-9)">Monthly Calls</p>
 
         {/* Main Number with Trend Badge */}
         <div className="flex items-end gap-2">
-          <span className={`text-3xl font-bold ${textColor}`}>{totalCalls}</span>
-          <div className="flex items-center gap-1 pb-1">
+          <span className={`text-2xl font-bold ${textColor}`}>{totalCalls}</span>
+          <div className="flex items-center gap-1 pb-0.5">
             <TrendIcon className={`w-3.5 h-3.5 ${iconColor}`} />
             <span
               className={`text-xs font-semibold ${textColor} ${badgeBg} px-1.5 py-0.5 rounded-8`}
@@ -55,7 +55,7 @@ export default function MonthlyCalls({
         </div>
 
         {/* Area Chart */}
-        <div className="h-14 mt-2">
+        <div className="h-12 mt-4">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data} margin={{ top: 0, left: 0, right: 0, bottom: 0 }}>
               <defs>
