@@ -35,34 +35,34 @@ const RegionInformation: FC<RegionInformationProps> = ({
     <div className="bg-(--background) shadow-soft rounded-8 p-6 border border-(--gray-1)">
       <h3 className="text-base font-bold text-(--gray-9) mb-8">Regional Information</h3>
 
-      <div className="space-y-6">
+      <div className="space-y-7">
         {/* Line Manager */}
         <div className="flex justify-between items-center">
-          <span className="text-base text-(--gray-5)">Line Manager</span>
-          <span className="text-base text-(--gray-9) font-bold">{lineManager}</span>
+          <span className="text-sm text-(--gray-5)">Line Manager</span>
+          <span className="text-sm text-(--gray-9) font-bold">{lineManager}</span>
         </div>
 
         {/* Legacy */}
         <div className="flex justify-between items-center">
-          <span className="text-base text-(--gray-5)">Legacy</span>
-          <span className="text-base text-(--gray-9) font-bold">{legacy}</span>
+          <span className="text-sm text-(--gray-5)">Legacy</span>
+          <span className="text-sm text-(--gray-9) font-bold">{legacy}</span>
         </div>
 
         {/* Channel */}
         <div className="flex justify-between items-center">
-          <span className="text-base text-(--gray-5)">Channel</span>
-          <span className="text-base text-(--gray-9) font-bold">{channel}</span>
+          <span className="text-sm text-(--gray-5)">Channel</span>
+          <span className="text-sm text-(--gray-9) font-bold">{channel}</span>
         </div>
 
         {/* Team */}
         <div className="flex justify-between items-center">
-          <span className="text-base text-(--gray-5)">Team</span>
-          <span className="text-base text-(--gray-9) font-bold">{team}</span>
+          <span className="text-sm text-(--gray-5)">Team</span>
+          <span className="text-sm text-(--gray-9) font-bold">{team}</span>
         </div>
 
         {/* Total Calls */}
         <div className="flex justify-between items-center">
-          <span className="text-base text-(--gray-5)">Total Calls</span>
+          <span className="text-sm text-(--gray-5)">Total Calls</span>
           <span className="text-sm text-(--gray-9) font-bold">{totalCalls}</span>
         </div>
 

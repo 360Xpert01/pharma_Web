@@ -31,34 +31,34 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
   return (
     <div className="w-full bg-background rounded-8 p-6 shadow-soft border border-gray-1 flex flex-col items-center">
       {/* Profile Image */}
-      <div className="relative w-36 h-36 rounded-8 overflow-hidden mb-3">
+      <div className="relative w-36 h-36 rounded-8 overflow-hidden mb-4">
         <Image
           src="/capMan.svg"
           alt={candidate.name}
-          width={144}
-          height={144}
+          width={128}
+          height={128}
           className="object-cover"
         />
       </div>
 
       {/* Name */}
-      <h2 className="text-4xl font-bold text-center text-gray-9 mb-2">{candidate.name}</h2>
+      <h2 className="text-3xl font-bold text-center text-gray-9 mb-2">{candidate.name}</h2>
 
       {/* Email */}
-      <p className="text-lg font-thin text-center mb-2">{candidate.email}</p>
+      <p className="text-base font-thin text-center mb-3">{candidate.email}</p>
 
       {/* Address */}
-      <p className="text-lg text-(--gray-5) font-thin text-center mb-3 leading-relaxed">
-        B-121, Block-2, Gulshan-e-Iqbal,
+      <p className="text-base text-(--gray-5) font-thin text-center mb-3 leading-relaxed">
+        B-121, Block-2, Gulshan,
         <br />
         Karachi, Pakistan
       </p>
 
       {/* Phone */}
-      <p className="text-lg text-(--gray-5) font-thin text-center mb-2">{candidate.phone}</p>
+      <p className="text-base text-(--gray-5) font-thin text-center mb-3">{candidate.phone}</p>
 
       {/* Date of Birth */}
-      <p className="text-lg text-(--gray-5) font-thin text-center mb-4">19-Jan-1997</p>
+      <p className="text-base text-(--gray-5) font-thin text-center mb-6">19-Jan-1997</p>
 
       {/* Employee ID Badge */}
       <div className="bg-primary text-white text-sm px-6 py-1.5 rounded-8 font-semibold">
