@@ -22,13 +22,13 @@ const lastMonthData = [
 
 export default function MonthlyTargetCard() {
   return (
-    <div className="w-full h-full bg-(--background) rounded-8 shadow-soft border border-(--gray-1) p-4 space-y-4">
+    <div className="w-full h-full bg-(--background) rounded-8 shadow-soft border border-(--gray-1) p-4 space-y-1">
       {/* This Month */}
-      <div className="space-y-2">
-        <p className="text-lg font-semibold text-(--gray-9)">Monthly target</p>
+      <div className="space-y-1.5">
+        <p className="text-base font-semibold text-(--gray-9)">Monthly target</p>
         <div className="flex items-end gap-2">
-          <span className="text-3xl font-bold text-(--primary)">19,8K</span>
-          <div className="flex items-center gap-1 pb-1">
+          <span className="text-2xl font-bold text-(--primary)">19,8K</span>
+          <div className="flex items-center gap-1 pb-0.5">
             <TrendingUp className="w-3.5 h-3.5 text-(--success)" />
             <span className="text-xs font-semibold text-(--success) bg-(--primary-0) px-1.5 py-0.5 rounded-8">
               +12.88%
@@ -37,7 +37,7 @@ export default function MonthlyTargetCard() {
         </div>
 
         {/* Chart - This Month */}
-        <div className="h-14 mt-2">
+        <div className="h-12 mt-4">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={monthlyData} margin={{ top: 0, left: 0, right: 0, bottom: 0 }}>
               <defs>
@@ -63,14 +63,12 @@ export default function MonthlyTargetCard() {
         </div>
       </div>
 
-      <div className="border-t border-(--gray-1) -mx-6" />
-
       {/* Last Month */}
-      <div className="space-y-2">
-        <p className="text-lg font-semibold text-(--gray-9)">Last Month</p>
+      <div className="space-y-1.5">
+        <p className="text-base font-semibold text-(--gray-9)">Last Month</p>
         <div className="flex items-end gap-2">
-          <span className="text-3xl font-bold text-(--destructive)">1,321</span>
-          <div className="flex items-center gap-1 pb-1">
+          <span className="text-2xl font-bold text-(--destructive)">1,321</span>
+          <div className="flex items-center gap-1 pb-0.5">
             <TrendingDown className="w-3.5 h-3.5 text-(--destructive)" />
             <span className="text-xs font-semibold text-(--destructive) bg-(--destructive-0) px-1.5 py-0.5 rounded-8">
               -3.53%
@@ -79,7 +77,7 @@ export default function MonthlyTargetCard() {
         </div>
 
         {/* Chart - Last Month */}
-        <div className="h-14 mt-2">
+        <div className="h-12 mt-4">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={lastMonthData} margin={{ top: 0, left: 0, right: 0, bottom: 0 }}>
               <defs>
