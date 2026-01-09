@@ -46,10 +46,10 @@ export default function WeeklyExpensesChart() {
   };
 
   return (
-    <div className="w-full bg-(--light) rounded-8 shadow-soft border border-(--gray-1) p-8">
+    <div className="w-full bg-(--light) rounded-8 shadow-soft border border-(--gray-1) p-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-(--gray-9)">Weekly Expenses</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-base font-bold text-(--gray-9)">Weekly Expenses</h2>
         <div className="flex items-center gap-2">
           <button
             onClick={handlePreviousMonth}
@@ -72,7 +72,7 @@ export default function WeeklyExpensesChart() {
       </div>
 
       {/* Chart */}
-      <div className="h-40">
+      <div className="h-69">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
             {/* Gradient Fill */}
