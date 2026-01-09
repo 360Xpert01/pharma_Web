@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import { Search, ListFilter, Upload, ChevronDown, X } from "lucide-react";
 import Image from "next/image";
+import { Checkbox } from "@/components/ui/checkbox";
+import FormSelect from "@/components/form/FormSelect";
 interface UsersHeaderProps {
   campHeading?: string;
   filterT?: boolean;
@@ -12,30 +14,25 @@ interface UsersHeaderProps {
 export default function UsersHeader({ campHeading, filterT, title }: UsersHeaderProps) {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [openId, setOpenId] = useState<boolean>(false);
+  const [showInactive, setShowInactive] = useState(false);
+  const [sortBy, setSortBy] = useState("recently-created");
+
   const exportBtn = () => {
     console.log("export btn clicked");
   };
 
   return (
     <div className="bg-[var(--background)]">
-      <div className="px-4 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
-        {/* Left: Title + Description */}
-        <div>
-          <h1 className="t-h1">{campHeading || "All Users"}</h1>
-          <p className="t-sm text-[var(--subheading-color)] mt-1">
-            Unlock the potential of your candidates
-          </p>
-        </div>
-
-        {/* Right: Actions */}
-        <div className="flex items-center gap-3 flex-wrap">
+      <div className="px-4 py-5 flex items-center justify-between gap-6">
+        {/* Left: Search + Filter */}
+        <div className="flex items-center gap-3">
           {/* Search Bar */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--gray-9)] pointer-events-none" />
             <input
               type="text"
               placeholder="Search users..."
-              className="pl-10 pr-4 py-2.5 w-full sm:w-64 bg-[var(--gray-2)] text-[var(--gray-9)] rounded-8 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:bg-[var(--light)] transition-all duration-200"
+              className="pl-10 pr-4 py-2.5 w-64 bg-[var(--gray-2)] text-[var(--gray-9)] rounded-8 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:bg-[var(--light)] transition-all duration-200"
             />
           </div>
 
@@ -51,7 +48,7 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
 
               {/* Filter Dropdown */}
               {isFilterOpen && (
-                <div className="absolute cursor-pointer right-0 mt-2 w-72 bg-[var(--background)] rounded-8 shadow-soft border border-[var(--gray-2)] z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute cursor-pointer left-0 mt-2 w-72 bg-[var(--background)] rounded-8 shadow-soft border border-[var(--gray-2)] z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="p-5 space-y-5">
                     {/* Header */}
                     <div className="flex items-center justify-between">
@@ -115,8 +112,33 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
               )}
             </div>
           )}
+        </div>
 
-          <div className="border h-9 border-[var(--gray-3)]"></div>
+        {/* Right: Checkbox + Sort Dropdown + Export Button */}
+        <div className="flex items-center gap-3">
+          {/* Inactive Users Checkbox */}
+          <label className="flex items-center gap-2 cursor-pointer select-none">
+            <Checkbox
+              checked={showInactive}
+              onCheckedChange={(checked) => setShowInactive(checked === true)}
+            />
+            <span className="text-sm text-(--gray-9) font-medium">Inactive Users</span>
+          </label>
+
+          {/* Quick Sort Dropdown */}
+          <FormSelect
+            label=""
+            name="sortBy"
+            value={sortBy}
+            onChange={setSortBy}
+            options={[
+              { value: "recently-created", label: "Recently Created" },
+              { value: "recently-modified", label: "Recently Modified" },
+            ]}
+            placeholder="Quick Sort"
+            className="mb-0"
+            selectClassName="mt-0"
+          />
 
           {/* Export Button */}
           <div
