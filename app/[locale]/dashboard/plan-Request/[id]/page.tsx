@@ -31,7 +31,9 @@ export default function PlanRequest({ params }: PageProps) {
 
   const saleRep = data?.saleRep;
   const callsCount = data?.callsCount;
-  const scheduleStatus = data?.calls[0]?.schedule?.status;
+  const scheduleStatus = data?.schedule?.status;
+  const scheduleDtatailcalls = data?.calls;
+  const scheduleDetail = data?.schedule;
 
   return (
     <div className="bg-gradient-to-br mt-20 from-slate-50 to-slate-100 p-6 min-h-screen">
@@ -41,10 +43,11 @@ export default function PlanRequest({ params }: PageProps) {
           <PlanRequestCalendar
             scheduleDetail={saleRep}
             callsCount={callsCount}
-            scheduleStatus={scheduleStatus}
+            scheduleStatus={scheduleDetail}
+            calls={scheduleDtatailcalls}
           />
         </div>
-        <PlanRequestMeetings />
+        <PlanRequestMeetings scheduleDetail={scheduleDetail} />
       </div>
     </div>
   );
