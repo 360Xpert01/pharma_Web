@@ -55,21 +55,62 @@ const noCallDays: Record<string, number[]> = {
 export default function PlanRequestCalendar({
   scheduleDetail,
   callsCount,
+  scheduleStatus,
+  calls,
 }: {
   scheduleDetail: any;
   callsCount: any;
+  scheduleStatus: any;
+  calls: any;
 }) {
-  const [currentMonth, setCurrentMonth] = useState(new Date(2025, 8)); // Sep 2025
+  // Convert month name to month number
+  const getMonthNumber = (monthName: string): number => {
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    return months.indexOf(monthName);
+  };
 
-  const year = currentMonth.getFullYear();
+  const monthNumber = scheduleStatus?.month ? getMonthNumber(scheduleStatus.month) : 0;
+  const year = scheduleStatus?.year || new Date().getFullYear();
+
+  const [currentMonth, setCurrentMonth] = useState(new Date(year, monthNumber));
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const month = currentMonth.getMonth();
+  console.log("Calls123", year, month, selectedDay);
+
+  // const year = currentMonth.getFullYear();
   const monthKey = `${year}-${month + 1}`;
   const monthName = currentMonth.toLocaleString("default", { month: "long", year: "numeric" });
 
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDayOfWeek = new Date(year, month, 1).getDay();
 
-  const callCounts = monthlyCallData[monthKey] || {};
+  // Extract call data from calls array
+  const extractedCallData: Record<number, number> = {};
+  if (calls && Array.isArray(calls)) {
+    calls.forEach((callRecord: any) => {
+      if (callRecord.callDate) {
+        const date = new Date(callRecord.callDate);
+        const day = date.getDate();
+        extractedCallData[day] = callRecord.totalCount || 0;
+      }
+    });
+  }
+
+  const callCounts =
+    { ...monthlyCallData[monthKey], ...extractedCallData } || extractedCallData || {};
   const zeroCallDays = noCallDays[monthKey] || [];
 
   const previousMonth = () => setCurrentMonth(new Date(year, month - 1));
@@ -134,13 +175,13 @@ export default function PlanRequestCalendar({
           <h3 className="t-h1">{monthName}</h3>
           <div className="flex items-center bg-(--gray-1) rounded-8 border border-(--gray-2)">
             {/* onClick={previousMonth} */}
-            <button className="p-3 hover:bg-(--gray-2) rounded-8">
-              <ChevronLeft className="w-5 h-5" />
+            <button className="p-5 hover:bg-(--gray-2) rounded-8">
+              {/* <ChevronLeft className="w-5 h-5" /> */}
             </button>
             <span className="px-6 font-medium">{monthName}</span>
             {/* onClick={nextMonth}  */}
-            <button className="p-3 hover:bg-(--gray-2) rounded-8">
-              <ChevronRight className="w-5 h-5" />
+            <button className="p-5 hover:bg-(--gray-2) rounded-8">
+              {/* <ChevronRight className="w-5 h-5" /> */}
             </button>
           </div>
         </div>
@@ -155,14 +196,15 @@ export default function PlanRequestCalendar({
           {calendarGrid.map((day, i) => {
             const isZero = day && zeroCallDays.includes(day);
             const calls = day ? (callCounts[day] ?? null) : null;
-            const isSelected = day === 11;
+            const isSelected = day === selectedDay;
 
             return (
               <div
                 key={i}
+                onClick={() => day && setSelectedDay(day)}
                 className={`
-                  aspect-square rounded-8 p-3 flex flex-col justify-between text-left
-                  ${!day ? "bg-transparent" : isZero ? "bg-(--destructive) text-(--light)" : isSelected ? "bg-(--primary) text-(--light)" : "bg-(--gray-0)"}
+                  aspect-square rounded-8 p-3 flex flex-col justify-between text-left cursor-pointer transition-colors
+                  ${!day ? "bg-transparent" : isZero ? "bg-(--destructive) text-(--light)" : isSelected ? "bg-(--primary) text-(--light)" : "bg-(--gray-0) hover:bg-(--gray-2)"}
                 `}
               >
                 {day && (

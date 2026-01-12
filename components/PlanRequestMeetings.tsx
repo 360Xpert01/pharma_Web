@@ -43,11 +43,13 @@ const meetings = [
   },
 ];
 
-export default function PlanRequestMeetings() {
+export default function PlanRequestMeetings({ scheduleDetail }: { scheduleDetail: any }) {
   return (
     <div className="bg-(--background) rounded-8 shadow-soft p-6 h-fit sticky top-6">
       <div className="mb-6 pb-6 ">
-        <p className="t-h1">September, 11 2025</p>
+        <p className="t-h1">
+          {scheduleDetail?.month}, {scheduleDetail?.day} {scheduleDetail?.year}
+        </p>
         <p className="t-sm mt-1">Sunday, 12 Call schedule for today</p>
       </div>
 
