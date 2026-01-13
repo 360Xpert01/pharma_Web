@@ -39,6 +39,7 @@ import createSpecializationReducer from "./slices/specialization/createSpecializ
 import scheduleSliceReducer from "./slices/plan-Manage/scheduleSlice";
 import singleScheduleDetailReducer from "./slices/plan-Manage/singleScheduleDetailSlice";
 import scheduleHandleReducer from "./slices/plan-Manage/scheduleHandleSlice";
+import singleScheduleByFilterReducer from "./slices/plan-Manage/sinleScheduleByFilter";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -76,6 +77,7 @@ const rootReducer = combineReducers({
   schedule: scheduleSliceReducer,
   singleScheduleDetail: singleScheduleDetailReducer,
   scheduleHandle: scheduleHandleReducer,
+  scheduleByFilter: singleScheduleByFilterReducer,
 });
 
 const persistConfig = {
