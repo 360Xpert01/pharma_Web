@@ -4,7 +4,7 @@ import PlanRequestHeader from "@/components/PlanRequestHeader";
 import PlanRequestCalendar from "@/components/PlanRequestCalendar";
 import PlanRequestMeetings from "@/components/PlanRequestMeetings";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   clearScheduleDetail,
   fetchScheduleDetail,
@@ -18,6 +18,7 @@ interface PageProps {
 
 export default function PlanRequest({ params }: PageProps) {
   const { id } = params;
+  const [selectedDateData, setSelectedDateData] = useState<any>(null);
 
   const dispatch = useDispatch();
   const { data, loading, error } = useSelector((state) => state.singleScheduleDetail);
@@ -35,6 +36,10 @@ export default function PlanRequest({ params }: PageProps) {
   const scheduleDtatailcalls = data?.calls;
   const scheduleDetail = data?.schedule;
 
+  const handleDateSelect = (dateData: any) => {
+    setSelectedDateData(dateData);
+  };
+
   return (
     <div className="bg-gradient-to-br mt-20 from-slate-50 to-slate-100 p-6 min-h-screen">
       <PlanRequestHeader id={id} scheduleStatus={scheduleStatus} />
@@ -45,9 +50,14 @@ export default function PlanRequest({ params }: PageProps) {
             callsCount={callsCount}
             scheduleStatus={scheduleDetail}
             calls={scheduleDtatailcalls}
+            onDateSelect={handleDateSelect}
           />
         </div>
-        <PlanRequestMeetings scheduleDetail={scheduleDetail} />
+        <PlanRequestMeetings
+          scheduleDetail={scheduleDetail}
+          selectedDateData={selectedDateData}
+          id={id}
+        />
       </div>
     </div>
   );

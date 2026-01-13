@@ -57,11 +57,13 @@ export default function PlanRequestCalendar({
   callsCount,
   scheduleStatus,
   calls,
+  onDateSelect,
 }: {
   scheduleDetail: any;
   callsCount: any;
   scheduleStatus: any;
   calls: any;
+  onDateSelect: (date: string | null) => void;
 }) {
   // Convert month name to month number
   const getMonthNumber = (monthName: string): number => {
@@ -88,7 +90,6 @@ export default function PlanRequestCalendar({
   const [currentMonth, setCurrentMonth] = useState(new Date(year, monthNumber));
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const month = currentMonth.getMonth();
-  console.log("Calls123", year, month, selectedDay);
 
   // const year = currentMonth.getFullYear();
   const monthKey = `${year}-${month + 1}`;
@@ -109,12 +110,25 @@ export default function PlanRequestCalendar({
     });
   }
 
+  const handleDayClick = (day: number | null) => {
+    if (!day) return;
+
+    setSelectedDay(day);
+
+    const formattedDate = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+    // Very important → call parent function!
+    onDateSelect(formattedDate);
+  };
+
   const callCounts =
     { ...monthlyCallData[monthKey], ...extractedCallData } || extractedCallData || {};
   const zeroCallDays = noCallDays[monthKey] || [];
 
   const previousMonth = () => setCurrentMonth(new Date(year, month - 1));
   const nextMonth = () => setCurrentMonth(new Date(year, month + 1));
+
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const calendarGrid = Array(firstDayOfWeek)
     .fill(null)
@@ -201,7 +215,11 @@ export default function PlanRequestCalendar({
             return (
               <div
                 key={i}
-                onClick={() => day && setSelectedDay(day)}
+                onClick={() => {
+                  if (day) {
+                    handleDayClick(day);
+                  }
+                }}
                 className={`
                   aspect-square rounded-8 p-3 flex flex-col justify-between text-left cursor-pointer transition-colors
                   ${!day ? "bg-transparent" : isZero ? "bg-(--destructive) text-(--light)" : isSelected ? "bg-(--primary) text-(--light)" : "bg-(--gray-0) hover:bg-(--gray-2)"}
@@ -214,7 +232,9 @@ export default function PlanRequestCalendar({
                       <span className={`t-sm ${isZero ? "text-(--light)" : ""}`}>
                         {isZero ? "0 Calls" : `${calls} Calls`}
                       </span>
-                    ) : null}
+                    ) : (
+                      <span className={`t-sm ${isZero ? "text-(--light)" : ""}`}>{"0 Calls"}</span>
+                    )}
                   </>
                 )}
               </div>

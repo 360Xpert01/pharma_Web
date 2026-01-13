@@ -1,4 +1,7 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { fetchScheduleByFilter } from "@/store/slices/plan-Manage/sinleScheduleByFilter";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const meetings = [
   {
@@ -43,9 +46,31 @@ const meetings = [
   },
 ];
 
-export default function PlanRequestMeetings({ scheduleDetail }: { scheduleDetail: any }) {
+export default function PlanRequestMeetings({
+  scheduleDetail,
+  selectedDateData,
+  id,
+}: {
+  scheduleDetail: any;
+  selectedDateData: any;
+  id: string;
+}) {
+  const dispatch = useDispatch();
+  const { detail, isLoading, errorMessage } = useSelector((state: any) => state.scheduleByFilter);
+  const [meetingsData, setMeetingsData] = useState([]);
+
+  useEffect(() => {
+    setMeetingsData(detail?.calls[0]?.doctor || []);
+  }, [detail]);
+
+  const meetingsList = meetingsData;
+
+  useEffect(() => {
+    dispatch(fetchScheduleByFilter(`${id}?callDate=${selectedDateData}`));
+  }, [selectedDateData, id, dispatch]);
+
   return (
-    <div className="bg-(--background) rounded-8 shadow-soft p-6 h-fit sticky top-6">
+    <div className="bg-(--background) rounded-8 shadow-soft p-6 max-h-screen overflow-y-auto sticky top-6">
       <div className="mb-6 pb-6 ">
         <p className="t-h1">
           {scheduleDetail?.month}, {scheduleDetail?.day} {scheduleDetail?.year}
@@ -54,22 +79,22 @@ export default function PlanRequestMeetings({ scheduleDetail }: { scheduleDetail
       </div>
 
       <div className="space-y-3">
-        {meetings.map((m) => (
-          <div key={m.id} className="border border-(--gray-2) rounded-8 p-2 ">
-            <h4 className="t-label-b mb-3">{m.type}</h4>
+        {meetingsData.map((m, index) => (
+          <div key={`${m.id}-${index}`} className="border border-(--gray-2) rounded-8 p-2 ">
+            <h4 className="t-label-b mb-3">{m.specialization}</h4>
             <div className="flex items-start gap-4">
               <Avatar className="h-12 w-12 mt-1">
-                <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${m.doctor}`} />
-                <AvatarFallback>DR</AvatarFallback>
+                <AvatarImage src={m.profilePicture} />
+                {/* <AvatarFallback>DR</AvatarFallback> */}
               </Avatar>
               <div className="flex  items-center gap-5 justify-between text-sm">
                 <div>
-                  <p className="t-label-b">{m.doctor}</p>
-                  <p className="t-cap">{m.specialty}</p>
+                  <p className="t-label-b">{m.fullname}</p>
+                  <p className="t-cap">{m.specialization}</p>
                 </div>
                 <div className="">
-                  <p className="t-label-b">{m.location}</p>
-                  <p className="t-cap">{m.address}</p>
+                  <p className="t-label-b">{m.qualification}</p>
+                  <p className="t-cap">{m.email}</p>
                 </div>
               </div>
             </div>
