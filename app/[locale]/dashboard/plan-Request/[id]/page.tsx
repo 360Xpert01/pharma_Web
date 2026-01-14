@@ -40,6 +40,28 @@ export default function PlanRequest({ params }: PageProps) {
     setSelectedDateData(dateData);
   };
 
+  const [filteredDoctorsData, setFilteredDoctorsData] = useState<any>([]);
+
+  console.log("Selectedsdsdcc", filteredDoctorsData);
+
+  useEffect(() => {
+    if (!selectedDateData || !data?.calls) {
+      setFilteredDoctorsData([]);
+      return;
+    }
+
+    const selectedDate = selectedDateData.callDate || selectedDateData;
+
+    const matchedCallData = data.calls.find((call: any) => call.callDate === selectedDate);
+
+    if (matchedCallData) {
+      console.log("Filtered Doctors:", matchedCallData.doctor);
+      setFilteredDoctorsData(matchedCallData.doctor);
+    } else {
+      setFilteredDoctorsData([]);
+    }
+  }, [selectedDateData, data?.calls]);
+
   return (
     <div className="bg-gradient-to-br mt-20 from-slate-50 to-slate-100 p-6 min-h-screen">
       <PlanRequestHeader id={id} scheduleStatus={scheduleStatus} />
@@ -57,6 +79,7 @@ export default function PlanRequest({ params }: PageProps) {
           scheduleDetail={scheduleDetail}
           selectedDateData={selectedDateData}
           id={id}
+          filteredDoctorsData12={filteredDoctorsData}
         />
       </div>
     </div>

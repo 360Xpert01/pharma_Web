@@ -142,7 +142,7 @@ export default function PlanRequestCalendar({
           <div className="flex items-center gap-6">
             <Image width={100} height={100} src={scheduleDetail?.saleRepPicture} alt="Candidate" />
             <div>
-              <h2 className="t-h2">{scheduleDetail?.fullname}</h2>
+              <h2 className="t-h4">{scheduleDetail?.fullname}</h2>
               <p className="t-md">{scheduleDetail?.email}</p>
               <p className="t-md">{scheduleDetail?.phone}</p>
             </div>
@@ -151,22 +151,22 @@ export default function PlanRequestCalendar({
           <div className=" space-y-4">
             <div>
               <p className="t-cap">Reporting Manager</p>
-              <p className="t-val">{scheduleDetail?.supervisorName}</p>
+              <p className="t-h4">{scheduleDetail?.supervisorName}</p>
             </div>
             <div>
               <p className="t-cap">Team Name</p>
-              <p className="t-val">{scheduleDetail?.teamName}</p>
+              <p className="t-h4">{scheduleDetail?.teamName}</p>
             </div>
           </div>
 
           <div className=" space-y-4">
             <div>
               <p className="t-cap">Requested Month</p>
-              <p className="t-val">{candidate.requestedMonth}</p>
+              <p className="t-h4">{candidate.requestedMonth}</p>
             </div>
             <div>
               <p className="t-cap">Channel</p>
-              <p className="t-val">{scheduleDetail?.channelName}</p>
+              <p className="t-h4">{scheduleDetail?.channelName}</p>
             </div>
           </div>
 
