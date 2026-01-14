@@ -1,9 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCallReports } from "@/store/slices/DCR/scheduleSlice";
+import { RootState } from "@/store";
 
 interface DcrRecord {
   id: number;
@@ -113,24 +116,32 @@ const DEFAULT_AVATAR = "/girlPic.svg";
 
 export default function DcrTable() {
   // Simulate loading and error states (replace with actual API call state)
-  const [loading] = useState(false);
-  const [error] = useState<string | null>(null);
+  // const [loading] = useState(false);
+  // const [error] = useState<string | null>(null);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchCallReports());
+  }, [dispatch]);
+  const { data, loading, error } = useSelector((state: RootState) => state.callReports);
+
+  console.log("sadw234", data);
 
   // Define columns for CenturoTable
   const columns: ColumnDef<DcrRecord>[] = [
     {
-      header: "Sales Rep",
-      accessorKey: "employee1",
+      header: "lineManagerPicture",
+      accessorKey: "lineManagerPicture",
       cell: ({ row }) => (
         <div className="flex items-center gap-3">
           <img
-            src={DEFAULT_AVATAR}
-            alt={row.original.employee1.name}
+            src={row.original.lineManagerPicture || DEFAULT_AVATAR}
+            alt={row.original.lineManagerName}
             className="w-12 h-12 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
           />
           <div>
-            <p className="t-td-b">{row.original.employee1.name}</p>
-            <p className="t-cap">{row.original.employee1.role}</p>
+            <p className="t-td-b">{row.original.lineManagerName}</p>
+            <p className="t-cap">{row.original.lineManagerRole}</p>
           </div>
         </div>
       ),
@@ -141,13 +152,13 @@ export default function DcrTable() {
       cell: ({ row }) => (
         <div className="flex items-center gap-3">
           <img
-            src={DEFAULT_AVATAR}
-            alt={row.original.employee2.name}
+            src={row.original.saleRepPicture || DEFAULT_AVATAR}
+            alt={row.original.saleRepName.name}
             className="w-12 h-12 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
           />
           <div>
-            <p className="t-td-b">{row.original.employee2.name}</p>
-            <p className="t-cap">{row.original.employee2.role}</p>
+            <p className="t-td-b">{row.original.saleRepName}</p>
+            <p className="t-cap">{row.original.saleRepRole}</p>
           </div>
         </div>
       ),
@@ -155,29 +166,29 @@ export default function DcrTable() {
     {
       header: "Specialization",
       accessorKey: "specialty",
-      cell: ({ row }) => <p className="t-label">{row.original.specialty}</p>,
+      cell: ({ row }) => <p className="t-label">{row.original.doctorSpecialization}</p>,
     },
     {
       header: "Location",
       accessorKey: "area",
-      cell: ({ row }) => <p className="t-label">{row.original.area}</p>,
+      cell: ({ row }) => <p className="t-label">{row.original.lineManagerRole}</p>,
     },
     {
       header: "Doctor",
       accessorKey: "doctor",
-      cell: ({ row }) => <p className="t-td-b">{row.original.doctor}</p>,
+      cell: ({ row }) => <p className="t-td-b">{row.original.doctorName}</p>,
     },
     {
       header: "Product",
       accessorKey: "medicine",
-      cell: ({ row }) => <p className="t-td-b">{row.original.medicine}</p>,
+      cell: ({ row }) => <p className="t-td-b">{row.original.saleRepRole}</p>,
     },
     {
       header: "SKU's",
       accessorKey: "strengths",
       cell: ({ row }) => (
         <div className="flex flex-wrap gap-2">
-          {row.original.strengths.map((s, i) => (
+          {row.original.products.map((s, i) => (
             <span
               key={i}
               className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-8 text-xs whitespace-nowrap"
@@ -197,7 +208,7 @@ export default function DcrTable() {
   return (
     <div className="w-full">
       <CenturoTable
-        data={tableData}
+        data={data}
         columns={columns}
         loading={loading}
         error={error}
