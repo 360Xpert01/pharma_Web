@@ -68,14 +68,14 @@ export default function PlanRequestHeader({
         <p className="t-md mt-1">Unlock the potential of your candidates</p>
       </div>
 
-      <div className="flex space-x-1 mt-5">
+      {/* <div className="flex space-x-1 mt-5">
         {avatars.map((src, i) => (
           <Avatar key={i} className="h-12 w-12 border-2 border-(--light)">
             <AvatarImage src="/girlPic.svg" />
             <AvatarFallback>U</AvatarFallback>
           </Avatar>
         ))}
-      </div>
+      </div> */}
       <div className="flex mt-5 gap-8">
         {scheduleStatus === "Pending" && (
           <div className="flex gap-3">
@@ -95,11 +95,11 @@ export default function PlanRequestHeader({
             </button>
           </div>
         )}
-        {scheduleStatus !== "Pending" && (
+        {/* {scheduleStatus !== "Pending" && (
           <button className="bg-(--primary) hover:bg-(--primary-2) text-(--light) rounded-8 flex items-center gap-2 px-4 py-2">
             {scheduleStatus}
           </button>
-        )}
+        )} */}
       </div>
     </div>
   );

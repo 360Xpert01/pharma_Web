@@ -23,11 +23,11 @@ interface CampaignItem {
 }
 
 export default function CampaignApprovalTable() {
-  const [loading] = useState(false);
-  const [error] = useState<string | null>(null);
+  // const [loading] = useState(false);
+  // const [error] = useState<string | null>(null);
 
   const dispatch = useDispatch();
-  const { data } = useSelector((state) => state.schedule);
+  const { data, loading, error } = useSelector((state) => state.schedule);
 
   useEffect(() => {
     dispatch(fetchCrmSchedule());

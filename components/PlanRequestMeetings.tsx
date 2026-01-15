@@ -5,19 +5,30 @@ export default function PlanRequestMeetings({
   selectedDateData,
   id,
   filteredDoctorsData12,
+  callsCount,
 }: {
   scheduleDetail: any;
   selectedDateData: any;
   id: string;
   filteredDoctorsData12: any;
+  callsCount: number;
 }) {
+  // Extract date from selectedDateData
+  const extractedDate = selectedDateData ? selectedDateData.split("T")[0] : null;
+  const dateObj = extractedDate ? new Date(extractedDate) : null;
+  const formattedDate = dateObj
+    ? dateObj.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+    : null;
+
+  console.log("filteredDoctorsData12", filteredDoctorsData12.length);
+
   return (
     <div className="bg-(--background) rounded-8 shadow-soft p-6 max-h-screen overflow-y-auto sticky top-6">
       <div className="mb-6 pb-6 ">
         <p className="t-h1">
-          {scheduleDetail?.month}, {scheduleDetail?.day} {scheduleDetail?.year}
+          {formattedDate ? formattedDate : `${scheduleDetail?.month},${scheduleDetail?.year}`}
         </p>
-        <p className="t-sm mt-1">Sunday, 12 Call schedule for today</p>
+        <p className="t-sm mt-1">{filteredDoctorsData12.length} Call scheduled</p>
       </div>
 
       <div className="space-y-3">
