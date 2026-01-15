@@ -42,8 +42,6 @@ export default function PlanRequest({ params }: PageProps) {
 
   const [filteredDoctorsData, setFilteredDoctorsData] = useState<any>([]);
 
-  console.log("Selectedsdsdcc", filteredDoctorsData);
-
   useEffect(() => {
     if (!selectedDateData || !data?.calls) {
       setFilteredDoctorsData([]);
@@ -73,6 +71,7 @@ export default function PlanRequest({ params }: PageProps) {
             scheduleStatus={scheduleDetail}
             calls={scheduleDtatailcalls}
             onDateSelect={handleDateSelect}
+            scheduletitle={scheduleStatus}
           />
         </div>
         <PlanRequestMeetings
@@ -80,6 +79,7 @@ export default function PlanRequest({ params }: PageProps) {
           selectedDateData={selectedDateData}
           id={id}
           filteredDoctorsData12={filteredDoctorsData}
+          callsCount={callsCount}
         />
       </div>
     </div>

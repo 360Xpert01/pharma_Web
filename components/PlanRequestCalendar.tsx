@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 
@@ -58,12 +58,14 @@ export default function PlanRequestCalendar({
   scheduleStatus,
   calls,
   onDateSelect,
+  scheduletitle,
 }: {
   scheduleDetail: any;
   callsCount: any;
   scheduleStatus: any;
   calls: any;
   onDateSelect: (date: string | null) => void;
+  scheduletitle: string;
 }) {
   // Convert month name to month number
   const getMonthNumber = (monthName: string): number => {
@@ -88,8 +90,14 @@ export default function PlanRequestCalendar({
   const year = scheduleStatus?.year || new Date().getFullYear();
 
   const [currentMonth, setCurrentMonth] = useState(new Date(year, monthNumber));
-  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const [selectedDay, setSelectedDay] = useState<number | null>(1);
   const month = currentMonth.getMonth();
+
+  // Select first day by default on component mount
+  useEffect(() => {
+    const formattedDate = `${year}-${String(month + 1).padStart(2, "0")}-01`;
+    onDateSelect(formattedDate);
+  }, []);
 
   // const year = currentMonth.getFullYear();
   const monthKey = `${year}-${month + 1}`;
@@ -162,7 +170,7 @@ export default function PlanRequestCalendar({
           <div className=" space-y-4">
             <div>
               <p className="t-cap">Requested Month</p>
-              <p className="t-h4">{candidate.requestedMonth}</p>
+              <p className="t-h4">{scheduleDetail?.month}</p>
             </div>
             <div>
               <p className="t-cap">Channel</p>
@@ -174,7 +182,7 @@ export default function PlanRequestCalendar({
             <div>
               <p className="t-cap">Status</p>
               <span className="inline-block bg-(--warning) text-(--light) px-4 py-1 rounded-8 t-cap">
-                {scheduleDetail?.status}
+                {scheduletitle}
               </span>
             </div>
             <p className="t-cap mt-3">Total Calls</p>
@@ -187,17 +195,6 @@ export default function PlanRequestCalendar({
       <div className="bg-(--background) rounded-8 shadow-soft p-6 mt-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="t-h1">{monthName}</h3>
-          <div className="flex items-center bg-(--gray-1) rounded-8 border border-(--gray-2)">
-            {/* onClick={previousMonth} */}
-            <button className="p-5 hover:bg-(--gray-2) rounded-8">
-              {/* <ChevronLeft className="w-5 h-5" /> */}
-            </button>
-            <span className="px-6 font-medium">{monthName}</span>
-            {/* onClick={nextMonth}  */}
-            <button className="p-5 hover:bg-(--gray-2) rounded-8">
-              {/* <ChevronRight className="w-5 h-5" /> */}
-            </button>
-          </div>
         </div>
 
         <div className="grid grid-cols-7 gap-2 text-center">
