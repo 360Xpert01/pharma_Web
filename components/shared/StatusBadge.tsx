@@ -53,6 +53,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
     completed: "bg-[var(--success-0)] text-[var(--success)]",
     processing: "bg-[var(--primary-0)] text-[var(--primary)]",
     cancelled: "bg-[var(--destructive-0)] text-[var(--destructive)]",
+    accepted: "bg-[var(--success-0)] text-[var(--success)]",
   };
 
   // Get color classes or use default

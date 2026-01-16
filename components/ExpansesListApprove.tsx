@@ -1,9 +1,14 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button/button";
+import { DateRange, Range } from "react-date-range";
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
+import { format } from "date-fns";
+import ExpenseDetailsModal from "./ExpenseDetailsModal";
 
 interface ExpenseItem {
   id: string;
@@ -99,24 +104,97 @@ const expensesData: ExpenseItem[] = [
   },
 ];
 
+const expenses = [
+  { id: "1", description: "Client Dinner - Business Meeting", amount: 520, status: "approved" },
+  { id: "2", description: "Client Dinner - Business Meeting", amount: 520, status: "rejected" },
+  { id: "3", description: "Client Dinner - Business Meeting", amount: 520 },
+  { id: "4", description: "Client Dinner - Business Meeting", amount: 520 },
+];
+
 export default function ExpenseApprovalList() {
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [approving, setApproving] = useState(false);
+  const [dateRange, setDateRange] = useState<Range[]>([
+    {
+      startDate: new Date(),
+      endDate: new Date(),
+      key: "selection",
+    },
+  ]);
+
+  const selectionRange = dateRange[0];
+
+  const handleSelect = (ranges: any) => {
+    setDateRange([ranges.selection]);
+  };
+
+  const displayText = `${format(selectionRange.startDate!, "dd MMM yyyy")} - ${format(
+    selectionRange.endDate!,
+    "dd MMM yyyy"
+  )}`;
+
+  const [dataStart, setDataStart] = useState(format(new Date(), "yyyy-MM-dd"));
+  const [dataEnd, setDataEnd] = useState(format(new Date(), "yyyy-MM-dd"));
+
+  const handleApplyDateRange = () => {
+    setDataStart(format(selectionRange.startDate!, "yyyy-MM-dd"));
+    setDataEnd(format(selectionRange.endDate!, "yyyy-MM-dd"));
+    setShowCalendar(false);
+  };
   return (
     <div className="">
       <div className="mt-3">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-6 relative">
           <h2 className="t-h3">Weekly Expenses</h2>
-          <div className="flex items-center gap-2 text-(--primary) text-sm font-medium cursor-pointer">
+          <div
+            className="flex items-center gap-2 text-(--primary) text-sm font-medium cursor-pointer hover:opacity-80 transition"
+            onClick={() => setShowCalendar(!showCalendar)}
+          >
             <ChevronLeft className="w-4 h-4" />
-            <span>01 - 07 Sept, 2025</span>
+            <span>{displayText}</span>
             <ChevronRight className="w-4 h-4" />
           </div>
+
+          {/* Calendar Popup */}
+          {showCalendar && (
+            <div className="absolute right-0 top-9 mt-2 z-1000 bg-white rounded-lg shadow-xl p-3 border border-gray-200">
+              <DateRange
+                editableDateInputs={true}
+                onChange={handleSelect}
+                moveRangeOnFirstSelection={false}
+                ranges={dateRange}
+                direction="horizontal"
+                months={1}
+                showDateDisplay={false}
+                showMonthAndYearPickers={true}
+                rangeColors={["#3b82f6", "#3b82f6"]}
+              />
+
+              <div className="flex justify-end gap-3 mt-3 pt-3 border-t">
+                <button
+                  onClick={() => setShowCalendar(false)}
+                  className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleApplyDateRange}
+                  className="px-4 py-2 text-sm bg-primary text-white rounded hover:bg-blue-600"
+                >
+                  Apply
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="space-y-3">
           {expensesData.map((item) => (
             <div
               key={item.id}
-              className="flex items-center rounded-8 shadow-soft border border-(--gray-1) bg-(--background) p-4"
+              onClick={() => setShowModal(true)}
+              className="flex items-center rounded-8 shadow-soft  bg-(--background) p-4 cursor-pointer hover:shadow-md hover:border-(--primary) transition-all"
             >
               {/* Left: User Info */}
               <div className="flex items-center gap-4 w-[25%]">
@@ -192,6 +270,18 @@ export default function ExpenseApprovalList() {
           ))}
         </div>
       </div>
+
+      <ExpenseDetailsModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        expenses={expenses}
+        totalExpense={5620}
+        approvedAmount={520}
+        rejectedAmount={520}
+        onApprove={(id) => console.log("Approve:", id)}
+        onReject={(id) => console.log("Reject:", id)}
+        isLoading={approving}
+      />
     </div>
   );
 }
