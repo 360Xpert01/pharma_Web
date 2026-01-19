@@ -42,6 +42,7 @@ import scheduleHandleReducer from "./slices/plan-Manage/scheduleHandleSlice";
 import singleScheduleByFilterReducer from "./slices/plan-Manage/sinleScheduleByFilter";
 import callReportsReducer from "./slices/DCR/scheduleSlice";
 import weeklyCallsSlice from "./slices/employeeProfile/weeklyCallsSlice";
+import weekelyCallExpenses from "./slices/employeeProfile/weeklyCallExpensesSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -82,6 +83,7 @@ const rootReducer = combineReducers({
   scheduleByFilter: singleScheduleByFilterReducer,
   callReports: callReportsReducer,
   weeklyCalls: weeklyCallsSlice,
+  weekelyCallExpenses: weekelyCallExpenses,
 });
 
 const persistConfig = {

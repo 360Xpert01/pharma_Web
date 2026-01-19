@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button/button";
@@ -9,6 +9,8 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { format } from "date-fns";
 import ExpenseDetailsModal from "./ExpenseDetailsModal";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchWeeklyCallExpenses } from "@/store/slices/employeeProfile/weeklyCallExpensesSlice";
 
 interface ExpenseItem {
   id: string;
@@ -122,6 +124,24 @@ export default function ExpenseApprovalList() {
       key: "selection",
     },
   ]);
+  const [selectedExpense, setSelectedExpense] = useState<(typeof expenses)[0] | null>(null);
+  const salesmanId = "0b4c9eaa-aff6-4864-9888-e36788d11099";
+  const from = "2026-01-12";
+  const to = "2026-01-13";
+
+  const dispatch = useDispatch();
+  const { data, loading, error } = useSelector((state: any) => state.weekelyCallExpenses);
+  const expensesAPI = data?.completedCalls || [];
+
+  useEffect(() => {
+    dispatch(
+      fetchWeeklyCallExpenses({
+        salesmanId: salesmanId,
+        from: from,
+        to: to,
+      })
+    );
+  }, [dispatch, salesmanId, from, to]);
 
   const selectionRange = dateRange[0];
 
@@ -141,6 +161,11 @@ export default function ExpenseApprovalList() {
     setDataStart(format(selectionRange.startDate!, "yyyy-MM-dd"));
     setDataEnd(format(selectionRange.endDate!, "yyyy-MM-dd"));
     setShowCalendar(false);
+  };
+
+  const handleCardClick = (expense: (typeof expenses)[0]) => {
+    setSelectedExpense(expense); // sirf clicked wala expense save karo
+    setShowModal(true);
   };
   return (
     <div className="">
@@ -190,82 +215,99 @@ export default function ExpenseApprovalList() {
         </div>
 
         <div className="space-y-3">
-          {expensesData.map((item) => (
-            <div
-              key={item.id}
-              onClick={() => setShowModal(true)}
-              className="flex items-center rounded-8 shadow-soft  bg-(--background) p-4 cursor-pointer hover:shadow-md hover:border-(--primary) transition-all"
-            >
-              {/* Left: User Info */}
-              <div className="flex items-center gap-4 w-[25%]">
-                <div className="relative">
-                  <div className="w-14 h-14 rounded-8 overflow-hidden border-2 border-white shadow-soft">
-                    <Image
-                      src={`/capMan.svg`}
-                      alt={item.name}
-                      width={50}
-                      height={50}
-                      className="object-cover"
-                    />
-                  </div>
-                </div>
+          {expensesAPI.map((item) => (
+            <div key={item.callDate} className="mb-8">
+              {/* Date as section header */}
 
-                <div>
-                  <h3 className="t-label-b">{item.name}</h3>
-                  <div className="flex items-center gap-2">
-                    <p className="t-sm">{item.role}</p>
-                    <span
-                      className={`px-2 py-0.5 text-xs font-medium rounded-8 ${
-                        item.status === "Review"
-                          ? "bg-(--warning-light) text-(--warning-2)"
-                          : "bg-(--destructive-light) text-(--destructive)"
-                      }`}
-                    >
-                      {item.status}
-                    </span>
-                  </div>
-                </div>
-              </div>
+              {/* <h3 className="t-h3 mb-4 font-bold text-lg">
+            {new Date(item.callDate).toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </h3> */}
 
-              {/* Center: Expense Breakdown - Three evenly distributed columns */}
-              <div className="flex items-center flex-1">
-                <div className="w-1/3 text-center">
-                  <p className="t-cap">Total Expense</p>
-                  <p className="t-val-sm t-warn">
-                    {item.total.toLocaleString()}
-                    <span className="t-sm t-warn ml-1">PKR</span>
-                  </p>
-                </div>
-                <div className="w-1/3 text-center">
-                  <p className="t-cap">Approved</p>
-                  <p className="t-val-sm t-ok">
-                    {item.approved.toLocaleString()}
-                    <span className="t-sm t-ok ml-1">PKR</span>
-                  </p>
-                </div>
-                <div className="w-1/3 text-center">
-                  <p className="t-cap">Rejected</p>
-                  <p className="t-val-sm t-err">
-                    {item.rejected.toLocaleString()}
-                    <span className="t-sm t-err ml-1">PKR</span>
-                  </p>
-                </div>
-              </div>
-
-              {/* Right: Action Buttons */}
-              <div className="flex items-center gap-3 w-[20%] justify-end">
-                <Button variant="primary" size="sm" rounded="xl" className="px-5">
-                  Approve
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  rounded="xl"
-                  className="px-5 border-(--destructive-1) text-(--destructive) hover:bg-(--destructive-light) hover:text-(--destructive) hover:border-(--destructive)"
+              {item.calls.map((item) => (
+                <div
+                  key={item.id}
+                  onClick={() => handleCardClick(item)}
+                  className="flex items-center rounded-8 shadow-soft  bg-(--background) p-4 cursor-pointer hover:shadow-md hover:border-(--primary) transition-all"
                 >
-                  Reject
-                </Button>
-              </div>
+                  {/* Left: User Info */}
+                  <div className="flex items-center gap-4 w-[25%]">
+                    <div className="relative">
+                      <div className="w-14 h-14 rounded-8 overflow-hidden border-2 border-white shadow-soft">
+                        <Image
+                          src={item.profilepicture}
+                          alt={item.name}
+                          width={50}
+                          height={50}
+                          className="object-cover"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="t-label-b">{item.fullname}</h3>
+                      <div className="flex items-center gap-2">
+                        <p className="t-sm">{item.specialization}</p>
+                        <span
+                          className={`px-2 py-0.5 text-xs font-medium rounded-8 ${
+                            item.status === "Pending"
+                              ? "bg-(--warning-light) text-(--warning-2)"
+                              : "bg-(--success-light) text-(--success)"
+                          }`}
+                        >
+                          {item.status}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Center: Expense Breakdown - Three evenly distributed columns */}
+                  <div className="flex items-center flex-1">
+                    <div className="w-1/3 text-center">
+                      <p className="t-cap">Total Expense</p>
+                      <p className="t-val-sm t-warn">
+                        {item.totalExpense.toLocaleString()}
+                        <span className="t-sm t-warn ml-1">PKR</span>
+                      </p>
+                    </div>
+                    <div className="w-1/3 text-center">
+                      <p className="t-cap">Approved</p>
+                      <p className="t-val-sm t-ok">
+                        {item.approvedExpense.toLocaleString()}
+                        <span className="t-sm t-ok ml-1">PKR</span>
+                      </p>
+                    </div>
+                    <div className="w-1/3 text-center">
+                      <p className="t-cap">Rejected</p>
+                      <p className="t-val-sm t-err">
+                        {item.rejectedExpense.toLocaleString()}
+                        <span className="t-sm t-err ml-1">PKR</span>
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Right: Action Buttons */}
+                  {item.status === "Pending" && (
+                    <div className="flex items-center gap-3 w-[20%] justify-end">
+                      <Button variant="primary" size="sm" rounded="xl" className="px-5">
+                        Approve
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        rounded="xl"
+                        className="px-5 border-(--destructive-1) text-(--destructive) hover:bg-(--destructive-light) hover:text-(--destructive) hover:border-(--destructive)"
+                      >
+                        Reject
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           ))}
         </div>
@@ -275,6 +317,7 @@ export default function ExpenseApprovalList() {
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         expenses={expenses}
+        selectedExpenseData={selectedExpense}
         totalExpense={5620}
         approvedAmount={520}
         rejectedAmount={520}

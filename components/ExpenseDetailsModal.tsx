@@ -20,6 +20,7 @@ interface ExpenseModalProps {
   onApprove?: (id: string) => void;
   onReject?: (id: string) => void;
   isLoading?: boolean;
+  selectedExpenseData?: ExpenseItem[];
 }
 
 export default function ExpenseDetailsModal({
@@ -32,6 +33,7 @@ export default function ExpenseDetailsModal({
   onApprove,
   onReject,
   isLoading = false,
+  selectedExpenseData,
 }: ExpenseModalProps) {
   if (!isOpen) return null;
 
@@ -61,19 +63,19 @@ export default function ExpenseDetailsModal({
             <div>
               <p className="text-sm text-gray-600">Total Expense</p>
               <p className="text-2xl font-bold text-yellow-600">
-                {totalExpense.toLocaleString()} PKR
+                {selectedExpenseData?.totalExpense.toLocaleString()} PKR
               </p>
             </div>
             <div>
               <p className="text-sm text-gray-600">Approved</p>
               <p className="text-2xl font-bold text-green-600">
-                {approvedAmount.toLocaleString()} PKR
+                {selectedExpenseData?.approvedExpense.toLocaleString()} PKR
               </p>
             </div>
             <div>
               <p className="text-sm text-gray-600">Rejected</p>
               <p className="text-2xl font-bold text-red-600">
-                {rejectedAmount.toLocaleString()} PKR
+                {selectedExpenseData?.rejectedExpense.toLocaleString()} PKR
               </p>
             </div>
           </div>
@@ -82,11 +84,11 @@ export default function ExpenseDetailsModal({
         {/* Expense List */}
         <div className="p-6 max-h-[60vh] overflow-y-auto">
           <div className="space-y-4">
-            {expenses.map((exp, index) => (
+            {selectedExpenseData?.callExpenses.map((exp, index) => (
               <div
                 key={exp.id || index}
                 className={`p-4 rounded-xl border transition-all ${
-                  exp.status === "approved"
+                  exp.status === "completed"
                     ? "bg-green-50 border-green-200"
                     : exp.status === "rejected"
                       ? "bg-red-50 border-red-200"
@@ -95,7 +97,7 @@ export default function ExpenseDetailsModal({
               >
                 <div className="flex items-center justify-between flex-wrap gap-4">
                   <div className="flex-1">
-                    <h3 className="font-medium text-gray-900">{exp.description}</h3>
+                    <h3 className="font-medium text-gray-900">{exp.title}</h3>
                     <p className="text-lg font-bold text-gray-800 mt-1">
                       {exp.amount.toLocaleString()} PKR
                     </p>
