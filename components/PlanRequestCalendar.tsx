@@ -181,7 +181,9 @@ export default function PlanRequestCalendar({
           <div className="">
             <div>
               <p className="t-cap">Status</p>
-              <span className="inline-block bg-(--warning) text-(--light) px-4 py-1 rounded-8 t-cap">
+              <span
+                className={`inline-block ${scheduletitle === "Accepted" ? "bg-[var(--success-0)] text-[var(--success)]" : scheduletitle === "Rejected" ? "bg-[var(--destructive-0)] text-[var(--destructive)]" : "bg-[var(--warning-0)] text-[var(--warning)]"} px-4 py-1 rounded-8 t-cap`}
+              >
                 {scheduletitle}
               </span>
             </div>

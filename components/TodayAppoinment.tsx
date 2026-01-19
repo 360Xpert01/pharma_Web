@@ -1,12 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import Image from "next/image";
 import { DateRange, Range } from "react-date-range";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
-import { format } from "date-fns";
+import { format, addDays } from "date-fns";
+import { fetchWeeklyCallSchedule } from "@/store/slices/employeeProfile/weeklyCallsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store";
+import { useSearchParams } from "next/navigation";
 
 interface Appointment {
   id: string;
@@ -70,13 +74,21 @@ const appointments: Appointment[] = [
   },
 ];
 
-export default function TodaysAppointments() {
-  const [showCalendar, setShowCalendar] = useState(false);
+export default function TodaysAppointments(params: { id: string }) {
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
 
+  const [showCalendar, setShowCalendar] = useState(false);
+  const dispatch = useDispatch();
+
+  const [dataStart, setDataStart] = useState(format(new Date(), "yyyy-MM-dd"));
+  const [dataEnd, setDataEnd] = useState(format(new Date(), "yyyy-MM-dd"));
+  const currentDate = format(new Date(), "yyyy-MM-dd");
+  const sevenDaysAfter = format(addDays(new Date(), 7), "yyyy-MM-dd");
   const [dateRange, setDateRange] = useState<Range[]>([
     {
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: new Date(), // 2026-01-14
+      endDate: new Date(sevenDaysAfter),
       key: "selection",
     },
   ]);
@@ -85,15 +97,17 @@ export default function TodaysAppointments() {
 
   const handleSelect = (ranges: any) => {
     setDateRange([ranges.selection]);
-
-    // When user finishes selecting (clicks outside or selects both dates)
-    console.log("Selected date range:", {
-      start: format(ranges.selection.startDate!, "dd MMM yyyy"),
-      end: format(ranges.selection.endDate!, "dd MMM yyyy"),
-      // startDate: ranges.selection.startDate?.toISOString(),
-      // endDate: ranges.selection.endDate?.toISOString(),
-    });
+    setDataStart(format(ranges.selection.startDate!, "yyyy-MM-dd"));
+    setDataEnd(format(ranges.selection.endDate!, "yyyy-MM-dd"));
   };
+
+  useEffect(() => {
+    dispatch(fetchWeeklyCallSchedule({ salesmanId: id, from: currentDate, to: sevenDaysAfter }));
+  }, [dispatch]);
+
+  const { data, loading, error } = useSelector((state: RootState) => state.weeklyCalls);
+
+  console.log("Weekly", data);
 
   // Format display text
   const displayText = `${format(selectionRange.startDate!, "dd MMM yyyy")} - ${format(
@@ -141,7 +155,10 @@ export default function TodaysAppointments() {
               Cancel
             </button>
             <button
-              onClick={() => setShowCalendar(false)}
+              onClick={() => {
+                dispatch(fetchWeeklyCallSchedule({ salesmanId: id, from: dataStart, to: dataEnd }));
+                setShowCalendar(false);
+              }}
               className="px-4 py-2 text-sm bg-primary text-white rounded hover:bg-blue-600"
             >
               Apply
@@ -151,45 +168,56 @@ export default function TodaysAppointments() {
       )}
 
       {/* Appointments List */}
-      <div className="space-y-4">
-        {appointments.map((appt) => (
-          <div
-            key={appt.id}
-            className="bg-background rounded-8 shadow-soft px-6 py-5 transition-all duration-200"
-          >
-            <h3 className="t-label-b mb-3">{appt.title}</h3>
+      {data.map((day) => (
+        <div key={day.callDate} className="mb-8">
+          {/* Date as section header */}
+          <h3 className="t-h3 mb-4 font-bold text-lg">
+            {new Date(day.callDate).toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </h3>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-8 overflow-hidden">
-                  <Image
-                    src={appt.avatar || "https://randomuser.me/api/portraits/women/44.jpg"}
-                    alt={appt.doctorName}
-                    width={48}
-                    height={48}
-                    className="object-cover w-full h-full"
-                  />
-                </div>
+          {/* All appointments/doctors for this day */}
+          <div className="space-y-5">
+            {day.doctorClinicDetail.map((detail) => (
+              <div key={detail.callId || detail.id} className="bg-white rounded-8 shadow-soft p-5">
+                <div className="flex items-center justify-between">
+                  {/* Doctor */}
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-8 overflow-hidden">
+                      <Image
+                        src={detail.profilepicture || "/default-avatar.jpg"}
+                        alt={detail.fullname}
+                        width={48}
+                        height={48}
+                        className="object-cover"
+                      />
+                    </div>
+                    <div>
+                      <h4 className="t-label font-medium">{detail.fullname}</h4>
+                      <p className="t-cap text-gray-600">{detail.specialization}</p>
+                    </div>
+                  </div>
 
-                <div>
-                  <h4 className="t-label">{appt.doctorName}</h4>
-                  <p className="t-cap">{appt.specialty}</p>
+                  {/* Clinic */}
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-8 bg-gray-100 flex items-center justify-center">
+                      <MapPin className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <h4 className="t-label font-medium">{detail.clinicname}</h4>
+                      <p className="t-cap text-gray-600">{detail.clinicaddress}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-8 flex items-center justify-center flex-shrink-0">
-                  <MapPin className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <h4 className="t-label">{appt.clinic}</h4>
-                  <p className="t-cap">{appt.address}</p>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 }
