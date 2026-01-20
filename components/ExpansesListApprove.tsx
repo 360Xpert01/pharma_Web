@@ -7,11 +7,11 @@ import { Button } from "@/components/ui/button/button";
 import { DateRange, Range } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
-import { format } from "date-fns";
+import { addDays, format } from "date-fns";
 import ExpenseDetailsModal from "./ExpenseDetailsModal";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchWeeklyCallExpenses } from "@/store/slices/employeeProfile/weeklyCallExpensesSlice";
-
+import { useSearchParams } from "next/navigation";
 interface ExpenseItem {
   id: string;
   name: string;
@@ -114,18 +114,26 @@ const expenses = [
 ];
 
 export default function ExpenseApprovalList() {
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
   const [showCalendar, setShowCalendar] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [approving, setApproving] = useState(false);
+  const [dataStart, setDataStart] = useState(format(new Date(), "yyyy-MM-dd"));
+  const [dataEnd, setDataEnd] = useState(format(new Date(), "yyyy-MM-dd"));
+  console.log("dataStart", dataStart);
+  console.log("dataEnd", dataEnd);
+  const currentDate = format(new Date(), "yyyy-MM-dd");
+  const sevenDaysAfter = format(addDays(new Date(), 7), "yyyy-MM-dd");
   const [dateRange, setDateRange] = useState<Range[]>([
     {
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: new Date(), // 2026-01-14
+      endDate: new Date(sevenDaysAfter),
       key: "selection",
     },
   ]);
+
   const [selectedExpense, setSelectedExpense] = useState<(typeof expenses)[0] | null>(null);
-  const salesmanId = "0b4c9eaa-aff6-4864-9888-e36788d11099";
   const from = "2026-01-12";
   const to = "2026-01-13";
 
@@ -136,26 +144,25 @@ export default function ExpenseApprovalList() {
   useEffect(() => {
     dispatch(
       fetchWeeklyCallExpenses({
-        salesmanId: salesmanId,
-        from: from,
-        to: to,
+        salesmanId: id,
+        from: currentDate,
+        to: sevenDaysAfter,
       })
     );
-  }, [dispatch, salesmanId, from, to]);
+  }, [dispatch, from, to]);
 
   const selectionRange = dateRange[0];
 
   const handleSelect = (ranges: any) => {
     setDateRange([ranges.selection]);
+    setDataStart(format(ranges.selection.startDate!, "yyyy-MM-dd"));
+    setDataEnd(format(ranges.selection.endDate!, "yyyy-MM-dd"));
   };
 
   const displayText = `${format(selectionRange.startDate!, "dd MMM yyyy")} - ${format(
     selectionRange.endDate!,
     "dd MMM yyyy"
   )}`;
-
-  const [dataStart, setDataStart] = useState(format(new Date(), "yyyy-MM-dd"));
-  const [dataEnd, setDataEnd] = useState(format(new Date(), "yyyy-MM-dd"));
 
   const handleApplyDateRange = () => {
     setDataStart(format(selectionRange.startDate!, "yyyy-MM-dd"));
@@ -204,7 +211,15 @@ export default function ExpenseApprovalList() {
                   Cancel
                 </button>
                 <button
-                  onClick={handleApplyDateRange}
+                  onClick={() => {
+                    dispatch(
+                      fetchWeeklyCallExpenses({
+                        salesmanId: id,
+                        from: dataStart,
+                        to: dataEnd,
+                      })
+                    );
+                  }}
                   className="px-4 py-2 text-sm bg-primary text-white rounded hover:bg-blue-600"
                 >
                   Apply
