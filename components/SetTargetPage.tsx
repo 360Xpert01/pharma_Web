@@ -7,28 +7,42 @@ import ConflictModal from "./ConflictModal";
 import { Button } from "@/components/ui/button/button";
 import { FormInput } from "@/components/form";
 import { mockManagers } from "@/data/targetData";
+import { getAllTeams } from "@/store/slices/team/getAllTeamsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { se } from "date-fns/locale";
 
 export default function SetTargetPage() {
   // Form state
   const [selectedTeam, setSelectedTeam] = useState("");
+
   const [targetMonth, setTargetMonth] = useState("");
+  const dispatch = useDispatch();
+
+  const teamId = selectedTeam;
+
+  React.useEffect(() => {
+    dispatch(getAllTeams());
+  }, [dispatch]);
 
   // Manager selection state
   const [selectedManager1, setSelectedManager1] = useState("manager1");
   const [selectedManager2, setSelectedManager2] = useState("manager2");
+  const { teams } = useSelector((state: any) => state.allTeams);
 
   // Conflict Modal state
   const [isConflictModalOpen, setIsConflictModalOpen] = useState(false);
+
+  const matchTeam = teams.filter((teams: any) => teams.id === selectedTeam);
 
   // Mock data imported from data file
   const [managers, setManagers] = useState<Manager[]>(mockManagers);
 
   // Read-only field values (populated when team is selected)
   const teamMetadata = {
-    teamRoleCode: selectedTeam ? "PL_SPT_017284" : "",
-    teamName: selectedTeam ? "High Blood Pressure" : "",
-    channelName: selectedTeam ? "Chain Pharmacy" : "",
-    callPoint: selectedTeam ? "36 Export Solutions" : "",
+    teamRoleCode: matchTeam[0]?.pulseCode,
+    teamName: matchTeam[0]?.name,
+    channelName: matchTeam[0]?.channelName,
+    callPoint: matchTeam[0]?.callPointName,
   };
 
   // Handler functions
@@ -88,9 +102,14 @@ export default function SetTargetPage() {
       {/* Main White Card */}
       <div className="bg-background rounded-8 shadow-soft p-8 overflow-hidden">
         {/* Target Configuration Form */}
+
+        {/* {teams.map((team:any)=>(<p key={team.id}>{team.name}</p>
+        ))} */}
+
         <TargetConfigForm
           selectedTeam={selectedTeam}
-          targetMonth={targetMonth}
+          targetMonth={teams}
+          targetMonthValue={targetMonth}
           teamRoleCode={teamMetadata.teamRoleCode}
           teamName={teamMetadata.teamName}
           channelName={teamMetadata.channelName}
