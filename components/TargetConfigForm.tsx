@@ -10,6 +10,7 @@ interface TargetConfigFormProps {
   teamName: string;
   channelName: string;
   callPoint: string;
+  targetMonthValue?: string;
   onTeamChange: (value: string) => void;
   onMonthChange: (value: string) => void;
 }
@@ -21,6 +22,7 @@ export default function TargetConfigForm({
   teamName,
   channelName,
   callPoint,
+  targetMonthValue,
   onTeamChange,
   onMonthChange,
 }: TargetConfigFormProps) {
@@ -30,15 +32,20 @@ export default function TargetConfigForm({
     { value: "team2", label: "Diabetes Management Team" },
     { value: "team3", label: "Cardiology Team" },
   ];
+  const [teamRoleCodeState, setTeamRoleCodeState] = React.useState();
 
-  // Month options
   const monthOptions = [
-    { value: "january", label: "January 2025" },
-    { value: "february", label: "February 2025" },
-    { value: "march", label: "March 2025" },
-    { value: "april", label: "April 2025" },
-    { value: "may", label: "May 2025" },
-    { value: "june", label: "June 2025" },
+    { value: "january", label: "January " },
+    { value: "february", label: "February " },
+    { value: "march", label: "March " },
+    { value: "april", label: "April " },
+    { value: "may", label: "May " },
+    { value: "june", label: "June " },
+    { value: "july", label: "July " },
+    { value: "augest", label: "August " },
+    { value: "september", label: "September " },
+    { value: "october", label: "October " },
+    { value: "november", label: "November " },
   ];
 
   return (
@@ -57,7 +64,7 @@ export default function TargetConfigForm({
           name="team"
           value={selectedTeam}
           onChange={onTeamChange}
-          options={teamOptions}
+          options={targetMonth?.map((team: any) => ({ value: team.id, label: team.name }))}
           placeholder="Search teams"
           required
         />
@@ -66,7 +73,7 @@ export default function TargetConfigForm({
         <FormSelect
           label="Target Month"
           name="month"
-          value={targetMonth}
+          value={targetMonthValue}
           onChange={onMonthChange}
           options={monthOptions}
           placeholder="Select Month"

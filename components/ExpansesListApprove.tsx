@@ -212,13 +212,14 @@ export default function ExpenseApprovalList() {
                 </button>
                 <button
                   onClick={() => {
-                    dispatch(
+                    (dispatch(
                       fetchWeeklyCallExpenses({
                         salesmanId: id,
                         from: dataStart,
                         to: dataEnd,
                       })
-                    );
+                    ),
+                      setShowCalendar(false));
                   }}
                   className="px-4 py-2 text-sm bg-primary text-white rounded hover:bg-blue-600"
                 >
