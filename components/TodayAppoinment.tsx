@@ -169,7 +169,7 @@ export default function TodaysAppointments(params: { id: string }) {
 
       {/* Appointments List */}
       {data.map((day) => (
-        <div key={day.callDate} className="mb-8">
+        <div key={day.callDate} className="mb-8 px-4">
           {/* Date as section header */}
           <h3 className="t-h3 mb-4 font-bold text-lg">
             {new Date(day.callDate).toLocaleDateString("en-US", {
@@ -180,36 +180,44 @@ export default function TodaysAppointments(params: { id: string }) {
             })}
           </h3>
 
-          {/* All appointments/doctors for this day */}
-          <div className="space-y-5">
+          {/* Yahan Grid apply kiya hai: Ek line mein 3 items ke liye */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {day.doctorClinicDetail.map((detail) => (
-              <div key={detail.callId || detail.id} className="bg-white rounded-8 shadow-soft p-5">
-                <div className="flex items-center justify-between">
-                  {/* Doctor */}
+              <div
+                key={detail.callId || detail.id}
+                className="bg-white rounded-8 shadow-soft p-5 flex flex-col justify-between border border-gray-100"
+              >
+                {/* Title or Header if needed (Optional) */}
+                <h4 className="text-md font-bold mb-3">Meeting with {detail.fullname}</h4>
+
+                <div className="flex flex-col gap-4">
+                  {/* Doctor Info */}
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-8 overflow-hidden">
+                    <div className="w-12 h-12 rounded-8 overflow-hidden flex-shrink-0">
                       <Image
                         src={detail.profilepicture || "/default-avatar.jpg"}
                         alt={detail.fullname}
                         width={48}
                         height={48}
-                        className="object-cover"
+                        className="object-cover w-full h-full"
                       />
                     </div>
-                    <div>
-                      <h4 className="t-label font-medium">{detail.fullname}</h4>
-                      <p className="t-cap text-gray-600">{detail.specialization}</p>
+                    <div className="overflow-hidden">
+                      <h4 className="t-label font-medium truncate">{detail.fullname}</h4>
+                      <p className="t-cap text-gray-600 truncate">{detail.specialization}</p>
                     </div>
                   </div>
 
-                  {/* Clinic */}
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-8 bg-gray-100 flex items-center justify-center">
-                      <MapPin className="w-5 h-5 text-primary" />
+                  {/* Clinic Info */}
+                  <div className="flex items-start gap-3 border-t pt-3">
+                    <div className="w-10 h-10 rounded-8 bg-blue-50 flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-5 h-5 text-blue-600" />
                     </div>
-                    <div>
-                      <h4 className="t-label font-medium">{detail.clinicname}</h4>
-                      <p className="t-cap text-gray-600">{detail.clinicaddress}</p>
+                    <div className="overflow-hidden">
+                      <h4 className="t-label font-medium truncate">{detail.clinicname}</h4>
+                      <p className="t-cap text-gray-500 text-xs line-clamp-2">
+                        {detail.clinicaddress}
+                      </p>
                     </div>
                   </div>
                 </div>
