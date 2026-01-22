@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "@webdatarocks/webdatarocks/webdatarocks.css";
 
 @layer utilities {
   .shadow-soft {
@@ -611,6 +612,38 @@
     left: auto;
   }
 }
+
+/* /////////////////////////////////////////////////// */
+
+/* #wdr-tab-export::before,
+.wdr-toolbar-icon-export::before,
+.wdr-icon-export::before,
+.wdr-toolbar-icon-export,
+.wdr-icon-export {
+  content: "" !important;                
+  background-image: none !important;     
+  background: url('/capMan.svg') no-repeat center center !important;
+  background-size: contain !important;   
+  width: 36px !important;                
+  height: 36px !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  font-size: 0 !important;              
+  color: transparent !important;         
+}
+
+.wdr-toolbar-tab#wdr-tab-export,
+.wdr-toolbar-icon-export {
+  padding-top: 4px !important;
+}
+
+.wdr-toolbar-icon-export .wdr-svg-icon,
+.wdr-icon-export .wdr-svg-icon,
+#wdr-tab-export .wdr-svg-icon {
+  display: none !important;             
+} */
+
+/* /////////////////////////////////////////////// */
 
 /* Enhanced RTL spacing for Urdu text */
 [dir="rtl"] h1,

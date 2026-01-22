@@ -118,7 +118,7 @@ const Navbar = () => {
             { label: "Sample Distribution", href: "/" },
             { label: "Order Capture Log", href: "/dashboard/DCR-order" },
           ],
-        }
+        },
       ],
     },
     // {
@@ -179,7 +179,7 @@ const Navbar = () => {
             { label: "AI-Generated Summaries", href: "/ai/summaries" },
           ],
         },
-        { label: "BI Dashboards", href: "/analytics/bi" }
+        { label: "webdatarocks", href: "/dashboard/webdatarocks" },
       ],
     },
     {
