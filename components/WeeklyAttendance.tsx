@@ -1,97 +1,112 @@
 "use client";
 
 import React from "react";
-import { ChevronLeft, ChevronRight, AlertTriangle } from "lucide-react";
-import { Doughnut } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-
-ChartJS.register(ArcElement, Tooltip, Legend);
+import { ChevronLeft, ChevronRight, AlertTriangle, LogIn, LogOut } from "lucide-react";
 
 export default function AttendanceDashboard() {
-  // Doughnut Chart Data
-  const doughnutData = {
-    labels: ["Absent", "Offsite", "Onsite"],
-    datasets: [
-      {
-        data: [32, 15, 53], // 32% Absent → 68% Present
-        backgroundColor: ["#e02723", "#dcac00", "#00aa2f"], // Using ceturo theme hex values
-        borderWidth: 0,
-        cutout: "75%",
-      },
-    ],
-  };
-
-  const doughnutOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: { enabled: false },
-    },
-  };
-
   const weeklyData = [
-    { date: "September 14, 2025", checkIn: "10:00 AM", checkOut: "7:00" },
-    { date: "September 14, 2025", checkIn: "10:00 AM", checkOut: "7:00" },
-    { date: "September 12, 2025", checkIn: "10:00 AM", checkOut: "7:00", offsite: true },
-    { date: "September 15, 2025", checkIn: "10:00 AM", checkOut: "7:00" },
-    { date: "September 16, 2025", checkIn: "10:00 AM", checkOut: "7:00" },
-    { date: "September 17, 2025", checkIn: "10:00 AM", checkOut: "7:00" },
-    { date: "September 18, 2025", checkIn: "10:00 AM", checkOut: "7:00" },
-    { date: "September 15, 2025", checkIn: "10:00 AM", checkOut: "7:00" },
-    { date: "September 16, 2025", checkIn: "10:00 AM", checkOut: "7:00" },
-    { date: "September 17, 2025", checkIn: "10:00 AM", checkOut: "7:00" },
-    { date: "September 17, 2025", checkIn: "10:00 AM", checkOut: "7:00" },
+    {
+      day: "Monday",
+      date: "September 14, 2025",
+      checkIn: "10:00 AM",
+      checkOut: "7:00",
+      offsite: true,
+    },
+    {
+      day: "Tuesday",
+      date: "September 13, 2025",
+      checkIn: "10:00 AM",
+      checkOut: "7:00",
+      offsite: false,
+    },
+    {
+      day: "Tuesday",
+      date: "September 13, 2025",
+      checkIn: "10:00 AM",
+      checkOut: "7:00",
+      offsite: false,
+    },
+    {
+      day: "Monday",
+      date: "September 14, 2025",
+      checkIn: "10:00 AM",
+      checkOut: "7:00",
+      offsite: true,
+    },
+    {
+      day: "Tuesday",
+      date: "September 13, 2025",
+      checkIn: "10:00 AM",
+      checkOut: "7:00",
+      offsite: false,
+    },
   ];
 
   return (
-    <div className="w-full">
+    <div className=" mx-auto ">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="t-h3">Weekly Attendance</h2>
-        <div className="flex items-center gap-2 text-(--primary) text-sm font-medium cursor-pointer">
-          <ChevronLeft className="w-4 h-4" />
-          <span>01 - 07 Sept, 2025</span>
-          <ChevronRight className="w-4 h-4" />
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-2xl font-bold text-gray-800">Weekly Attendance</h2>
+        <div className="flex items-center gap-4 bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-100">
+          <ChevronLeft className="w-5 h-5 text-blue-600 cursor-pointer" />
+          <span className="text-sm font-semibold text-gray-700">01 - 07 Sept, 2025</span>
+          <ChevronRight className="w-5 h-5 text-blue-600 cursor-pointer" />
         </div>
       </div>
 
       {/* Attendance List */}
-      <div className="space-y-4">
-        {weeklyData.map((day, index) => (
-          <div key={index} className="space-y-3">
-            {/* Offsite Warning */}
-            {day.offsite && (
-              <div className="flex items-center justify-center gap-2 bg-(--destructive-0) text-(--destructive) px-4 py-3 rounded-8 t-md shadow-soft">
-                <AlertTriangle className="w-5 h-5" />
-                Checked in at off-site location.
-              </div>
-            )}
+      <div className="space-y-3">
+        {weeklyData.map((item, index) => (
+          <div
+            key={index}
+            className="grid grid-cols-12 items-center bg-white rounded-xl border border-gray-100 shadow-sm px-6 py-4 hover:shadow-md transition-shadow"
+          >
+            {/* Day & Date */}
+            <div className="col-span-3">
+              <h4 className="text-lg font-bold text-gray-900 leading-tight">{item.day}</h4>
+              <p className="text-sm text-gray-500 font-medium">{item.date}</p>
+            </div>
 
-            {/* Day Row */}
-            <div className="bg-(--background) rounded-8 shadow-soft px-6 py-5">
-              <p className="t-label-b mb-3">{day.date}</p>
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-(--primary-0) rounded-8 flex items-center justify-center">
-                    <ChevronRight className="w-5 h-5 text-(--primary) rotate-180" />
-                  </div>
-                  <div>
-                    <p className="t-val-sm">{day.checkIn}</p>
-                    <p className="t-cap">Check-in</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-(--primary-0) rounded-8 flex items-center justify-center">
-                    <ChevronRight className="w-5 h-5 text-(--primary)" />
-                  </div>
-                  <div>
-                    <p className="t-val-sm">{day.checkOut}</p>
-                    <p className="t-cap">Check-out</p>
-                  </div>
-                </div>
+            {/* Check-In */}
+            <div className="col-span-3 flex items-center gap-4">
+              <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                <LogIn className="w-5 h-5 text-blue-600" />
               </div>
+              <div>
+                <p className="text-md font-bold text-gray-800">{item.checkIn}</p>
+                <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
+                  Check-in
+                </p>
+              </div>
+            </div>
+
+            {/* Check-Out */}
+            <div className="col-span-3 flex items-center gap-4">
+              <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                <LogOut className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-md font-bold text-gray-800">{item.checkOut}</p>
+                <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
+                  Check-out
+                </p>
+              </div>
+            </div>
+
+            {/* Remarks / Offsite Status */}
+            <div className="col-span-3 flex justify-end">
+              {item.offsite ? (
+                <div className="flex items-center gap-2 bg-red-50 text-red-600 px-4 py-2 rounded-lg border border-red-100">
+                  <AlertTriangle className="w-4 h-4" />
+                  <span className="text-xs font-bold whitespace-nowrap">
+                    Checked in at off-site location.
+                  </span>
+                </div>
+              ) : (
+                <div className="bg-gray-50 text-gray-400 px-8 py-2 rounded-lg text-xs font-medium border border-gray-100 italic">
+                  No remarks
+                </div>
+              )}
             </div>
           </div>
         ))}
