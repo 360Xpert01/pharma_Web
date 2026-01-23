@@ -22,9 +22,9 @@ const lastMonthData = [
 
 export default function MonthlyTargetCard() {
   return (
-    <div className="w-full h-full bg-(--background) rounded-8 shadow-soft border border-(--gray-1) p-4 space-y-1">
+    <div className="w-full h-[95%]  bg-(--background) rounded-8 shadow-soft border border-(--gray-1) p-4 space-y-1">
       {/* This Month */}
-      <div className="space-y-1.5">
+      <div className="space-y-4">
         <p className="text-base font-semibold text-(--gray-9)">Monthly target</p>
         <div className="flex items-end gap-2">
           <span className="text-2xl font-bold text-(--primary)">19,8K</span>
@@ -37,7 +37,7 @@ export default function MonthlyTargetCard() {
         </div>
 
         {/* Chart - This Month */}
-        <div className="h-12 mt-4">
+        <div className="h-28 mt-4">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={monthlyData} margin={{ top: 0, left: 0, right: 0, bottom: 0 }}>
               <defs>
@@ -64,7 +64,7 @@ export default function MonthlyTargetCard() {
       </div>
 
       {/* Last Month */}
-      <div className="space-y-1.5">
+      <div className="space-y-3 h-28 ">
         <p className="text-base font-semibold text-(--gray-9)">Last Month</p>
         <div className="flex items-end gap-2">
           <span className="text-2xl font-bold text-(--destructive)">1,321</span>
@@ -77,7 +77,7 @@ export default function MonthlyTargetCard() {
         </div>
 
         {/* Chart - Last Month */}
-        <div className="h-12 mt-4">
+        <div className="h-28 mt-8">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={lastMonthData} margin={{ top: 0, left: 0, right: 0, bottom: 0 }}>
               <defs>
