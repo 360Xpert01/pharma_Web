@@ -64,38 +64,34 @@ export default function EmployeeProfileTabs({ candidate }: EmployeeProfileTabsPr
   return (
     <div className="space-y-6">
       {/* Three Column Grid Layout - 25% | 50% | 25% */}
-      <div className="">
+      <div className="grid grid-cols-[2fr_5fr_3fr] gap-6 items-start">
         {/* Left Column (25%) - User Profile & Region Info */}
-        <div className="flex space-y-5 justify-between w-[100%]">
-          <div className="w-[50%]">
-            <UserProfile />
-          </div>
-          <div className="w-[49%]">
-            <RegionInformation />
-          </div>
+        <div className="space-y-6">
+          <UserProfile candidate={employeeData} />
+          <RegionInformation
+            lineManager={employeeData.reportingManager}
+            legacy="000124"
+            channel={employeeData.channel}
+            team={employeeData.campaign}
+            totalCalls={employeeData.totalCalls}
+            status={employeeData.status}
+          />
         </div>
 
         {/* Middle Column (50%) - Large Data Visualizations */}
-        <div className="space-y-6 justify-between flex w-[100%]">
+        <div className="space-y-6">
           {/* Monthly Targets Bar Chart */}
-          <div className="w-[73%]">
-            <MonthlyTargets currentMonth={75.08} lastMonth={45.27} date="September, 27 2025" />
-          </div>
-          <div className="w-[26%]">
-            <EmployeeGraphRed />
-          </div>
+          <MonthlyTargets currentMonth={75.08} lastMonth={45.27} date="September, 27 2025" />
+
+          {/* Weekly Expenses Area/Wave Chart */}
+          <WeekelyExpenses />
         </div>
 
         {/* Right Column (25%) - Mini Charts Stack */}
-        <div className="space-y-6 flex justify-between w-[100%]">
-          {/* <MonthlyCalls totalCalls={150} percentageChange={12} trend="up" /> */}
-          {/* <EmployeeGraphRed /> */}
-          <div className="w-[62%]">
-            <WeekelyExpenses />
-          </div>
-          <div className="w-[36%]">
-            <MonthlyAttendance />
-          </div>
+        <div className="space-y-6">
+          <MonthlyCalls totalCalls={150} percentageChange={12} trend="up" />
+          <EmployeeGraphRed />
+          <MonthlyAttendance />
         </div>
       </div>
 
