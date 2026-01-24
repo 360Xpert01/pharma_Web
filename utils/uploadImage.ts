@@ -2,10 +2,10 @@
  * Cloudinary Image Upload Utility
  */
 
-// Cloudinary configuration - replace with your actual credentials
+// Cloudinary configuration from environment variables
 const CLOUDINARY_CONFIG = {
-  cloudName: "YOUR_CLOUD_NAME", // Replace with your Cloudinary cloud name
-  uploadPreset: "YOUR_UPLOAD_PRESET", // Replace with your Cloudinary upload preset
+  cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "dm6hah42c",
+  uploadPreset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "ml_default",
 };
 
 interface CloudinaryResponse {

@@ -7,7 +7,7 @@ import {
   generatePrefix,
   resetGeneratePrefixState,
 } from "@/store/slices/preFix/generatePrefixSlice";
-import { getAllProductCategories } from "@/store/slices/productCategory/getAllProductCategoriesSlice";
+import { getProductCategories } from "@/store/slices/product/getProductCategoriesSlice";
 import { createProduct, resetProductState } from "@/store/slices/product/createProductSlice";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -27,8 +27,8 @@ export default function AddProductForm() {
     loading: prefixLoading,
     error: prefixError,
   } = useAppSelector((state) => state.generatePrefix);
-  const { productCategories: categories, loading: categoriesLoading } = useAppSelector(
-    (state) => state.allProductCategories
+  const { categories, loading: categoriesLoading } = useAppSelector(
+    (state) => state.productCategories
   );
   const {
     loading: productLoading,
@@ -39,7 +39,6 @@ export default function AddProductForm() {
 
   // Form state
   const [image, setImage] = useState<string | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUploading, setImageUploading] = useState(false);
   const [productName, setProductName] = useState("");
   const [legacyCode, setLegacyCode] = useState("");
@@ -55,7 +54,7 @@ export default function AddProductForm() {
   // Fetch product categories and generate prefix on mount
   useEffect(() => {
     dispatch(generatePrefix({ entity: "Product" }));
-    dispatch(getAllProductCategories());
+    dispatch(getProductCategories());
 
     return () => {
       dispatch(resetGeneratePrefixState());
@@ -75,7 +74,6 @@ export default function AddProductForm() {
       setDescription("");
       setSkus(["Capsule 500mg"]);
       setImage(null);
-      setImageFile(null);
 
       // Generate new prefix for next product
       dispatch(generatePrefix({ entity: "Product" }));
@@ -97,20 +95,37 @@ export default function AddProductForm() {
     }
   }, [productError, productStatus]);
 
-  const handleImageChange = (imageData: string | null) => {
+  const handleImageChange = async (imageData: string | null) => {
     setImage(imageData);
-    // If we have image data (base64), we need to convert it to File for upload
+
+    // COMMENTED OUT: Cloudinary upload logic
+    /*
     if (imageData && imageData.startsWith("data:image")) {
-      // Convert base64 to File
-      fetch(imageData)
-        .then((res) => res.blob())
-        .then((blob) => {
-          const file = new File([blob], "product-image.png", { type: blob.type });
-          setImageFile(file);
-        });
+      try {
+        setImageUploading(true);
+
+        // Convert base64 to File
+        const res = await fetch(imageData);
+        const blob = await res.blob();
+        const file = new File([blob], "product-image.png", { type: blob.type });
+
+        // Upload to Cloudinary
+        const uploadedUrl = await uploadImageFile(file);
+
+        // Update image state with the Cloudinary URL
+        setImage(uploadedUrl);
+        toast.success("Image uploaded successfully!");
+      } catch (error) {
+        console.error("Image upload failed:", error);
+        toast.error("Failed to upload image to cloud. Please try again.");
+        setImage(null);
+      } finally {
+        setImageUploading(false);
+      }
     } else {
-      setImageFile(null);
+      setImage(null);
     }
+    */
   };
 
   const addSkuField = () => setSkus([...skus, ""]);
@@ -153,21 +168,6 @@ export default function AddProductForm() {
         quantity: 0,
       }));
 
-    // Upload image to Cloudinary if a file is selected
-    let uploadedImageUrl = "";
-    if (imageFile) {
-      try {
-        setImageUploading(true);
-        uploadedImageUrl = await uploadImageFile(imageFile);
-      } catch (error) {
-        toast.error("Failed to upload image. Please try again.");
-        setImageUploading(false);
-        return;
-      } finally {
-        setImageUploading(false);
-      }
-    }
-
     // Prepare payload strictly matching the requested schema
     const formData = {
       pulseCode: generatedPrefix || "",
@@ -175,7 +175,9 @@ export default function AddProductForm() {
       name: productName.trim(),
       productCategoryId: categoryId,
       productFormula: chemicalFormula.trim(),
-      imageUrl: uploadedImageUrl,
+      // Hardcoded Cloudinary URL for testing
+      imageUrl:
+        "https://res.cloudinary.com/dm6hah42c/image/upload/v1737719876/product-image_q8z8z8.png",
       description: description.trim(),
       status: status.toLowerCase() as "active" | "inactive",
       productSkus,
@@ -270,7 +272,7 @@ export default function AddProductForm() {
                   }}
                   options={categories.map((cat) => ({
                     value: cat.id,
-                    label: cat.name,
+                    label: cat.productCategory,
                   }))}
                   placeholder="e.g. Antibiotics, Painkillers..."
                   required
