@@ -22,7 +22,7 @@ import { getBrickList } from "@/store/slices/brick/getBrickListSlice";
 import type { Brick } from "@/store/slices/brick/getBrickListSlice";
 import { createTeam, resetCreateTeamState } from "@/store/slices/team/createTeamSlice";
 import type { CreateTeamPayload } from "@/store/slices/team/createTeamSlice";
-import { toast } from "sonner";
+import { teamCreationSchema } from "@/validations";
 import {
   FormInput,
   FormSelect,
@@ -397,6 +397,22 @@ export default function CreateCampaignForm() {
   const [brickSearchQuery, setBrickSearchQuery] = useState("");
   const [activeBrickSearchUserId, setActiveBrickSearchUserId] = useState<string | null>(null);
 
+  // Validation errors state
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  // Helper function to get error message for a field
+  const getErrorMessage = (fieldName: string) => validationErrors[fieldName] || "";
+
+  // Helper function to clear error for a specific field when user types
+  const clearFieldError = (fieldName: string) => {
+    if (validationErrors[fieldName]) {
+      setValidationErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[fieldName];
+        return newErrors;
+      });
+    }
+  };
+
   useEffect(() => {
     // Generate pulse code for "Team" entity
     dispatch(generatePrefix({ entity: "Team" }));
@@ -432,7 +448,6 @@ export default function CreateCampaignForm() {
       router.push("/en/dashboard/campaign-Management");
     }
     if (createTeamError) {
-      toast.error(createTeamError);
       dispatch(resetCreateTeamState());
     }
   }, [createTeamSuccess, createTeamError, dispatch, router]);
@@ -463,7 +478,6 @@ export default function CreateCampaignForm() {
         });
       } else if (getUserHierarchy.rejected.match(result)) {
         console.error("Failed to fetch hierarchy for member:", memberId, result.payload);
-        toast.error(`Failed to load hierarchy for member`);
       }
       setHierarchyLoading(false);
     },
@@ -520,44 +534,18 @@ export default function CreateCampaignForm() {
     }
   };
 
-  // Handle form submission
+  // Handle form submission (with Zod validation)
   const handleSubmit = async () => {
-    // Validation
-    if (!generatedPrefix) {
-      toast.error("Pulse code is required");
-      return;
-    }
-    if (!teamName.trim()) {
-      toast.error("Team name is required");
-      return;
-    }
-    if (!selectedChannelId) {
-      toast.error("Channel is required");
-      return;
-    }
-    if (!selectedCallPointId) {
-      toast.error("Call point is required");
-      return;
-    }
-    if (products.length === 0) {
-      toast.error("At least one product is required");
-      return;
-    }
-    if (selectedMembers.length === 0) {
-      toast.error("At least one member is required");
-      return;
-    }
-
     // Build saleRepIds with their assigned bricks
     const saleRepIds = selectedMembers.map((member) => ({
       id: member.id,
       brickIds: (assignedBricks.get(member.id) || []).map((brick) => brick.id),
     }));
 
-    // Build payload
-    const payload: CreateTeamPayload = {
-      pulseCode: generatedPrefix,
-      legacyCode: generatedPrefix, // Use pulseCode as legacyCode or modify as needed
+    // Prepare form data for validation
+    const formData = {
+      pulseCode: generatedPrefix || "",
+      legacyCode: generatedPrefix || "",
       name: teamName.trim(),
       status: status.toLowerCase() as "active" | "inactive",
       callPointId: selectedCallPointId,
@@ -566,7 +554,36 @@ export default function CreateCampaignForm() {
       saleRepIds,
     };
 
-    console.log("Submitting team:", payload);
+    // Validate using Zod schema
+    const validation = teamCreationSchema.safeParse(formData);
+
+    if (!validation.success) {
+      // Create an errors object mapping field names to error messages
+      const errors: Record<string, string> = {};
+      validation.error.errors.forEach((err: any) => {
+        const fieldName = err.path[0] as string;
+        if (!errors[fieldName]) {
+          errors[fieldName] = err.message;
+        }
+      });
+
+      // Set validation errors to display inline
+      setValidationErrors(errors);
+
+      return;
+    }
+
+    // Clear any previous validation errors
+    setValidationErrors({});
+
+    // Use validated and transformed data
+    const validatedData = validation.data;
+
+    // Build payload
+    const payload: CreateTeamPayload = {
+      ...validatedData,
+    };
+
     dispatch(createTeam(payload));
   };
 
@@ -577,7 +594,7 @@ export default function CreateCampaignForm() {
         <div className="space-y-6">
           <h2 className="t-h2">Team Name</h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <FormInput
               label="Pulse Code"
               name="pulseCode"
@@ -588,6 +605,7 @@ export default function CreateCampaignForm() {
               required
               readOnly
               className="cursor-not-allowed"
+              error={getErrorMessage("pulseCode")}
             />
 
             <FormInput
@@ -595,16 +613,23 @@ export default function CreateCampaignForm() {
               name="teamName"
               type="text"
               value={teamName}
-              onChange={setTeamName}
+              onChange={(value) => {
+                setTeamName(value);
+                clearFieldError("name");
+              }}
               placeholder="e.g. High Blood Pressure"
               required
+              error={getErrorMessage("name")}
             />
 
             <FormSelect
               label="Channel Name"
               name="channelId"
               value={selectedChannelId}
-              onChange={setSelectedChannelId}
+              onChange={(value) => {
+                setSelectedChannelId(value);
+                clearFieldError("channelId");
+              }}
               options={channels.map((channel) => ({
                 value: channel.id,
                 label: channel.name,
@@ -612,9 +637,10 @@ export default function CreateCampaignForm() {
               placeholder="Select Channel"
               required
               loading={channelsLoading}
+              error={getErrorMessage("channelId")}
             />
 
-            <div className="flex justify-center">
+            <div className="flex justify-center items-center">
               <StatusToggle status={status} onChange={(newStatus) => setStatus(newStatus)} />
             </div>
           </div>
@@ -624,7 +650,10 @@ export default function CreateCampaignForm() {
               label="Call Point"
               name="callPointId"
               value={selectedCallPointId}
-              onChange={setSelectedCallPointId}
+              onChange={(value) => {
+                setSelectedCallPointId(value);
+                clearFieldError("callPointId");
+              }}
               options={callPoints.map((callPoint) => ({
                 value: callPoint.id,
                 label: callPoint.name,
@@ -632,12 +661,14 @@ export default function CreateCampaignForm() {
               placeholder="Select Call Point"
               required
               loading={callPointsLoading}
+              error={getErrorMessage("callPointId")}
             />
           </div>
         </div>
 
         {/* Select Products */}
-        <div className="space-y-6">
+        {/* <div className="space-y-6"> */}
+        <div className="max-w-full">
           <ProductSearch
             allProducts={
               allProducts?.map((p) => ({
@@ -649,10 +680,16 @@ export default function CreateCampaignForm() {
               })) || []
             }
             selectedProducts={products}
-            onProductsChange={setProducts}
+            onProductsChange={(prods) => {
+              setProducts(prods);
+              clearFieldError("productIds");
+            }}
             loading={productsLoading}
+            error={getErrorMessage("productIds")}
+            onSearchChange={() => clearFieldError("productIds")}
           />
         </div>
+        {/* </div> */}
 
         {/* Assign Members */}
         <div className="space-y-6 py-8">
@@ -696,10 +733,13 @@ export default function CreateCampaignForm() {
                 });
 
                 setSelectedMembers(members);
+                clearFieldError("saleRepIds");
               }}
               loading={usersLoading}
               placeholder="Search sales representative"
               label=""
+              error={getErrorMessage("saleRepIds")}
+              onSearchChange={() => clearFieldError("saleRepIds")}
             />
           </div>
 
