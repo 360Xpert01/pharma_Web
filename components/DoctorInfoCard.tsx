@@ -1,42 +1,51 @@
-// components/DoctorInfoCard.tsx
-export default function DoctorInfoCard() {
+"use client";
+
+import React from "react";
+
+export default function RegionInfoCard() {
+  const regionData = {
+    country: "Pakistan",
+    city: "Karachi",
+    area: "Gulshan-e-Iqbal",
+    brick: "Block 13-D",
+    status: "Active",
+  };
+
   return (
-    <div className="shadow-soft rounded-8 p-5 bg-(--background)">
-      <div className="flex justify-between">
-        <h2 className="t-h2">Doctor Details</h2>
-        <span className="inline-block px-5 py-2 bg-(--warning-0) text-(--warning) rounded-8 text-sm font-medium">
-          Under Review
-        </span>
-      </div>
+    <div className="flex bg-gray-50">
+      {/* Main Card Container */}
+      <div className="w-[360px] bg-white rounded-[24px] shadow-sm border border-gray-100 p-7">
+        {/* Card Title */}
+        <h2 className="text-[22px] font-bold text-[#334155] mb-10 text-center tracking-tight">
+          Region Information
+        </h2>
 
-      <div className="border-b my-4"></div>
+        {/* Info Rows */}
+        <div className="space-y-6">
+          <InfoRow label="Country" value={regionData.country} />
+          <InfoRow label="City" value={regionData.city} />
+          <InfoRow label="Area" value={regionData.area} />
+          <InfoRow label="Brick" value={regionData.brick} />
 
-      <div className="grid grid-cols-3 gap-6 text-sm">
-        <div>
-          <p className="t-sm text-(--subheading-color)">Email Address</p>
-          <p className="t-val-sm">sarah@gmail.com</p>
-        </div>
-        <div>
-          <p className="t-sm text-(--subheading-color)">Specialization</p>
-          <p className="t-val-sm">Cardiologist</p>
-        </div>
-        <div>
-          <p className="t-sm text-(--subheading-color)">Contact Number</p>
-          <p className="t-val-sm">0310-33241-324</p>
-        </div>
-        <div>
-          <p className="t-sm text-(--subheading-color)">License Number</p>
-          <p className="t-val-sm">5A-256F5-EE1G</p>
-        </div>
-        <div>
-          <p className="t-sm text-(--subheading-color)">Clinic Name</p>
-          <p className="t-val-sm">AKUH</p>
-        </div>
-        <div>
-          <p className="t-sm text-(--subheading-color)">Date Of Birth</p>
-          <p className="t-val-sm">19/5/1998</p>
+          {/* Status Row with Badge */}
+          <div className="flex items-center justify-between">
+            <span className="text-gray-400 text-lg font-medium">Status</span>
+            <span className="bg-[#48BB78] text-white text-xs font-bold px-8 py-1.5 rounded-full shadow-sm">
+              {regionData.status}
+            </span>
+          </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+// Helper component for label-value alignment
+function InfoRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between">
+      <span className="text-gray-400 text-lg font-medium">{label}</span>
+      <span className="text-black text-lg font-bold">{value}</span>
     </div>
   );
 }
