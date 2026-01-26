@@ -2,14 +2,15 @@
 
 import React, { useRef } from "react";
 import Image from "next/image";
-import { Upload, X } from "lucide-react";
+import { Upload, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button/button";
 
 interface ProfileImageUploadProps {
   imagePreview: string | null;
-  onImageChange: (imageData: string | null) => void;
+  onImageChange: (file: File | null) => void;
   maxSizeMB?: number;
   className?: string;
+  loading?: boolean;
 }
 
 export default function ProfileImageUpload({
@@ -17,10 +18,13 @@ export default function ProfileImageUpload({
   onImageChange,
   maxSizeMB = 5,
   className = "",
+  loading = false,
 }: ProfileImageUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleImageClick = () => fileInputRef.current?.click();
+  const handleImageClick = () => {
+    if (!loading) fileInputRef.current?.click();
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -30,11 +34,7 @@ export default function ProfileImageUpload({
         alert(`Image size should be less than ${maxSizeMB}MB`);
         return;
       }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        onImageChange(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      onImageChange(file);
     }
   };
 
@@ -48,9 +48,16 @@ export default function ProfileImageUpload({
     <div className={`relative ${className}`}>
       <div
         onClick={handleImageClick}
-        className="relative w-full h-96 bg-(--gray-1) border-2 border-dashed border-(--gray-3) rounded-8 cursor-pointer overflow-hidden group hover:border-(--gray-4) transition-all"
+        className={`relative w-full h-96 bg-(--gray-1) border-2 border-dashed border-(--gray-3) rounded-8 cursor-pointer overflow-hidden group hover:border-(--gray-4) transition-all ${
+          loading ? "cursor-not-allowed opacity-70" : ""
+        }`}
       >
-        {imagePreview ? (
+        {loading ? (
+          <div className="flex flex-col items-center justify-center h-full text-(--primary)">
+            <Loader2 className="w-16 h-16 mb-4 animate-spin" />
+            <p className="text-lg font-medium">Uploading to Cloudinary...</p>
+          </div>
+        ) : imagePreview ? (
           <>
             <Image src={imagePreview} alt="Profile" fill className="object-cover" />
             <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity" />

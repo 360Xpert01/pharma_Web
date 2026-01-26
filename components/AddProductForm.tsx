@@ -9,11 +9,11 @@ import {
 } from "@/store/slices/preFix/generatePrefixSlice";
 import { getProductCategories } from "@/store/slices/product/getProductCategoriesSlice";
 import { createProduct, resetProductState } from "@/store/slices/product/createProductSlice";
+import { uploadImageAction, resetUploadState } from "@/store/slices/upload/uploadSlice";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { productSchema } from "@/validations";
 import ConflictModal from "./ConflictModal";
-import { uploadImageFile } from "@/utils/uploadImage";
 import { ProfileImageUpload, FormInput, FormSelect, StatusToggle } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
 
@@ -36,6 +36,15 @@ export default function AddProductForm() {
     error: productError,
     status: productStatus,
   } = useAppSelector((state) => state.createProduct);
+  // Cloudinary/upload state (commented out for now)
+  // const {
+  //   loading: uploadLoading,
+  //   success: uploadSuccess,
+  //   error: uploadError,
+  //   uploadedFiles,
+  // } = useAppSelector((state) => state.upload);
+  // Use local state for image upload loading
+  const [uploadLoading, setUploadLoading] = useState(false);
 
   // Form state
   const [image, setImage] = useState<string | null>(null);
@@ -59,6 +68,7 @@ export default function AddProductForm() {
     return () => {
       dispatch(resetGeneratePrefixState());
       dispatch(resetProductState());
+      dispatch(resetUploadState());
     };
   }, [dispatch]);
 
@@ -95,37 +105,32 @@ export default function AddProductForm() {
     }
   }, [productError, productStatus]);
 
-  const handleImageChange = async (imageData: string | null) => {
-    setImage(imageData);
+  // Image upload effect (Cloudinary/upload commented out)
+  // useEffect(() => {
+  //   if (uploadSuccess && uploadedFiles.length > 0) {
+  //     setImage(uploadedFiles[0].url);
+  //     toast.success("Image uploaded successfully!");
+  //   }
+  //   if (uploadError) {
+  //     console.error("AddProductForm: Upload error", uploadError);
+  //     toast.error(uploadError);
+  //   }
+  // }, [uploadSuccess, uploadedFiles, uploadError]);
 
-    // COMMENTED OUT: Cloudinary upload logic
-    /*
-    if (imageData && imageData.startsWith("data:image")) {
-      try {
-        setImageUploading(true);
-
-        // Convert base64 to File
-        const res = await fetch(imageData);
-        const blob = await res.blob();
-        const file = new File([blob], "product-image.png", { type: blob.type });
-
-        // Upload to Cloudinary
-        const uploadedUrl = await uploadImageFile(file);
-
-        // Update image state with the Cloudinary URL
-        setImage(uploadedUrl);
-        toast.success("Image uploaded successfully!");
-      } catch (error) {
-        console.error("Image upload failed:", error);
-        toast.error("Failed to upload image to cloud. Please try again.");
-        setImage(null);
-      } finally {
-        setImageUploading(false);
-      }
+  // Image upload handler (Cloudinary/upload commented out)
+  const handleImageChange = async (file: File | null) => {
+    if (file) {
+      // setUploadLoading(true);
+      // dispatch(uploadImageAction(file));
+      // For now, just set a hardcoded image URL
+      setImage(
+        "https://res.cloudinary.com/dzr3drmyk/image/upload/v1755839251/oznntburcu7exr6xs4m1.jpg"
+      );
+      // setUploadLoading(false);
     } else {
       setImage(null);
+      // dispatch(resetUploadState());
     }
-    */
   };
 
   const addSkuField = () => setSkus([...skus, ""]);
@@ -175,9 +180,9 @@ export default function AddProductForm() {
       name: productName.trim(),
       productCategoryId: categoryId,
       productFormula: chemicalFormula.trim(),
-      // Hardcoded Cloudinary URL for testing
+      // imageUrl: uploadedFiles.length > 0 ? uploadedFiles[0].url : null, // Uncomment when Cloudinary is working
       imageUrl:
-        "https://res.cloudinary.com/dm6hah42c/image/upload/v1737719876/product-image_q8z8z8.png",
+        "https://res.cloudinary.com/dzr3drmyk/image/upload/v1755839251/oznntburcu7exr6xs4m1.jpg", // Hardcoded for now
       description: description.trim(),
       status: status.toLowerCase() as "active" | "inactive",
       productSkus,
@@ -188,7 +193,7 @@ export default function AddProductForm() {
 
     if (!validation.success) {
       const errors: Record<string, string> = {};
-      validation.error.errors.forEach((err) => {
+      validation.error.errors.forEach((err: any) => {
         const fieldName = err.path[0] as string;
         if (!errors[fieldName]) {
           errors[fieldName] = err.message;
@@ -218,15 +223,8 @@ export default function AddProductForm() {
                 imagePreview={image}
                 onImageChange={handleImageChange}
                 maxSizeMB={5}
+                loading={uploadLoading}
               />
-
-              {/* Image Upload Status */}
-              {imageUploading && (
-                <div className="flex items-center gap-2 t-sm text-(--primary)">
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Uploading image to cloud...</span>
-                </div>
-              )}
             </div>
 
             {/* Right: Form Fields */}
@@ -398,15 +396,15 @@ export default function AddProductForm() {
                 </Button>
                 <Button
                   onClick={handleSubmit}
-                  disabled={productLoading || imageUploading}
-                  loading={productLoading || imageUploading}
+                  disabled={productLoading || uploadLoading}
+                  loading={productLoading || uploadLoading}
                   variant="primary"
                   size="lg"
                   icon={Plus}
                   rounded="full"
                   className="shadow-lg"
                 >
-                  {imageUploading ? "Uploading Image..." : "Add Product"}
+                  {uploadLoading ? "Uploading..." : "Add Product"}
                 </Button>
               </div>
             </div>
