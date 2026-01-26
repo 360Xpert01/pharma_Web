@@ -7,13 +7,13 @@ import {
   generatePrefix,
   resetGeneratePrefixState,
 } from "@/store/slices/preFix/generatePrefixSlice";
-import { getAllProductCategories } from "@/store/slices/productCategory/getAllProductCategoriesSlice";
+import { getProductCategories } from "@/store/slices/product/getProductCategoriesSlice";
 import { createProduct, resetProductState } from "@/store/slices/product/createProductSlice";
+import { uploadImageAction, resetUploadState } from "@/store/slices/upload/uploadSlice";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { productSchema } from "@/validations";
 import ConflictModal from "./ConflictModal";
-import { uploadImageFile } from "@/utils/uploadImage";
 import { ProfileImageUpload, FormInput, FormSelect, StatusToggle } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
 
@@ -27,8 +27,8 @@ export default function AddProductForm() {
     loading: prefixLoading,
     error: prefixError,
   } = useAppSelector((state) => state.generatePrefix);
-  const { productCategories: categories, loading: categoriesLoading } = useAppSelector(
-    (state) => state.allProductCategories
+  const { categories, loading: categoriesLoading } = useAppSelector(
+    (state) => state.productCategories
   );
   const {
     loading: productLoading,
@@ -36,10 +36,18 @@ export default function AddProductForm() {
     error: productError,
     status: productStatus,
   } = useAppSelector((state) => state.createProduct);
+  // Cloudinary/upload state (commented out for now)
+  // const {
+  //   loading: uploadLoading,
+  //   success: uploadSuccess,
+  //   error: uploadError,
+  //   uploadedFiles,
+  // } = useAppSelector((state) => state.upload);
+  // Use local state for image upload loading
+  const [uploadLoading, setUploadLoading] = useState(false);
 
   // Form state
   const [image, setImage] = useState<string | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUploading, setImageUploading] = useState(false);
   const [productName, setProductName] = useState("");
   const [legacyCode, setLegacyCode] = useState("");
@@ -55,11 +63,12 @@ export default function AddProductForm() {
   // Fetch product categories and generate prefix on mount
   useEffect(() => {
     dispatch(generatePrefix({ entity: "Product" }));
-    dispatch(getAllProductCategories());
+    dispatch(getProductCategories());
 
     return () => {
       dispatch(resetGeneratePrefixState());
       dispatch(resetProductState());
+      dispatch(resetUploadState());
     };
   }, [dispatch]);
 
@@ -75,7 +84,6 @@ export default function AddProductForm() {
       setDescription("");
       setSkus(["Capsule 500mg"]);
       setImage(null);
-      setImageFile(null);
 
       // Generate new prefix for next product
       dispatch(generatePrefix({ entity: "Product" }));
@@ -97,19 +105,31 @@ export default function AddProductForm() {
     }
   }, [productError, productStatus]);
 
-  const handleImageChange = (imageData: string | null) => {
-    setImage(imageData);
-    // If we have image data (base64), we need to convert it to File for upload
-    if (imageData && imageData.startsWith("data:image")) {
-      // Convert base64 to File
-      fetch(imageData)
-        .then((res) => res.blob())
-        .then((blob) => {
-          const file = new File([blob], "product-image.png", { type: blob.type });
-          setImageFile(file);
-        });
+  // Image upload effect (Cloudinary/upload commented out)
+  // useEffect(() => {
+  //   if (uploadSuccess && uploadedFiles.length > 0) {
+  //     setImage(uploadedFiles[0].url);
+  //     toast.success("Image uploaded successfully!");
+  //   }
+  //   if (uploadError) {
+  //     console.error("AddProductForm: Upload error", uploadError);
+  //     toast.error(uploadError);
+  //   }
+  // }, [uploadSuccess, uploadedFiles, uploadError]);
+
+  // Image upload handler (Cloudinary/upload commented out)
+  const handleImageChange = async (file: File | null) => {
+    if (file) {
+      // setUploadLoading(true);
+      // dispatch(uploadImageAction(file));
+      // For now, just set a hardcoded image URL
+      setImage(
+        "https://res.cloudinary.com/dzr3drmyk/image/upload/v1755839251/oznntburcu7exr6xs4m1.jpg"
+      );
+      // setUploadLoading(false);
     } else {
-      setImageFile(null);
+      setImage(null);
+      // dispatch(resetUploadState());
     }
   };
 
@@ -153,21 +173,6 @@ export default function AddProductForm() {
         quantity: 0,
       }));
 
-    // Upload image to Cloudinary if a file is selected
-    let uploadedImageUrl = "";
-    if (imageFile) {
-      try {
-        setImageUploading(true);
-        uploadedImageUrl = await uploadImageFile(imageFile);
-      } catch (error) {
-        toast.error("Failed to upload image. Please try again.");
-        setImageUploading(false);
-        return;
-      } finally {
-        setImageUploading(false);
-      }
-    }
-
     // Prepare payload strictly matching the requested schema
     const formData = {
       pulseCode: generatedPrefix || "",
@@ -175,7 +180,9 @@ export default function AddProductForm() {
       name: productName.trim(),
       productCategoryId: categoryId,
       productFormula: chemicalFormula.trim(),
-      imageUrl: uploadedImageUrl,
+      // imageUrl: uploadedFiles.length > 0 ? uploadedFiles[0].url : null, // Uncomment when Cloudinary is working
+      imageUrl:
+        "https://res.cloudinary.com/dzr3drmyk/image/upload/v1755839251/oznntburcu7exr6xs4m1.jpg", // Hardcoded for now
       description: description.trim(),
       status: status.toLowerCase() as "active" | "inactive",
       productSkus,
@@ -186,7 +193,7 @@ export default function AddProductForm() {
 
     if (!validation.success) {
       const errors: Record<string, string> = {};
-      validation.error.errors.forEach((err) => {
+      validation.error.errors.forEach((err: any) => {
         const fieldName = err.path[0] as string;
         if (!errors[fieldName]) {
           errors[fieldName] = err.message;
@@ -216,15 +223,8 @@ export default function AddProductForm() {
                 imagePreview={image}
                 onImageChange={handleImageChange}
                 maxSizeMB={5}
+                loading={uploadLoading}
               />
-
-              {/* Image Upload Status */}
-              {imageUploading && (
-                <div className="flex items-center gap-2 t-sm text-(--primary)">
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Uploading image to cloud...</span>
-                </div>
-              )}
             </div>
 
             {/* Right: Form Fields */}
@@ -270,7 +270,7 @@ export default function AddProductForm() {
                   }}
                   options={categories.map((cat) => ({
                     value: cat.id,
-                    label: cat.name,
+                    label: cat.productCategory,
                   }))}
                   placeholder="e.g. Antibiotics, Painkillers..."
                   required
@@ -396,15 +396,15 @@ export default function AddProductForm() {
                 </Button>
                 <Button
                   onClick={handleSubmit}
-                  disabled={productLoading || imageUploading}
-                  loading={productLoading || imageUploading}
+                  disabled={productLoading || uploadLoading}
+                  loading={productLoading || uploadLoading}
                   variant="primary"
                   size="lg"
                   icon={Plus}
                   rounded="full"
                   className="shadow-lg"
                 >
-                  {imageUploading ? "Uploading Image..." : "Add Product"}
+                  {uploadLoading ? "Uploading..." : "Add Product"}
                 </Button>
               </div>
             </div>
