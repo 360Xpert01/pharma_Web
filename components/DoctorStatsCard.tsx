@@ -24,7 +24,7 @@ interface StatCardProps {
 }
 
 const StatCard = ({ title, value, color, gradientId }: StatCardProps) => (
-  <div className="bg-white rounded-[16px] border border-gray-100 shadow-sm p-5 flex flex-col justify-between h-[200px] w-full">
+  <div className="bg-white rounded-[16px] border border-gray-100 shadow-sm p-5 flex flex-col justify-between h-[200px] w-[100%]">
     {/* Header */}
     <div className="flex justify-between items-start">
       <div>
@@ -32,7 +32,7 @@ const StatCard = ({ title, value, color, gradientId }: StatCardProps) => (
         <p className={`text-4xl font-bold ${color}`}>{value}</p>
       </div>
       <div className="flex items-center gap-1">
-        <span className="text-[10px] text-gray-300 font-medium whitespace-nowrap">
+        <span className="text-[13px] text-gray-300 font-medium whitespace-nowrap">
           Samples Completion Rate
         </span>
         <TrendingUp size={14} className={color} />

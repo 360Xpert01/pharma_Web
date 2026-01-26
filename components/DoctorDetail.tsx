@@ -8,14 +8,14 @@ import ProductPreDoctor from "./ProductPerDoctor";
 
 export default function DoctorDetail() {
   return (
-    <div className="w-[100%]">
-      <div className="w-[100%] flex justify-between ">
+    <div className="">
+      <div className="w-full flex">
         {/* Left - Profile */}
         <div className="w-[25%] flex flex-col justify-between">
           <DoctorProfileCard />
           <DoctorInfoCard />
         </div>
-        <div className="w-[75%] ">
+        <div className="w-[85%]">
           <div className="w-[100%]">
             <DoctorStatsCard />
             <div className="flex mt-8 justify-between  ">
