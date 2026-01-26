@@ -14,7 +14,7 @@ export default function DoctorProfileCard() {
   return (
     <div className="flex  bg-gray-50">
       {/* Main Card Container */}
-      <div className="w-[360px] bg-white rounded-[24px] shadow-sm border border-gray-100 p-10 flex flex-col items-center text-center">
+      <div className="w-[380px] bg-white rounded-[24px] shadow-sm border border-gray-100 p-10 flex flex-col items-center text-center">
         {/* Profile Image with specific rounding as per image */}
         <div className="w-32 h-32 mb-6 overflow-hidden rounded-[35px] border-4 border-white shadow-sm">
           <img

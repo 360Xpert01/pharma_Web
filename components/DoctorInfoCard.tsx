@@ -14,7 +14,7 @@ export default function RegionInfoCard() {
   return (
     <div className="flex bg-gray-50">
       {/* Main Card Container */}
-      <div className="w-[360px] bg-white rounded-[24px] shadow-sm border border-gray-100 p-7">
+      <div className="w-[380px] bg-white rounded-[24px] shadow-sm border border-gray-100 p-7">
         {/* Card Title */}
         <h2 className="text-[22px] font-bold text-[#334155] mb-10 text-center tracking-tight">
           Region Information
