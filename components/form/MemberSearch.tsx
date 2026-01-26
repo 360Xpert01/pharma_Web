@@ -15,13 +15,15 @@ export interface SelectedMember {
 }
 
 interface MemberSearchProps {
-  allMembers: any[]; // From Redux (sales rep users)
+  allMembers: any[];
   selectedMembers: SelectedMember[];
   onMembersChange: (members: SelectedMember[]) => void;
   loading?: boolean;
   placeholder?: string;
   label?: string;
   className?: string;
+  error?: string; // ✅ validation error
+  onSearchChange?: (q: string) => void;
 }
 
 export default function MemberSearch({
@@ -32,11 +34,14 @@ export default function MemberSearch({
   placeholder = "Search sales representative",
   label = "Assign Members",
   className = "",
+  error = "",
+  onSearchChange,
 }: MemberSearchProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearchResults, setShowSearchResults] = useState(false);
 
-  // Filter members by search query (exclude already selected)
+  const hasError = !!error;
+
   const filteredMembers = allMembers.filter(
     (user) =>
       !selectedMembers.find((m) => m.id === user.id) &&
@@ -72,57 +77,72 @@ export default function MemberSearch({
   return (
     <div className={`space-y-6 ${className}`}>
       <div>
-        <h2 className="text-2xl font-bold text-(--gray-9) mb-4">{label}</h2>
-        <div className="relative max-w-md">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setShowSearchResults(true);
-            }}
-            onFocus={() => setShowSearchResults(true)}
-            onBlur={() => {
-              // Delay to allow click on dropdown items
-              setTimeout(() => setShowSearchResults(false), 200);
-            }}
-            placeholder={loading ? "Loading sales reps..." : placeholder}
-            disabled={loading}
-            className="w-full px-4 py-3 pl-12 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none text-(--gray-5) disabled:bg-(--gray-1) disabled:cursor-not-allowed"
-          />
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-(--gray-4)" />
+        {label && <h2 className="text-2xl font-bold text-(--gray-9) mb-4">{label}</h2>}
 
-          {/* Member Search Results Dropdown */}
+        {/* ✅ INPUT + ERROR WRAPPER */}
+        <div className="max-w-md">
+          {/* Input container */}
+          <div className="relative">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setShowSearchResults(true);
+                onSearchChange?.(e.target.value);
+              }}
+              onFocus={() => setShowSearchResults(true)}
+              onBlur={() => setTimeout(() => setShowSearchResults(false), 200)}
+              placeholder={loading ? "Loading sales reps..." : placeholder}
+              disabled={loading}
+              aria-invalid={hasError}
+              className={`w-full h-12 px-4 py-3 pl-12 rounded-8 outline-none text-(--gray-5)
+                disabled:bg-(--gray-1) disabled:cursor-not-allowed
+                border ${
+                  hasError
+                    ? "border-(--destructive) focus:ring-2 focus:ring-(--destructive) focus:border-(--destructive)"
+                    : "border-(--gray-3) focus:ring-2 focus:ring-(--primary) focus:border-(--primary)"
+                }`}
+            />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-(--gray-4)" />
+          </div>
+
+          {/* ✅ Error BELOW input (no layout break) */}
+          {hasError && <p className="mt-1 t-sm t-err">{error}</p>}
+
+          {/* Dropdown */}
           {showSearchResults && searchQuery && !loading && (
-            <div className="absolute z-10 w-full mt-2 bg-(--light) border border-(--gray-2) rounded-8 shadow-soft max-h-64 overflow-y-auto">
-              {filteredMembers.length > 0 ? (
-                filteredMembers.map((user) => (
-                  <div
-                    key={user.id}
-                    onClick={() => handleSelectMember(user)}
-                    className="p-4 hover:bg-(--muted) cursor-pointer border-b border-(--gray-1) last:border-0 transition-colors"
-                  >
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <p className="font-semibold text-(--gray-9)">
-                          {user.firstName} {user.lastName}
-                        </p>
-                        <p className="text-sm text-(--gray-5)">{user.pulseCode}</p>
+            <div className="relative">
+              <div className="absolute z-10 w-full mt-2 bg-(--light) border border-(--gray-2) rounded-8 shadow-soft max-h-64 overflow-y-auto">
+                {filteredMembers.length > 0 ? (
+                  filteredMembers.map((user) => (
+                    <div
+                      key={user.id}
+                      onClick={() => handleSelectMember(user)}
+                      className="p-4 hover:bg-(--muted) cursor-pointer border-b border-(--gray-1) last:border-0 transition-colors"
+                    >
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <p className="font-semibold text-(--gray-9)">
+                            {user.firstName} {user.lastName}
+                          </p>
+                          <p className="text-sm text-(--gray-5)">{user.pulseCode}</p>
+                        </div>
+                        <span className="px-2 py-1 bg-(--muted) text-(--primary) text-xs font-medium rounded-8">
+                          {user.email}
+                        </span>
                       </div>
-                      <span className="px-2 py-1 bg-(--muted) text-(--primary) text-xs font-medium rounded-8">
-                        {user.email}
-                      </span>
                     </div>
-                  </div>
-                ))
-              ) : (
-                <div className="p-4 text-center text-(--gray-5)">No sales reps found</div>
-              )}
+                  ))
+                ) : (
+                  <div className="p-4 text-center text-(--gray-5)">No sales reps found</div>
+                )}
+              </div>
             </div>
           )}
         </div>
 
-        {/* Selected Members Display */}
+        {/* Selected Members */}
         {selectedMembers.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-3">
             {selectedMembers.map((member) => (
@@ -143,12 +163,14 @@ export default function MemberSearch({
                     </div>
                   )}
                 </div>
+
                 <div>
                   <p className="font-semibold text-(--gray-9) text-sm">
                     {member.firstName} {member.lastName}
                   </p>
                   <p className="text-xs text-(--gray-5)">{member.pulseCode}</p>
                 </div>
+
                 <Button
                   size="icon-sm"
                   variant="ghost"

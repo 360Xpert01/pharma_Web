@@ -18,6 +18,8 @@ interface ProductSearchProps {
   onProductsChange: (products: Product[]) => void;
   loading?: boolean;
   className?: string;
+  error?: string;
+  onSearchChange?: (query: string) => void;
 }
 
 export default function ProductSearch({
@@ -26,7 +28,10 @@ export default function ProductSearch({
   onProductsChange,
   loading = false,
   className = "",
+  error = "",
+  onSearchChange,
 }: ProductSearchProps) {
+  const hasError = !!error;
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearchResults, setShowSearchResults] = useState(false);
 
@@ -59,10 +64,10 @@ export default function ProductSearch({
   };
 
   return (
-    <div className={`space-y-6 ${className}`}>
-      <h2 className="text-2xl font-bold text-(--gray-9)">Select Products</h2>
+    <div className={`space-y-4 ${className}`}>
+      <label className="t-label block">Select Products</label>
 
-      <div className="relative">
+      <div className="relative max-w-full ml-0">
         <div className="flex items-center gap-4">
           <div className="relative flex-1">
             <input
@@ -71,6 +76,7 @@ export default function ProductSearch({
               onChange={(e) => {
                 setSearchQuery(e.target.value);
                 setShowSearchResults(true);
+                onSearchChange?.(e.target.value);
               }}
               onFocus={() => setShowSearchResults(true)}
               onBlur={() => {
@@ -79,44 +85,52 @@ export default function ProductSearch({
               }}
               placeholder={loading ? "Loading products..." : "Search Product Name"}
               disabled={loading}
-              className="w-full px-4 py-3 pl-12 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) outline-none disabled:bg-(--gray-1) disabled:cursor-not-allowed"
+              aria-invalid={hasError}
+              className={`mt-1 w-full h-12 px-4 py-3 pl-12 border rounded-8 outline-none transition-all disabled:bg-(--gray-1) disabled:cursor-not-allowed ${
+                hasError
+                  ? "border-(--destructive) focus:ring-2 focus:ring-(--destructive) focus:border-(--destructive)"
+                  : "border-(--gray-3) focus:ring-2 focus:ring-(--primary) focus:border-(--primary)"
+              }`}
             />
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-(--gray-4)" />
           </div>
-          <Button variant="primary" size="lg" icon={Plus} rounded="default">
-            Add Products
-          </Button>
-        </div>
-
-        {/* Search Results Dropdown */}
-        {showSearchResults && searchQuery && !loading && (
-          <div className="absolute z-10 w-full mt-2 bg-(--light) border border-(--gray-2) rounded-8 shadow-soft max-h-96 overflow-y-auto">
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => (
-                <div
-                  key={product.id}
-                  onClick={() => handleAddProduct(product)}
-                  className="p-4 hover:bg-(--muted) cursor-pointer border-b border-(--gray-1) last:border-0 transition-colors"
-                >
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className="font-semibold text-(--gray-9)">{product.name}</p>
-                      <p className="text-sm text-(--gray-5)">{product.productCode}</p>
-                    </div>
-                    {product.productCategory && (
-                      <span className="px-2 py-1 bg-(--muted) text-(--primary) text-xs font-medium rounded-8">
-                        {product.productCategory}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="p-4 text-center text-(--gray-5)">No products found</div>
-            )}
+          <div className="flex-shrink-0">
+            <Button variant="primary" size="lg" icon={Plus} rounded="default">
+              Add Products
+            </Button>
           </div>
-        )}
+        </div>
+        {hasError && <p className="mt-1 t-sm t-err">{error}</p>}
       </div>
+
+      {/* Search Results Dropdown */}
+      {showSearchResults && searchQuery && !loading && (
+        <div className="absolute z-10 w-full mt-2 bg-(--light) border border-(--gray-2) rounded-8 shadow-soft max-h-96 overflow-y-auto">
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((product) => (
+              <div
+                key={product.id}
+                onClick={() => handleAddProduct(product)}
+                className="p-4 hover:bg-(--muted) cursor-pointer border-b border-(--gray-1) last:border-0 transition-colors"
+              >
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="font-semibold text-(--gray-9)">{product.name}</p>
+                    <p className="text-sm text-(--gray-5)">{product.productCode}</p>
+                  </div>
+                  {product.productCategory && (
+                    <span className="px-2 py-1 bg-(--muted) text-(--primary) text-xs font-medium rounded-8">
+                      {product.productCategory}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="p-4 text-center text-(--gray-5)">No products found</div>
+          )}
+        </div>
+      )}
 
       {/* Selected Products Grid */}
       {selectedProducts.length > 0 && (
