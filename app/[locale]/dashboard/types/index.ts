@@ -164,4 +164,12 @@ export interface DashboardProps {
   specializationsTrue?: boolean;
   doctorDetail?: boolean;
   csvIMP?: boolean;
+  UpdateProduct?: boolean;
+  productId?: string | null;
+  doctorSegmentsD?: boolean;
+  doctorSegmentsTrue?: boolean;
+  qualificationsD?: boolean;
+  qualificationsTrue?: boolean;
+  specialitiesD?: boolean;
+  specialitiesTrue?: boolean;
 }

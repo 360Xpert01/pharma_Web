@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { ColumnDef } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
-import TableActionDropdown from "@/components/shared/table/TableActionDropdown";
+import EditIcon from "@/components/svgs/edit-icon";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllProducts } from "@/store/slices/product/getAllProductsSlice";
 
@@ -20,8 +21,13 @@ interface Product {
 }
 
 export default function MedicineTable() {
-  const [openId, setOpenId] = useState<string | null>(null);
+  const router = useRouter();
   const dispatch = useAppDispatch();
+  const [openId, setOpenId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(20);
+  const dispatch = useAppDispatch();
+
 
   // Get products from Redux store
   const { products, loading, error, total } = useAppSelector((state) => state.allProducts);
@@ -108,26 +114,16 @@ export default function MedicineTable() {
       header: "",
       cell: ({ row }) => (
         <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
-          <TableActionDropdown
-            isOpen={openId === row.original.id}
-            onToggle={() => setOpenId(openId === row.original.id ? null : row.original.id)}
-            onClose={() => setOpenId(null)}
-            items={[
-              {
-                label: "Edit Medicine",
-                onClick: () => console.log("Edit", row.original.id),
-              },
-              {
-                label: "View Details",
-                onClick: () => console.log("View Details", row.original.id),
-              },
-              {
-                label: "Delete",
-                onClick: () => console.log("Delete", row.original.id),
-                variant: "danger",
-              },
-            ]}
-          />
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(`/dashboard/UpdateProduct?id=${row.original.id}`);
+            }}
+            className="group hover:opacity-80 transition cursor-pointer"
+            title="Edit Product"
+          >
+            <EditIcon />
+          </button>
         </div>
       ),
     },

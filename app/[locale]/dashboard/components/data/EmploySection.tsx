@@ -125,7 +125,7 @@ export default function SalesTeamTable() {
             </button>
 
             {/* Info Icon - Opens Statistics */}
-            <button
+            {/* <button
               onClick={(e) => {
                 e.stopPropagation();
                 row.toggleExpanded();
@@ -134,7 +134,14 @@ export default function SalesTeamTable() {
               title="View Statistics"
             >
               <EyeIcon />
-            </button>
+            </button> */}
+
+            <Link
+              href={`/dashboard/Employee-Profile?id=${row.original.id}`}
+              className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+            >
+              <EyeIcon />
+            </Link>
           </div>
         ),
       },

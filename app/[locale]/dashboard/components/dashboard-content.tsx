@@ -27,9 +27,15 @@ import ExpanseTable from "@/components/ExpanseTable";
 import RequestViewTable from "@/components/RequestViewTable";
 import Channals from "@/components/Channals";
 import AllChannalB from "@/components/AllChannalB";
+import DoctorSegments from "@/components/DoctorSegments";
+import AllDoctorSegments from "@/components/AllDoctorSegments";
+import Qualifications from "@/components/Qualifications";
+import AllQualifications from "@/components/AllQualifications";
+import Specialities from "@/components/Specialities";
+import AllSpecialities from "@/components/AllSpecialities";
 import AddSampleForm from "@/components/AddSampleForm";
 import AddGiveawayForm from "@/components/AddGiveawayForm";
-import AddProductForm from "@/components/AddProductForm";
+import ProductForm from "@/components/ProductForm";
 import AddDoctorForm from "@/components/AddDoctorForm";
 import AddEmployeeForm from "@/components/AddEmployee";
 import UserRoles from "@/components/UserRoles";
@@ -52,6 +58,7 @@ import DoctorSpecializations from "@/components/DoctorSpecializations";
 import AllSpecializations from "@/components/AllSpecializations";
 import DoctorDetail from "@/components/DoctorDetail";
 import CsvUploadMapper from "@/components/CsvUploadMapper";
+import UpdateProductForm from "@/components/UpdateProduct";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -113,6 +120,14 @@ export function DashboardContent({
   specializationsTrue,
   doctorDetail,
   csvIMP,
+  UpdateProduct,
+  productId,
+  doctorSegmentsD,
+  doctorSegmentsTrue,
+  qualificationsD,
+  qualificationsTrue,
+  specialitiesD,
+  specialitiesTrue,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -147,20 +162,25 @@ export function DashboardContent({
       {/* Dashboard Header with Actions */}
       {/* shadow-[0px_0.63px_5.5px_0px_rgba(0,0,0,0.1)] */}
 
-      {!channalTrue && !productCategoriesTrue && !specializationsTrue && (
-        <DashboardHeader
-          onRefresh={handleRefresh}
-          onSettings={handleSettings}
-          isLoading={combinedLoading}
-          title={sample}
-          description={descrip}
-          btnAdd={btnAdd}
-          btnTrue={btnTrue}
-          btntextReq={btntextReq}
-          btnReqquest={btnReqquest}
-          onSettingView={handleSettingView}
-        />
-      )}
+      {!channalTrue &&
+        !productCategoriesTrue &&
+        !specializationsTrue &&
+        !doctorSegmentsTrue &&
+        !qualificationsTrue &&
+        !specialitiesTrue && (
+          <DashboardHeader
+            onRefresh={handleRefresh}
+            onSettings={handleSettings}
+            isLoading={combinedLoading}
+            title={sample}
+            description={descrip}
+            btnAdd={btnAdd}
+            btnTrue={btnTrue}
+            btntextReq={btntextReq}
+            btnReqquest={btnReqquest}
+            onSettingView={handleSettingView}
+          />
+        )}
 
       <div className="space-y-10 ">
         {/* Metrics Cards Section */}
@@ -195,6 +215,36 @@ export function DashboardContent({
           </div>
         )}
 
+        {doctorSegmentsD && (
+          <div>
+            <DoctorSegments />
+            <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
+              <TableHeader campHeading={campHeading} filterT={filterT} />
+              <AllDoctorSegments />
+            </div>
+          </div>
+        )}
+
+        {qualificationsD && (
+          <div>
+            <Qualifications />
+            <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
+              <TableHeader campHeading={campHeading} filterT={filterT} />
+              <AllQualifications />
+            </div>
+          </div>
+        )}
+
+        {specialitiesD && (
+          <div>
+            <Specialities />
+            <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
+              <TableHeader campHeading={campHeading} filterT={filterT} />
+              <AllSpecialities />
+            </div>
+          </div>
+        )}
+
         {prefixPro && (
           <div>
             <AddPrefixNameComponent />
@@ -214,14 +264,14 @@ export function DashboardContent({
 
         {prodTabel && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading={campHeading} filterT={filterT} />
+            <TableHeader campHeading={campHeading} filterT={filterT} showInactiveToggle={false} />
             <ProductTableM />
           </div>
         )}
 
         {productForm && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <AddProductForm />
+            <ProductForm mode="add" />
           </div>
         )}
 
@@ -408,6 +458,12 @@ export function DashboardContent({
         )}
 
         {doctorDetail && <DoctorDetail />}
+
+        {UpdateProduct && (
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
+            <UpdateProductForm productId={productId} />
+          </div>
+        )}
 
         {/* Quick Stats Footer */}
         {/* <PerformanceStats isLoading={combinedLoading} /> */}
