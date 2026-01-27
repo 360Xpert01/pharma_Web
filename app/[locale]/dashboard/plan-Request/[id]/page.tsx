@@ -50,11 +50,11 @@ export default function PlanRequest({ params }: PageProps) {
 
     const selectedDate = selectedDateData.callDate || selectedDateData;
 
-    const matchedCallData = data.calls.find((call: any) => call.callDate === selectedDate);
+    const matchedCallData = data?.calls.find((call: any) => call.callDate == selectedDate);
 
     if (matchedCallData) {
-      console.log("Filtered Doctors:", matchedCallData.doctor);
-      setFilteredDoctorsData(matchedCallData.doctor);
+      console.log("Filtered Doctors:", matchedCallData.party);
+      setFilteredDoctorsData(matchedCallData.party);
     } else {
       setFilteredDoctorsData([]);
     }
