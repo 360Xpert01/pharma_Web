@@ -132,6 +132,8 @@ export function DashboardContent({
   specialitiesTrue,
   UpdateGiveaway,
   giveawayId,
+  id,
+  idForm,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -282,7 +284,7 @@ export function DashboardContent({
         {doctorTable && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
             <TableHeader campHeading={campHeading} filterT={filterT} />
-            <DoctorsTable />
+            <DoctorsTable id={id} />
           </div>
         )}
 
@@ -310,7 +312,7 @@ export function DashboardContent({
 
         {doctorForm && (
           <div className="rounded-md shadow-soft bg-[var(--background)]">
-            <AddDoctorForm />
+            <AddDoctorForm idForm={idForm} />
           </div>
         )}
 

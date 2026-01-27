@@ -18,8 +18,10 @@ interface Location {
   visitingHours: string;
 }
 
-export default function AddDoctorForm() {
+export default function AddDoctorForm({ idForm }: { idForm?: string }) {
   const dispatch = useAppDispatch();
+
+  console.log(idForm, "asdads");
 
   // Redux state
   const { specializations, loading: specializationsLoading } = useAppSelector(

@@ -89,6 +89,7 @@ export interface DashboardProps {
     products?: Product[];
     orders?: Order[];
   };
+  idForm?: string;
   sample: string;
   descrip: string;
   table?: string;
@@ -174,4 +175,5 @@ export interface DashboardProps {
   specialitiesTrue?: boolean;
   UpdateGiveaway?: boolean;
   giveawayId?: string | null;
+  id?: string | null;
 }
