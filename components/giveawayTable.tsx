@@ -4,9 +4,10 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
-import TableActionDropdown from "@/components/shared/table/TableActionDropdown";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllGiveaways } from "@/store/slices/giveaway/getAllGiveawaysSlice";
+import { useRouter } from "next/navigation";
+import EditIcon from "@/components/svgs/edit-icon";
 
 interface Giveaway {
   id: string;
@@ -21,6 +22,7 @@ export default function GiveawayTable() {
   const dispatch = useAppDispatch();
   const hasFetched = useRef(false);
   const [openId, setOpenId] = useState<string | null>(null);
+  const router = useRouter();
 
   // Redux state
   const { giveaways, loading, error } = useAppSelector((state) => state.allGiveaways);
@@ -90,26 +92,16 @@ export default function GiveawayTable() {
       header: "",
       cell: ({ row }) => (
         <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
-          <TableActionDropdown
-            isOpen={openId === row.original.id}
-            onToggle={() => setOpenId(openId === row.original.id ? null : row.original.id)}
-            onClose={() => setOpenId(null)}
-            items={[
-              {
-                label: "Edit",
-                onClick: () => console.log("Edit", row.original.id),
-              },
-              {
-                label: "View Details",
-                onClick: () => console.log("View Details", row.original.id),
-              },
-              {
-                label: "Delete",
-                onClick: () => console.log("Delete", row.original.id),
-                variant: "danger",
-              },
-            ]}
-          />
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(`/dashboard/UpdateGiveaway?id=${row.original.id}`);
+            }}
+            className="group hover:opacity-80 transition cursor-pointer"
+            title="Edit Giveaway"
+          >
+            <EditIcon />
+          </button>
         </div>
       ),
     },
