@@ -237,7 +237,9 @@ const Navbar = () => {
             { label: "Call Points", href: "/dashboard/Add-Call-points" },
             { label: "Product Categories", href: "/dashboard/product-categories" },
             { label: "Doctor Specializations", href: "/dashboard/doctor-specializations" },
-            { label: "Doctor Segments(A/B/C)", href: "/dashboard" },
+            { label: "Doctor Segments(A/B/C)", href: "/dashboard/doctor-segments" },
+            { label: "Qualification", href: "/dashboard/doctor-qualifications" },
+            { label: "Speciality", href: "/dashboard/doctor-specialities" },
           ],
         },
         {
