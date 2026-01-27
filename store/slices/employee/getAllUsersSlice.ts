@@ -57,36 +57,48 @@ const initialState: UsersState = {
   pagination: null,
 };
 
+// Pagination Parameters Type
+interface PaginationParams {
+  page?: number;
+  limit?: number;
+}
+
 // Async Thunk: Get All Users (GET /api/v1/users)
-export const getAllUsers = createAsyncThunk<GetUsersResponse, void, { rejectValue: string }>(
-  "users/getAllUsers",
-  async (_, { rejectWithValue }) => {
-    try {
-      // Get token from localStorage
-      const sessionStr = localStorage.getItem("userSession");
-      if (!sessionStr) {
-        return rejectWithValue("No session found. Please login again.");
-      }
-
-      const response = await axios.get<GetUsersResponse>(`${baseUrl}api/v1/users`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionStr}`,
-        },
-      });
-
-      return response.data;
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.response?.data?.error ||
-        error.message ||
-        "Failed to fetch users. Please try again.";
-
-      return rejectWithValue(errorMessage);
+export const getAllUsers = createAsyncThunk<
+  GetUsersResponse,
+  PaginationParams | void,
+  { rejectValue: string }
+>("users/getAllUsers", async (params, { rejectWithValue }) => {
+  try {
+    // Get token from localStorage
+    const sessionStr = localStorage.getItem("userSession");
+    if (!sessionStr) {
+      return rejectWithValue("No session found. Please login again.");
     }
+
+    // Build query parameters
+    const page = params && typeof params === "object" ? params.page || 1 : 1;
+    const limit = params && typeof params === "object" ? params.limit || 10 : 10;
+
+    const response = await axios.get<GetUsersResponse>(`${baseUrl}api/v1/users`, {
+      params: { page, limit },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStr}`,
+      },
+    });
+
+    return response.data;
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.response?.data?.error ||
+      error.message ||
+      "Failed to fetch users. Please try again.";
+
+    return rejectWithValue(errorMessage);
   }
-);
+});
 
 // Slice
 const getAllUsersSlice = createSlice({

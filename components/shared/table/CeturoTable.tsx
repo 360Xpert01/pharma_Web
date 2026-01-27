@@ -29,6 +29,10 @@ interface CenturoTableProps<T> {
   renderExpandedRow?: (row: T) => React.ReactNode;
   onRowClick?: (row: T) => void;
   sortingFns?: Record<string, SortingFn<T>>;
+  // Server-side pagination props
+  serverSidePagination?: boolean;
+  totalItems?: number;
+  onPaginationChange?: (page: number, pageSize: number) => void;
   PaginationComponent?: React.ComponentType<{
     currentPage: number;
     totalItems: number;
@@ -77,6 +81,9 @@ export default function CenturoTable<T>({
   renderExpandedRow,
   onRowClick,
   sortingFns: customSortingFns,
+  serverSidePagination = false,
+  totalItems,
+  onPaginationChange,
   PaginationComponent,
 }: CenturoTableProps<T>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -84,13 +91,13 @@ export default function CenturoTable<T>({
   const [currentPage, setCurrentPage] = React.useState(1);
   const [itemsPerPage, setItemsPerPage] = React.useState(pageSize);
 
-  // Paginate data if pagination is enabled
+  // Paginate data if pagination is enabled (client-side only)
   const paginatedData = React.useMemo(() => {
-    if (!enablePagination) return data;
+    if (!enablePagination || serverSidePagination) return data;
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     return data.slice(startIndex, endIndex);
-  }, [data, currentPage, itemsPerPage, enablePagination]);
+  }, [data, currentPage, itemsPerPage, enablePagination, serverSidePagination]);
 
   // Set default sorting function for all columns that don't have one
   const columnsWithDefaultSorting = React.useMemo(() => {
@@ -125,11 +132,19 @@ export default function CenturoTable<T>({
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    // If server-side pagination is enabled, notify parent component
+    if (serverSidePagination && onPaginationChange) {
+      onPaginationChange(page, itemsPerPage);
+    }
   };
 
   const handleItemsPerPageChange = (size: number) => {
     setItemsPerPage(size);
     setCurrentPage(1); // Reset to first page when changing page size
+    // If server-side pagination is enabled, notify parent component
+    if (serverSidePagination && onPaginationChange) {
+      onPaginationChange(1, size);
+    }
   };
 
   // Loading State
@@ -274,7 +289,7 @@ export default function CenturoTable<T>({
       {enablePagination && PaginationComponent && !loading && !error && data.length > 0 && (
         <PaginationComponent
           currentPage={currentPage}
-          totalItems={data.length}
+          totalItems={serverSidePagination ? totalItems || 0 : data.length}
           itemsPerPage={itemsPerPage}
           onPageChange={handlePageChange}
           onItemsPerPageChange={handleItemsPerPageChange}

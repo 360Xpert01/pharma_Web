@@ -26,17 +26,24 @@ export default function MedicineTable() {
   const [openId, setOpenId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
+  const dispatch = useAppDispatch();
+
 
   // Get products from Redux store
   const { products, loading, error, total } = useAppSelector((state) => state.allProducts);
 
-  // Fetch products when page or items per page changes
+  // Fetch products on mount
   useEffect(() => {
-    dispatch(getAllProducts({ page: currentPage, limit: itemsPerPage }));
-  }, [dispatch, currentPage, itemsPerPage]);
+    dispatch(getAllProducts({ page: 1, limit: 10 }));
+  }, [dispatch]);
 
   const handleRetry = () => {
-    dispatch(getAllProducts({ page: currentPage, limit: itemsPerPage }));
+    dispatch(getAllProducts({ page: 1, limit: 10 }));
+  };
+
+  // Handle pagination changes from the table
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    dispatch(getAllProducts({ page, limit: pageSize }));
   };
 
   const columns: ColumnDef<Product>[] = [
@@ -131,7 +138,10 @@ export default function MedicineTable() {
         error={error}
         onRetry={handleRetry}
         enablePagination={true}
-        pageSize={itemsPerPage}
+        serverSidePagination={true}
+        totalItems={total}
+        onPaginationChange={handlePaginationChange}
+        pageSize={10}
         PaginationComponent={TablePagination}
         emptyMessage="No products found"
       />

@@ -30,11 +30,17 @@ interface TeamMember {
 export default function SalesTeamTable() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { users, loading, error } = useAppSelector((s) => s.allUsers);
+  const { users, loading, error, pagination } = useAppSelector((s) => s.allUsers);
 
+  // Fetch users on mount
   useEffect(() => {
-    dispatch(getAllUsers());
+    dispatch(getAllUsers({ page: 1, limit: 10 }));
   }, [dispatch]);
+
+  // Handle pagination changes
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    dispatch(getAllUsers({ page, limit: pageSize }));
+  };
 
   // ================= DATA =================
   const data = useMemo<TeamMember[]>(() => {
@@ -149,10 +155,13 @@ export default function SalesTeamTable() {
       columns={columns}
       loading={loading}
       error={error}
-      onRetry={() => dispatch(getAllUsers())}
+      onRetry={() => dispatch(getAllUsers({ page: 1, limit: 10 }))}
       enableSorting={true}
       enableExpanding={true}
       enablePagination={true}
+      serverSidePagination={true}
+      totalItems={pagination?.total || 0}
+      onPaginationChange={handlePaginationChange}
       pageSize={10}
       emptyMessage="No employees found"
       renderExpandedRow={() => <SalesDashboard1 />}
