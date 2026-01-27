@@ -246,7 +246,7 @@ const doctorsData: Doctor[] = [
   },
 ];
 
-export default function DoctorsTable() {
+export default function DoctorsTable({ id }: { id: string }) {
   // Simulate loading and error states (replace with actual API call state)
   const [loading] = useState(false);
   const [error] = useState<string | null>(null);

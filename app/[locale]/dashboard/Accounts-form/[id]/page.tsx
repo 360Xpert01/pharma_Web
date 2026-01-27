@@ -1,7 +1,11 @@
 "use client";
-import { DashboardContent } from "../components/dashboard-content";
+import { DashboardContent } from "../../components/dashboard-content";
+import { useParams, useSearchParams } from "next/navigation";
 
 export default function DashboardPage() {
+  const params = useParams();
+  const giveawayId = params.id;
+
   return (
     <div className="">
       <DashboardContent
@@ -10,6 +14,7 @@ export default function DashboardPage() {
         btnTrue={true}
         hideMetrics={true}
         doctorForm={true}
+        idForm={giveawayId as string}
       />
     </div>
   );

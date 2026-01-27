@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllChannels } from "@/store/slices/channel/getAllChannelsSlice";
 import { DashboardContent } from "../components/dashboard-content";
@@ -11,6 +11,11 @@ export default function ChannelPage() {
   const channelSlug = params.channelId as string;
   const dispatch = useAppDispatch();
   const { channels, loading } = useAppSelector((state) => state.allChannels);
+
+  const searchParams = useSearchParams();
+  const giveawayId = searchParams.get("id");
+
+  console.log("giveawayId", giveawayId);
 
   useEffect(() => {
     dispatch(getAllChannels());
@@ -83,11 +88,12 @@ export default function ChannelPage() {
         table={`All ${currentChannel.name}`}
         btnAdd={`Add ${currentChannel.name}`}
         campHeading={`All ${currentChannel.name}`}
+        id={giveawayId}
         filterT={true}
         doctorTable={true}
         hideMetrics={true}
         hideHeader={true}
-        settingsRoute={"/dashboard/doctor-form"}
+        settingsRoute={`/dashboard/Accounts-form/${giveawayId}`}
         dataCard={{
           title: "Calls Completed vs Planned",
           value: 430,
