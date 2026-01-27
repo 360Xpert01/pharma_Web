@@ -132,7 +132,7 @@ export default function UsersHeader({
                 onCheckedChange={(checked) => setShowInactive(checked === true)}
               />
               <span className="text-sm text-(--gray-9) font-medium">
-                {inactiveLabel || "Show Inactive Users"}
+                {inactiveLabel || "Show Inactive"}
               </span>
             </label>
           )}

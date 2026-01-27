@@ -172,4 +172,6 @@ export interface DashboardProps {
   qualificationsTrue?: boolean;
   specialitiesD?: boolean;
   specialitiesTrue?: boolean;
+  UpdateGiveaway?: boolean;
+  giveawayId?: string | null;
 }

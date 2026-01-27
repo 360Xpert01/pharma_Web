@@ -59,6 +59,8 @@ import AllSpecializations from "@/components/AllSpecializations";
 import DoctorDetail from "@/components/DoctorDetail";
 import CsvUploadMapper from "@/components/CsvUploadMapper";
 import UpdateProductForm from "@/components/UpdateProduct";
+import UpdateGiveawayForm from "@/components/UpdateGiveaway";
+import GiveawayForm from "@/components/GivewayForm";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -128,6 +130,8 @@ export function DashboardContent({
   qualificationsTrue,
   specialitiesD,
   specialitiesTrue,
+  UpdateGiveaway,
+  giveawayId,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -264,7 +268,7 @@ export function DashboardContent({
 
         {prodTabel && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading={campHeading} filterT={filterT} showInactiveToggle={false} />
+            <TableHeader campHeading={campHeading} filterT={filterT} showInactiveToggle={true} />
             <ProductTableM />
           </div>
         )}
@@ -332,7 +336,8 @@ export function DashboardContent({
 
         {GivawayForm && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <AddGiveawayForm />
+            {/* Use GiveawayForm in add mode, just like ProductForm */}
+            <GiveawayForm mode="add" />
           </div>
         )}
 
@@ -462,6 +467,11 @@ export function DashboardContent({
         {UpdateProduct && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
             <UpdateProductForm productId={productId} />
+          </div>
+        )}
+        {UpdateGiveaway && giveawayId && (
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
+            <UpdateGiveawayForm giveawayId={giveawayId} />
           </div>
         )}
 
