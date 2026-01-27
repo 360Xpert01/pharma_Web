@@ -264,7 +264,7 @@ export function DashboardContent({
 
         {prodTabel && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading={campHeading} filterT={filterT} />
+            <TableHeader campHeading={campHeading} filterT={filterT} showInactiveToggle={false} />
             <ProductTableM />
           </div>
         )}

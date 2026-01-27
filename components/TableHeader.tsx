@@ -9,9 +9,17 @@ interface UsersHeaderProps {
   campHeading?: string;
   filterT?: boolean;
   title?: string;
+  showInactiveToggle?: boolean;
+  inactiveLabel?: string; // Optional custom label for inactive toggle
 }
 
-export default function UsersHeader({ campHeading, filterT, title }: UsersHeaderProps) {
+export default function UsersHeader({
+  campHeading,
+  filterT,
+  title,
+  showInactiveToggle = true,
+  inactiveLabel,
+}: UsersHeaderProps) {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [openId, setOpenId] = useState<boolean>(false);
   const [showInactive, setShowInactive] = useState(false);
@@ -117,13 +125,17 @@ export default function UsersHeader({ campHeading, filterT, title }: UsersHeader
         {/* Right: Checkbox + Sort Dropdown + Export Button */}
         <div className="flex items-center gap-3">
           {/* Inactive Users Checkbox */}
-          <label className="flex items-center gap-2 cursor-pointer select-none">
-            <Checkbox
-              checked={showInactive}
-              onCheckedChange={(checked) => setShowInactive(checked === true)}
-            />
-            <span className="text-sm text-(--gray-9) font-medium">Show Inactive Users</span>
-          </label>
+          {showInactiveToggle && (
+            <label className="flex items-center gap-2 cursor-pointer select-none">
+              <Checkbox
+                checked={showInactive}
+                onCheckedChange={(checked) => setShowInactive(checked === true)}
+              />
+              <span className="text-sm text-(--gray-9) font-medium">
+                {inactiveLabel || "Show Inactive Users"}
+              </span>
+            </label>
+          )}
 
           {/* Quick Sort Dropdown */}
           <FormSelect
