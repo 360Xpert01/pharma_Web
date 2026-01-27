@@ -22,12 +22,10 @@ interface Product {
 
 export default function MedicineTable() {
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const [openId, setOpenId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const dispatch = useAppDispatch();
-
 
   // Get products from Redux store
   const { products, loading, error, total } = useAppSelector((state) => state.allProducts);
