@@ -15,7 +15,7 @@ export default function DashboardPage() {
         hideData={true}
         campTabel={true}
         campHeading={"All Team"}
-        filterT={false}
+        filterT={true}
         settingsRoute={"/dashboard/AddTeamForm"}
       />
     </div>
