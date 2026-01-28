@@ -8,7 +8,7 @@ interface Specialization {
   id: string;
   name: string;
   pulseCode: string;
-  isActive: boolean;
+  status: "active" | "inactive";
   createdAt: string;
   updatedAt: string;
 }
@@ -47,7 +47,7 @@ export const getAllSpecializations = createAsyncThunk<
     }
 
     const response = await axios.get<GetSpecializationsResponse>(
-      `${baseUrl}api/v1/specialization/all`,
+      `${baseUrl}api/v1/specialization/`,
       {
         headers: {
           "Content-Type": "application/json",

@@ -7,83 +7,54 @@ import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import TableActionDropdown from "@/components/shared/table/TableActionDropdown";
 import StatusToggle from "@/components/form/StatusToggle";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { getAllSegments, resetSegmentsState } from "@/store/slices/segment/getAllSegmentsSlice";
+import EditIcon from "@/components/svgs/edit-icon";
 
 interface DoctorSegment {
   id: string;
   pulseCode: string;
   name: string;
-  isActive: boolean;
+  status: "active" | "inactive";
 }
 
-// Hardcoded doctor segments data
-const HARDCODED_SEGMENTS: DoctorSegment[] = [
-  {
-    id: "1",
-    pulseCode: "DS_000001",
-    name: "Segment A",
-    isActive: true,
-  },
-  {
-    id: "2",
-    pulseCode: "DS_000002",
-    name: "Segment B",
-    isActive: true,
-  },
-  {
-    id: "3",
-    pulseCode: "DS_000003",
-    name: "Segment C",
-    isActive: true,
-  },
-  {
-    id: "4",
-    pulseCode: "DS_000004",
-    name: "Premium Segment",
-    isActive: false,
-  },
-  {
-    id: "5",
-    pulseCode: "DS_000005",
-    name: "Standard Segment",
-    isActive: true,
-  },
-];
+interface AllDoctorSegmentsProps {
+  onEditSegment?: (segmentId: string) => void;
+}
 
-export default function AllDoctorSegments() {
-  const [segments, setSegments] = useState<DoctorSegment[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function AllDoctorSegments({ onEditSegment }: AllDoctorSegmentsProps) {
+  const dispatch = useAppDispatch();
+  const { loading, error, segments } = useAppSelector((state) => state.allSegments);
   const [openId, setOpenId] = useState<string | null>(null);
 
-  // Load hardcoded data
+  // Fetch segments on mount
   useEffect(() => {
-    // Simulate loading
-    const timer = setTimeout(() => {
-      setSegments(HARDCODED_SEGMENTS);
-      setLoading(false);
-    }, 500);
+    dispatch(getAllSegments());
 
-    return () => clearTimeout(timer);
-  }, []);
+    return () => {
+      dispatch(resetSegmentsState());
+    };
+  }, [dispatch]);
+
+  const handleRetry = () => {
+    dispatch(getAllSegments());
+  };
+
+  const handleEdit = (id: string) => {
+    if (onEditSegment) {
+      onEditSegment(id);
+    }
+  };
 
   const toggleStatus = (id: string) => {
-    setSegments((prevSegments) =>
-      prevSegments.map((segment) =>
-        segment.id === id ? { ...segment, isActive: !segment.isActive } : segment
-      )
-    );
+    // TODO: Implement update API when available
+    console.log("Toggle status for:", id);
   };
 
   const deleteSegment = (id: string) => {
-    setSegments((prevSegments) => prevSegments.filter((segment) => segment.id !== id));
+    // TODO: Implement delete API when available
+    console.log("Delete segment:", id);
     setOpenId(null);
-  };
-
-  const handleRetry = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setSegments(HARDCODED_SEGMENTS);
-      setLoading(false);
-    }, 500);
   };
 
   const columns: ColumnDef<DoctorSegment>[] = [
@@ -107,11 +78,11 @@ export default function AllDoctorSegments() {
     },
     {
       header: "Status",
-      accessorKey: "isActive",
+      accessorKey: "status",
       cell: ({ row }) => (
         <div className="flex items-center">
           <StatusToggle
-            status={row.original.isActive ? "Active" : "Inactive"}
+            status={row.original.status === "active" ? "Active" : "Inactive"}
             onChange={(newStatus) => {
               toggleStatus(row.original.id);
             }}
@@ -124,26 +95,16 @@ export default function AllDoctorSegments() {
       header: "",
       cell: ({ row }) => (
         <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
-          <TableActionDropdown
-            isOpen={openId === row.original.id}
-            onToggle={() => setOpenId(openId === row.original.id ? null : row.original.id)}
-            onClose={() => setOpenId(null)}
-            items={[
-              {
-                label: "View Details",
-                onClick: () => console.log("View Details", row.original.id),
-              },
-              {
-                label: "Edit Segment",
-                onClick: () => console.log("Edit Segment", row.original.id),
-              },
-              {
-                label: "Delete Segment",
-                onClick: () => deleteSegment(row.original.id),
-                variant: "danger",
-              },
-            ]}
-          />
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEdit(row.original.id);
+            }}
+            className="group hover:opacity-80 transition cursor-pointer"
+            title="Edit Segment"
+          >
+            <EditIcon />
+          </button>
         </div>
       ),
     },
@@ -155,7 +116,7 @@ export default function AllDoctorSegments() {
         data={segments}
         columns={columns}
         loading={loading}
-        error={null}
+        error={error}
         onRetry={handleRetry}
         enableSorting={false}
         enablePagination={true}

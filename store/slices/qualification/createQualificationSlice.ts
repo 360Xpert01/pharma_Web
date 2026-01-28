@@ -4,13 +4,13 @@ import axios from "axios";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 // Types
-interface CreateSpecializationPayload {
-  pulseCode: string;
+interface CreateQualificationPayload {
   name: string;
+  pulseCode: string;
   status: "active" | "inactive";
 }
 
-interface CreateSpecializationResponse {
+interface CreateQualificationResponse {
   success: boolean;
   message: string;
   data?: {
@@ -18,33 +18,32 @@ interface CreateSpecializationResponse {
     name: string;
     pulseCode: string;
     status: "active" | "inactive";
-    createdAt: string;
   };
 }
 
-interface SpecializationState {
+interface QualificationState {
   loading: boolean;
   success: boolean;
   error: string | null;
   message: string | null;
-  createdSpecialization: any | null;
+  createdQualification: any | null;
 }
 
 // Initial State
-const initialState: SpecializationState = {
+const initialState: QualificationState = {
   loading: false,
   success: false,
   error: null,
   message: null,
-  createdSpecialization: null,
+  createdQualification: null,
 };
 
-// Async Thunk: Create Specialization (POST request)
-export const createSpecialization = createAsyncThunk<
-  CreateSpecializationResponse,
-  CreateSpecializationPayload,
+// Async Thunk: Create Qualification (POST request)
+export const createQualification = createAsyncThunk<
+  CreateQualificationResponse,
+  CreateQualificationPayload,
   { rejectValue: string }
->("specialization/createSpecialization", async (payload, { rejectWithValue }) => {
+>("qualification/createQualification", async (payload, { rejectWithValue }) => {
   try {
     // Get token from localStorage
     const token = localStorage.getItem("userSession");
@@ -52,8 +51,8 @@ export const createSpecialization = createAsyncThunk<
       return rejectWithValue("No session found. Please login again.");
     }
 
-    const response = await axios.post<CreateSpecializationResponse>(
-      `${baseUrl}api/v1/specialization/`,
+    const response = await axios.post<CreateQualificationResponse>(
+      `${baseUrl}api/v1/qualification`,
       payload,
       {
         headers: {
@@ -69,43 +68,43 @@ export const createSpecialization = createAsyncThunk<
       error.response?.data?.message ||
       error.response?.data?.error ||
       error.message ||
-      "Failed to create specialization. Please try again.";
+      "Failed to create qualification. Please try again.";
 
     return rejectWithValue(errorMessage);
   }
 });
 
 // Slice
-const createSpecializationSlice = createSlice({
-  name: "createSpecialization",
+const createQualificationSlice = createSlice({
+  name: "createQualification",
   initialState,
   reducers: {
-    resetSpecializationState: (state) => {
+    resetQualificationState: (state) => {
       state.loading = false;
       state.success = false;
       state.error = null;
       state.message = null;
-      state.createdSpecialization = null;
+      state.createdQualification = null;
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(createSpecialization.pending, (state) => {
+      .addCase(createQualification.pending, (state) => {
         state.loading = true;
         state.success = false;
         state.error = null;
         state.message = null;
       })
       .addCase(
-        createSpecialization.fulfilled,
-        (state, action: PayloadAction<CreateSpecializationResponse>) => {
+        createQualification.fulfilled,
+        (state, action: PayloadAction<CreateQualificationResponse>) => {
           state.loading = false;
           state.success = true;
-          state.message = action.payload.message || "Specialization created successfully!";
-          state.createdSpecialization = action.payload.data || null;
+          state.message = action.payload.message || "Qualification created successfully!";
+          state.createdQualification = action.payload.data || null;
         }
       )
-      .addCase(createSpecialization.rejected, (state, action) => {
+      .addCase(createQualification.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
         state.error = action.payload || "Something went wrong";
@@ -114,7 +113,7 @@ const createSpecializationSlice = createSlice({
 });
 
 // Export actions
-export const { resetSpecializationState } = createSpecializationSlice.actions;
+export const { resetQualificationState } = createQualificationSlice.actions;
 
 // Export reducer
-export default createSpecializationSlice.reducer;
+export default createQualificationSlice.reducer;
