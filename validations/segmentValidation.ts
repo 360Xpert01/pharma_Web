@@ -1,11 +1,11 @@
 import { z } from "zod";
 
-// Specialization Creation Schema
-export const specializationCreationSchema = z.object({
+// Segment Creation Schema
+export const segmentCreationSchema = z.object({
   // Required fields
   name: z
     .string()
-    .min(1, { message: "Specialization name is required" })
+    .min(1, { message: "Segment name is required" })
     .min(2, { message: "Name must be at least 2 characters" })
     .max(100, { message: "Name must not exceed 100 characters" })
     .transform((val) => val.trim()),
@@ -32,4 +32,4 @@ export const specializationCreationSchema = z.object({
     .or(z.literal("")),
 });
 
-export type SpecializationCreationFormValues = z.infer<typeof specializationCreationSchema>;
+export type SegmentCreationFormValues = z.infer<typeof segmentCreationSchema>;

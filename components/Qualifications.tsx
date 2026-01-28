@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
-import { FormInput, FormSelect } from "@/components/form";
+import { FormInput, FormSelect, StatusToggle } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
@@ -179,16 +179,15 @@ export default function AddQualificationsCard() {
                 error={validationErrors.name}
               />
 
-              {/* Status */}
-              <FormSelect
-                label="Status"
-                name="status"
-                value={status}
-                onChange={(value) => setStatus(value as "active" | "inactive")}
-                options={statusOptions}
-                required
-                error={validationErrors.status}
-              />
+              <div className="flex flex-col gap-1">
+                <label className="t-label mb-1">Status</label>
+                <StatusToggle
+                  status={status === "active" ? "Active" : "Inactive"}
+                  onChange={(newStatus) =>
+                    setStatus(newStatus === "Active" ? "active" : "inactive")
+                  }
+                />
+              </div>
             </div>
 
             {/* Add Button */}

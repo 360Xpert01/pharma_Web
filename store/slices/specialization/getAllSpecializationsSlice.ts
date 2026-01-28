@@ -8,7 +8,7 @@ interface Specialization {
   id: string;
   name: string;
   pulseCode: string;
-  isActive: boolean;
+  status: "active" | "inactive";
   createdAt: string;
   updatedAt: string;
 }

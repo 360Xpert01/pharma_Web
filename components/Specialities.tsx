@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
-import { FormInput } from "@/components/form";
+import { FormInput, StatusToggle } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
@@ -29,12 +29,12 @@ export default function AddSpecialitiesCard() {
   } = useAppSelector((state) => state.generatePrefix);
 
   const [specializationName, setSpecializationName] = useState("");
-  const [legacyCode, setLegacyCode] = useState("");
   const [validationErrors, setValidationErrors] = useState<{
     name?: string;
     pulseCode?: string;
-    legacyCode?: string;
+    status?: string;
   }>({});
+  const [status, setStatus] = useState<"active" | "inactive">("active");
 
   // Generate prefix on mount
   useEffect(() => {
@@ -49,8 +49,8 @@ export default function AddSpecialitiesCard() {
   useEffect(() => {
     if (success && message) {
       setSpecializationName("");
-      setLegacyCode("");
       setValidationErrors({});
+      setStatus("active");
       dispatch(getAllSpecializations());
       dispatch(generatePrefix({ entity: "DoctorSpecialization" }));
       setTimeout(() => {
@@ -60,12 +60,12 @@ export default function AddSpecialitiesCard() {
   }, [success, message, dispatch]);
 
   // Validate using Zod schema with real-time field validation
-  const validateField = (fieldName: "name" | "pulseCode" | "legacyCode", value: any) => {
+  const validateField = (fieldName: "name" | "pulseCode" | "status", value: any) => {
     try {
       if (fieldName === "name") {
         specializationCreationSchema.shape.name.parse(value);
-      } else if (fieldName === "legacyCode" && value) {
-        specializationCreationSchema.shape.legacyCode.parse(value);
+      } else if (fieldName === "status") {
+        specializationCreationSchema.shape.status.parse(value);
       }
       setValidationErrors((prev) => {
         const { [fieldName]: _, ...rest } = prev;
@@ -87,19 +87,7 @@ export default function AddSpecialitiesCard() {
     validateField("name", value);
   };
 
-  // Handle legacy code change with real-time validation
-  const handleLegacyCodeChange = (value: string) => {
-    setLegacyCode(value);
-    if (value.trim()) {
-      validateField("legacyCode", value);
-    } else {
-      // Clear error if field is empty (it's optional)
-      setValidationErrors((prev) => {
-        const { legacyCode: _, ...rest } = prev;
-        return rest;
-      });
-    }
-  };
+  // No legacy code
 
   // Validate entire form before submission
   const validateForm = () => {
@@ -107,8 +95,7 @@ export default function AddSpecialitiesCard() {
       specializationCreationSchema.parse({
         name: specializationName,
         pulseCode: generatedPrefix || "",
-        isActive: true,
-        legacyCode: legacyCode || "",
+        status: status,
       });
       setValidationErrors({});
       return true;
@@ -143,7 +130,7 @@ export default function AddSpecialitiesCard() {
         createSpecialization({
           name: specializationName.trim(),
           pulseCode: generatedPrefix,
-          isActive: true,
+          status: status,
         })
       ).unwrap();
     } catch (err) {
@@ -191,16 +178,16 @@ export default function AddSpecialitiesCard() {
                 error={validationErrors.name}
               />
 
-              {/* Legacy Code */}
-              <FormInput
-                label="Legacy Code (Optional)"
-                name="legacyCode"
-                type="text"
-                value={legacyCode}
-                onChange={handleLegacyCodeChange}
-                placeholder="e.g. OLD-SP-001"
-                error={validationErrors.legacyCode}
-              />
+              {/* Status Toggle */}
+              <div className="flex flex-col gap-1">
+                <label className="t-label mb-1">Status</label>
+                <StatusToggle
+                  status={status === "active" ? "Active" : "Inactive"}
+                  onChange={(newStatus) =>
+                    setStatus(newStatus === "Active" ? "active" : "inactive")
+                  }
+                />
+              </div>
             </div>
 
             {/* Add Button */}

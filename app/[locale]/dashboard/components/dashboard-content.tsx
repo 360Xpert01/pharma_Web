@@ -54,7 +54,6 @@ import RoleHierarchyWrapper from "@/components/RoleHierarchyWrapper";
 import AllocatedGiveawaysTable from "@/components/AllocatedGiveawaysTable";
 import ProductCategories from "@/components/ProductCategories";
 import AllProductCategories from "@/components/AllProductCategories";
-import DoctorSpecializations from "@/components/DoctorSpecializations";
 import AllSpecializations from "@/components/AllSpecializations";
 import DoctorDetail from "@/components/DoctorDetail";
 import CsvUploadMapper from "@/components/CsvUploadMapper";
@@ -450,16 +449,6 @@ export function DashboardContent({
             <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
               <TableHeader campHeading="Product Categories" filterT={filterT} />
               <AllProductCategories />
-            </div>
-          </div>
-        )}
-
-        {specializationsTrue && (
-          <div>
-            <DoctorSpecializations />
-            <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
-              <TableHeader campHeading="Doctor Specializations" filterT={filterT} />
-              <AllSpecializations />
             </div>
           </div>
         )}

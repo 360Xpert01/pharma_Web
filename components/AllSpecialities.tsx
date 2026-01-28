@@ -17,7 +17,7 @@ interface Speciality {
   id: string;
   pulseCode: string;
   name: string;
-  isActive: boolean;
+  status: "active" | "inactive";
 }
 
 export default function AllSpecialities() {
@@ -70,11 +70,11 @@ export default function AllSpecialities() {
     },
     {
       header: "Status",
-      accessorKey: "isActive",
+      accessorKey: "status",
       cell: ({ row }) => (
         <div className="flex items-center">
           <StatusToggle
-            status={row.original.isActive ? "Active" : "Inactive"}
+            status={row.original.status === "active" ? "Active" : "Inactive"}
             onChange={(newStatus) => {
               toggleStatus(row.original.id);
             }}

@@ -1,56 +1,137 @@
 "use client";
 
-import React, { useState } from "react";
-import { Plus, X } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Plus } from "lucide-react";
 import { FormInput } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
-
-interface DoctorSegment {
-  id: string;
-  segmentName: string;
-  pulseCode: string;
-  legacyCode: string;
-}
+import { useAppDispatch, useAppSelector } from "@/store";
+import { createSegment, resetSegmentState } from "@/store/slices/segment/createSegmentSlice";
+import { getAllSegments } from "@/store/slices/segment/getAllSegmentsSlice";
+import {
+  generatePrefix,
+  resetGeneratePrefixState,
+} from "@/store/slices/preFix/generatePrefixSlice";
+import { segmentCreationSchema } from "@/validations/segmentValidation";
+import { toast } from "sonner";
+import StatusToggle from "@/components/form/StatusToggle";
 
 export default function AddDoctorSegmentsCard() {
-  const [segmentName, setSegmentName] = useState("");
-  const [pulseCode, setPulseCode] = useState("");
-  const [legacyCode, setLegacyCode] = useState("");
-  const [segmentsList, setSegmentsList] = useState<DoctorSegment[]>([]);
-  const [loading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
+  const { loading, success, error, message } = useAppSelector((state) => state.createSegment);
+  const {
+    generatedPrefix,
+    loading: prefixLoading,
+    error: prefixError,
+  } = useAppSelector((state) => state.generatePrefix);
 
-  // Auto-generate pulse code based on segments count
-  const generatePulseCode = () => {
-    const count = segmentsList.length + 1;
-    return `DS_${String(count).padStart(6, "0")}`;
+  const [segmentName, setSegmentName] = useState("");
+  const [validationErrors, setValidationErrors] = useState<{
+    name?: string;
+    pulseCode?: string;
+    status?: string;
+  }>({});
+  const [status, setStatus] = useState<"active" | "inactive">("active");
+
+  // Generate prefix on mount
+  useEffect(() => {
+    dispatch(generatePrefix({ entity: "Segment" }));
+
+    return () => {
+      dispatch(resetGeneratePrefixState());
+    };
+  }, [dispatch]);
+
+  // Handle success
+  useEffect(() => {
+    if (success && message) {
+      setSegmentName("");
+      setValidationErrors({});
+      setStatus("active");
+      dispatch(getAllSegments());
+      dispatch(generatePrefix({ entity: "Segment" }));
+      setTimeout(() => {
+        dispatch(resetSegmentState());
+      }, 2000);
+    }
+  }, [success, message, dispatch]);
+
+  // Validate using Zod schema with real-time field validation
+  const validateField = (fieldName: "name" | "pulseCode" | "status", value: any) => {
+    try {
+      if (fieldName === "name") {
+        segmentCreationSchema.shape.name.parse(value);
+      } else if (fieldName === "status") {
+        segmentCreationSchema.shape.status.parse(value);
+      }
+      setValidationErrors((prev) => {
+        const { [fieldName]: _, ...rest } = prev;
+        return rest;
+      });
+    } catch (error: any) {
+      if (error.errors && error.errors[0]) {
+        setValidationErrors((prev) => ({
+          ...prev,
+          [fieldName]: error.errors[0].message,
+        }));
+      }
+    }
+  };
+
+  // Handle segment name change with real-time validation
+  const handleSegmentNameChange = (value: string) => {
+    setSegmentName(value);
+    validateField("name", value);
+  };
+
+  // No legacy code
+
+  // Validate entire form before submission
+  const validateForm = () => {
+    try {
+      segmentCreationSchema.parse({
+        name: segmentName,
+        pulseCode: generatedPrefix || "",
+        status: status,
+      });
+      setValidationErrors({});
+      return true;
+    } catch (error: any) {
+      const errors: typeof validationErrors = {};
+      if (error.errors) {
+        error.errors.forEach((err: any) => {
+          const field = err.path[0];
+          errors[field as keyof typeof errors] = err.message;
+        });
+      }
+      setValidationErrors(errors);
+      return false;
+    }
   };
 
   const handleAddSegment = async () => {
-    if (!segmentName.trim()) return;
+    // Validate pulse code is generated
+    if (!generatedPrefix) {
+      toast.error("Pulse code is still being generated. Please wait.");
+      return;
+    }
 
-    setLoading(true);
+    // Validate form
+    if (!validateForm()) {
+      toast.error("Please fix the validation errors");
+      return;
+    }
 
-    // Simulate API delay
-    setTimeout(() => {
-      const newSegment: DoctorSegment = {
-        id: Date.now().toString(),
-        segmentName: segmentName.trim(),
-        pulseCode: pulseCode || generatePulseCode(),
-        legacyCode: legacyCode.trim() || "",
-      };
-
-      setSegmentsList([...segmentsList, newSegment]);
-
-      // Clear form
-      setSegmentName("");
-      setPulseCode("");
-      setLegacyCode("");
-      setLoading(false);
-    }, 500);
-  };
-
-  const removeSegment = (id: string) => {
-    setSegmentsList(segmentsList.filter((seg) => seg.id !== id));
+    try {
+      await dispatch(
+        createSegment({
+          name: segmentName.trim(),
+          pulseCode: generatedPrefix,
+          status: status,
+        })
+      ).unwrap();
+    } catch (err) {
+      console.error("Failed to create segment:", err);
+    }
   };
 
   return (
@@ -66,7 +147,7 @@ export default function AddDoctorSegmentsCard() {
           </div>
 
           {/* Add New Segment Form */}
-          <div className="flex gap-6 items-end">
+          <div className="flex gap-6 items-start">
             {/* Input Fields Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1">
               {/* Pulse Code */}
@@ -74,9 +155,10 @@ export default function AddDoctorSegmentsCard() {
                 label="Pulse Code"
                 name="pulseCode"
                 type="text"
-                value={pulseCode || generatePulseCode()}
-                onChange={setPulseCode}
-                placeholder="DS_000001"
+                value={generatedPrefix || ""}
+                onChange={() => {}}
+                placeholder={prefixLoading ? "Generating..." : "SEG_000001"}
+                readOnly
                 required
               />
 
@@ -86,72 +168,37 @@ export default function AddDoctorSegmentsCard() {
                 name="segmentName"
                 type="text"
                 value={segmentName}
-                onChange={setSegmentName}
+                onChange={handleSegmentNameChange}
                 placeholder="e.g. Segment A, Segment B, Segment C"
                 required
+                error={validationErrors.name}
               />
 
-              {/* Legacy Code */}
-              <FormInput
-                label="Legacy Code (Optional)"
-                name="legacyCode"
-                type="text"
-                value={legacyCode}
-                onChange={setLegacyCode}
-                placeholder="e.g. OLD-SEG-001"
-              />
+              {/* Status Toggle */}
+              <div className="flex flex-col gap-1">
+                <label className="t-label mb-1">Status</label>
+                <StatusToggle
+                  status={status === "active" ? "Active" : "Inactive"}
+                  onChange={(newStatus) =>
+                    setStatus(newStatus === "Active" ? "active" : "inactive")
+                  }
+                />
+              </div>
             </div>
 
             {/* Add Button */}
             <Button
               onClick={handleAddSegment}
-              disabled={!segmentName.trim() || loading}
+              disabled={loading || !segmentName.trim() || !generatedPrefix}
               variant="primary"
               size="lg"
               icon={Plus}
               loading={loading}
-              className="h-12 px-8"
+              className="h-12 px-8 mt-6"
             >
-              {loading ? "Adding..." : "Add to list"}
+              {loading ? "Adding..." : "Add Segment"}
             </Button>
           </div>
-
-          {/* Added Segments List */}
-          {segmentsList.length > 0 && (
-            <div className="mt-10">
-              <h3 className="t-h4 mb-4">Added Segments ({segmentsList.length})</h3>
-              <div className="space-y-3">
-                {segmentsList.map((segment) => (
-                  <div
-                    key={segment.id}
-                    className="flex items-center justify-between p-5 bg-[var(--gray-0)] rounded-8 border border-[var(--gray-2)]"
-                  >
-                    <div className="grid grid-cols-3 gap-8 flex-1">
-                      <div>
-                        <p className="t-cap">Segment Name</p>
-                        <p className="t-label-b">{segment.segmentName}</p>
-                      </div>
-                      <div>
-                        <p className="t-cap">Pulse Code</p>
-                        <p className="t-val-sm">{segment.pulseCode}</p>
-                      </div>
-                      <div>
-                        <p className="t-cap">Legacy Code</p>
-                        <p className="t-label-b">{segment.legacyCode || "N/A"}</p>
-                      </div>
-                    </div>
-                    <Button
-                      onClick={() => removeSegment(segment.id)}
-                      variant="ghost"
-                      size="icon"
-                      icon={X}
-                      className="ml-6 text-[var(--destructive)] hover:bg-[var(--destructive-0)]"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>

@@ -48,6 +48,8 @@ import weekelyCallExpenses from "./slices/employeeProfile/weeklyCallExpensesSlic
 import uploadReducer from "./slices/upload/uploadSlice";
 import allQualificationsReducer from "./slices/qualification/getAllQualificationsSlice";
 import createQualificationReducer from "./slices/qualification/createQualificationSlice";
+import allSegmentsReducer from "./slices/segment/getAllSegmentsSlice";
+import createSegmentReducer from "./slices/segment/createSegmentSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -94,6 +96,8 @@ const rootReducer = combineReducers({
   upload: uploadReducer,
   allQualifications: allQualificationsReducer,
   createQualification: createQualificationReducer,
+  allSegments: allSegmentsReducer,
+  createSegment: createSegmentReducer,
 });
 
 const persistConfig = {

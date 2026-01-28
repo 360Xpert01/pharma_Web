@@ -7,7 +7,7 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 interface CreateSpecializationPayload {
   pulseCode: string;
   name: string;
-  isActive: boolean;
+  status: "active" | "inactive";
 }
 
 interface CreateSpecializationResponse {
@@ -17,7 +17,7 @@ interface CreateSpecializationResponse {
     id: string;
     name: string;
     pulseCode: string;
-    isActive: boolean;
+    status: "active" | "inactive";
     createdAt: string;
   };
 }
