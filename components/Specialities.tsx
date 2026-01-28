@@ -1,56 +1,154 @@
 "use client";
 
-import React, { useState } from "react";
-import { Plus, X } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Plus } from "lucide-react";
 import { FormInput } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
-
-interface Speciality {
-  id: string;
-  specialityName: string;
-  pulseCode: string;
-  legacyCode: string;
-}
+import { useAppDispatch, useAppSelector } from "@/store";
+import {
+  createSpecialization,
+  resetSpecializationState,
+} from "@/store/slices/specialization/createSpecializationSlice";
+import { getAllSpecializations } from "@/store/slices/specialization/getAllSpecializationsSlice";
+import {
+  generatePrefix,
+  resetGeneratePrefixState,
+} from "@/store/slices/preFix/generatePrefixSlice";
+import { specializationCreationSchema } from "@/validations/specializationValidation";
+import { toast } from "sonner";
 
 export default function AddSpecialitiesCard() {
-  const [specialityName, setSpecialityName] = useState("");
-  const [pulseCode, setPulseCode] = useState("");
+  const dispatch = useAppDispatch();
+  const { loading, success, error, message } = useAppSelector(
+    (state) => state.createSpecialization
+  );
+  const {
+    generatedPrefix,
+    loading: prefixLoading,
+    error: prefixError,
+  } = useAppSelector((state) => state.generatePrefix);
+
+  const [specializationName, setSpecializationName] = useState("");
   const [legacyCode, setLegacyCode] = useState("");
-  const [specialitiesList, setSpecialitiesList] = useState<Speciality[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<{
+    name?: string;
+    pulseCode?: string;
+    legacyCode?: string;
+  }>({});
 
-  // Auto-generate pulse code based on specialities count
-  const generatePulseCode = () => {
-    const count = specialitiesList.length + 1;
-    return `SP_${String(count).padStart(6, "0")}`;
-  };
+  // Generate prefix on mount
+  useEffect(() => {
+    dispatch(generatePrefix({ entity: "DoctorSpecialization" }));
 
-  const handleAddSpeciality = async () => {
-    if (!specialityName.trim()) return;
+    return () => {
+      dispatch(resetGeneratePrefixState());
+    };
+  }, [dispatch]);
 
-    setLoading(true);
-
-    // Simulate API delay
-    setTimeout(() => {
-      const newSpeciality: Speciality = {
-        id: Date.now().toString(),
-        specialityName: specialityName.trim(),
-        pulseCode: pulseCode || generatePulseCode(),
-        legacyCode: legacyCode.trim() || "",
-      };
-
-      setSpecialitiesList([...specialitiesList, newSpeciality]);
-
-      // Clear form
-      setSpecialityName("");
-      setPulseCode("");
+  // Handle success
+  useEffect(() => {
+    if (success && message) {
+      setSpecializationName("");
       setLegacyCode("");
-      setLoading(false);
-    }, 500);
+      setValidationErrors({});
+      dispatch(getAllSpecializations());
+      dispatch(generatePrefix({ entity: "DoctorSpecialization" }));
+      setTimeout(() => {
+        dispatch(resetSpecializationState());
+      }, 2000);
+    }
+  }, [success, message, dispatch]);
+
+  // Validate using Zod schema with real-time field validation
+  const validateField = (fieldName: "name" | "pulseCode" | "legacyCode", value: any) => {
+    try {
+      if (fieldName === "name") {
+        specializationCreationSchema.shape.name.parse(value);
+      } else if (fieldName === "legacyCode" && value) {
+        specializationCreationSchema.shape.legacyCode.parse(value);
+      }
+      setValidationErrors((prev) => {
+        const { [fieldName]: _, ...rest } = prev;
+        return rest;
+      });
+    } catch (error: any) {
+      if (error.errors && error.errors[0]) {
+        setValidationErrors((prev) => ({
+          ...prev,
+          [fieldName]: error.errors[0].message,
+        }));
+      }
+    }
   };
 
-  const removeSpeciality = (id: string) => {
-    setSpecialitiesList(specialitiesList.filter((spec) => spec.id !== id));
+  // Handle specialization name change with real-time validation
+  const handleSpecializationNameChange = (value: string) => {
+    setSpecializationName(value);
+    validateField("name", value);
+  };
+
+  // Handle legacy code change with real-time validation
+  const handleLegacyCodeChange = (value: string) => {
+    setLegacyCode(value);
+    if (value.trim()) {
+      validateField("legacyCode", value);
+    } else {
+      // Clear error if field is empty (it's optional)
+      setValidationErrors((prev) => {
+        const { legacyCode: _, ...rest } = prev;
+        return rest;
+      });
+    }
+  };
+
+  // Validate entire form before submission
+  const validateForm = () => {
+    try {
+      specializationCreationSchema.parse({
+        name: specializationName,
+        pulseCode: generatedPrefix || "",
+        isActive: true,
+        legacyCode: legacyCode || "",
+      });
+      setValidationErrors({});
+      return true;
+    } catch (error: any) {
+      const errors: typeof validationErrors = {};
+      if (error.errors) {
+        error.errors.forEach((err: any) => {
+          const field = err.path[0];
+          errors[field as keyof typeof errors] = err.message;
+        });
+      }
+      setValidationErrors(errors);
+      return false;
+    }
+  };
+
+  const handleAddSpecialization = async () => {
+    // Validate pulse code is generated
+    if (!generatedPrefix) {
+      toast.error("Pulse code is still being generated. Please wait.");
+      return;
+    }
+
+    // Validate form
+    if (!validateForm()) {
+      toast.error("Please fix the validation errors");
+      return;
+    }
+
+    try {
+      await dispatch(
+        createSpecialization({
+          name: specializationName.trim(),
+          pulseCode: generatedPrefix,
+          isActive: true,
+        })
+      ).unwrap();
+    } catch (err) {
+      console.error("Failed to create specialization:", err);
+    }
   };
 
   return (
@@ -66,7 +164,7 @@ export default function AddSpecialitiesCard() {
           </div>
 
           {/* Add New Speciality Form */}
-          <div className="flex gap-6 items-end">
+          <div className="flex gap-6 items-start">
             {/* Input Fields Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1">
               {/* Pulse Code */}
@@ -74,21 +172,23 @@ export default function AddSpecialitiesCard() {
                 label="Pulse Code"
                 name="pulseCode"
                 type="text"
-                value={pulseCode || generatePulseCode()}
-                onChange={setPulseCode}
-                placeholder="SP_000001"
+                value={generatedPrefix || ""}
+                onChange={() => {}}
+                placeholder={prefixLoading ? "Generating..." : "DS_000001"}
+                readOnly
                 required
               />
 
               {/* Speciality Name */}
               <FormInput
                 label="Speciality Name"
-                name="specialityName"
+                name="specializationName"
                 type="text"
-                value={specialityName}
-                onChange={setSpecialityName}
+                value={specializationName}
+                onChange={handleSpecializationNameChange}
                 placeholder="e.g. Cardiology, Neurology, Orthopedics"
                 required
+                error={validationErrors.name}
               />
 
               {/* Legacy Code */}
@@ -97,61 +197,25 @@ export default function AddSpecialitiesCard() {
                 name="legacyCode"
                 type="text"
                 value={legacyCode}
-                onChange={setLegacyCode}
+                onChange={handleLegacyCodeChange}
                 placeholder="e.g. OLD-SP-001"
+                error={validationErrors.legacyCode}
               />
             </div>
 
             {/* Add Button */}
             <Button
-              onClick={handleAddSpeciality}
-              disabled={!specialityName.trim() || loading}
+              onClick={handleAddSpecialization}
+              disabled={loading || !specializationName.trim() || !generatedPrefix}
               variant="primary"
               size="lg"
               icon={Plus}
               loading={loading}
-              className="h-12 px-8"
+              className="h-12 px-8 mt-6"
             >
-              {loading ? "Adding..." : "Add to list"}
+              {loading ? "Adding..." : "Add Specialization"}
             </Button>
           </div>
-
-          {/* Added Specialities List */}
-          {specialitiesList.length > 0 && (
-            <div className="mt-10">
-              <h3 className="t-h4 mb-4">Added Specialities ({specialitiesList.length})</h3>
-              <div className="space-y-3">
-                {specialitiesList.map((speciality) => (
-                  <div
-                    key={speciality.id}
-                    className="flex items-center justify-between p-5 bg-[var(--gray-0)] rounded-8 border border-[var(--gray-2)]"
-                  >
-                    <div className="grid grid-cols-3 gap-8 flex-1">
-                      <div>
-                        <p className="t-cap">Speciality Name</p>
-                        <p className="t-label-b">{speciality.specialityName}</p>
-                      </div>
-                      <div>
-                        <p className="t-cap">Pulse Code</p>
-                        <p className="t-val-sm">{speciality.pulseCode}</p>
-                      </div>
-                      <div>
-                        <p className="t-cap">Legacy Code</p>
-                        <p className="t-label-b">{speciality.legacyCode || "N/A"}</p>
-                      </div>
-                    </div>
-                    <Button
-                      onClick={() => removeSpeciality(speciality.id)}
-                      variant="ghost"
-                      size="icon"
-                      icon={X}
-                      className="ml-6 text-[var(--destructive)] hover:bg-[var(--destructive-0)]"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>

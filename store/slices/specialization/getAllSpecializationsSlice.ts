@@ -47,7 +47,7 @@ export const getAllSpecializations = createAsyncThunk<
     }
 
     const response = await axios.get<GetSpecializationsResponse>(
-      `${baseUrl}api/v1/specialization/all`,
+      `${baseUrl}api/v1/doctorSpecialization/`,
       {
         headers: {
           "Content-Type": "application/json",

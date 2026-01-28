@@ -7,4 +7,5 @@ export * from "./prefixValidation";
 export * from "./productValidation";
 export * from "./qualificationValidation";
 export * from "./roleValidation";
+export * from "./specializationValidation";
 export * from "./teamValidation";

@@ -7,6 +7,11 @@ import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import TableActionDropdown from "@/components/shared/table/TableActionDropdown";
 import StatusToggle from "@/components/form/StatusToggle";
+import { useAppDispatch, useAppSelector } from "@/store";
+import {
+  getAllSpecializations,
+  resetSpecializationsState,
+} from "@/store/slices/specialization/getAllSpecializationsSlice";
 
 interface Speciality {
   id: string;
@@ -15,107 +20,33 @@ interface Speciality {
   isActive: boolean;
 }
 
-// Hardcoded specialities data
-const HARDCODED_SPECIALITIES: Speciality[] = [
-  {
-    id: "1",
-    pulseCode: "SP_000001",
-    name: "Cardiology",
-    isActive: true,
-  },
-  {
-    id: "2",
-    pulseCode: "SP_000002",
-    name: "Neurology",
-    isActive: true,
-  },
-  {
-    id: "3",
-    pulseCode: "SP_000003",
-    name: "Orthopedics",
-    isActive: true,
-  },
-  {
-    id: "4",
-    pulseCode: "SP_000004",
-    name: "Pediatrics",
-    isActive: true,
-  },
-  {
-    id: "5",
-    pulseCode: "SP_000005",
-    name: "Dermatology",
-    isActive: true,
-  },
-  {
-    id: "6",
-    pulseCode: "SP_000006",
-    name: "Ophthalmology",
-    isActive: false,
-  },
-  {
-    id: "7",
-    pulseCode: "SP_000007",
-    name: "General Surgery",
-    isActive: true,
-  },
-  {
-    id: "8",
-    pulseCode: "SP_000008",
-    name: "ENT",
-    isActive: true,
-  },
-  {
-    id: "9",
-    pulseCode: "SP_000009",
-    name: "Psychiatry",
-    isActive: true,
-  },
-  {
-    id: "10",
-    pulseCode: "SP_000010",
-    name: "Gastroenterology",
-    isActive: false,
-  },
-];
-
 export default function AllSpecialities() {
-  const [specialities, setSpecialities] = useState<Speciality[]>([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useAppDispatch();
+  const { loading, error, specializations } = useAppSelector((state) => state.allSpecializations);
   const [openId, setOpenId] = useState<string | null>(null);
 
-  // Load hardcoded data
+  // Fetch specializations on mount
   useEffect(() => {
-    // Simulate loading
-    const timer = setTimeout(() => {
-      setSpecialities(HARDCODED_SPECIALITIES);
-      setLoading(false);
-    }, 500);
+    dispatch(getAllSpecializations());
 
-    return () => clearTimeout(timer);
-  }, []);
+    return () => {
+      dispatch(resetSpecializationsState());
+    };
+  }, [dispatch]);
+
+  const handleRetry = () => {
+    dispatch(getAllSpecializations());
+  };
 
   const toggleStatus = (id: string) => {
-    setSpecialities((prevSpecialities) =>
-      prevSpecialities.map((speciality) =>
-        speciality.id === id ? { ...speciality, isActive: !speciality.isActive } : speciality
-      )
-    );
+    // TODO: Implement update API when available
+    console.log("Toggle status for:", id);
   };
 
   const deleteSpeciality = (id: string) => {
-    setSpecialities((prevSpecialities) =>
-      prevSpecialities.filter((speciality) => speciality.id !== id)
-    );
+    // TODO: Implement delete API when available
+    console.log("Delete speciality:", id);
     setOpenId(null);
-  };
-
-  const handleRetry = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setSpecialities(HARDCODED_SPECIALITIES);
-      setLoading(false);
-    }, 500);
   };
 
   const columns: ColumnDef<Speciality>[] = [
@@ -184,10 +115,10 @@ export default function AllSpecialities() {
   return (
     <div className="w-full">
       <CenturoTable
-        data={specialities}
+        data={specializations}
         columns={columns}
         loading={loading}
-        error={null}
+        error={error}
         onRetry={handleRetry}
         enableSorting={false}
         enablePagination={true}
