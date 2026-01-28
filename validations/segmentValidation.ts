@@ -6,7 +6,6 @@ export const segmentCreationSchema = z.object({
   name: z
     .string()
     .min(1, { message: "Segment name is required" })
-    .min(2, { message: "Name must be at least 2 characters" })
     .max(100, { message: "Name must not exceed 100 characters" })
     .transform((val) => val.trim()),
 

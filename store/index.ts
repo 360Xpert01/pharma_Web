@@ -50,6 +50,8 @@ import allQualificationsReducer from "./slices/qualification/getAllQualification
 import createQualificationReducer from "./slices/qualification/createQualificationSlice";
 import allSegmentsReducer from "./slices/segment/getAllSegmentsSlice";
 import createSegmentReducer from "./slices/segment/createSegmentSlice";
+import getSegmentByIdReducer from "./slices/segment/getSegmentByIdSlice";
+import updateSegmentReducer from "./slices/segment/updateSegmentSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -98,6 +100,8 @@ const rootReducer = combineReducers({
   createQualification: createQualificationReducer,
   allSegments: allSegmentsReducer,
   createSegment: createSegmentReducer,
+  segmentById: getSegmentByIdReducer,
+  updateSegment: updateSegmentReducer,
 });
 
 const persistConfig = {

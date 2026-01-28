@@ -1,12 +1,26 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
 export const getSegmentById = createAsyncThunk(
   "segment/getById",
   async (id: string, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`/api/v1/segments/${id}`);
-      return response.data;
+      const token = localStorage.getItem("userSession");
+      if (!token) {
+        return rejectWithValue("No session found. Please login again.");
+      }
+
+      const response = await axios.get(`${baseUrl}api/v1/segment/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      // API returns { success, data: {...}, message }
+      // We need to extract the nested data object
+      return response.data.data || response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || error.message);
     }

@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState } from "react";
 import { useDashboard } from "@/hooks/use-dashboard";
 import { DashboardProps } from "../types";
 import { ChartsSection } from "./charts/ChartsSection";
@@ -145,6 +146,10 @@ export function DashboardContent({
     { title: "Client4", amount: 520 },
     { title: "Client5", amount: 520 },
   ];
+
+  // State for segment editing
+  const [selectedSegmentId, setSelectedSegmentId] = useState<string | null>(null);
+
   const handleSettings = () => {
     if (settingsRoute) {
       router.push(settingsRoute);
@@ -161,12 +166,17 @@ export function DashboardContent({
     }
   };
 
+  const handleEditSegment = (segmentId: string) => {
+    setSelectedSegmentId(segmentId);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleUpdateComplete = () => {
+    setSelectedSegmentId(null);
+  };
+
   return (
     <div className="space-y-1 px-3 mt-30 bg-(--gray-0)">
-      {/* space-y-10 p-3 */}
-      {/* Dashboard Header with Actions */}
-      {/* shadow-[0px_0.63px_5.5px_0px_rgba(0,0,0,0.1)] */}
-
       {!channalTrue &&
         !productCategoriesTrue &&
         !specializationsTrue &&
@@ -222,10 +232,10 @@ export function DashboardContent({
 
         {doctorSegmentsD && (
           <div>
-            <DoctorSegments />
+            <DoctorSegments updateId={selectedSegmentId} onUpdateComplete={handleUpdateComplete} />
             <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
               <TableHeader campHeading={campHeading} filterT={filterT} />
-              <AllDoctorSegments />
+              <AllDoctorSegments onEditSegment={handleEditSegment} />
             </div>
           </div>
         )}

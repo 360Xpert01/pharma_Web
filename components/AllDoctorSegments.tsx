@@ -18,7 +18,11 @@ interface DoctorSegment {
   status: "active" | "inactive";
 }
 
-export default function AllDoctorSegments() {
+interface AllDoctorSegmentsProps {
+  onEditSegment?: (segmentId: string) => void;
+}
+
+export default function AllDoctorSegments({ onEditSegment }: AllDoctorSegmentsProps) {
   const dispatch = useAppDispatch();
   const { loading, error, segments } = useAppSelector((state) => state.allSegments);
   const [openId, setOpenId] = useState<string | null>(null);
@@ -34,6 +38,12 @@ export default function AllDoctorSegments() {
 
   const handleRetry = () => {
     dispatch(getAllSegments());
+  };
+
+  const handleEdit = (id: string) => {
+    if (onEditSegment) {
+      onEditSegment(id);
+    }
   };
 
   const toggleStatus = (id: string) => {
@@ -88,8 +98,7 @@ export default function AllDoctorSegments() {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              // No link, just action
-              console.log("Edit Segment", row.original.id);
+              handleEdit(row.original.id);
             }}
             className="group hover:opacity-80 transition cursor-pointer"
             title="Edit Segment"
