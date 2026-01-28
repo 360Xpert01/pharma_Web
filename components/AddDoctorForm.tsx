@@ -245,13 +245,6 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
             required
           />
         )}
-
-        {/* <div className="flex flex-col gap-2">
-          <label className="t-label">
-            Status <span className="t-err">*</span>
-          </label>
-          <StatusToggle status={status} onChange={(newStatus) => setStatus(newStatus)} />
-        </div> */}
         {/* 
         <FormInput
           label="License number"
@@ -289,6 +282,15 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
             placeholder="Select parent"
             required
           />
+        )}
+
+        {fieldConfig.status && (
+          <div className="flex flex-col gap-2">
+            <label className="t-label">
+              Status <span className="t-err">*</span>
+            </label>
+            <StatusToggle status={status} onChange={(newStatus) => setStatus(newStatus)} />
+          </div>
         )}
       </div>
 

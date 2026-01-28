@@ -13,6 +13,7 @@ export interface FieldConfig {
   email: boolean;
   dateOfBirth: boolean;
   parent: boolean;
+  status: boolean;
 }
 
 /**
@@ -34,6 +35,7 @@ export const channelFieldConfigs: Record<string, FieldConfig> = {
     email: true,
     dateOfBirth: true,
     parent: false,
+    status: true,
   },
 
   // Pharmacies channel configuration
@@ -50,6 +52,7 @@ export const channelFieldConfigs: Record<string, FieldConfig> = {
     email: true,
     dateOfBirth: false,
     parent: false,
+    status: true,
   },
 
   // Key Accounts channel configuration
@@ -66,6 +69,7 @@ export const channelFieldConfigs: Record<string, FieldConfig> = {
     email: true,
     dateOfBirth: false,
     parent: true,
+    status: true,
   },
 
   // General Trade channel configuration
@@ -82,6 +86,7 @@ export const channelFieldConfigs: Record<string, FieldConfig> = {
     email: true,
     dateOfBirth: false,
     parent: false,
+    status: true,
   },
 };
 
