@@ -9,6 +9,7 @@ import TableActionDropdown from "@/components/shared/table/TableActionDropdown";
 import StatusToggle from "@/components/form/StatusToggle";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllSegments, resetSegmentsState } from "@/store/slices/segment/getAllSegmentsSlice";
+import EditIcon from "@/components/svgs/edit-icon";
 
 interface DoctorSegment {
   id: string;
@@ -84,26 +85,17 @@ export default function AllDoctorSegments() {
       header: "",
       cell: ({ row }) => (
         <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
-          <TableActionDropdown
-            isOpen={openId === row.original.id}
-            onToggle={() => setOpenId(openId === row.original.id ? null : row.original.id)}
-            onClose={() => setOpenId(null)}
-            items={[
-              {
-                label: "View Details",
-                onClick: () => console.log("View Details", row.original.id),
-              },
-              {
-                label: "Edit Segment",
-                onClick: () => console.log("Edit Segment", row.original.id),
-              },
-              {
-                label: "Delete Segment",
-                onClick: () => deleteSegment(row.original.id),
-                variant: "danger",
-              },
-            ]}
-          />
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              // No link, just action
+              console.log("Edit Segment", row.original.id);
+            }}
+            className="group hover:opacity-80 transition cursor-pointer"
+            title="Edit Segment"
+          >
+            <EditIcon />
+          </button>
         </div>
       ),
     },

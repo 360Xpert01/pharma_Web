@@ -12,6 +12,7 @@ import {
   getAllSpecializations,
   resetSpecializationsState,
 } from "@/store/slices/specialization/getAllSpecializationsSlice";
+import EditIcon from "@/components/svgs/edit-icon";
 
 interface Speciality {
   id: string;
@@ -87,26 +88,17 @@ export default function AllSpecialities() {
       header: "",
       cell: ({ row }) => (
         <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
-          <TableActionDropdown
-            isOpen={openId === row.original.id}
-            onToggle={() => setOpenId(openId === row.original.id ? null : row.original.id)}
-            onClose={() => setOpenId(null)}
-            items={[
-              {
-                label: "View Details",
-                onClick: () => console.log("View Details", row.original.id),
-              },
-              {
-                label: "Edit Speciality",
-                onClick: () => console.log("Edit Speciality", row.original.id),
-              },
-              {
-                label: "Delete Speciality",
-                onClick: () => deleteSpeciality(row.original.id),
-                variant: "danger",
-              },
-            ]}
-          />
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              // No link, just action
+              console.log("Edit Speciality", row.original.id);
+            }}
+            className="group hover:opacity-80 transition cursor-pointer"
+            title="Edit Speciality"
+          >
+            <EditIcon />
+          </button>
         </div>
       ),
     },
