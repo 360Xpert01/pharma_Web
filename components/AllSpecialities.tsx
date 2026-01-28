@@ -21,7 +21,11 @@ interface Speciality {
   status: "active" | "inactive";
 }
 
-export default function AllSpecialities() {
+interface AllSpecialitiesProps {
+  onEditSpeciality?: (specialityId: string) => void;
+}
+
+export default function AllSpecialities({ onEditSpeciality }: AllSpecialitiesProps) {
   const dispatch = useAppDispatch();
   const { loading, error, specializations } = useAppSelector((state) => state.allSpecializations);
   const [openId, setOpenId] = useState<string | null>(null);
@@ -39,15 +43,15 @@ export default function AllSpecialities() {
     dispatch(getAllSpecializations());
   };
 
+  const handleEdit = (id: string) => {
+    if (onEditSpeciality) {
+      onEditSpeciality(id);
+    }
+  };
+
   const toggleStatus = (id: string) => {
     // TODO: Implement update API when available
     console.log("Toggle status for:", id);
-  };
-
-  const deleteSpeciality = (id: string) => {
-    // TODO: Implement delete API when available
-    console.log("Delete speciality:", id);
-    setOpenId(null);
   };
 
   const columns: ColumnDef<Speciality>[] = [
@@ -91,8 +95,7 @@ export default function AllSpecialities() {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              // No link, just action
-              console.log("Edit Speciality", row.original.id);
+              handleEdit(row.original.id);
             }}
             className="group hover:opacity-80 transition cursor-pointer"
             title="Edit Speciality"

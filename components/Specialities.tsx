@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Plus } from "lucide-react";
+import { EditIcon, Plus } from "lucide-react";
 import { FormInput, StatusToggle } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -11,16 +11,37 @@ import {
 } from "@/store/slices/specialization/createSpecializationSlice";
 import { getAllSpecializations } from "@/store/slices/specialization/getAllSpecializationsSlice";
 import {
+  updateDoctorSpecialization,
+  resetUpdateDoctorSpecializationState,
+} from "@/store/slices/specialization/updateDoctorSpecializationSlice";
+import { getDoctorSpecializationById } from "@/store/slices/specialization/getDoctorSpecializationByIdSlice";
+import {
   generatePrefix,
   resetGeneratePrefixState,
 } from "@/store/slices/preFix/generatePrefixSlice";
 import { specializationCreationSchema } from "@/validations/specializationValidation";
-import { toast } from "sonner";
 
-export default function AddSpecialitiesCard() {
+interface SpecialitiesCardProps {
+  updateId?: string | null;
+  onUpdateComplete?: () => void;
+}
+
+export default function AddSpecialitiesCard({
+  updateId = null,
+  onUpdateComplete,
+}: SpecialitiesCardProps) {
   const dispatch = useAppDispatch();
   const { loading, success, error, message } = useAppSelector(
     (state) => state.createSpecialization
+  );
+  const {
+    loading: updateLoading,
+    success: updateSuccess,
+    error: updateError,
+    message: updateMessage,
+  } = useAppSelector((state) => state.updateDoctorSpecialization);
+  const { doctorSpecialization: specializationData } = useAppSelector(
+    (state) => state.specializationById
   );
   const {
     generatedPrefix,
@@ -29,35 +50,71 @@ export default function AddSpecialitiesCard() {
   } = useAppSelector((state) => state.generatePrefix);
 
   const [specializationName, setSpecializationName] = useState("");
+  const [pulseCode, setPulseCode] = useState("");
   const [validationErrors, setValidationErrors] = useState<{
     name?: string;
     pulseCode?: string;
     status?: string;
   }>({});
   const [status, setStatus] = useState<"active" | "inactive">("active");
+  const isUpdateMode = !!updateId;
 
-  // Generate prefix on mount
+  // Fetch specialization data by ID when in update mode
   useEffect(() => {
-    dispatch(generatePrefix({ entity: "DoctorSpecialization" }));
+    if (isUpdateMode && updateId) {
+      dispatch(getDoctorSpecializationById(updateId));
+    }
+  }, [dispatch, isUpdateMode, updateId]);
+
+  // Generate prefix only when not in update mode
+  useEffect(() => {
+    if (!isUpdateMode) {
+      dispatch(generatePrefix({ entity: "Specialization" }));
+    }
 
     return () => {
       dispatch(resetGeneratePrefixState());
     };
-  }, [dispatch]);
+  }, [dispatch, isUpdateMode]);
 
-  // Handle success
+  // Populate form when specialization data is loaded in update mode
   useEffect(() => {
-    if (success && message) {
+    if (isUpdateMode && specializationData) {
+      setSpecializationName(specializationData.name || "");
+      setPulseCode(specializationData.pulseCode || "");
+      setStatus(specializationData.status || "active");
+    }
+  }, [isUpdateMode, specializationData]);
+
+  // Handle create success
+  useEffect(() => {
+    if (success) {
       setSpecializationName("");
+      setPulseCode("");
       setValidationErrors({});
       setStatus("active");
       dispatch(getAllSpecializations());
-      dispatch(generatePrefix({ entity: "DoctorSpecialization" }));
+      dispatch(generatePrefix({ entity: "Specialization" }));
       setTimeout(() => {
         dispatch(resetSpecializationState());
       }, 2000);
     }
-  }, [success, message, dispatch]);
+  }, [success, dispatch]);
+
+  // Handle update success
+  useEffect(() => {
+    if (updateSuccess) {
+      setSpecializationName("");
+      setPulseCode("");
+      setValidationErrors({});
+      setStatus("active");
+      dispatch(getAllSpecializations());
+      dispatch(resetUpdateDoctorSpecializationState());
+      if (onUpdateComplete) {
+        onUpdateComplete();
+      }
+    }
+  }, [updateSuccess, dispatch, onUpdateComplete]);
 
   // Validate using Zod schema with real-time field validation
   const validateField = (fieldName: "name" | "pulseCode" | "status", value: any) => {
@@ -87,14 +144,12 @@ export default function AddSpecialitiesCard() {
     validateField("name", value);
   };
 
-  // No legacy code
-
   // Validate entire form before submission
-  const validateForm = () => {
+  const validateForm = (pulseCodeToValidate: string) => {
     try {
       specializationCreationSchema.parse({
         name: specializationName,
-        pulseCode: generatedPrefix || "",
+        pulseCode: pulseCodeToValidate,
         status: status,
       });
       setValidationErrors({});
@@ -112,29 +167,69 @@ export default function AddSpecialitiesCard() {
     }
   };
 
-  const handleAddSpecialization = async () => {
-    // Validate pulse code is generated
-    if (!generatedPrefix) {
-      toast.error("Pulse code is still being generated. Please wait.");
-      return;
-    }
+  const handleSubmit = async () => {
+    // Only validate pulse code in create mode
+    if (!isUpdateMode) {
+      if (!generatedPrefix) {
+        setValidationErrors({ pulseCode: "Pulse code is missing. Please wait or try again." });
+        return;
+      }
 
-    // Validate form
-    if (!validateForm()) {
-      toast.error("Please fix the validation errors");
-      return;
+      // Validate form with pulse code for creation
+      if (!validateForm(generatedPrefix)) {
+        return;
+      }
+    } else {
+      // In update mode, validate without pulse code
+      try {
+        specializationCreationSchema.omit({ pulseCode: true }).parse({
+          name: specializationName,
+          status: status,
+        });
+        setValidationErrors({});
+      } catch (error: any) {
+        const errors: typeof validationErrors = {};
+        if (error.errors) {
+          error.errors.forEach((err: any) => {
+            const field = err.path[0];
+            errors[field as keyof typeof errors] = err.message;
+          });
+        }
+        setValidationErrors(errors);
+        return;
+      }
     }
 
     try {
-      await dispatch(
-        createSpecialization({
-          name: specializationName.trim(),
-          pulseCode: generatedPrefix,
-          status: status,
-        })
-      ).unwrap();
-    } catch (err) {
-      console.error("Failed to create specialization:", err);
+      if (isUpdateMode && updateId) {
+        // Update existing specialization - only send name and status
+        await dispatch(
+          updateDoctorSpecialization({
+            id: updateId,
+            data: {
+              name: specializationName.trim(),
+              status: status,
+            },
+          })
+        ).unwrap();
+      } else {
+        // Create new specialization - send all fields including pulseCode
+        await dispatch(
+          createSpecialization({
+            name: specializationName.trim(),
+            pulseCode: generatedPrefix!,
+            status: status,
+          })
+        ).unwrap();
+      }
+    } catch (err: any) {
+      console.error(`Failed to ${isUpdateMode ? "update" : "create"} specialization:`, err);
+      // Set error from API response if available
+      const errorMessage =
+        err?.message ||
+        err?.error ||
+        `Failed to ${isUpdateMode ? "update" : "create"} specialization`;
+      setValidationErrors({ name: errorMessage });
     }
   };
 
@@ -144,26 +239,29 @@ export default function AddSpecialitiesCard() {
         <div className="px-8 py-10 space-y-8">
           {/* Header */}
           <div>
-            <h2 className="t-h2">Add Specialities</h2>
+            <h2 className="t-h2">{isUpdateMode ? "Update Speciality" : "Add Specialities"}</h2>
             <p className="t-sm text-[var(--subheading-color)] mt-1">
-              Manage medical specialities and subspecialities
+              {isUpdateMode
+                ? "Update the speciality information below"
+                : "Manage medical specialities and subspecialities"}
             </p>
           </div>
 
-          {/* Add New Speciality Form */}
+          {/* Add/Update Speciality Form */}
           <div className="flex gap-6 items-start">
             {/* Input Fields Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1">
-              {/* Pulse Code */}
+              {/* Pulse Code - Read-only in both modes */}
               <FormInput
                 label="Pulse Code"
                 name="pulseCode"
                 type="text"
-                value={generatedPrefix || ""}
+                value={isUpdateMode ? pulseCode : generatedPrefix || ""}
                 onChange={() => {}}
-                placeholder={prefixLoading ? "Generating..." : "DS_000001"}
+                placeholder={prefixLoading ? "Generating..." : "SP_000001"}
                 readOnly
                 required
+                error={validationErrors.pulseCode}
               />
 
               {/* Speciality Name */}
@@ -190,17 +288,27 @@ export default function AddSpecialitiesCard() {
               </div>
             </div>
 
-            {/* Add Button */}
+            {/* Add/Update Button */}
             <Button
-              onClick={handleAddSpecialization}
-              disabled={loading || !specializationName.trim() || !generatedPrefix}
+              onClick={handleSubmit}
+              disabled={
+                (isUpdateMode ? updateLoading : loading) ||
+                !specializationName.trim() ||
+                (isUpdateMode ? !pulseCode : !generatedPrefix)
+              }
               variant="primary"
               size="lg"
-              icon={Plus}
-              loading={loading}
+              icon={isUpdateMode ? EditIcon : Plus}
+              loading={isUpdateMode ? updateLoading : loading}
               className="h-12 px-8 mt-6"
             >
-              {loading ? "Adding..." : "Add Specialization"}
+              {isUpdateMode
+                ? updateLoading
+                  ? "Updating..."
+                  : "Update Speciality"
+                : loading
+                  ? "Adding..."
+                  : "Add Specialization"}
             </Button>
           </div>
         </div>

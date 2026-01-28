@@ -149,6 +149,10 @@ export function DashboardContent({
 
   // State for segment editing
   const [selectedSegmentId, setSelectedSegmentId] = useState<string | null>(null);
+  // State for speciality editing
+  const [selectedSpecialityId, setSelectedSpecialityId] = useState<string | null>(null);
+  // State for qualification editing
+  const [selectedQualificationId, setSelectedQualificationId] = useState<string | null>(null);
 
   const handleSettings = () => {
     if (settingsRoute) {
@@ -173,6 +177,24 @@ export function DashboardContent({
 
   const handleUpdateComplete = () => {
     setSelectedSegmentId(null);
+  };
+
+  const handleEditSpeciality = (specialityId: string) => {
+    setSelectedSpecialityId(specialityId);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleSpecialityUpdateComplete = () => {
+    setSelectedSpecialityId(null);
+  };
+
+  const handleEditQualification = (qualificationId: string) => {
+    setSelectedQualificationId(qualificationId);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleQualificationUpdateComplete = () => {
+    setSelectedQualificationId(null);
   };
 
   return (
@@ -242,20 +264,26 @@ export function DashboardContent({
 
         {qualificationsD && (
           <div>
-            <Qualifications />
+            <Qualifications
+              updateId={selectedQualificationId}
+              onUpdateComplete={handleQualificationUpdateComplete}
+            />
             <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
               <TableHeader campHeading={campHeading} filterT={filterT} />
-              <AllQualifications />
+              <AllQualifications onEditQualification={handleEditQualification} />
             </div>
           </div>
         )}
 
         {specialitiesD && (
           <div>
-            <Specialities />
+            <Specialities
+              updateId={selectedSpecialityId}
+              onUpdateComplete={handleSpecialityUpdateComplete}
+            />
             <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
               <TableHeader campHeading={campHeading} filterT={filterT} />
-              <AllSpecialities />
+              <AllSpecialities onEditSpeciality={handleEditSpeciality} />
             </div>
           </div>
         )}

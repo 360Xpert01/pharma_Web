@@ -12,6 +12,7 @@ import {
   getAllQualifications,
   resetQualificationsState,
 } from "@/store/slices/qualification/getAllQualificationsSlice";
+import EditIcon from "@/components/svgs/edit-icon";
 
 interface Qualification {
   id: string;
@@ -20,7 +21,11 @@ interface Qualification {
   status: "active" | "inactive";
 }
 
-export default function AllQualifications() {
+interface AllQualificationsProps {
+  onEditQualification?: (qualificationId: string) => void;
+}
+
+export default function AllQualifications({ onEditQualification }: AllQualificationsProps) {
   const dispatch = useAppDispatch();
   const { loading, error, qualifications } = useAppSelector((state) => state.allQualifications);
   const [openId, setOpenId] = useState<string | null>(null);
@@ -36,6 +41,12 @@ export default function AllQualifications() {
 
   const handleRetry = () => {
     dispatch(getAllQualifications());
+  };
+
+  const handleEdit = (id: string) => {
+    if (onEditQualification) {
+      onEditQualification(id);
+    }
   };
 
   const toggleStatus = (id: string) => {
@@ -88,26 +99,16 @@ export default function AllQualifications() {
       header: "",
       cell: ({ row }) => (
         <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
-          <TableActionDropdown
-            isOpen={openId === row.original.id}
-            onToggle={() => setOpenId(openId === row.original.id ? null : row.original.id)}
-            onClose={() => setOpenId(null)}
-            items={[
-              {
-                label: "View Details",
-                onClick: () => console.log("View Details", row.original.id),
-              },
-              {
-                label: "Edit Qualification",
-                onClick: () => console.log("Edit Qualification", row.original.id),
-              },
-              {
-                label: "Delete Qualification",
-                onClick: () => deleteQualification(row.original.id),
-                variant: "danger",
-              },
-            ]}
-          />
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEdit(row.original.id);
+            }}
+            className="group hover:opacity-80 transition cursor-pointer"
+            title="Edit Qualification"
+          >
+            <EditIcon />
+          </button>
         </div>
       ),
     },

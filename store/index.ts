@@ -38,6 +38,8 @@ import allProductCategoriesReducer from "./slices/productCategory/getAllProductC
 import createProductCategoryReducer from "./slices/productCategory/createProductCategorySlice";
 import allSpecializationsReducer from "./slices/specialization/getAllSpecializationsSlice";
 import createSpecializationReducer from "./slices/specialization/createSpecializationSlice";
+import updateDoctorSpecializationReducer from "./slices/specialization/updateDoctorSpecializationSlice";
+import getDoctorSpecializationByIdReducer from "./slices/specialization/getDoctorSpecializationByIdSlice";
 import scheduleSliceReducer from "./slices/plan-Manage/scheduleSlice";
 import singleScheduleDetailReducer from "./slices/plan-Manage/singleScheduleDetailSlice";
 import scheduleHandleReducer from "./slices/plan-Manage/scheduleHandleSlice";
@@ -48,6 +50,8 @@ import weekelyCallExpenses from "./slices/employeeProfile/weeklyCallExpensesSlic
 import uploadReducer from "./slices/upload/uploadSlice";
 import allQualificationsReducer from "./slices/qualification/getAllQualificationsSlice";
 import createQualificationReducer from "./slices/qualification/createQualificationSlice";
+import updateQualificationReducer from "./slices/qualification/updateQualificationSlice";
+import getQualificationByIdReducer from "./slices/qualification/getQualificationByIdSlice";
 import allSegmentsReducer from "./slices/segment/getAllSegmentsSlice";
 import createSegmentReducer from "./slices/segment/createSegmentSlice";
 import getSegmentByIdReducer from "./slices/segment/getSegmentByIdSlice";
@@ -88,6 +92,8 @@ const rootReducer = combineReducers({
   createProductCategory: createProductCategoryReducer,
   allSpecializations: allSpecializationsReducer,
   createSpecialization: createSpecializationReducer,
+  updateDoctorSpecialization: updateDoctorSpecializationReducer,
+  specializationById: getDoctorSpecializationByIdReducer,
   schedule: scheduleSliceReducer,
   singleScheduleDetail: singleScheduleDetailReducer,
   scheduleHandle: scheduleHandleReducer,
@@ -98,6 +104,8 @@ const rootReducer = combineReducers({
   upload: uploadReducer,
   allQualifications: allQualificationsReducer,
   createQualification: createQualificationReducer,
+  updateQualification: updateQualificationReducer,
+  qualificationById: getQualificationByIdReducer,
   allSegments: allSegmentsReducer,
   createSegment: createSegmentReducer,
   segmentById: getSegmentByIdReducer,

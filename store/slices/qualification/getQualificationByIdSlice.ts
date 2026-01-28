@@ -1,12 +1,24 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
 export const getQualificationById = createAsyncThunk(
   "qualification/getById",
   async (id: string, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`/api/v1/qualifications/${id}`);
-      return response.data;
+      const token = localStorage.getItem("userSession");
+      if (!token) {
+        return rejectWithValue("No session found. Please login again.");
+      }
+
+      const response = await axios.get(`${baseUrl}api/v1/qualification/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data.data || response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || error.message);
     }

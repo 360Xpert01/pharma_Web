@@ -53,7 +53,7 @@ export const createSpecialization = createAsyncThunk<
     }
 
     const response = await axios.post<CreateSpecializationResponse>(
-      `${baseUrl}api/v1/doctorSpecialization/`,
+      `${baseUrl}api/v1/specialization/`,
       payload,
       {
         headers: {
