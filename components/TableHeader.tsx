@@ -124,19 +124,6 @@ export default function UsersHeader({
 
         {/* Right: Checkbox + Sort Dropdown + Export Button */}
         <div className="flex items-center gap-3">
-          {/* Inactive Users Checkbox */}
-          {showInactiveToggle && (
-            <label className="flex items-center gap-2 cursor-pointer select-none">
-              <Checkbox
-                checked={showInactive}
-                onCheckedChange={(checked) => setShowInactive(checked === true)}
-              />
-              <span className="text-sm text-(--gray-9) font-medium">
-                {inactiveLabel || "Show Inactive"}
-              </span>
-            </label>
-          )}
-
           {/* Quick Sort Dropdown */}
           <FormSelect
             label=""
