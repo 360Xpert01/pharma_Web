@@ -14,6 +14,7 @@ import {
   generatePrefix,
   resetGeneratePrefixState,
 } from "@/store/slices/preFix/generatePrefixSlice";
+import { qualificationCreationSchema } from "@/validations/qualificationValidation";
 import { toast } from "sonner";
 
 export default function AddQualificationsCard() {
@@ -56,34 +57,66 @@ export default function AddQualificationsCard() {
     }
   }, [success, message, dispatch]);
 
+  // Validate using Zod schema with real-time field validation
+  const validateField = (fieldName: "name" | "pulseCode" | "status", value: any) => {
+    try {
+      if (fieldName === "name") {
+        qualificationCreationSchema.shape.name.parse(value);
+      } else if (fieldName === "status") {
+        qualificationCreationSchema.shape.status.parse(value);
+      }
+      setValidationErrors((prev) => {
+        const { [fieldName]: _, ...rest } = prev;
+        return rest;
+      });
+    } catch (error: any) {
+      if (error.errors && error.errors[0]) {
+        setValidationErrors((prev) => ({
+          ...prev,
+          [fieldName]: error.errors[0].message,
+        }));
+      }
+    }
+  };
+
+  // Handle qualification name change with real-time validation
+  const handleQualificationNameChange = (value: string) => {
+    setQualificationName(value);
+    validateField("name", value);
+  };
+
   const validateForm = () => {
-    const errors: typeof validationErrors = {};
-
-    if (!qualificationName.trim()) {
-      errors.name = "Qualification name is required";
-    } else if (qualificationName.trim().length < 2) {
-      errors.name = "Name must be at least 2 characters";
-    } else if (qualificationName.trim().length > 100) {
-      errors.name = "Name must not exceed 100 characters";
+    try {
+      qualificationCreationSchema.parse({
+        name: qualificationName,
+        pulseCode: generatedPrefix || "",
+        status,
+      });
+      setValidationErrors({});
+      return true;
+    } catch (error: any) {
+      const errors: typeof validationErrors = {};
+      if (error.errors) {
+        error.errors.forEach((err: any) => {
+          const field = err.path[0];
+          errors[field as keyof typeof errors] = err.message;
+        });
+      }
+      setValidationErrors(errors);
+      return false;
     }
-
-    if (!status) {
-      errors.status = "Status is required";
-    }
-
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
   };
 
   const handleAddQualification = async () => {
-    if (!validateForm()) {
-      toast.error("Please fix the validation errors");
-      return;
-    }
-
     // Validate pulse code is generated
     if (!generatedPrefix) {
       toast.error("Pulse code is still being generated. Please wait.");
+      return;
+    }
+
+    // Validate form
+    if (!validateForm()) {
+      toast.error("Please fix the validation errors");
       return;
     }
 
@@ -119,7 +152,7 @@ export default function AddQualificationsCard() {
           </div>
 
           {/* Add New Qualification Form */}
-          <div className="flex gap-6 items-end">
+          <div className="flex gap-6 items-start">
             {/* Input Fields Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1">
               {/* Pulse Code */}
@@ -140,7 +173,7 @@ export default function AddQualificationsCard() {
                 name="qualificationName"
                 type="text"
                 value={qualificationName}
-                onChange={setQualificationName}
+                onChange={handleQualificationNameChange}
                 placeholder="e.g. MBBS, MD, MS, DNB"
                 required
                 error={validationErrors.name}
@@ -166,7 +199,7 @@ export default function AddQualificationsCard() {
               size="lg"
               icon={Plus}
               loading={loading}
-              className="h-12 px-8"
+              className="h-12 px-8 mt-6"
             >
               {loading ? "Adding..." : "Add Qualification"}
             </Button>
