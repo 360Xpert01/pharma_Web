@@ -24,11 +24,11 @@ interface StatCardProps {
 }
 
 const StatCard = ({ title, value, color, gradientId }: StatCardProps) => (
-  <div className="bg-white rounded-[16px] border border-gray-100 shadow-sm p-5 flex flex-col justify-between h-[200px] w-[100%]">
+  <div className="bg-white rounded-8 border border-gray-1 shadow-soft p-5 flex flex-col justify-between h-[200px] w-[100%]">
     {/* Header */}
     <div className="flex justify-between items-start">
       <div>
-        <h3 className="text-[#475569] text-xl font-bold mb-2">{title}</h3>
+        <h3 className="text-gray-5 text-sm font-medium mb-2">{title}</h3>
         <p className={`text-4xl font-bold ${color}`}>{value}</p>
       </div>
       <div className="flex items-center gap-1">
@@ -87,7 +87,7 @@ export default function AnalyticsSummary() {
   ];
 
   return (
-    <div className="flex gap-5   bg-gray-50">
+    <div className="flex gap-5 w-full">
       {stats.map((stat, index) => (
         <StatCard key={index} {...stat} />
       ))}
