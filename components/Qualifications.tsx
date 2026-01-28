@@ -1,57 +1,110 @@
 "use client";
 
-import React, { useState } from "react";
-import { Plus, X } from "lucide-react";
-import { FormInput } from "@/components/form";
+import React, { useState, useEffect } from "react";
+import { Plus } from "lucide-react";
+import { FormInput, FormSelect } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
-
-interface Qualification {
-  id: string;
-  qualificationName: string;
-  pulseCode: string;
-  legacyCode: string;
-}
+import { useAppDispatch, useAppSelector } from "@/store";
+import {
+  createQualification,
+  resetQualificationState,
+} from "@/store/slices/qualification/createQualificationSlice";
+import { getAllQualifications } from "@/store/slices/qualification/getAllQualificationsSlice";
+import {
+  generatePrefix,
+  resetGeneratePrefixState,
+} from "@/store/slices/preFix/generatePrefixSlice";
+import { toast } from "sonner";
 
 export default function AddQualificationsCard() {
-  const [qualificationName, setQualificationName] = useState("");
-  const [pulseCode, setPulseCode] = useState("");
-  const [legacyCode, setLegacyCode] = useState("");
-  const [qualificationsList, setQualificationsList] = useState<Qualification[]>([]);
-  const [loading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
+  const { loading, success, error, message } = useAppSelector((state) => state.createQualification);
+  const {
+    generatedPrefix,
+    loading: prefixLoading,
+    error: prefixError,
+  } = useAppSelector((state) => state.generatePrefix);
 
-  // Auto-generate pulse code based on qualifications count
-  const generatePulseCode = () => {
-    const count = qualificationsList.length + 1;
-    return `QL_${String(count).padStart(6, "0")}`;
+  const [qualificationName, setQualificationName] = useState("");
+  const [status, setStatus] = useState<"active" | "inactive">("active");
+  const [validationErrors, setValidationErrors] = useState<{
+    name?: string;
+    pulseCode?: string;
+    status?: string;
+  }>({});
+
+  // Generate prefix on mount
+  useEffect(() => {
+    dispatch(generatePrefix({ entity: "Qualification" }));
+
+    return () => {
+      dispatch(resetGeneratePrefixState());
+    };
+  }, [dispatch]);
+
+  // Handle success
+  useEffect(() => {
+    if (success && message) {
+      setQualificationName("");
+      setStatus("active");
+      setValidationErrors({});
+      dispatch(getAllQualifications());
+      dispatch(generatePrefix({ entity: "Qualification" }));
+      setTimeout(() => {
+        dispatch(resetQualificationState());
+      }, 2000);
+    }
+  }, [success, message, dispatch]);
+
+  const validateForm = () => {
+    const errors: typeof validationErrors = {};
+
+    if (!qualificationName.trim()) {
+      errors.name = "Qualification name is required";
+    } else if (qualificationName.trim().length < 2) {
+      errors.name = "Name must be at least 2 characters";
+    } else if (qualificationName.trim().length > 100) {
+      errors.name = "Name must not exceed 100 characters";
+    }
+
+    if (!status) {
+      errors.status = "Status is required";
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleAddQualification = async () => {
-    if (!qualificationName.trim()) return;
+    if (!validateForm()) {
+      toast.error("Please fix the validation errors");
+      return;
+    }
 
-    setLoading(true);
+    // Validate pulse code is generated
+    if (!generatedPrefix) {
+      toast.error("Pulse code is still being generated. Please wait.");
+      return;
+    }
 
-    // Simulate API delay
-    setTimeout(() => {
-      const newQualification: Qualification = {
-        id: Date.now().toString(),
-        qualificationName: qualificationName.trim(),
-        pulseCode: pulseCode || generatePulseCode(),
-        legacyCode: legacyCode.trim() || "",
-      };
-
-      setQualificationsList([...qualificationsList, newQualification]);
-
-      // Clear form
-      setQualificationName("");
-      setPulseCode("");
-      setLegacyCode("");
-      setLoading(false);
-    }, 500);
+    try {
+      await dispatch(
+        createQualification({
+          name: qualificationName.trim(),
+          pulseCode: generatedPrefix,
+          status,
+        })
+      ).unwrap();
+    } catch (err) {
+      // Error is handled by useEffect
+      console.error("Failed to create qualification:", err);
+    }
   };
 
-  const removeQualification = (id: string) => {
-    setQualificationsList(qualificationsList.filter((qual) => qual.id !== id));
-  };
+  const statusOptions = [
+    { value: "active", label: "Active" },
+    { value: "inactive", label: "Inactive" },
+  ];
 
   return (
     <div className="w-full">
@@ -74,9 +127,10 @@ export default function AddQualificationsCard() {
                 label="Pulse Code"
                 name="pulseCode"
                 type="text"
-                value={pulseCode || generatePulseCode()}
-                onChange={setPulseCode}
-                placeholder="QL_000001"
+                value={generatedPrefix || ""}
+                onChange={() => {}} // Read-only, no-op
+                placeholder={prefixLoading ? "Generating..." : "QF_000001"}
+                readOnly
                 required
               />
 
@@ -89,69 +143,34 @@ export default function AddQualificationsCard() {
                 onChange={setQualificationName}
                 placeholder="e.g. MBBS, MD, MS, DNB"
                 required
+                error={validationErrors.name}
               />
 
-              {/* Legacy Code */}
-              <FormInput
-                label="Legacy Code (Optional)"
-                name="legacyCode"
-                type="text"
-                value={legacyCode}
-                onChange={setLegacyCode}
-                placeholder="e.g. OLD-QL-001"
+              {/* Status */}
+              <FormSelect
+                label="Status"
+                name="status"
+                value={status}
+                onChange={(value) => setStatus(value as "active" | "inactive")}
+                options={statusOptions}
+                required
+                error={validationErrors.status}
               />
             </div>
 
             {/* Add Button */}
             <Button
               onClick={handleAddQualification}
-              disabled={!qualificationName.trim() || loading}
+              disabled={loading || !qualificationName.trim() || !generatedPrefix}
               variant="primary"
               size="lg"
               icon={Plus}
               loading={loading}
               className="h-12 px-8"
             >
-              {loading ? "Adding..." : "Add to list"}
+              {loading ? "Adding..." : "Add Qualification"}
             </Button>
           </div>
-
-          {/* Added Qualifications List */}
-          {qualificationsList.length > 0 && (
-            <div className="mt-10">
-              <h3 className="t-h4 mb-4">Added Qualifications ({qualificationsList.length})</h3>
-              <div className="space-y-3">
-                {qualificationsList.map((qualification) => (
-                  <div
-                    key={qualification.id}
-                    className="flex items-center justify-between p-5 bg-[var(--gray-0)] rounded-8 border border-[var(--gray-2)]"
-                  >
-                    <div className="grid grid-cols-3 gap-8 flex-1">
-                      <div>
-                        <p className="t-cap">Qualification Name</p>
-                        <p className="t-label-b">{qualification.qualificationName}</p>
-                      </div>
-                      <div>
-                        <p className="t-cap">Pulse Code</p>
-                        <p className="t-val-sm">{qualification.pulseCode}</p>
-                      </div>
-                      <div>
-                        <p className="t-cap">Legacy Code</p>
-                        <p className="t-label-b">{qualification.legacyCode || "N/A"}</p>
-                      </div>
-                    </div>
-                    <Button
-                      onClick={() => removeQualification(qualification.id)}
-                      variant="ghost"
-                      size="icon"
-                      icon={X}
-                      className="ml-6 text-[var(--destructive)] hover:bg-[var(--destructive-0)]"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>
