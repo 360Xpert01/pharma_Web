@@ -7,8 +7,9 @@ import { ColumnDef } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import StatusBadge from "@/components/shared/StatusBadge";
-import { useAppSelector } from "@/store";
+import { useAppSelector, useAppDispatch } from "@/store";
 import { getFieldConfigByChannel } from "@/utils/doctorFormConfig";
+import { getPartiesByChannelType } from "@/store/slices/party/partiesSlice";
 
 interface Doctor {
   id: string;
@@ -406,8 +407,18 @@ const doctorsData: Doctor[] = [
 
 export default function DoctorsTable({ id }: { id: string }) {
   // Simulate loading and error states (replace with actual API call state)
-  const [loading] = useState(false);
-  const [error] = useState<string | null>(null);
+  // const [loading] = useState(false);
+  // const [error] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
+  const { parties, loading, error } = useAppSelector((state) => state.parties);
+
+  React.useEffect(() => {
+    dispatch(getPartiesByChannelType(id));
+  }, [dispatch]);
+
+  console.log("parties12321", parties?.data?.items);
+
+  const doctorsDataApi = parties?.data?.items || [];
 
   // Redux state for channels (fetched by parent component)
   const { channels, loading: channelsLoading } = useAppSelector((state) => state.allChannels);
@@ -425,7 +436,7 @@ export default function DoctorsTable({ id }: { id: string }) {
       return getFieldConfigByChannel(currentChannel.name);
     }
     // Default: show all columns if no channel is found
-    console.log("Table - No channel found, using default config");
+    console.log("Table - No channel found, using deault config");
     return getFieldConfigByChannel();
   }, [currentChannel]);
 
@@ -437,7 +448,7 @@ export default function DoctorsTable({ id }: { id: string }) {
     cols.push({
       header: "ID",
       accessorKey: "id",
-      cell: ({ row }) => <span>{row.original.id}</span>,
+      cell: ({ row }) => <span>{row.original?.id || "N/A"}</span>,
     });
 
     // PMDC Number - conditional
@@ -445,7 +456,7 @@ export default function DoctorsTable({ id }: { id: string }) {
       cols.push({
         header: "PMDC Number",
         accessorKey: "pmdcNumber",
-        cell: ({ row }) => <span>{row.original.pmdcNumber || "N/A"}</span>,
+        cell: ({ row }) => <span>{row.original?.attributes?.PmdcNumber || "N/A"}</span>,
       });
     }
 
@@ -454,7 +465,7 @@ export default function DoctorsTable({ id }: { id: string }) {
       cols.push({
         header: "Name",
         accessorKey: "name",
-        cell: ({ row }) => <span>{row.original.name}</span>,
+        cell: ({ row }) => <span>{row.original?.party_name || "N/A"}</span>,
       });
     }
 
@@ -464,7 +475,9 @@ export default function DoctorsTable({ id }: { id: string }) {
         header: "Specialization",
         accessorKey: "specialty",
         cell: ({ row }) => (
-          <span className="text-[var(--muted-foreground)]">{row.original.specialty || "N/A"}</span>
+          <span className="text-[var(--muted-foreground)]">
+            {row.original?.attributes?.specialization || "N/A"}
+          </span>
         ),
       });
     }
@@ -474,7 +487,7 @@ export default function DoctorsTable({ id }: { id: string }) {
       cols.push({
         header: "Qualification",
         accessorKey: "qualification",
-        cell: ({ row }) => <span>{row.original.qualification || "N/A"}</span>,
+        cell: ({ row }) => <span>{row.original?.attributes?.qualification || "N/A"}</span>,
       });
     }
 
@@ -483,7 +496,7 @@ export default function DoctorsTable({ id }: { id: string }) {
       cols.push({
         header: "Segment",
         accessorKey: "segment",
-        cell: ({ row }) => <span>{row.original.segment || "N/A"}</span>,
+        cell: ({ row }) => <span>{row.original?.segment || "N/A"}</span>,
       });
     }
 
@@ -492,7 +505,7 @@ export default function DoctorsTable({ id }: { id: string }) {
       cols.push({
         header: "Designation",
         accessorKey: "designation",
-        cell: ({ row }) => <span>{row.original.designation || "N/A"}</span>,
+        cell: ({ row }) => <span>{row.original?.attributes?.Designation || "N/A"}</span>,
       });
     }
 
@@ -501,7 +514,7 @@ export default function DoctorsTable({ id }: { id: string }) {
       cols.push({
         header: "Email",
         accessorKey: "email",
-        cell: ({ row }) => <span>{row.original.email}</span>,
+        cell: ({ row }) => <span>{row.original?.email || "N/A"}</span>,
       });
     }
 
@@ -511,7 +524,9 @@ export default function DoctorsTable({ id }: { id: string }) {
         header: "Phone No",
         accessorKey: "phone",
         cell: ({ row }) => (
-          <span className="text-[var(--muted-foreground)]">{row.original.phone}</span>
+          <span className="text-[var(--muted-foreground)]">
+            {row.original?.phone_number || "N/A"}
+          </span>
         ),
       });
     }
@@ -521,7 +536,7 @@ export default function DoctorsTable({ id }: { id: string }) {
       cols.push({
         header: "D.O.B",
         accessorKey: "dateOfBirth",
-        cell: ({ row }) => <span>{row.original.dateOfBirth || "N/A"}</span>,
+        cell: ({ row }) => <span>{row.original?.attributes?.date_of_birth || "N/A"}</span>,
       });
     }
 
@@ -530,7 +545,7 @@ export default function DoctorsTable({ id }: { id: string }) {
       cols.push({
         header: "Parent",
         accessorKey: "parent",
-        cell: ({ row }) => <span>{row.original.parent || "N/A"}</span>,
+        cell: ({ row }) => <span>{row.original?.parent || "N/A"}</span>,
       });
     }
 
@@ -539,7 +554,7 @@ export default function DoctorsTable({ id }: { id: string }) {
       cols.push({
         header: "Location",
         accessorKey: "city",
-        cell: ({ row }) => <span>{row.original.city}</span>,
+        cell: ({ row }) => <span>{row.original?.locations?.city || "N/A"}</span>,
       });
     }
 
@@ -549,7 +564,7 @@ export default function DoctorsTable({ id }: { id: string }) {
       accessorKey: "status",
       cell: ({ row }) => (
         <div className="flex justify-center">
-          <StatusBadge status={row.original.status} />
+          <StatusBadge status={row.original?.status} />
         </div>
       ),
     });
@@ -580,7 +595,7 @@ export default function DoctorsTable({ id }: { id: string }) {
   return (
     <div className="w-full">
       <CenturoTable
-        data={doctorsData}
+        data={doctorsDataApi}
         columns={columns}
         loading={loading}
         error={error}
