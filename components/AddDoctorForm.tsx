@@ -2,8 +2,15 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { Trash2, Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button/button";
-import { FormInput, FormSelect, StatusToggle } from "@/components/form";
+import {
+  FormInput,
+  FormSelect,
+  StatusToggle,
+  DayRangePicker,
+  TimeRangePicker,
+} from "@/components/form";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllSpecializations } from "@/store/slices/specialization/getAllSpecializationsSlice";
 import { getAllQualifications } from "@/store/slices/qualification/getAllQualificationsSlice";
@@ -12,7 +19,6 @@ import { getAllChannels } from "@/store/slices/channel/getAllChannelsSlice";
 import { getFieldConfigByChannel } from "@/utils/doctorFormConfig";
 import { createParty, resetCreatePartyState } from "@/store/slices/party/partySlicePost";
 import { toast } from "react-hot-toast";
-import { useRouter } from "next/navigation";
 
 interface Location {
   id: string;
@@ -21,8 +27,8 @@ interface Location {
   area: string;
   bricks: string;
   clinicName: string;
-  visitingDays: string;
-  visitingHours: string;
+  visitingDays: { from: string; to: string };
+  visitingHours: { from: string; to: string };
 }
 
 export default function AddDoctorForm({ idForm }: { idForm?: string }) {
@@ -96,13 +102,13 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
     if (createSuccess) {
       toast.success("Doctor added successfully!");
       dispatch(resetCreatePartyState());
-      // router.push("/dashboard/doctors"); // Optional: redirect
+      router.push(`/dashboard/doctors-?id=${idForm || ""}`);
     }
     if (createError) {
       toast.error(createError);
       dispatch(resetCreatePartyState());
     }
-  }, [createSuccess, createError, dispatch, router]);
+  }, [createSuccess, createError, dispatch, router, idForm]);
 
   const [locations, setLocations] = useState<Location[]>([
     {
@@ -112,8 +118,8 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
       area: "",
       bricks: "",
       clinicName: "",
-      visitingDays: "",
-      visitingHours: "",
+      visitingDays: { from: "", to: "" },
+      visitingHours: { from: "", to: "" },
     },
   ]);
 
@@ -127,8 +133,8 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
         area: "",
         bricks: "",
         clinicName: "",
-        visitingDays: "",
-        visitingHours: "",
+        visitingDays: { from: "", to: "" },
+        visitingHours: { from: "", to: "" },
       },
     ]);
   };
@@ -139,7 +145,7 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
     }
   };
 
-  const updateLocation = (id: string, field: keyof Location, value: string) => {
+  const updateLocation = (id: string, field: keyof Location, value: any) => {
     setLocations(locations.map((loc) => (loc.id === id ? { ...loc, [field]: value } : loc)));
   };
 
@@ -165,20 +171,24 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
       },
       attributes: {
         specialization: specialization,
+        qualification: qualification,
+        segment: segment,
+        designation: designation,
+        date_of_birth: dateOfBirth,
+        pmdcNumber: pmdcNumber,
       },
       locations: locations.map((loc) => {
-        // Parse visiting days: "Monday, Wednesday" -> ["MONDAY", "WEDNESDAY"]
-        const days = loc.visitingDays
-          ? loc.visitingDays.split(",").map((d) => d.trim().toUpperCase())
-          : [];
+        // Parse visiting days range: send only boundary days as requested
+        const days = [];
+        if (loc.visitingDays.from) days.push(loc.visitingDays.from.toUpperCase());
+        if (loc.visitingDays.to) days.push(loc.visitingDays.to.toUpperCase());
 
-        // Parse visiting hours: "09:00 - 13:00" -> [{start: "09:00", end: "13:00"}]
+        // Parse visiting hours range
         const timeSlots = [];
-        if (loc.visitingHours && loc.visitingHours.includes("-")) {
-          const [start, end] = loc.visitingHours.split("-").map((t) => t.trim());
-          timeSlots.push({ start, end });
-        } else if (loc.visitingHours) {
-          timeSlots.push({ start: loc.visitingHours, end: loc.visitingHours });
+        if (loc.visitingHours.from && loc.visitingHours.to) {
+          timeSlots.push({ start: loc.visitingHours.from, end: loc.visitingHours.to });
+        } else if (loc.visitingHours.from) {
+          timeSlots.push({ start: loc.visitingHours.from, end: loc.visitingHours.from });
         }
 
         return {
@@ -489,23 +499,23 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
                     required
                   />
 
-                  <FormInput
+                  <DayRangePicker
                     label="Visiting days"
-                    name={`visitingDays-${location.id}`}
-                    type="text"
-                    value={location.visitingDays}
-                    onChange={(value) => updateLocation(location.id, "visitingDays", value)}
-                    className="t-md"
+                    from={location.visitingDays.from}
+                    to={location.visitingDays.to}
+                    onChange={(from, to) =>
+                      updateLocation(location.id, "visitingDays", { from, to })
+                    }
                     required
                   />
 
-                  <FormInput
+                  <TimeRangePicker
                     label="Visiting Hours"
-                    name={`visitingHours-${location.id}`}
-                    type="text"
-                    value={location.visitingHours}
-                    onChange={(value) => updateLocation(location.id, "visitingHours", value)}
-                    className="t-md"
+                    from={location.visitingHours.from}
+                    to={location.visitingHours.to}
+                    onChange={(from, to) =>
+                      updateLocation(location.id, "visitingHours", { from, to })
+                    }
                     required
                   />
                 </div>

@@ -7,12 +7,40 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://api.ceturo.com/";
 
 export interface PartyItem {
   id: string;
-  name: string;
+  party_id?: string;
+  party_name?: string;
+  name?: string;
+  email?: string;
+  phone_number?: string;
+  status?: string;
+  segment?: string;
+  segment_name?: string;
+  segmentId?: string;
   type?: string;
-  channelTypeId?: string;
-  isActive?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
+  channel_id?: string;
+  channel_name?: string;
+  pmdcNumber?: string;
+  specialization?: string;
+  qualification?: string;
+  designation?: string;
+  date_of_birth?: string;
+  attributes?: {
+    id?: string;
+    partyId?: string;
+    pmdcNumber?: string;
+    specialization?: string;
+    qualification?: string;
+    designation?: string;
+    date_of_birth?: string;
+  };
+  locations?: Array<{
+    city?: string;
+    address?: string;
+    country?: string;
+  }>;
+  parent?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 interface PartiesState {
@@ -50,7 +78,15 @@ export const getPartiesByChannelType = createAsyncThunk<
       }
     );
 
-    return Array.isArray(response.data) ? response.data : response.data || [];
+    const resData = response.data as any;
+    if (Array.isArray(resData)) return resData;
+    if (resData?.data?.items && Array.isArray(resData.data.items)) {
+      return resData.data.items;
+    }
+    if (resData?.items && Array.isArray(resData.items)) {
+      return resData.items;
+    }
+    return [];
   } catch (error: any) {
     const errorMessage =
       error.response?.data?.message ||
