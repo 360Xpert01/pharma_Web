@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState } from "react";
 import { useDashboard } from "@/hooks/use-dashboard";
 import { DashboardProps } from "../types";
 import { ChartsSection } from "./charts/ChartsSection";
@@ -54,7 +55,6 @@ import RoleHierarchyWrapper from "@/components/RoleHierarchyWrapper";
 import AllocatedGiveawaysTable from "@/components/AllocatedGiveawaysTable";
 import ProductCategories from "@/components/ProductCategories";
 import AllProductCategories from "@/components/AllProductCategories";
-import DoctorSpecializations from "@/components/DoctorSpecializations";
 import AllSpecializations from "@/components/AllSpecializations";
 import DoctorDetail from "@/components/DoctorDetail";
 import CsvUploadMapper from "@/components/CsvUploadMapper";
@@ -146,6 +146,14 @@ export function DashboardContent({
     { title: "Client4", amount: 520 },
     { title: "Client5", amount: 520 },
   ];
+
+  // State for segment editing
+  const [selectedSegmentId, setSelectedSegmentId] = useState<string | null>(null);
+  // State for speciality editing
+  const [selectedSpecialityId, setSelectedSpecialityId] = useState<string | null>(null);
+  // State for qualification editing
+  const [selectedQualificationId, setSelectedQualificationId] = useState<string | null>(null);
+
   const handleSettings = () => {
     if (settingsRoute) {
       router.push(settingsRoute);
@@ -162,12 +170,35 @@ export function DashboardContent({
     }
   };
 
+  const handleEditSegment = (segmentId: string) => {
+    setSelectedSegmentId(segmentId);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleUpdateComplete = () => {
+    setSelectedSegmentId(null);
+  };
+
+  const handleEditSpeciality = (specialityId: string) => {
+    setSelectedSpecialityId(specialityId);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleSpecialityUpdateComplete = () => {
+    setSelectedSpecialityId(null);
+  };
+
+  const handleEditQualification = (qualificationId: string) => {
+    setSelectedQualificationId(qualificationId);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleQualificationUpdateComplete = () => {
+    setSelectedQualificationId(null);
+  };
+
   return (
     <div className="space-y-1 px-3 mt-30 bg-(--gray-0)">
-      {/* space-y-10 p-3 */}
-      {/* Dashboard Header with Actions */}
-      {/* shadow-[0px_0.63px_5.5px_0px_rgba(0,0,0,0.1)] */}
-
       {!channalTrue &&
         !productCategoriesTrue &&
         !specializationsTrue &&
@@ -223,30 +254,36 @@ export function DashboardContent({
 
         {doctorSegmentsD && (
           <div>
-            <DoctorSegments />
+            <DoctorSegments updateId={selectedSegmentId} onUpdateComplete={handleUpdateComplete} />
             <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
               <TableHeader campHeading={campHeading} filterT={filterT} />
-              <AllDoctorSegments />
+              <AllDoctorSegments onEditSegment={handleEditSegment} />
             </div>
           </div>
         )}
 
         {qualificationsD && (
           <div>
-            <Qualifications />
+            <Qualifications
+              updateId={selectedQualificationId}
+              onUpdateComplete={handleQualificationUpdateComplete}
+            />
             <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
               <TableHeader campHeading={campHeading} filterT={filterT} />
-              <AllQualifications />
+              <AllQualifications onEditQualification={handleEditQualification} />
             </div>
           </div>
         )}
 
         {specialitiesD && (
           <div>
-            <Specialities />
+            <Specialities
+              updateId={selectedSpecialityId}
+              onUpdateComplete={handleSpecialityUpdateComplete}
+            />
             <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
               <TableHeader campHeading={campHeading} filterT={filterT} />
-              <AllSpecialities />
+              <AllSpecialities onEditSpeciality={handleEditSpeciality} />
             </div>
           </div>
         )}
@@ -450,16 +487,6 @@ export function DashboardContent({
             <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
               <TableHeader campHeading="Product Categories" filterT={filterT} />
               <AllProductCategories />
-            </div>
-          </div>
-        )}
-
-        {specializationsTrue && (
-          <div>
-            <DoctorSpecializations />
-            <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
-              <TableHeader campHeading="Doctor Specializations" filterT={filterT} />
-              <AllSpecializations />
             </div>
           </div>
         )}

@@ -1,57 +1,236 @@
 "use client";
 
-import React, { useState } from "react";
-import { Plus, X } from "lucide-react";
-import { FormInput } from "@/components/form";
+import React, { useState, useEffect } from "react";
+import { EditIcon, Plus } from "lucide-react";
+import { FormInput, FormSelect, StatusToggle } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
+import { useAppDispatch, useAppSelector } from "@/store";
+import {
+  createQualification,
+  resetQualificationState,
+} from "@/store/slices/qualification/createQualificationSlice";
+import { getAllQualifications } from "@/store/slices/qualification/getAllQualificationsSlice";
+import {
+  updateQualification,
+  resetUpdateQualificationState,
+} from "@/store/slices/qualification/updateQualificationSlice";
+import { getQualificationById } from "@/store/slices/qualification/getQualificationByIdSlice";
+import {
+  generatePrefix,
+  resetGeneratePrefixState,
+} from "@/store/slices/preFix/generatePrefixSlice";
+import { qualificationCreationSchema } from "@/validations/qualificationValidation";
 
-interface Qualification {
-  id: string;
-  qualificationName: string;
-  pulseCode: string;
-  legacyCode: string;
+interface QualificationsCardProps {
+  updateId?: string | null;
+  onUpdateComplete?: () => void;
 }
 
-export default function AddQualificationsCard() {
+export default function AddQualificationsCard({
+  updateId = null,
+  onUpdateComplete,
+}: QualificationsCardProps) {
+  const dispatch = useAppDispatch();
+  const { loading, success, error, message } = useAppSelector((state) => state.createQualification);
+  const {
+    loading: updateLoading,
+    success: updateSuccess,
+    error: updateError,
+    message: updateMessage,
+  } = useAppSelector((state) => state.updateQualification);
+  const { qualification: qualificationData } = useAppSelector((state) => state.qualificationById);
+  const {
+    generatedPrefix,
+    loading: prefixLoading,
+    error: prefixError,
+  } = useAppSelector((state) => state.generatePrefix);
+
   const [qualificationName, setQualificationName] = useState("");
   const [pulseCode, setPulseCode] = useState("");
-  const [legacyCode, setLegacyCode] = useState("");
-  const [qualificationsList, setQualificationsList] = useState<Qualification[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<"active" | "inactive">("active");
+  const [validationErrors, setValidationErrors] = useState<{
+    name?: string;
+    pulseCode?: string;
+    status?: string;
+  }>({});
+  const isUpdateMode = !!updateId;
 
-  // Auto-generate pulse code based on qualifications count
-  const generatePulseCode = () => {
-    const count = qualificationsList.length + 1;
-    return `QL_${String(count).padStart(6, "0")}`;
-  };
+  // Fetch qualification data by ID when in update mode
+  useEffect(() => {
+    if (isUpdateMode && updateId) {
+      dispatch(getQualificationById(updateId));
+    }
+  }, [dispatch, isUpdateMode, updateId]);
 
-  const handleAddQualification = async () => {
-    if (!qualificationName.trim()) return;
+  // Generate prefix only when not in update mode
+  useEffect(() => {
+    if (!isUpdateMode) {
+      dispatch(generatePrefix({ entity: "Qualification" }));
+    }
 
-    setLoading(true);
+    return () => {
+      dispatch(resetGeneratePrefixState());
+    };
+  }, [dispatch, isUpdateMode]);
 
-    // Simulate API delay
-    setTimeout(() => {
-      const newQualification: Qualification = {
-        id: Date.now().toString(),
-        qualificationName: qualificationName.trim(),
-        pulseCode: pulseCode || generatePulseCode(),
-        legacyCode: legacyCode.trim() || "",
-      };
+  // Populate form when qualification data is loaded in update mode
+  useEffect(() => {
+    if (isUpdateMode && qualificationData) {
+      setQualificationName(qualificationData.name || "");
+      setPulseCode(qualificationData.pulseCode || "");
+      setStatus(qualificationData.status || "active");
+    }
+  }, [isUpdateMode, qualificationData]);
 
-      setQualificationsList([...qualificationsList, newQualification]);
-
-      // Clear form
+  // Handle create success
+  useEffect(() => {
+    if (success) {
       setQualificationName("");
       setPulseCode("");
-      setLegacyCode("");
-      setLoading(false);
-    }, 500);
+      setStatus("active");
+      setValidationErrors({});
+      dispatch(getAllQualifications());
+      dispatch(generatePrefix({ entity: "Qualification" }));
+      setTimeout(() => {
+        dispatch(resetQualificationState());
+      }, 2000);
+    }
+  }, [success, dispatch]);
+
+  // Handle update success
+  useEffect(() => {
+    if (updateSuccess) {
+      setQualificationName("");
+      setPulseCode("");
+      setValidationErrors({});
+      setStatus("active");
+      dispatch(getAllQualifications());
+      dispatch(resetUpdateQualificationState());
+      if (onUpdateComplete) {
+        onUpdateComplete();
+      }
+    }
+  }, [updateSuccess, dispatch, onUpdateComplete]);
+
+  // Validate using Zod schema with real-time field validation
+  const validateField = (fieldName: "name" | "pulseCode" | "status", value: any) => {
+    try {
+      if (fieldName === "name") {
+        qualificationCreationSchema.shape.name.parse(value);
+      } else if (fieldName === "status") {
+        qualificationCreationSchema.shape.status.parse(value);
+      }
+      setValidationErrors((prev) => {
+        const { [fieldName]: _, ...rest } = prev;
+        return rest;
+      });
+    } catch (error: any) {
+      if (error.errors && error.errors[0]) {
+        setValidationErrors((prev) => ({
+          ...prev,
+          [fieldName]: error.errors[0].message,
+        }));
+      }
+    }
   };
 
-  const removeQualification = (id: string) => {
-    setQualificationsList(qualificationsList.filter((qual) => qual.id !== id));
+  // Handle qualification name change with real-time validation
+  const handleQualificationNameChange = (value: string) => {
+    setQualificationName(value);
+    validateField("name", value);
   };
+
+  const validateForm = (pulseCodeToValidate: string) => {
+    try {
+      qualificationCreationSchema.parse({
+        name: qualificationName,
+        pulseCode: pulseCodeToValidate,
+        status,
+      });
+      setValidationErrors({});
+      return true;
+    } catch (error: any) {
+      const errors: typeof validationErrors = {};
+      if (error.errors) {
+        error.errors.forEach((err: any) => {
+          const field = err.path[0];
+          errors[field as keyof typeof errors] = err.message;
+        });
+      }
+      setValidationErrors(errors);
+      return false;
+    }
+  };
+
+  const handleSubmit = async () => {
+    // Only validate pulse code in create mode
+    if (!isUpdateMode) {
+      if (!generatedPrefix) {
+        setValidationErrors({ pulseCode: "Pulse code is missing. Please wait or try again." });
+        return;
+      }
+
+      // Validate form with pulse code for creation
+      if (!validateForm(generatedPrefix)) {
+        return;
+      }
+    } else {
+      // In update mode, validate without pulse code
+      try {
+        qualificationCreationSchema.omit({ pulseCode: true }).parse({
+          name: qualificationName,
+          status: status,
+        });
+        setValidationErrors({});
+      } catch (error: any) {
+        const errors: typeof validationErrors = {};
+        if (error.errors) {
+          error.errors.forEach((err: any) => {
+            const field = err.path[0];
+            errors[field as keyof typeof errors] = err.message;
+          });
+        }
+        setValidationErrors(errors);
+        return;
+      }
+    }
+
+    try {
+      if (isUpdateMode && updateId) {
+        // Update existing qualification - only send name and status
+        await dispatch(
+          updateQualification({
+            id: updateId,
+            data: {
+              name: qualificationName.trim(),
+              status,
+            },
+          })
+        ).unwrap();
+      } else {
+        // Create new qualification - send all fields including pulseCode
+        await dispatch(
+          createQualification({
+            name: qualificationName.trim(),
+            pulseCode: generatedPrefix!,
+            status,
+          })
+        ).unwrap();
+      }
+    } catch (err: any) {
+      console.error(`Failed to ${isUpdateMode ? "update" : "create"} qualification:`, err);
+      const errorMessage =
+        err?.message ||
+        err?.error ||
+        `Failed to ${isUpdateMode ? "update" : "create"} qualification`;
+      setValidationErrors({ name: errorMessage });
+    }
+  };
+
+  const statusOptions = [
+    { value: "active", label: "Active" },
+    { value: "inactive", label: "Inactive" },
+  ];
 
   return (
     <div className="w-full">
@@ -59,25 +238,29 @@ export default function AddQualificationsCard() {
         <div className="px-8 py-10 space-y-8">
           {/* Header */}
           <div>
-            <h2 className="t-h2">Add Qualifications</h2>
+            <h2 className="t-h2">{isUpdateMode ? "Update Qualification" : "Add Qualifications"}</h2>
             <p className="t-sm text-[var(--subheading-color)] mt-1">
-              Manage doctor qualifications and certifications
+              {isUpdateMode
+                ? "Update the qualification information below"
+                : "Manage doctor qualifications and certifications"}
             </p>
           </div>
 
-          {/* Add New Qualification Form */}
-          <div className="flex gap-6 items-end">
+          {/* Add/Update Qualification Form */}
+          <div className="flex gap-6 items-start">
             {/* Input Fields Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1">
-              {/* Pulse Code */}
+              {/* Pulse Code - Read-only in both modes */}
               <FormInput
                 label="Pulse Code"
                 name="pulseCode"
                 type="text"
-                value={pulseCode || generatePulseCode()}
-                onChange={setPulseCode}
-                placeholder="QL_000001"
+                value={isUpdateMode ? pulseCode : generatedPrefix || ""}
+                onChange={() => {}}
+                placeholder={prefixLoading ? "Generating..." : "QF_000001"}
+                readOnly
                 required
+                error={validationErrors.pulseCode}
               />
 
               {/* Qualification Name */}
@@ -86,72 +269,46 @@ export default function AddQualificationsCard() {
                 name="qualificationName"
                 type="text"
                 value={qualificationName}
-                onChange={setQualificationName}
+                onChange={handleQualificationNameChange}
                 placeholder="e.g. MBBS, MD, MS, DNB"
                 required
+                error={validationErrors.name}
               />
 
-              {/* Legacy Code */}
-              <FormInput
-                label="Legacy Code (Optional)"
-                name="legacyCode"
-                type="text"
-                value={legacyCode}
-                onChange={setLegacyCode}
-                placeholder="e.g. OLD-QL-001"
-              />
-            </div>
-
-            {/* Add Button */}
-            <Button
-              onClick={handleAddQualification}
-              disabled={!qualificationName.trim() || loading}
-              variant="primary"
-              size="lg"
-              icon={Plus}
-              loading={loading}
-              className="h-12 px-8"
-            >
-              {loading ? "Adding..." : "Add to list"}
-            </Button>
-          </div>
-
-          {/* Added Qualifications List */}
-          {qualificationsList.length > 0 && (
-            <div className="mt-10">
-              <h3 className="t-h4 mb-4">Added Qualifications ({qualificationsList.length})</h3>
-              <div className="space-y-3">
-                {qualificationsList.map((qualification) => (
-                  <div
-                    key={qualification.id}
-                    className="flex items-center justify-between p-5 bg-[var(--gray-0)] rounded-8 border border-[var(--gray-2)]"
-                  >
-                    <div className="grid grid-cols-3 gap-8 flex-1">
-                      <div>
-                        <p className="t-cap">Qualification Name</p>
-                        <p className="t-label-b">{qualification.qualificationName}</p>
-                      </div>
-                      <div>
-                        <p className="t-cap">Pulse Code</p>
-                        <p className="t-val-sm">{qualification.pulseCode}</p>
-                      </div>
-                      <div>
-                        <p className="t-cap">Legacy Code</p>
-                        <p className="t-label-b">{qualification.legacyCode || "N/A"}</p>
-                      </div>
-                    </div>
-                    <Button
-                      onClick={() => removeQualification(qualification.id)}
-                      variant="ghost"
-                      size="icon"
-                      icon={X}
-                      className="ml-6 text-[var(--destructive)] hover:bg-[var(--destructive-0)]"
-                    />
-                  </div>
-                ))}
+              <div className="flex flex-col gap-1">
+                <label className="t-label mb-1">Status</label>
+                <StatusToggle
+                  status={status === "active" ? "Active" : "Inactive"}
+                  onChange={(newStatus) =>
+                    setStatus(newStatus === "Active" ? "active" : "inactive")
+                  }
+                />
               </div>
             </div>
-          )}
+
+            {/* Add/Update Button */}
+            <Button
+              onClick={handleSubmit}
+              disabled={
+                (isUpdateMode ? updateLoading : loading) ||
+                !qualificationName.trim() ||
+                (isUpdateMode ? !pulseCode : !generatedPrefix)
+              }
+              variant="primary"
+              size="lg"
+              icon={isUpdateMode ? EditIcon : Plus}
+              loading={isUpdateMode ? updateLoading : loading}
+              className="h-12 px-8 mt-6"
+            >
+              {isUpdateMode
+                ? updateLoading
+                  ? "Updating..."
+                  : "Update Qualification"
+                : loading
+                  ? "Adding..."
+                  : "Add Qualification"}
+            </Button>
+          </div>
         </div>
       </div>
     </div>

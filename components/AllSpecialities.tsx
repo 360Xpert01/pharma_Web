@@ -7,115 +7,51 @@ import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import TableActionDropdown from "@/components/shared/table/TableActionDropdown";
 import StatusToggle from "@/components/form/StatusToggle";
+import { useAppDispatch, useAppSelector } from "@/store";
+import {
+  getAllSpecializations,
+  resetSpecializationsState,
+} from "@/store/slices/specialization/getAllSpecializationsSlice";
+import EditIcon from "@/components/svgs/edit-icon";
 
 interface Speciality {
   id: string;
   pulseCode: string;
   name: string;
-  isActive: boolean;
+  status: "active" | "inactive";
 }
 
-// Hardcoded specialities data
-const HARDCODED_SPECIALITIES: Speciality[] = [
-  {
-    id: "1",
-    pulseCode: "SP_000001",
-    name: "Cardiology",
-    isActive: true,
-  },
-  {
-    id: "2",
-    pulseCode: "SP_000002",
-    name: "Neurology",
-    isActive: true,
-  },
-  {
-    id: "3",
-    pulseCode: "SP_000003",
-    name: "Orthopedics",
-    isActive: true,
-  },
-  {
-    id: "4",
-    pulseCode: "SP_000004",
-    name: "Pediatrics",
-    isActive: true,
-  },
-  {
-    id: "5",
-    pulseCode: "SP_000005",
-    name: "Dermatology",
-    isActive: true,
-  },
-  {
-    id: "6",
-    pulseCode: "SP_000006",
-    name: "Ophthalmology",
-    isActive: false,
-  },
-  {
-    id: "7",
-    pulseCode: "SP_000007",
-    name: "General Surgery",
-    isActive: true,
-  },
-  {
-    id: "8",
-    pulseCode: "SP_000008",
-    name: "ENT",
-    isActive: true,
-  },
-  {
-    id: "9",
-    pulseCode: "SP_000009",
-    name: "Psychiatry",
-    isActive: true,
-  },
-  {
-    id: "10",
-    pulseCode: "SP_000010",
-    name: "Gastroenterology",
-    isActive: false,
-  },
-];
+interface AllSpecialitiesProps {
+  onEditSpeciality?: (specialityId: string) => void;
+}
 
-export default function AllSpecialities() {
-  const [specialities, setSpecialities] = useState<Speciality[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function AllSpecialities({ onEditSpeciality }: AllSpecialitiesProps) {
+  const dispatch = useAppDispatch();
+  const { loading, error, specializations } = useAppSelector((state) => state.allSpecializations);
   const [openId, setOpenId] = useState<string | null>(null);
 
-  // Load hardcoded data
+  // Fetch specializations on mount
   useEffect(() => {
-    // Simulate loading
-    const timer = setTimeout(() => {
-      setSpecialities(HARDCODED_SPECIALITIES);
-      setLoading(false);
-    }, 500);
+    dispatch(getAllSpecializations());
 
-    return () => clearTimeout(timer);
-  }, []);
-
-  const toggleStatus = (id: string) => {
-    setSpecialities((prevSpecialities) =>
-      prevSpecialities.map((speciality) =>
-        speciality.id === id ? { ...speciality, isActive: !speciality.isActive } : speciality
-      )
-    );
-  };
-
-  const deleteSpeciality = (id: string) => {
-    setSpecialities((prevSpecialities) =>
-      prevSpecialities.filter((speciality) => speciality.id !== id)
-    );
-    setOpenId(null);
-  };
+    return () => {
+      dispatch(resetSpecializationsState());
+    };
+  }, [dispatch]);
 
   const handleRetry = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setSpecialities(HARDCODED_SPECIALITIES);
-      setLoading(false);
-    }, 500);
+    dispatch(getAllSpecializations());
+  };
+
+  const handleEdit = (id: string) => {
+    if (onEditSpeciality) {
+      onEditSpeciality(id);
+    }
+  };
+
+  const toggleStatus = (id: string) => {
+    // TODO: Implement update API when available
+    console.log("Toggle status for:", id);
   };
 
   const columns: ColumnDef<Speciality>[] = [
@@ -139,11 +75,11 @@ export default function AllSpecialities() {
     },
     {
       header: "Status",
-      accessorKey: "isActive",
+      accessorKey: "status",
       cell: ({ row }) => (
         <div className="flex items-center">
           <StatusToggle
-            status={row.original.isActive ? "Active" : "Inactive"}
+            status={row.original.status === "active" ? "Active" : "Inactive"}
             onChange={(newStatus) => {
               toggleStatus(row.original.id);
             }}
@@ -156,26 +92,16 @@ export default function AllSpecialities() {
       header: "",
       cell: ({ row }) => (
         <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
-          <TableActionDropdown
-            isOpen={openId === row.original.id}
-            onToggle={() => setOpenId(openId === row.original.id ? null : row.original.id)}
-            onClose={() => setOpenId(null)}
-            items={[
-              {
-                label: "View Details",
-                onClick: () => console.log("View Details", row.original.id),
-              },
-              {
-                label: "Edit Speciality",
-                onClick: () => console.log("Edit Speciality", row.original.id),
-              },
-              {
-                label: "Delete Speciality",
-                onClick: () => deleteSpeciality(row.original.id),
-                variant: "danger",
-              },
-            ]}
-          />
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEdit(row.original.id);
+            }}
+            className="group hover:opacity-80 transition cursor-pointer"
+            title="Edit Speciality"
+          >
+            <EditIcon />
+          </button>
         </div>
       ),
     },
@@ -184,10 +110,10 @@ export default function AllSpecialities() {
   return (
     <div className="w-full">
       <CenturoTable
-        data={specialities}
+        data={specializations}
         columns={columns}
         loading={loading}
-        error={null}
+        error={error}
         onRetry={handleRetry}
         enableSorting={false}
         enablePagination={true}

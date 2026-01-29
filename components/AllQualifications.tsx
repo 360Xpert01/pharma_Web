@@ -7,99 +7,58 @@ import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import TableActionDropdown from "@/components/shared/table/TableActionDropdown";
 import StatusToggle from "@/components/form/StatusToggle";
+import { useAppDispatch, useAppSelector } from "@/store";
+import {
+  getAllQualifications,
+  resetQualificationsState,
+} from "@/store/slices/qualification/getAllQualificationsSlice";
+import EditIcon from "@/components/svgs/edit-icon";
 
 interface Qualification {
   id: string;
   pulseCode: string;
   name: string;
-  isActive: boolean;
+  status: "active" | "inactive";
 }
 
-// Hardcoded qualifications data
-const HARDCODED_QUALIFICATIONS: Qualification[] = [
-  {
-    id: "1",
-    pulseCode: "QL_000001",
-    name: "MBBS",
-    isActive: true,
-  },
-  {
-    id: "2",
-    pulseCode: "QL_000002",
-    name: "MD - General Medicine",
-    isActive: true,
-  },
-  {
-    id: "3",
-    pulseCode: "QL_000003",
-    name: "MS - General Surgery",
-    isActive: true,
-  },
-  {
-    id: "4",
-    pulseCode: "QL_000004",
-    name: "DNB",
-    isActive: true,
-  },
-  {
-    id: "5",
-    pulseCode: "QL_000005",
-    name: "DM - Cardiology",
-    isActive: true,
-  },
-  {
-    id: "6",
-    pulseCode: "QL_000006",
-    name: "MCh - Neurosurgery",
-    isActive: false,
-  },
-  {
-    id: "7",
-    pulseCode: "QL_000007",
-    name: "Diploma in Child Health",
-    isActive: true,
-  },
-];
+interface AllQualificationsProps {
+  onEditQualification?: (qualificationId: string) => void;
+}
 
-export default function AllQualifications() {
-  const [qualifications, setQualifications] = useState<Qualification[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function AllQualifications({ onEditQualification }: AllQualificationsProps) {
+  const dispatch = useAppDispatch();
+  const { loading, error, qualifications } = useAppSelector((state) => state.allQualifications);
   const [openId, setOpenId] = useState<string | null>(null);
 
-  // Load hardcoded data
+  // Fetch qualifications on mount
   useEffect(() => {
-    // Simulate loading
-    const timer = setTimeout(() => {
-      setQualifications(HARDCODED_QUALIFICATIONS);
-      setLoading(false);
-    }, 500);
+    dispatch(getAllQualifications());
 
-    return () => clearTimeout(timer);
-  }, []);
+    return () => {
+      dispatch(resetQualificationsState());
+    };
+  }, [dispatch]);
+
+  const handleRetry = () => {
+    dispatch(getAllQualifications());
+  };
+
+  const handleEdit = (id: string) => {
+    if (onEditQualification) {
+      onEditQualification(id);
+    }
+  };
 
   const toggleStatus = (id: string) => {
-    setQualifications((prevQualifications) =>
-      prevQualifications.map((qualification) =>
-        qualification.id === id
-          ? { ...qualification, isActive: !qualification.isActive }
-          : qualification
-      )
-    );
+    // TODO: Implement update API when available
+    console.log("Toggle status for:", id);
+    // For now, just log - would need an update qualification API endpoint
   };
 
   const deleteQualification = (id: string) => {
-    setQualifications((prevQualifications) =>
-      prevQualifications.filter((qualification) => qualification.id !== id)
-    );
+    // TODO: Implement delete API when available
+    console.log("Delete qualification:", id);
     setOpenId(null);
-  };
-
-  const handleRetry = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setQualifications(HARDCODED_QUALIFICATIONS);
-      setLoading(false);
-    }, 500);
   };
 
   const columns: ColumnDef<Qualification>[] = [
@@ -123,11 +82,11 @@ export default function AllQualifications() {
     },
     {
       header: "Status",
-      accessorKey: "isActive",
+      accessorKey: "status",
       cell: ({ row }) => (
         <div className="flex items-center">
           <StatusToggle
-            status={row.original.isActive ? "Active" : "Inactive"}
+            status={row.original.status === "active" ? "Active" : "Inactive"}
             onChange={(newStatus) => {
               toggleStatus(row.original.id);
             }}
@@ -140,26 +99,16 @@ export default function AllQualifications() {
       header: "",
       cell: ({ row }) => (
         <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
-          <TableActionDropdown
-            isOpen={openId === row.original.id}
-            onToggle={() => setOpenId(openId === row.original.id ? null : row.original.id)}
-            onClose={() => setOpenId(null)}
-            items={[
-              {
-                label: "View Details",
-                onClick: () => console.log("View Details", row.original.id),
-              },
-              {
-                label: "Edit Qualification",
-                onClick: () => console.log("Edit Qualification", row.original.id),
-              },
-              {
-                label: "Delete Qualification",
-                onClick: () => deleteQualification(row.original.id),
-                variant: "danger",
-              },
-            ]}
-          />
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEdit(row.original.id);
+            }}
+            className="group hover:opacity-80 transition cursor-pointer"
+            title="Edit Qualification"
+          >
+            <EditIcon />
+          </button>
         </div>
       ),
     },
@@ -171,7 +120,7 @@ export default function AllQualifications() {
         data={qualifications}
         columns={columns}
         loading={loading}
-        error={null}
+        error={error}
         onRetry={handleRetry}
         enableSorting={false}
         enablePagination={true}
