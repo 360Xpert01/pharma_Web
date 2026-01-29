@@ -6,8 +6,13 @@ import { Button } from "@/components/ui/button/button";
 import { FormInput, FormSelect, StatusToggle } from "@/components/form";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllSpecializations } from "@/store/slices/specialization/getAllSpecializationsSlice";
+import { getAllQualifications } from "@/store/slices/qualification/getAllQualificationsSlice";
+import { getAllSegments } from "@/store/slices/segment/getAllSegmentsSlice";
 import { getAllChannels } from "@/store/slices/channel/getAllChannelsSlice";
 import { getFieldConfigByChannel } from "@/utils/doctorFormConfig";
+import { createParty, resetCreatePartyState } from "@/store/slices/party/partySlicePost";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 interface Location {
   id: string;
@@ -22,6 +27,7 @@ interface Location {
 
 export default function AddDoctorForm({ idForm }: { idForm?: string }) {
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   console.log(idForm, "Account/Channel ID:", idForm);
 
@@ -29,7 +35,14 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
   const { specializations, loading: specializationsLoading } = useAppSelector(
     (state) => state.allSpecializations
   );
+  const { qualifications, loading: qualificationsLoading } = useAppSelector(
+    (state) => state.allQualifications
+  );
+  const { segments, loading: segmentsLoading } = useAppSelector((state) => state.allSegments);
   const { channels, loading: channelsLoading } = useAppSelector((state) => state.allChannels);
+  const { createLoading, createSuccess, createError } = useAppSelector(
+    (state) => state.createParty
+  );
 
   // Find the channel associated with this ID
   const currentChannel = useMemo(() => {
@@ -66,6 +79,8 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
   // Fetch data on mount
   useEffect(() => {
     dispatch(getAllSpecializations());
+    dispatch(getAllQualifications());
+    dispatch(getAllSegments());
     dispatch(getAllChannels());
   }, [dispatch]);
 
@@ -76,6 +91,19 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
     }
   }, [currentChannel, channel]);
 
+  // Handle success/error
+  useEffect(() => {
+    if (createSuccess) {
+      toast.success("Doctor added successfully!");
+      dispatch(resetCreatePartyState());
+      // router.push("/dashboard/doctors"); // Optional: redirect
+    }
+    if (createError) {
+      toast.error(createError);
+      dispatch(resetCreatePartyState());
+    }
+  }, [createSuccess, createError, dispatch, router]);
+
   const [locations, setLocations] = useState<Location[]>([
     {
       id: "1",
@@ -84,8 +112,8 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
       area: "",
       bricks: "",
       clinicName: "",
-      visitingDays: "Monday - Friday",
-      visitingHours: "10:00 PM - 10:00 AM",
+      visitingDays: "",
+      visitingHours: "",
     },
   ]);
 
@@ -99,8 +127,8 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
         area: "",
         bricks: "",
         clinicName: "",
-        visitingDays: "Monday - Friday",
-        visitingHours: "10:00 PM - 10:00 AM",
+        visitingDays: "",
+        visitingHours: "",
       },
     ]);
   };
@@ -113,6 +141,71 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
 
   const updateLocation = (id: string, field: keyof Location, value: string) => {
     setLocations(locations.map((loc) => (loc.id === id ? { ...loc, [field]: value } : loc)));
+  };
+
+  const handleSubmit = async () => {
+    // Basic validation
+    if (!userName || !email || !contactNumber) {
+      toast.error("Please fill in all required fields");
+      console.log("Submitting form", userName, email, contactNumber, specialization);
+      return;
+    }
+
+    const payload = {
+      channelTypeId: channel || idForm || "",
+      basicInfo: {
+        party_type: "DOCTOR",
+        name: userName,
+        email: email,
+        phoneNumber: contactNumber,
+        image: "", // Default or placeholder
+        description: designation || qualification || "",
+        segmentId: segment,
+        status: status.toUpperCase(),
+      },
+      attributes: {
+        specialization: specialization,
+      },
+      locations: locations.map((loc) => {
+        // Parse visiting days: "Monday, Wednesday" -> ["MONDAY", "WEDNESDAY"]
+        const days = loc.visitingDays
+          ? loc.visitingDays.split(",").map((d) => d.trim().toUpperCase())
+          : [];
+
+        // Parse visiting hours: "09:00 - 13:00" -> [{start: "09:00", end: "13:00"}]
+        const timeSlots = [];
+        if (loc.visitingHours && loc.visitingHours.includes("-")) {
+          const [start, end] = loc.visitingHours.split("-").map((t) => t.trim());
+          timeSlots.push({ start, end });
+        } else if (loc.visitingHours) {
+          timeSlots.push({ start: loc.visitingHours, end: loc.visitingHours });
+        }
+
+        return {
+          locationType: "CLINIC",
+          address: `${loc.clinicName}, ${loc.area}, ${loc.city}`,
+          city: loc.city,
+          state: loc.city, // Placeholder for state
+          country: loc.country,
+          schedules: [
+            {
+              scheduleType: "WEEKLY",
+              validFrom: new Date().toISOString().split("T")[0],
+              validUntil: null,
+              scheduleData: [
+                {
+                  days: days,
+                  time_slots: timeSlots,
+                },
+              ],
+            },
+          ],
+        };
+      }),
+    };
+
+    console.log("Submitting Payload:", payload);
+    dispatch(createParty(payload as any));
   };
 
   return (
@@ -178,14 +271,14 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
             onChange={setQualification}
             options={[
               { value: "", label: "Select qualification" },
-              { value: "MBBS", label: "MBBS" },
-              { value: "MD", label: "MD" },
-              { value: "FCPS", label: "FCPS" },
-              { value: "MS", label: "MS" },
-              { value: "DO", label: "DO" },
+              ...qualifications.map((q) => ({
+                value: q.id,
+                label: q.name,
+              })),
             ]}
             placeholder="Select qualification"
             required
+            loading={qualificationsLoading}
           />
         )}
 
@@ -213,12 +306,14 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
             onChange={setSegment}
             options={[
               { value: "", label: "Select segment" },
-              { value: "A", label: "Segment A" },
-              { value: "B", label: "Segment B" },
-              { value: "C", label: "Segment C" },
+              ...segments.map((s) => ({
+                value: s.id,
+                label: s.name,
+              })),
             ]}
             placeholder="Select segment"
             required
+            loading={segmentsLoading}
           />
         )}
 
@@ -400,7 +495,6 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
                     type="text"
                     value={location.visitingDays}
                     onChange={(value) => updateLocation(location.id, "visitingDays", value)}
-                    readOnly
                     className="t-md"
                     required
                   />
@@ -411,7 +505,6 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
                     type="text"
                     value={location.visitingHours}
                     onChange={(value) => updateLocation(location.id, "visitingHours", value)}
-                    readOnly
                     className="t-md"
                     required
                   />
@@ -427,7 +520,15 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
         <Button variant="outline" size="lg" rounded="full">
           Discard
         </Button>
-        <Button variant="primary" size="lg" icon={Plus} rounded="full" className="shadow-soft">
+        <Button
+          variant="primary"
+          size="lg"
+          icon={Plus}
+          rounded="full"
+          className="shadow-soft"
+          onClick={handleSubmit}
+          loading={createLoading}
+        >
           Add Doctor
         </Button>
       </div>
