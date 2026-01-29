@@ -48,7 +48,11 @@ export interface BasicInfo {
 
 export interface PartyAttributes {
   specialization: string; // UUID
-  // add more attributes if needed
+  qualification: string;
+  segment: string;
+  designation: string;
+  date_of_birth: string;
+  pmdcNumber: string;
 }
 
 export interface CreatePartyPayload {
