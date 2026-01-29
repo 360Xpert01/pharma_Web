@@ -20,9 +20,9 @@ export default function ProductPerformance() {
   ];
 
   return (
-    <div className="w-full  h-auto bg-white rounded-[24px] shadow-sm border border-gray-100 p-9">
+    <div className="w-full h-full bg-white rounded-8 shadow-soft border border-gray-1 p-6 flex flex-col">
       {/* Header */}
-      <h2 className="text-xl font-bold text-[#334155] mb-10">Product Performance</h2>
+      <h2 className="text-xl font-bold text-gray-9 mb-6">Product Performance</h2>
 
       {/* Product List */}
       <div className="space-y-8">

@@ -8,28 +8,25 @@ import ProductPreDoctor from "./ProductPerDoctor";
 
 export default function DoctorDetail() {
   return (
-    <div className="">
-      <div className="w-full flex">
-        {/* Left - Profile */}
-        <div className="w-[25%] flex flex-col justify-between">
-          <DoctorProfileCard />
-          <DoctorInfoCard />
-        </div>
-        <div className="w-[85%]">
-          <div className="w-[100%]">
-            <DoctorStatsCard />
-            <div className="flex mt-8 justify-between  ">
-              <div className="w-[49%]">
-                <ByBrands height={380} />
-              </div>
-              <div className="w-[49%]">
-                <ProductPreDoctor />
-              </div>
-            </div>
-          </div>
+    <div className="grid grid-cols-12 gap-6">
+      {/* Left - Profile & Info */}
+      <div className="col-span-3 flex flex-col gap-6">
+        <DoctorProfileCard />
+        <DoctorInfoCard />
+      </div>
+
+      {/* Right - Stats & Charts */}
+      <div className="col-span-9 flex flex-col gap-6">
+        <DoctorStatsCard />
+
+        <div className="grid grid-cols-2 gap-6">
+          <ByBrands height={300} />
+          <ProductPreDoctor />
         </div>
       </div>
-      <div className="bg-(--background) rounded-8 px-3 py-1 shadow-soft mt-7 border border-gray-200">
+
+      {/* Bottom - Plans Table */}
+      <div className="col-span-12 bg-(--background) rounded-8 px-3 py-1 shadow-soft border border-gray-200">
         <TableHeader campHeading={"Plans"} filterT={false} />
         <DoctordetailDrop />
       </div>

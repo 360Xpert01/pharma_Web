@@ -7,35 +7,29 @@ export default function DoctorProfileCard() {
     name: "Dr. Sarah Mitchelll",
     specialty: "Cardiologist",
     empId: "PLS_EMP- 000124",
-    // Image source from the uploaded context
     profileImage: "/capMan.svg",
   };
 
   return (
-    <div className="flex  bg-gray-50">
-      {/* Main Card Container */}
-      <div className="w-[380px] bg-white rounded-[24px] shadow-sm border border-gray-100 p-10 flex flex-col items-center text-center">
-        {/* Profile Image with specific rounding as per image */}
-        <div className="w-32 h-32 mb-6 overflow-hidden rounded-[35px] border-4 border-white shadow-sm">
-          <img
-            src={doctorData.profileImage}
-            alt={doctorData.name}
-            className="w-full h-full object-cover"
-          />
-        </div>
+    <div className="w-full bg-background rounded-8 p-6 shadow-soft border border-gray-1 flex flex-col items-center">
+      {/* Profile Image */}
+      <div className="relative w-36 h-36 rounded-8 overflow-hidden mb-4">
+        <img
+          src={doctorData.profileImage}
+          alt={doctorData.name}
+          className="w-full h-full object-cover"
+        />
+      </div>
 
-        {/* Doctor Name */}
-        <h2 className="text-[26px] font-bold text-gray-900 mb-1 tracking-tight">
-          {doctorData.name}
-        </h2>
+      {/* Doctor Name */}
+      <h2 className="text-3xl font-bold text-center text-gray-9 mb-2">{doctorData.name}</h2>
 
-        {/* Specialty */}
-        <p className="text-lg text-gray-500 font-medium mb-4">{doctorData.specialty}</p>
+      {/* Specialty */}
+      <p className="text-base font-thin text-center mb-6">{doctorData.specialty}</p>
 
-        {/* Employee ID Badge */}
-        <div className="bg-[#1E75FF] text-white text-[12px] font-bold px-5 py-1.5 rounded-full shadow-sm tracking-wide">
-          {doctorData.empId}
-        </div>
+      {/* Employee ID Badge */}
+      <div className="bg-primary text-white text-sm px-6 py-2 rounded-8 font-semibold">
+        {doctorData.empId}
       </div>
     </div>
   );
