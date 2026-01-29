@@ -15,7 +15,7 @@ export default function DashboardPage() {
         hideData={true}
         ReqTabel={true}
         campHeading={"All Requests"}
-        filterT={false}
+        filterT={true}
       />
     </div>
   );

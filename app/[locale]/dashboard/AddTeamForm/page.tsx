@@ -14,7 +14,7 @@ export default function DashboardPage() {
         hideData={true}
         teamFormTabel={true}
         campHeading={"All Team"}
-        filterT={false}
+        filterT={true}
       />
     </div>
   );

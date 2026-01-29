@@ -46,6 +46,8 @@ import callReportsReducer from "./slices/DCR/scheduleSlice";
 import weeklyCallsSlice from "./slices/employeeProfile/weeklyCallsSlice";
 import weekelyCallExpenses from "./slices/employeeProfile/weeklyCallExpensesSlice";
 import uploadReducer from "./slices/upload/uploadSlice";
+import partiesReducer from "./slices/party/partiesSlice";
+import createPartyReducer from "./slices/party/partySlicePost";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -90,6 +92,8 @@ const rootReducer = combineReducers({
   weeklyCalls: weeklyCallsSlice,
   weekelyCallExpenses: weekelyCallExpenses,
   upload: uploadReducer,
+  parties: partiesReducer,
+  createParty: createPartyReducer,
 });
 
 const persistConfig = {

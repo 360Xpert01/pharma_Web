@@ -24,7 +24,7 @@ export default function DashboardPage() {
         hideData={true}
         prodTabel={true}
         campHeading={"All Products"}
-        filterT={false}
+        filterT={true}
         settingsRoute={"/dashboard/product-Form"}
       />
     </div>
