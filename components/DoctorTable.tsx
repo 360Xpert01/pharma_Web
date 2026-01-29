@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from "react";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ColumnDef } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
@@ -10,6 +11,8 @@ import StatusBadge from "@/components/shared/StatusBadge";
 import { useAppSelector, useAppDispatch } from "@/store";
 import { getFieldConfigByChannel } from "@/utils/doctorFormConfig";
 import { getPartiesByChannelType, PartyItem } from "@/store/slices/party/partiesSlice";
+import EditIcon from "@/components/svgs/edit-icon";
+import EyeIcon from "@/components/svgs/eye-icon";
 
 interface Doctor extends PartyItem {}
 
@@ -18,6 +21,7 @@ export default function DoctorsTable({ id }: { id: string }) {
   // const [loading] = useState(false);
   // const [error] = useState<string | null>(null);
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const { parties, loading, error } = useAppSelector((state) => state.parties);
 
   React.useEffect(() => {
@@ -93,17 +97,17 @@ export default function DoctorsTable({ id }: { id: string }) {
     }
 
     // Qualification - conditional
-    if (fieldConfig.qualification) {
-      cols.push({
-        header: "Qualification",
-        accessorKey: "qualification",
-        cell: ({ row }) => (
-          <span>
-            {row.original?.attributes?.qualification || row.original?.qualification || "N/A"}
-          </span>
-        ),
-      });
-    }
+    // if (fieldConfig.qualification) {
+    //   cols.push({
+    //     header: "Qualification",
+    //     accessorKey: "qualification",
+    //     cell: ({ row }) => (
+    //       <span>
+    //         {row.original?.attributes?.qualification || row.original?.qualification || "N/A"}
+    //       </span>
+    //     ),
+    //   });
+    // }
 
     // Segment - conditional
     if (fieldConfig.segment) {
@@ -115,24 +119,24 @@ export default function DoctorsTable({ id }: { id: string }) {
     }
 
     // Designation - conditional
-    if (fieldConfig.designation) {
-      cols.push({
-        header: "Designation",
-        accessorKey: "designation",
-        cell: ({ row }) => (
-          <span>{row.original?.attributes?.designation || row.original?.designation || "N/A"}</span>
-        ),
-      });
-    }
+    // if (fieldConfig.designation) {
+    //   cols.push({
+    //     header: "Designation",
+    //     accessorKey: "designation",
+    //     cell: ({ row }) => (
+    //       <span>{row.original?.attributes?.designation || row.original?.designation || "N/A"}</span>
+    //     ),
+    //   });
+    // }
 
     // Email - conditional
-    if (fieldConfig.email) {
-      cols.push({
-        header: "Email",
-        accessorKey: "email",
-        cell: ({ row }) => <span>{row.original?.email || "N/A"}</span>,
-      });
-    }
+    // if (fieldConfig.email) {
+    //   cols.push({
+    //     header: "Email",
+    //     accessorKey: "email",
+    //     cell: ({ row }) => <span>{row.original?.email || "N/A"}</span>,
+    //   });
+    // }
 
     // Phone/Contact Number - conditional
     if (fieldConfig.contactNumber) {
@@ -148,17 +152,17 @@ export default function DoctorsTable({ id }: { id: string }) {
     }
 
     // Date of Birth - conditional
-    if (fieldConfig.dateOfBirth) {
-      cols.push({
-        header: "D.O.B",
-        accessorKey: "dateOfBirth",
-        cell: ({ row }) => (
-          <span>
-            {row.original?.attributes?.date_of_birth || row.original?.date_of_birth || "N/A"}
-          </span>
-        ),
-      });
-    }
+    // if (fieldConfig.dateOfBirth) {
+    //   cols.push({
+    //     header: "D.O.B",
+    //     accessorKey: "dateOfBirth",
+    //     cell: ({ row }) => (
+    //       <span>
+    //         {row.original?.attributes?.date_of_birth || row.original?.date_of_birth || "N/A"}
+    //       </span>
+    //     ),
+    //   });
+    // }
 
     // Parent - conditional
     if (fieldConfig.parent) {
@@ -195,13 +199,28 @@ export default function DoctorsTable({ id }: { id: string }) {
       header: "",
       enableSorting: false,
       cell: ({ row }) => (
-        <Link
-          href={`/dashboard/doctor-profile`}
-          className="flex items-center justify-end gap-1 text-sm cursor-pointer text-[var(--muted-foreground)] hover:opacity-80 transition-opacity"
-        >
-          <span className="whitespace-nowrap">View Details</span>
-          <ChevronRight className="w-4 h-4 text-[var(--primary)]" />
-        </Link>
+        <div className="flex items-center gap-3">
+          {/* Edit Icon */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(`/dashboard/UpdateEmployees?id=${row.original.id}`);
+            }}
+            className="group hover:opacity-80 transition cursor-pointer"
+            title="Edit Doctor"
+          >
+            <EditIcon />
+          </button>
+
+          {/* View Icon */}
+          <Link
+            href={`/dashboard/doctor-profile?id=${row.original.id}`}
+            className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+            title="View Details"
+          >
+            <EyeIcon />
+          </Link>
+        </div>
       ),
     });
 

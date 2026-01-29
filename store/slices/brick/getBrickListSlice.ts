@@ -4,54 +4,36 @@ import axios from "axios";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 // Types
-interface Region {
+interface BrickItem {
   id: string;
   name: string;
-}
-
-interface Province {
-  id: string;
-  name: string;
-  regionId: string;
-}
-
-interface City {
-  id: string;
-  name: string;
-  provinceId: string;
-}
-
-interface Area {
-  id: string;
-  name: string;
-  cityId: string;
-}
-
-interface Brick {
-  id: string;
-  name: string;
+  parentId: string;
   latitude: number;
   longitude: number;
-  areaId: string;
+  brickCode: string;
+  createdAt: string;
 }
 
 interface BrickListResponse {
-  regions: Region[];
-  provinces: Province[];
-  cities: City[];
-  areas: Area[];
-  bricks: Brick[];
+  regions?: BrickItem[];
+  provinces?: BrickItem[];
+  cities?: BrickItem[];
+  areas?: BrickItem[];
+  bricks?: BrickItem[];
+  zones?: BrickItem[];
+  [key: string]: BrickItem[] | undefined;
 }
 
 interface BrickListState {
   loading: boolean;
   success: boolean;
   error: string | null;
-  regions: Region[];
-  provinces: Province[];
-  cities: City[];
-  areas: Area[];
-  bricks: Brick[];
+  bricks: BrickItem[];
+  areas: BrickItem[];
+  cities: BrickItem[];
+  provinces: BrickItem[];
+  regions: BrickItem[];
+  zones: BrickItem[];
 }
 
 // Initial State
@@ -59,11 +41,12 @@ const initialState: BrickListState = {
   loading: false,
   success: false,
   error: null,
-  regions: [],
-  provinces: [],
-  cities: [],
-  areas: [],
   bricks: [],
+  areas: [],
+  cities: [],
+  provinces: [],
+  regions: [],
+  zones: [],
 };
 
 // Async Thunk: Get Brick List (GET /api/v1/brick/list)
@@ -71,7 +54,6 @@ export const getBrickList = createAsyncThunk<BrickListResponse, void, { rejectVa
   "brickList/getBrickList",
   async (_, { rejectWithValue }) => {
     try {
-      // Get token from localStorage
       const sessionStr = localStorage.getItem("userSession");
       if (!sessionStr) {
         return rejectWithValue("No session found. Please login again.");
@@ -106,11 +88,12 @@ const getBrickListSlice = createSlice({
       state.loading = false;
       state.success = false;
       state.error = null;
-      state.regions = [];
-      state.provinces = [];
-      state.cities = [];
-      state.areas = [];
       state.bricks = [];
+      state.areas = [];
+      state.cities = [];
+      state.provinces = [];
+      state.regions = [];
+      state.zones = [];
     },
   },
   extraReducers: (builder) => {
@@ -122,21 +105,23 @@ const getBrickListSlice = createSlice({
       .addCase(getBrickList.fulfilled, (state, action: PayloadAction<BrickListResponse>) => {
         state.loading = false;
         state.success = true;
-        state.regions = action.payload.regions;
-        state.provinces = action.payload.provinces;
-        state.cities = action.payload.cities;
-        state.areas = action.payload.areas;
-        state.bricks = action.payload.bricks;
+        state.bricks = action.payload.bricks || [];
+        state.areas = action.payload.areas || [];
+        state.cities = action.payload.cities || [];
+        state.provinces = action.payload.provinces || [];
+        state.regions = action.payload.regions || [];
+        state.zones = action.payload.zones || [];
       })
       .addCase(getBrickList.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
         state.error = action.payload || "Failed to load brick list";
-        state.regions = [];
-        state.provinces = [];
-        state.cities = [];
-        state.areas = [];
         state.bricks = [];
+        state.areas = [];
+        state.cities = [];
+        state.provinces = [];
+        state.regions = [];
+        state.zones = [];
       });
   },
 });
@@ -144,8 +129,8 @@ const getBrickListSlice = createSlice({
 // Export actions
 export const { resetBrickListState } = getBrickListSlice.actions;
 
-// Export types for use in components
-export type { Region, Province, City, Area, Brick, BrickListState };
+// Export types
+export type { BrickItem, BrickListResponse, BrickListState };
 
 // Export reducer
 export default getBrickListSlice.reducer;
