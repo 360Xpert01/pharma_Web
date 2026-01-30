@@ -61,6 +61,7 @@ import CsvUploadMapper from "@/components/CsvUploadMapper";
 import UpdateProductForm from "@/components/UpdateProduct";
 import UpdateGiveawayForm from "@/components/UpdateGiveaway";
 import GiveawayForm from "@/components/GivewayForm";
+import UpdateDoctorForm from "@/components/UpdateDoctorForm";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -134,6 +135,9 @@ export function DashboardContent({
   giveawayId,
   id,
   idForm,
+  UpdateDoctor,
+  partyId,
+  channelId,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -321,7 +325,7 @@ export function DashboardContent({
         {doctorTable && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
             <TableHeader campHeading={campHeading} filterT={filterT} />
-            <DoctorsTable id={id} />
+            <DoctorsTable id={id || ""} />
           </div>
         )}
 
@@ -501,6 +505,12 @@ export function DashboardContent({
         {UpdateGiveaway && giveawayId && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
             <UpdateGiveawayForm giveawayId={giveawayId} />
+          </div>
+        )}
+
+        {UpdateDoctor && partyId && (
+          <div className="rounded-md shadow-soft bg-[var(--background)]">
+            <UpdateDoctorForm partyId={partyId} channelId={channelId || undefined} />
           </div>
         )}
 

@@ -11,8 +11,15 @@ import {
   TimeRangePicker,
 } from "@/components/form";
 import { useDoctorForm } from "../hooks/use-doctor-form";
+import { useRouter } from "next/navigation";
 
-export default function AddDoctorForm({ idForm }: { idForm?: string }) {
+interface UpdateDoctorFormProps {
+  partyId: string;
+  channelId?: string;
+}
+
+export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFormProps) {
+  const router = useRouter();
   const {
     // State
     pmdcNumber,
@@ -61,8 +68,7 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
     handleSubmit,
     getErrorMessage,
     clearFieldError,
-    router,
-  } = useDoctorForm(idForm);
+  } = useDoctorForm(channelId, partyId);
 
   if (partyLoading) {
     return (
@@ -436,7 +442,7 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
           onClick={handleSubmit}
           loading={createLoading}
         >
-          {isUpdateMode ? "Update Doctor" : "Add Doctor"}
+          Update Doctor
         </Button>
       </div>
     </div>

@@ -204,7 +204,7 @@ export default function DoctorsTable({ id }: { id: string }) {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              router.push(`/dashboard/UpdateEmployees?id=${row.original?.party_id}`);
+              router.push(`/dashboard/update-doctor/${row.original?.party_id}?channelId=${id}`);
             }}
             className="group hover:opacity-80 transition cursor-pointer"
             title="Edit Doctor"

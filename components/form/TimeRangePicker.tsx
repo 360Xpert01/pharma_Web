@@ -13,6 +13,7 @@ interface TimeRangePickerProps {
   onChange: (from: string, to: string) => void;
   required?: boolean;
   className?: string;
+  error?: string;
 }
 
 export default function TimeRangePicker({
@@ -22,6 +23,7 @@ export default function TimeRangePicker({
   onChange,
   required = false,
   className = "",
+  error = "",
 }: TimeRangePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -85,6 +87,7 @@ export default function TimeRangePicker({
           </div>
         </PopoverContent>
       </Popover>
+      {error && <p className="t-err mt-1">{error}</p>}
     </div>
   );
 }

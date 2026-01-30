@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllSpecializations } from "@/store/slices/specialization/getAllSpecializationsSlice";
 import { getAllQualifications } from "@/store/slices/qualification/getAllQualificationsSlice";
@@ -9,6 +9,11 @@ import { getFieldConfigByChannel } from "@/utils/doctorFormConfig";
 import { createParty, resetCreatePartyState } from "@/store/slices/party/partySlicePost";
 import { getBrickList } from "@/store/slices/brick/getBrickListSlice";
 import { getBrickById, resetBrickByIdState } from "@/store/slices/brick/getBrickByIdSlice";
+import {
+  fetchPartyById as getPartyById,
+  clearParty as resetPartyByIdState,
+} from "@/store/slices/party/partygetId";
+import { updateParty, resetUpdatePartyState } from "@/store/slices/party/updatePartySlice";
 import { toast } from "react-hot-toast";
 import { doctorSchema } from "@/validations";
 
@@ -21,11 +26,16 @@ export interface Location {
   clinicName: string;
   visitingDays: { from: string; to: string };
   visitingHours: { from: string; to: string };
+  latitude?: number;
+  longitude?: number;
 }
 
-export const useDoctorForm = (idForm?: string) => {
+export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const partyId = partyIdOverride || searchParams.get("partyId");
+  const isUpdateMode = !!partyId;
 
   // Redux state
   const { specializations, loading: specializationsLoading } = useAppSelector(
@@ -39,6 +49,14 @@ export const useDoctorForm = (idForm?: string) => {
   const { createLoading, createSuccess, createError } = useAppSelector(
     (state) => state.createParty
   );
+  const { data: fetchedParty, loading: partyLoading } = useAppSelector((state) => state.partyById);
+
+  const {
+    loading: updateLoading,
+    success: updateSuccess,
+    error: updateError,
+  } = useAppSelector((state) => state.updateParty);
+
   const brickList = useAppSelector((state) => state.brickList);
   const { bricks, loading: bricksLoading } = brickList;
   const { brick: selectedBrickDetails } = useAppSelector((state) => state.brickById);
@@ -80,6 +98,8 @@ export const useDoctorForm = (idForm?: string) => {
       clinicName: "",
       visitingDays: { from: "", to: "" },
       visitingHours: { from: "", to: "" },
+      latitude: 0,
+      longitude: 0,
     },
   ]);
 
@@ -105,7 +125,83 @@ export const useDoctorForm = (idForm?: string) => {
     dispatch(getAllSegments());
     dispatch(getAllChannels());
     dispatch(getBrickList());
-  }, [dispatch]);
+
+    if (partyId) {
+      dispatch(getPartyById(partyId));
+    }
+
+    return () => {
+      dispatch(resetPartyByIdState());
+      dispatch(resetCreatePartyState());
+      dispatch(resetUpdatePartyState());
+    };
+  }, [dispatch, partyId, idForm]);
+
+  // Populate form when party data is fetched
+  useEffect(() => {
+    if (fetchedParty && isUpdateMode) {
+      setUserName(fetchedParty.name || fetchedParty.party_name || "");
+      setEmail(fetchedParty.email || "");
+      setContactNumber(fetchedParty.phone || fetchedParty.phone_number || "");
+      setStatus(fetchedParty.status?.toLowerCase() === "active" ? "Active" : "Inactive");
+
+      if (fetchedParty.attributes) {
+        setPmdcNumber(fetchedParty.attributes.pmdcNumber || "");
+
+        // Map Specialization Name to ID
+        const specName = fetchedParty.attributes.specialization;
+        if (specName) {
+          const specObj = specializations.find((s) => s.name === specName || s.id === specName);
+          setSpecialization(specObj ? specObj.id : specName);
+        }
+
+        // Map Qualification Name to ID
+        const qualName = fetchedParty.attributes.qualification;
+        if (qualName) {
+          const qualObj = qualifications.find((q) => q.name === qualName || q.id === qualName);
+          setQualification(qualObj ? qualObj.id : qualName);
+        }
+
+        setDesignation(fetchedParty.attributes.designation || "");
+        setDateOfBirth(fetchedParty.attributes.date_of_birth || "");
+        setSegment(fetchedParty.attributes.segment || fetchedParty.segmentId || "");
+      }
+
+      if (fetchedParty.locations && fetchedParty.locations.length > 0) {
+        const mappedLocations = fetchedParty.locations.map((loc: any, index: number) => {
+          // Attempt to parse clinic name and area from address
+          const addressParts = loc.address ? loc.address.split(", ") : [];
+          const clinicName = addressParts[0] || "";
+          const area = addressParts[1] || "";
+
+          // Extract schedule data
+          const schedule = loc.schedules?.[0]?.scheduleData?.[0];
+          const visitingDays = {
+            from: schedule?.days?.[0] || "",
+            to: schedule?.days?.[1] || schedule?.days?.[0] || "",
+          };
+          const visitingHours = {
+            from: schedule?.time_slots?.[0]?.start || "",
+            to: schedule?.time_slots?.[0]?.end || "",
+          };
+
+          return {
+            id: loc.id || (index + 1).toString(),
+            city: loc.city || "",
+            country: loc.country || "",
+            area: area,
+            bricks: loc.geographic_unit_id || loc.brickId || "",
+            clinicName: clinicName,
+            visitingDays,
+            visitingHours,
+            latitude: loc.latitude || 0,
+            longitude: loc.longitude || 0,
+          };
+        });
+        setLocations(mappedLocations);
+      }
+    }
+  }, [fetchedParty, isUpdateMode, specializations, qualifications]);
 
   // Handle brick details population
   useEffect(() => {
@@ -181,16 +277,28 @@ export const useDoctorForm = (idForm?: string) => {
 
   // Handle success/error
   useEffect(() => {
-    if (createSuccess) {
-      toast.success("Doctor added successfully!");
+    if (createSuccess || updateSuccess) {
+      toast.success(isUpdateMode ? "Doctor updated successfully!" : "Doctor added successfully!");
       dispatch(resetCreatePartyState());
+      dispatch(resetPartyByIdState());
       router.push(`/dashboard/doctors-?id=${idForm || ""}`);
     }
-    if (createError) {
-      toast.error(createError);
+    if (createError || updateError) {
+      toast.error(createError || updateError);
       dispatch(resetCreatePartyState());
+      dispatch(resetUpdatePartyState());
+      dispatch(resetPartyByIdState());
     }
-  }, [createSuccess, createError, dispatch, router, idForm]);
+  }, [
+    createSuccess,
+    updateSuccess,
+    createError,
+    updateError,
+    dispatch,
+    router,
+    idForm,
+    isUpdateMode,
+  ]);
 
   const addLocation = () => {
     setLocations([
@@ -204,6 +312,8 @@ export const useDoctorForm = (idForm?: string) => {
         clinicName: "",
         visitingDays: { from: "", to: "" },
         visitingHours: { from: "", to: "" },
+        latitude: 0,
+        longitude: 0,
       },
     ]);
   };
@@ -286,12 +396,20 @@ export const useDoctorForm = (idForm?: string) => {
           timeSlots.push({ start: loc.visitingHours.from, end: loc.visitingHours.to });
         }
 
+        // Find selected brick to get its name for map location logic if needed,
+        // although here we primarily send the ID.
+        const selectedBrick = bricks.find((b) => b.id === loc.bricks);
+
         return {
           locationType: "CLINIC",
           address: `${loc.clinicName}, ${loc.area}, ${loc.city}`,
           city: loc.city,
           state: loc.city,
           country: loc.country,
+          geographicUnitId: loc.bricks,
+          geographicUnitName: selectedBrick ? selectedBrick.name : "",
+          latitude: loc.latitude,
+          longitude: loc.longitude,
           schedules: [
             {
               scheduleType: "WEEKLY",
@@ -304,7 +422,11 @@ export const useDoctorForm = (idForm?: string) => {
       }),
     };
 
-    dispatch(createParty(payload as any));
+    if (isUpdateMode && partyId) {
+      dispatch(updateParty({ partyId, payload: payload as any }));
+    } else {
+      dispatch(createParty(payload as any));
+    }
   };
 
   return {
@@ -332,6 +454,7 @@ export const useDoctorForm = (idForm?: string) => {
     parent,
     setParent,
     locations,
+    isUpdateMode,
 
     // Redux data
     specializations,
@@ -342,7 +465,8 @@ export const useDoctorForm = (idForm?: string) => {
     segmentsLoading,
     channels,
     channelsLoading,
-    createLoading,
+    createLoading: createLoading || updateLoading,
+    partyLoading,
     bricks,
     bricksLoading,
     currentChannel,
