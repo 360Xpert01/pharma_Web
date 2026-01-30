@@ -62,6 +62,9 @@ export interface CreatePartyPayload {
   basicInfo: BasicInfo;
   attributes: PartyAttributes;
   locations: PartyLocation[];
+  organization?: {
+    parentId: string | null;
+  };
 }
 
 // Response type (adjust based on actual API response)

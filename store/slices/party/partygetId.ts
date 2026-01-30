@@ -16,6 +16,7 @@ export interface Party {
   channel_id?: string;
   segmentId?: string;
   status?: string;
+  parent?: string;
 
   attributes?: {
     pmdcNumber?: string;

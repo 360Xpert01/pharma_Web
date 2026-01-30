@@ -60,6 +60,7 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
     bricksLoading,
     currentChannel,
     fieldConfig,
+    organizationParties,
 
     // Handlers
     addLocation,
@@ -269,9 +270,10 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
               clearFieldError("parent");
             }}
             options={[
-              { value: "", label: "Select parent" },
-              { value: "parent1", label: "Parent Organization 1" },
-              { value: "parent2", label: "Parent Organization 2" },
+              ...organizationParties.map((op: any) => ({
+                value: op.organizationId,
+                label: op.partyName,
+              })),
             ]}
             placeholder="Select parent"
             required
@@ -442,7 +444,7 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
           onClick={handleSubmit}
           loading={createLoading}
         >
-          Update Doctor
+          {`Update ${currentChannel?.name || "Doctor"}`}
         </Button>
       </div>
     </div>

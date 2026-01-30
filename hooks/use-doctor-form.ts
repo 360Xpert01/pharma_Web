@@ -7,6 +7,11 @@ import { getAllSegments } from "@/store/slices/segment/getAllSegmentsSlice";
 import { getAllChannels } from "@/store/slices/channel/getAllChannelsSlice";
 import { getFieldConfigByChannel } from "@/utils/doctorFormConfig";
 import { createParty, resetCreatePartyState } from "@/store/slices/party/partySlicePost";
+import {
+  getOrganizationParties,
+  selectOrganizationParties,
+  selectOrganizationPartiesLoading,
+} from "@/store/slices/party/organizationPartiesSlice";
 import { getBrickList } from "@/store/slices/brick/getBrickListSlice";
 import { getBrickById, resetBrickByIdState } from "@/store/slices/brick/getBrickByIdSlice";
 import {
@@ -15,7 +20,7 @@ import {
 } from "@/store/slices/party/partygetId";
 import { updateParty, resetUpdatePartyState } from "@/store/slices/party/updatePartySlice";
 import { toast } from "react-hot-toast";
-import { doctorSchema } from "@/validations";
+import { doctorSchema, organizationSchema } from "@/validations";
 
 export interface Location {
   id: string;
@@ -43,6 +48,9 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
   );
   const { qualifications, loading: qualificationsLoading } = useAppSelector(
     (state) => state.allQualifications
+  );
+  const { organizationParties, loading: organizationPartiesLoading } = useAppSelector(
+    (state) => state.organizationParties
   );
   const { segments, loading: segmentsLoading } = useAppSelector((state) => state.allSegments);
   const { channels, loading: channelsLoading } = useAppSelector((state) => state.allChannels);
@@ -124,7 +132,9 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
     dispatch(getAllQualifications());
     dispatch(getAllSegments());
     dispatch(getAllChannels());
+
     dispatch(getBrickList());
+    dispatch(getOrganizationParties());
 
     if (partyId) {
       dispatch(getPartyById(partyId));
@@ -164,7 +174,23 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
 
         setDesignation(fetchedParty.attributes.designation || "");
         setDateOfBirth(fetchedParty.attributes.date_of_birth || "");
+        setDesignation(fetchedParty.attributes.designation || "");
+        setDateOfBirth(fetchedParty.attributes.date_of_birth || "");
         setSegment(fetchedParty.attributes.segment || fetchedParty.segmentId || "");
+      }
+
+      const parentParties = fetchedParty.parent || (fetchedParty as any).organization;
+      if (parentParties) {
+        if (typeof parentParties === "string") {
+          setParent(parentParties);
+        } else if (typeof parentParties === "object") {
+          const pId =
+            parentParties.parentId ||
+            parentParties.parent_id ||
+            parentParties.id ||
+            parentParties.organizationId;
+          if (pId) setParent(pId);
+        }
       }
 
       if (fetchedParty.locations && fetchedParty.locations.length > 0) {
@@ -246,7 +272,7 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
         if (parent.parentId && parent.parentId !== parent.id) {
           parent = findParent(parent.parentId);
         } else {
-          parent = null;
+          parent = undefined;
         }
         depth++;
       }
@@ -345,10 +371,14 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
       designation,
       dateOfBirth,
       parent,
+
       locations,
     };
 
-    const validation = doctorSchema.safeParse(formData);
+    const isOrganization = fieldConfig.partyType === "ORGANIZATION";
+    const schema = isOrganization ? organizationSchema : doctorSchema;
+
+    const validation = schema.safeParse(formData);
 
     if (!validation.success) {
       const errors: Record<string, string> = {};
@@ -369,7 +399,7 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
     const payload = {
       channelTypeId: channel || idForm || "",
       basicInfo: {
-        party_type: "DOCTOR",
+        party_type: fieldConfig.partyType || "DOCTOR",
         name: validatedData.userName,
         email: validatedData.email,
         phoneNumber: validatedData.contactNumber,
@@ -386,6 +416,7 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
         date_of_birth: validatedData.dateOfBirth,
         pmdcNumber: validatedData.pmdcNumber,
       },
+      organization: { parentId: parent || null },
       locations: locations.map((loc) => {
         const days = [];
         if (loc.visitingDays.from) days.push(loc.visitingDays.from.toUpperCase());
@@ -471,6 +502,8 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
     bricksLoading,
     currentChannel,
     fieldConfig,
+    organizationParties,
+    organizationPartiesLoading,
 
     // Handlers
     addLocation,

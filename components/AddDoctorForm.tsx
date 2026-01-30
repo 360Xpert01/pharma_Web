@@ -53,6 +53,8 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
     bricksLoading,
     currentChannel,
     fieldConfig,
+    organizationParties,
+    organizationPartiesLoading,
 
     // Handlers
     addLocation,
@@ -263,12 +265,14 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
               clearFieldError("parent");
             }}
             options={[
-              { value: "", label: "Select parent" },
-              { value: "parent1", label: "Parent Organization 1" },
-              { value: "parent2", label: "Parent Organization 2" },
+              { value: "", label: "None" },
+              ...organizationParties.map((op: any) => ({
+                value: op.organizationId,
+                label: op.partyName,
+              })),
             ]}
             placeholder="Select parent"
-            required
+            loading={organizationPartiesLoading}
             error={getErrorMessage("parent")}
           />
         )}
