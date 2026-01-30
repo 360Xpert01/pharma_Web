@@ -1,11 +1,14 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreVertical } from "lucide-react";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import StatusBadge from "@/components/shared/StatusBadge";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store";
+import { clearPartySample, fetchPartySample } from "@/store/slices/party/partySampleSlice";
 
 interface Sample {
   id: string;
@@ -128,13 +131,30 @@ const sampleData: Sample[] = [
   },
 ];
 
-export default function SamplesTable() {
+export default function SamplesTable({ id }: any) {
+  const dispatch = useDispatch();
+  const { data, loading, error } = useSelector((state: RootState) => state.partySample);
+
+  const partySampleData = data || [];
+
+  console.log(partySampleData, "partySampleData");
+
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchPartySample(id));
+    }
+
+    return () => {
+      dispatch(clearPartySample());
+    };
+  }, [dispatch, id]);
+
   const columns = useMemo<ColumnDef<Sample>[]>(
     () => [
       {
         accessorKey: "id",
         header: "ID",
-        cell: ({ row }) => <p className="font-medium text-(--gray-9)">{row.original.id}</p>,
+        cell: ({ row }) => <p className="font-medium text-(--gray-9)">{row.original?.pulseCode}</p>,
       },
       {
         accessorKey: "date",
@@ -144,58 +164,49 @@ export default function SamplesTable() {
       {
         accessorKey: "name",
         header: "Product",
-        cell: ({ row }) => <p className="font-medium text-(--gray-9)">{row.original.name}</p>,
+        cell: ({ row }) => <p className="font-medium text-(--gray-9)">{row.original?.product}</p>,
       },
       {
         accessorKey: "type",
         header: "SKU's",
-        cell: ({ row }) => <p className="text-(--gray-5)">{row.original.type}</p>,
+        cell: ({ row }) => <p className="text-(--gray-5)">{row.original?.sku}</p>,
       },
-      {
-        accessorKey: "available",
-        header: "Available",
-        cell: ({ row }) => (
-          <p className="font-semibold text-(--gray-9)">{row.original.available}</p>
-        ),
-      },
+      // {
+      //   accessorKey: "available",
+      //   header: "Available",
+      //   cell: ({ row }) => (
+      //     <p className="font-semibold text-(--gray-9)">{row.original.available}</p>
+      //   ),
+      // },
       {
         accessorKey: "allocated",
         header: "Allocated",
         cell: ({ row }) => (
-          <p className="font-semibold text-[var(--destructive)]">{row.original.allocated}</p>
+          <p className="font-semibold  text-[var(--destructive)]">{row.original.allocated}</p>
         ),
       },
-      {
-        accessorKey: "status",
-        header: "Status",
-        cell: ({ row }) => {
-          const status = row.original.status;
-          let badgeStatus: "active" | "inactive" | "pending" | "rejected" = "inactive";
-          let statusLabel = status;
+      // {
+      //   accessorKey: "status",
+      //   header: "Status",
+      //   cell: ({ row }) => {
+      //     const status = row.original.status;
+      //     let badgeStatus: "active" | "inactive" | "pending" | "rejected" = "inactive";
+      //     let statusLabel = status;
 
-          if (status === "In Stock") {
-            badgeStatus = "active";
-            statusLabel = "In Stock";
-          } else if (status === "Out of Stock") {
-            badgeStatus = "rejected";
-            statusLabel = "Out of Stock";
-          } else if (status === "Low Stock") {
-            badgeStatus = "pending";
-            statusLabel = "Low Stock";
-          }
+      //     if (status === "In Stock") {
+      //       badgeStatus = "active";
+      //       statusLabel = "In Stock";
+      //     } else if (status === "Out of Stock") {
+      //       badgeStatus = "rejected";
+      //       statusLabel = "Out of Stock";
+      //     } else if (status === "Low Stock") {
+      //       badgeStatus = "pending";
+      //       statusLabel = "Low Stock";
+      //     }
 
-          return <StatusBadge status={badgeStatus} label={statusLabel} />;
-        },
-      },
-      {
-        id: "actions",
-        header: "",
-        cell: () => (
-          <div className="flex justify-end">
-            <MoreVertical className="w-4 h-4 text-(--gray-4) cursor-pointer" />
-          </div>
-        ),
-      },
+      //     return <StatusBadge status={badgeStatus} label={statusLabel} />;
+      //   },
+      // },
     ],
     []
   );
@@ -203,10 +214,10 @@ export default function SamplesTable() {
   return (
     <div className="w-full">
       <CenturoTable
-        data={sampleData}
+        data={partySampleData}
         columns={columns}
-        loading={false}
-        error={null}
+        loading={loading}
+        error={error}
         enableExpanding={false}
         enablePagination={true}
         pageSize={10}

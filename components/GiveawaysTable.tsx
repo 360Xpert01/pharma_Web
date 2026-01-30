@@ -1,11 +1,14 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreVertical } from "lucide-react";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import StatusBadge from "@/components/shared/StatusBadge";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store";
+import { clearPartyGiveaways, fetchPartyGiveaways } from "@/store/slices/party/partyGiveawaySlice";
 
 interface Giveaway {
   id: string;
@@ -128,13 +131,29 @@ const giveawayData: Giveaway[] = [
   },
 ];
 
-export default function GiveawaysTable() {
+export default function GiveawaysTable({ id }: { id: string }) {
+  const dispatch = useDispatch();
+  const { data, loading, error } = useSelector((state: RootState) => state.partyGiveaway);
+
+  const giveaways = data || [];
+
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchPartyGiveaways(id));
+    }
+
+    return () => {
+      dispatch(clearPartyGiveaways());
+    };
+  }, [dispatch, id]);
   const columns = useMemo<ColumnDef<Giveaway>[]>(
     () => [
       {
         accessorKey: "id",
         header: "ID",
-        cell: ({ row }) => <p className="font-medium text-(--gray-9)">{row.original.id}</p>,
+        cell: ({ row }) => (
+          <p className="font-medium text-(--gray-9)">{row.original?.pulseCode || "N/A"}</p>
+        ),
       },
       {
         accessorKey: "date",
@@ -144,20 +163,22 @@ export default function GiveawaysTable() {
       {
         accessorKey: "name",
         header: "Product",
-        cell: ({ row }) => <p className="font-medium text-(--gray-9)">{row.original.name}</p>,
-      },
-      {
-        accessorKey: "type",
-        header: "SkU's",
-        cell: ({ row }) => <p className="text-(--gray-5)">{row.original.type}</p>,
-      },
-      {
-        accessorKey: "available",
-        header: "Available",
         cell: ({ row }) => (
-          <p className="font-semibold text-(--gray-9)">{row.original.available}</p>
+          <p className="font-medium text-(--gray-9)">{row.original.productName}</p>
         ),
       },
+      // {
+      //   accessorKey: "type",
+      //   header: "SkU's",
+      //   cell: ({ row }) => <p className="text-(--gray-5)">{row.original.type}</p>,
+      // },
+      // {
+      //   accessorKey: "available",
+      //   header: "Available",
+      //   cell: ({ row }) => (
+      //     <p className="font-semibold text-(--gray-9)">{row.original.available}</p>
+      //   ),
+      // },
       {
         accessorKey: "allocated",
         header: "Allocated",
@@ -165,37 +186,37 @@ export default function GiveawaysTable() {
           <p className="font-semibold text-[var(--destructive)]">{row.original.allocated}</p>
         ),
       },
-      {
-        accessorKey: "status",
-        header: "Status",
-        cell: ({ row }) => {
-          const status = row.original.status;
-          let badgeStatus: "active" | "inactive" | "pending" | "rejected" = "inactive";
-          let statusLabel = status;
+      // {
+      //   accessorKey: "status",
+      //   header: "Status",
+      //   cell: ({ row }) => {
+      //     const status = row.original.status;
+      //     let badgeStatus: "active" | "inactive" | "pending" | "rejected" = "inactive";
+      //     let statusLabel = status;
 
-          if (status === "In Stock") {
-            badgeStatus = "active";
-            statusLabel = "In Stock";
-          } else if (status === "Out of Stock") {
-            badgeStatus = "rejected";
-            statusLabel = "Out of Stock";
-          } else if (status === "Low Stock") {
-            badgeStatus = "pending";
-            statusLabel = "Low Stock";
-          }
+      //     if (status === "In Stock") {
+      //       badgeStatus = "active";
+      //       statusLabel = "In Stock";
+      //     } else if (status === "Out of Stock") {
+      //       badgeStatus = "rejected";
+      //       statusLabel = "Out of Stock";
+      //     } else if (status === "Low Stock") {
+      //       badgeStatus = "pending";
+      //       statusLabel = "Low Stock";
+      //     }
 
-          return <StatusBadge status={badgeStatus} label={statusLabel} />;
-        },
-      },
-      {
-        id: "actions",
-        header: "",
-        cell: () => (
-          <div className="flex justify-end">
-            <MoreVertical className="w-4 h-4 text-(--gray-4) cursor-pointer" />
-          </div>
-        ),
-      },
+      //     return <StatusBadge status={badgeStatus} label={statusLabel} />;
+      //   },
+      // },
+      // {
+      //   id: "actions",
+      //   header: "",
+      //   cell: () => (
+      //     <div className="flex justify-end">
+      //       <MoreVertical className="w-4 h-4 text-(--gray-4) cursor-pointer" />
+      //     </div>
+      //   ),
+      // },
     ],
     []
   );
@@ -203,10 +224,10 @@ export default function GiveawaysTable() {
   return (
     <div className="w-full">
       <CenturoTable
-        data={giveawayData}
+        data={giveaways}
         columns={columns}
-        loading={false}
-        error={null}
+        loading={loading}
+        error={error}
         enableExpanding={false}
         enablePagination={true}
         pageSize={10}

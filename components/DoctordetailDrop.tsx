@@ -259,7 +259,7 @@ const visitData: Visit[] = [
 
 type Tab = "plans" | "samples" | "giveaways";
 
-export default function VisitHistoryAccordion() {
+export default function VisitHistoryAccordion({ id }: any) {
   const [selectedFiles, setSelectedFiles] = useState<Record<string, File[]>>({});
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const [activeTab, setActiveTab] = useState<Tab>("plans");
@@ -424,13 +424,13 @@ export default function VisitHistoryAccordion() {
 
       {activeTab === "samples" && (
         <div className="mb-5">
-          <SamplesTable />
+          <SamplesTable id={id} />
         </div>
       )}
 
       {activeTab === "giveaways" && (
         <div className="mb-5">
-          <GiveawaysTable />
+          <GiveawaysTable id={id} />
         </div>
       )}
     </div>
