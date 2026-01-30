@@ -34,6 +34,7 @@ import productByIdReducer from "./slices/product/getProductByIdSlice";
 import allTeamsReducer from "./slices/team/getAllTeamsSlice";
 import createTeamReducer from "./slices/team/createTeamSlice";
 import brickListReducer from "./slices/brick/getBrickListSlice";
+import brickByIdReducer from "./slices/brick/getBrickByIdSlice";
 import allProductCategoriesReducer from "./slices/productCategory/getAllProductCategoriesSlice";
 import createProductCategoryReducer from "./slices/productCategory/createProductCategorySlice";
 import allSpecializationsReducer from "./slices/specialization/getAllSpecializationsSlice";
@@ -93,6 +94,7 @@ const rootReducer = combineReducers({
   allTeams: allTeamsReducer,
   createTeam: createTeamReducer,
   brickList: brickListReducer,
+  brickById: brickByIdReducer,
   allProductCategories: allProductCategoriesReducer,
   createProductCategory: createProductCategoryReducer,
   allSpecializations: allSpecializationsReducer,

@@ -10,3 +10,4 @@ export * from "./roleValidation";
 export * from "./segmentValidation";
 export * from "./specializationValidation";
 export * from "./teamValidation";
+export * from "./doctorValidation";
