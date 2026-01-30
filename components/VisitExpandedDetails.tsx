@@ -5,13 +5,14 @@ import { Paperclip, MoreVertical } from "lucide-react";
 import Image from "next/image";
 
 interface SampleItem {
-  name: string;
+  product: string;
+  sku: string;
   date: string;
   quantity: number;
 }
 
 interface GiveawayItem {
-  name: string;
+  giveawayName: string;
   date: string;
   quantity: number;
 }
@@ -21,11 +22,7 @@ interface VisitExpandedDetailsProps {
   sampleItems: SampleItem[];
   giveawayItems: GiveawayItem[];
   remarks: string;
-  selectedFiles: File[];
-  onFilePickerOpen: () => void;
-  onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onRemoveImage: (index: number) => void;
-  fileInputRef: (el: HTMLInputElement | null) => void;
+  attachments: any[];
 }
 
 export default function VisitExpandedDetails({
@@ -33,11 +30,7 @@ export default function VisitExpandedDetails({
   sampleItems,
   giveawayItems,
   remarks,
-  selectedFiles,
-  onFilePickerOpen,
-  onFileChange,
-  onRemoveImage,
-  fileInputRef,
+  attachments,
 }: VisitExpandedDetailsProps) {
   return (
     <div className="px-2">
@@ -53,10 +46,17 @@ export default function VisitExpandedDetails({
                     key={i}
                     className="flex justify-between items-center bg-(--background) rounded-8 px-5 py-4 border border-(--gray-2)"
                   >
-                    <span className="font-medium text-(--gray-8)">{item.name}</span>
-                    <span className="text-sm text-(--gray-5)">{item.date}</span>
-                    <span className="text-sm font-bold text-(--gray-9)">{item.quantity}</span>
-                    <MoreVertical className="w-4 h-4 text-(--gray-4)" />
+                    <div className="flex">
+                      <span className="font-medium text-(--gray-8)">{item.product}</span>
+                      <span className="text-xs text-(--gray-5) ml-2 mt-1  ">({item.sku})</span>
+                    </div>
+                    <div className="">
+                      <span className="text-sm text-(--gray-5)">{item.date}</span>
+                    </div>
+                    <span className="text-sm font-bold text-(--gray-9) ml-4">
+                      Qty: {item.quantity}
+                    </span>
+                    {/* <MoreVertical className="w-4 h-4 text-(--gray-4) ml-2" /> */}
                   </div>
                 ))}
               </div>
@@ -72,10 +72,12 @@ export default function VisitExpandedDetails({
                     key={i}
                     className="flex justify-between items-center bg-(--background) rounded-8 px-5 py-4 border border-(--gray-2)"
                   >
-                    <span className="font-medium text-(--gray-8)">{item.name}</span>
+                    <span className="font-medium text-(--gray-8) flex">{item.giveawayName}</span>
                     <span className="text-sm text-(--gray-5)">{item.date}</span>
-                    <span className="text-sm font-bold text-(--gray-9)">{item.quantity}</span>
-                    <MoreVertical className="w-4 h-4 text-(--gray-4)" />
+                    <span className="text-sm font-bold text-(--gray-9) ml-4">
+                      Qty: {item.quantity}
+                    </span>
+                    {/* <MoreVertical className="w-4 h-4 text-(--gray-4) ml-2" /> */}
                   </div>
                 ))}
               </div>
@@ -97,63 +99,35 @@ export default function VisitExpandedDetails({
           <div className="w-[49%]">
             <h4 className="text-sm font-bold text-(--gray-8) mb-3 flex items-center gap-2">
               Attachments
-              {selectedFiles.length > 0 && (
+              {attachments.length > 0 && (
                 <span className="text-xs bg-(--primary-0) text-(--primary) px-2 py-0.5 rounded-8 font-medium">
-                  {selectedFiles.length}
+                  {attachments.length}
                 </span>
               )}
             </h4>
 
-            {/* Hidden Input */}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              multiple
-              className="hidden"
-              onChange={onFileChange}
-            />
-
-            {selectedFiles.length > 0 ? (
-              <div
-                onClick={onFilePickerOpen}
-                className="flex items-center gap-4 bg-(--background) rounded-8 p-3 border shadow-soft cursor-pointer hover:bg-(--gray-0) transition"
-              >
+            {attachments.length > 0 ? (
+              <div className="flex items-center gap-4 bg-(--background) rounded-8 p-3 border shadow-soft transition">
                 <Paperclip className="w-6 h-6 text-(--gray-5)" />
                 <div className="flex gap-3 flex-wrap">
-                  {selectedFiles.map((file, index) => (
+                  {attachments.map((file, index) => (
                     <div key={index} className="relative group">
                       <div className="w-10 h-10 rounded-8 overflow-hidden border-2 border-(--gray-3)">
                         <Image
-                          src={URL.createObjectURL(file)}
+                          src={typeof file === "string" ? file : URL.createObjectURL(file)}
                           alt="attachment"
                           width={40}
                           height={40}
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onRemoveImage(index);
-                        }}
-                        className="absolute -top-1 -right-1 bg-(--destructive) text-(--light) rounded-8 w-5 h-5 text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
-                      >
-                        ×
-                      </button>
                     </div>
                   ))}
-                  <div className="w-10 h-10 bg-(--gray-1) border-2 border-dashed border-(--gray-4) rounded-8 flex items-center justify-center">
-                    <span className="text-xl text-(--gray-4)">+</span>
-                  </div>
                 </div>
               </div>
             ) : (
-              <div
-                onClick={onFilePickerOpen}
-                className="text-sm text-(--gray-4) italic cursor-pointer hover:text-(--gray-6) transition bg-(--background) rounded-8 p-5 border text-center shadow-soft"
-              >
-                Click to add attachments
+              <div className="text-sm text-(--gray-4) italic bg-(--background) rounded-8 p-3 border text-center shadow-soft">
+                No attachments
               </div>
             )}
           </div>

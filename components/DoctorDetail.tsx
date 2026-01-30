@@ -51,7 +51,7 @@ export default function DoctorDetail() {
 
       {/* Bottom - Plans Table */}
       <div className="col-span-12 bg-(--background) rounded-8 px-3 py-1 shadow-soft border border-gray-200">
-        <TableHeader campHeading={"Plans"} filterT={false} />
+        {/* <TableHeader campHeading={"Plans"} filterT={false} /> */}
         <DoctordetailDrop id={id} />
       </div>
     </div>
