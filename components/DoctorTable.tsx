@@ -204,7 +204,7 @@ export default function DoctorsTable({ id }: { id: string }) {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              router.push(`/dashboard/UpdateEmployees?id=${row.original.id}`);
+              router.push(`/dashboard/UpdateEmployees?id=${row.original?.party_id}`);
             }}
             className="group hover:opacity-80 transition cursor-pointer"
             title="Edit Doctor"
@@ -214,7 +214,7 @@ export default function DoctorsTable({ id }: { id: string }) {
 
           {/* View Icon */}
           <Link
-            href={`/dashboard/doctor-profile?id=${row.original.id}`}
+            href={`/dashboard/details-profile/${row.original?.party_id}`}
             className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
             title="View Details"
           >
