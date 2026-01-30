@@ -64,6 +64,7 @@ import partySampleReducer from "./slices/party/partySampleSlice";
 import partyGiveawayReducer from "./slices/party/partyGiveawaySlice";
 import updatePartyReducer from "./slices/party/updatePartySlice";
 import organizationPartiesReducer from "./slices/party/organizationPartiesSlice";
+import partyPlanReducer from "./slices/party/partyPlanSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -126,6 +127,7 @@ const rootReducer = combineReducers({
   partyGiveaway: partyGiveawayReducer,
   updateParty: updatePartyReducer,
   organizationParties: organizationPartiesReducer,
+  partyPlan: partyPlanReducer,
 });
 
 const persistConfig = {
