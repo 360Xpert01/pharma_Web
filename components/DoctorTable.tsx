@@ -576,7 +576,7 @@ export default function DoctorsTable({ id }: { id: string }) {
       enableSorting: false,
       cell: ({ row }) => (
         <Link
-          href={`/dashboard/doctor-profile`}
+          href={`/dashboard/details-profile/${row.original?.party_id}`}
           className="flex items-center justify-end gap-1 text-sm cursor-pointer text-[var(--muted-foreground)] hover:opacity-80 transition-opacity"
         >
           <span className="whitespace-nowrap">View Details</span>

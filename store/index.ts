@@ -58,6 +58,9 @@ import getSegmentByIdReducer from "./slices/segment/getSegmentByIdSlice";
 import updateSegmentReducer from "./slices/segment/updateSegmentSlice";
 import partiesReducer from "./slices/party/partiesSlice";
 import createPartyReducer from "./slices/party/partySlicePost";
+import partyByIdReducer from "./slices/party/partygetId";
+import partySampleReducer from "./slices/party/partySampleSlice";
+import partyGiveawayReducer from "./slices/party/partyGiveawaySlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -114,6 +117,9 @@ const rootReducer = combineReducers({
   updateSegment: updateSegmentReducer,
   parties: partiesReducer,
   createParty: createPartyReducer,
+  partyById: partyByIdReducer,
+  partySample: partySampleReducer,
+  partyGiveaway: partyGiveawayReducer,
 });
 
 const persistConfig = {
