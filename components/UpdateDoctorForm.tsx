@@ -11,8 +11,15 @@ import {
   TimeRangePicker,
 } from "@/components/form";
 import { useDoctorForm } from "../hooks/use-doctor-form";
+import { useRouter } from "next/navigation";
 
-export default function AddDoctorForm({ idForm }: { idForm?: string }) {
+interface UpdateDoctorFormProps {
+  partyId: string;
+  channelId?: string;
+}
+
+export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFormProps) {
+  const router = useRouter();
   const {
     // State
     pmdcNumber,
@@ -54,7 +61,6 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
     currentChannel,
     fieldConfig,
     organizationParties,
-    organizationPartiesLoading,
 
     // Handlers
     addLocation,
@@ -63,8 +69,7 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
     handleSubmit,
     getErrorMessage,
     clearFieldError,
-    router,
-  } = useDoctorForm(idForm);
+  } = useDoctorForm(channelId, partyId);
 
   if (partyLoading) {
     return (
@@ -265,14 +270,13 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
               clearFieldError("parent");
             }}
             options={[
-              { value: "", label: "None" },
               ...organizationParties.map((op: any) => ({
                 value: op.organizationId,
                 label: op.partyName,
               })),
             ]}
             placeholder="Select parent"
-            loading={organizationPartiesLoading}
+            required
             error={getErrorMessage("parent")}
           />
         )}
@@ -440,7 +444,7 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
           onClick={handleSubmit}
           loading={createLoading}
         >
-          {isUpdateMode ? "Update Doctor" : "Add Doctor"}
+          {`Update ${currentChannel?.name || "Doctor"}`}
         </Button>
       </div>
     </div>

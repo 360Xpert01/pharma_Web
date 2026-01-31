@@ -47,7 +47,9 @@ interface PartiesState {
   loading: boolean;
   success: boolean;
   error: string | null;
+
   parties: PartyItem[];
+  totalParties: number;
 }
 
 const initialState: PartiesState = {
@@ -55,6 +57,7 @@ const initialState: PartiesState = {
   success: false,
   error: null,
   parties: [],
+  totalParties: 0,
 };
 
 export const getPartiesByChannelType = createAsyncThunk<
@@ -104,9 +107,9 @@ const partiesSlice = createSlice({
   reducers: {
     resetPartiesState: (state) => {
       state.loading = false;
-      state.success = false;
       state.error = null;
       state.parties = [];
+      state.totalParties = 0;
     },
   },
   extraReducers: (builder) => {

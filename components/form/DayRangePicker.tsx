@@ -13,6 +13,7 @@ interface DayRangePickerProps {
   onChange: (from: string, to: string) => void;
   required?: boolean;
   className?: string;
+  error?: string;
 }
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -24,6 +25,7 @@ export default function DayRangePicker({
   onChange,
   required = false,
   className = "",
+  error = "",
 }: DayRangePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -106,6 +108,7 @@ export default function DayRangePicker({
           </div>
         </PopoverContent>
       </Popover>
+      {error && <p className="t-err mt-1">{error}</p>}
     </div>
   );
 }

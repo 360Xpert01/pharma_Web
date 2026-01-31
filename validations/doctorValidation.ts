@@ -56,3 +56,21 @@ export const doctorSchema = z.object({
 });
 
 export type DoctorFormValues = z.infer<typeof doctorSchema>;
+
+export const organizationSchema = doctorSchema
+  .omit({
+    pmdcNumber: true,
+    qualification: true,
+    specialization: true,
+    designation: true,
+    dateOfBirth: true,
+  })
+  .extend({
+    pmdcNumber: z.string().optional(),
+    qualification: z.string().optional(),
+    specialization: z.string().optional(),
+    designation: z.string().optional(),
+    dateOfBirth: z.string().optional(),
+  });
+
+export type OrganizationFormValues = z.infer<typeof organizationSchema>;

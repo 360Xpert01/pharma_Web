@@ -7,21 +7,49 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://api.ceturo.com
 // ================== Types ==================
 export interface Party {
   id: string;
-  name?: string; // or fullname, companyName, etc.
-  type?: string; // e.g. "doctor", "clinic", "pharmacy", "user"
+  name?: string;
+  party_name?: string;
+  type?: string;
   email?: string;
   phone?: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  country?: string;
-  specialization?: string; // if doctor
-  profilePicture?: string;
+  phone_number?: string;
+  channel_id?: string;
+  segmentId?: string;
   status?: string;
+  parent?: string;
+
+  attributes?: {
+    pmdcNumber?: string;
+    specialization?: string;
+    qualification?: string;
+    designation?: string;
+    date_of_birth?: string;
+    segment?: string;
+    [key: string]: any;
+  };
+
+  locations?: Array<{
+    id?: string;
+    city?: string;
+    country?: string;
+    address?: string;
+    brickId?: string;
+    geographic_unit_id?: string | null;
+    geographic_unit_name?: string | null;
+    schedules?: Array<{
+      scheduleData?: Array<{
+        days?: string[];
+        time_slots?: Array<{
+          start?: string;
+          end?: string;
+        }>;
+      }>;
+    }>;
+    [key: string]: any;
+  }>;
+
   createdAt?: string;
   updatedAt?: string;
-  // Add more fields based on actual API response
-  // e.g. clinicName, managerId, productsHandled, etc.
 }
 
 interface PartyState {

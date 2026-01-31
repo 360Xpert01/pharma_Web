@@ -33,6 +33,8 @@ export interface PartyLocation {
   latitude: number;
   longitude: number;
   schedules: LocationSchedule[];
+  geographicUnitId?: string;
+  geographicUnitName?: string;
 }
 
 export interface BasicInfo {
@@ -60,6 +62,9 @@ export interface CreatePartyPayload {
   basicInfo: BasicInfo;
   attributes: PartyAttributes;
   locations: PartyLocation[];
+  organization?: {
+    parentId: string | null;
+  };
 }
 
 // Response type (adjust based on actual API response)

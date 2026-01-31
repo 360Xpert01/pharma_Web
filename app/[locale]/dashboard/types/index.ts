@@ -115,6 +115,7 @@ export interface DashboardProps {
     detailValue: string;
     progress: number;
     colorVariant: "1" | "2" | "3" | "4";
+    topHcps?: any[];
   };
   doctorTable?: boolean;
   prodTabel?: boolean;
@@ -176,4 +177,7 @@ export interface DashboardProps {
   UpdateGiveaway?: boolean;
   giveawayId?: string | null;
   id?: string | null;
+  UpdateDoctor?: boolean;
+  partyId?: string | null;
+  channelId?: string | null;
 }
