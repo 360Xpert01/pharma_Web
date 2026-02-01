@@ -10,14 +10,14 @@ import SearchInput from "@/components/ui/search-input";
 import FilterDropdown, { type FilterConfig } from "@/components/ui/filter-dropdown";
 
 // Dynamically import the entire map component with no SSR
-const MapComponent = dynamic(() => import("./MapComponent"), {
-  ssr: false,
-  loading: () => (
-    <div className="relative w-full h-[300px] bg-[#f5f5f5] flex items-center justify-center">
-      <div className="text-(--gray-5)">Loading map...</div>
-    </div>
-  ),
-});
+// const MapComponent = dynamic(() => import("./MapComponent"), {
+//   ssr: false,
+//   loading: () => (
+//     <div className="relative w-full h-[300px] bg-[#f5f5f5] flex items-center justify-center">
+//       <div className="text-(--gray-5)">Loading map...</div>
+//     </div>
+//   ),
+// });
 
 interface DoctorLocation {
   id: string;
@@ -155,7 +155,7 @@ export default function DoctorCoverageMap({
       <CardContent className="px-6 pt-0">
         {/* Real Map with Leaflet */}
         <div className="relative w-full h-[345px] rounded-8 overflow-hidden">
-          <MapComponent locations={locations} />
+          {/* <MapComponent locations={locations} /> */}
         </div>
       </CardContent>
     </Card>
