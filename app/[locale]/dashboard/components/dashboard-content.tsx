@@ -158,6 +158,9 @@ export function DashboardContent({
   // State for qualification editing
   const [selectedQualificationId, setSelectedQualificationId] = useState<string | null>(null);
 
+  // State for Doctor Table Search
+  const [searchTerm, setSearchTerm] = useState("");
+
   const handleSettings = () => {
     if (settingsRoute) {
       router.push(settingsRoute);
@@ -324,8 +327,8 @@ export function DashboardContent({
 
         {doctorTable && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading={campHeading} filterT={filterT} />
-            <DoctorsTable id={id || ""} />
+            <TableHeader campHeading={campHeading} filterT={filterT} onSearch={setSearchTerm} />
+            <DoctorsTable id={id || ""} searchTerm={searchTerm} />
           </div>
         )}
 

@@ -16,17 +16,30 @@ import EyeIcon from "@/components/svgs/eye-icon";
 
 interface Doctor extends PartyItem {}
 
-export default function DoctorsTable({ id }: { id: string }) {
-  // Simulate loading and error states (replace with actual API call state)
-  // const [loading] = useState(false);
-  // const [error] = useState<string | null>(null);
+export default function DoctorsTable({ id, searchTerm }: { id: string; searchTerm?: string }) {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { parties, loading, error } = useAppSelector((state) => state.parties);
+  const { parties, loading, error, pagination } = useAppSelector((state) => state.parties);
+
+  const [paginationState, setPaginationState] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    setPaginationState({ pageIndex: page - 1, pageSize });
+  };
 
   React.useEffect(() => {
-    dispatch(getPartiesByChannelType(id));
-  }, [dispatch]);
+    dispatch(
+      getPartiesByChannelType({
+        channelTypeId: id,
+        page: paginationState.pageIndex + 1,
+        limit: paginationState.pageSize,
+        search: searchTerm,
+      })
+    );
+  }, [dispatch, id, paginationState.pageIndex, paginationState.pageSize, searchTerm]);
 
   console.log("parties12321", parties);
 
@@ -240,7 +253,10 @@ export default function DoctorsTable({ id }: { id: string }) {
         error={error}
         onRetry={handleRetry}
         enablePagination={true}
-        pageSize={10}
+        serverSidePagination={true}
+        totalItems={pagination?.total || 0}
+        onPaginationChange={handlePaginationChange}
+        pageSize={paginationState.pageSize}
         PaginationComponent={TablePagination}
         emptyMessage="No doctors found"
       />
