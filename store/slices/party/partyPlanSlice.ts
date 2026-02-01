@@ -52,12 +52,20 @@ export interface PartyPlan {
   // Add more fields once you see the real response
 }
 
+interface PaginationState {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
 interface PartyPlanState {
   loading: boolean;
   success: boolean;
   error: string | null;
   plan: CallRecord[] | null; // Changed to array of calls
   lastFetchedPartyId: string | null;
+  pagination: PaginationState | null;
 }
 
 const initialState: PartyPlanState = {
@@ -66,26 +74,51 @@ const initialState: PartyPlanState = {
   error: null,
   plan: null,
   lastFetchedPartyId: null,
+  pagination: null,
 };
 
 // ────────────────────────────────────────────────
 //                  Async Thunk
 // ────────────────────────────────────────────────
 
+interface FetchPlanParams {
+  partyId: string;
+  page?: number;
+  limit?: number;
+}
+
+interface FetchPlanResponse {
+  data: CallRecord[];
+  pagination?: PaginationState;
+}
+
 export const fetchPartyPlan = createAsyncThunk<
-  CallRecord[], // Changed to array of CallRecord
-  string, // partyId
+  FetchPlanResponse, // Changed to FetchPlanResponse
+  string | FetchPlanParams, // partyId or params object
   { rejectValue: string }
->("partyPlan/fetchPartyPlan", async (partyId, { rejectWithValue }) => {
+>("partyPlan/fetchPartyPlan", async (params, { rejectWithValue }) => {
   try {
     const token = localStorage.getItem("userSession");
     if (!token) {
       return rejectWithValue("No session found. Please login again.");
     }
 
+    let partyId = "";
+    let page = 1;
+    let limit = 10;
+
+    if (typeof params === "string") {
+      partyId = params;
+    } else {
+      partyId = params.partyId;
+      page = params.page || 1;
+      limit = params.limit || 10;
+    }
+
     const url = `${baseUrl}api/v1/parties/plan/${partyId}`;
 
     const response = await axios.get(url, {
+      params: { page, limit },
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -95,32 +128,23 @@ export const fetchPartyPlan = createAsyncThunk<
     const resData = response.data;
 
     // Flexible response handling
-    if (resData?.success && resData?.data) {
-      // If data is array, return it directly
+    if (resData?.success) {
+      let data: CallRecord[] = [];
       if (Array.isArray(resData.data)) {
-        return resData.data;
+        data = resData.data;
+      } else if (resData.data?.calls && Array.isArray(resData.data.calls)) {
+        data = resData.data.calls;
+      } else if (resData?.calls && Array.isArray(resData.calls)) {
+        data = resData.calls;
       }
-      // If data.calls exists and is array
-      if (resData.data.calls && Array.isArray(resData.data.calls)) {
-        return resData.data.calls;
-      }
-      // If resData.data is a single PartyPlan object, extract its calls
-      if (resData.data.calls) {
-        return resData.data.calls;
-      }
+
+      return {
+        data,
+        pagination: resData.pagination,
+      };
     }
 
-    // If response is array directly
-    if (Array.isArray(resData)) {
-      return resData;
-    }
-
-    // If the response has a calls property
-    if (resData?.calls && Array.isArray(resData.calls)) {
-      return resData.calls;
-    }
-
-    throw new Error("Unexpected response format");
+    throw new Error(resData?.message || "Unexpected response format");
   } catch (error: any) {
     const errorMessage =
       error.response?.data?.message ||
@@ -146,6 +170,7 @@ const partyPlanSlice = createSlice({
       state.error = null;
       state.plan = null;
       state.lastFetchedPartyId = null;
+      state.pagination = null;
     },
   },
   extraReducers: (builder) => {
@@ -154,12 +179,17 @@ const partyPlanSlice = createSlice({
         state.loading = true;
         state.error = null;
         state.success = false;
-        state.lastFetchedPartyId = action.meta.arg;
+        if (typeof action.meta.arg === "string") {
+          state.lastFetchedPartyId = action.meta.arg;
+        } else {
+          state.lastFetchedPartyId = action.meta.arg.partyId;
+        }
       })
-      .addCase(fetchPartyPlan.fulfilled, (state, action: PayloadAction<CallRecord[]>) => {
+      .addCase(fetchPartyPlan.fulfilled, (state, action: PayloadAction<FetchPlanResponse>) => {
         state.loading = false;
         state.success = true;
-        state.plan = action.payload;
+        state.plan = action.payload.data;
+        state.pagination = action.payload.pagination || null;
       })
       .addCase(fetchPartyPlan.rejected, (state, action) => {
         state.loading = false;

@@ -1,8 +1,8 @@
 // components/VisitHistoryAccordion.tsx
 "use client";
 
-import React, { useState, useRef, useMemo, useEffect } from "react";
-import { Paperclip, Gift, Calendar, MoreVertical } from "lucide-react";
+import React, { useState, useMemo, useEffect } from "react";
+import { Paperclip, Gift } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
@@ -23,19 +23,23 @@ export default function VisitHistoryAccordion({ id }: any) {
   const [activeTab, setActiveTab] = useState<Tab>("Calls Report");
 
   const dispatch = useAppDispatch();
-  const { plan, loading, error } = useSelector((state: RootState) => state.partyPlan);
+  const { plan, loading, error, pagination } = useSelector((state: RootState) => state.partyPlan);
 
   const planData = plan || [];
 
   useEffect(() => {
     if (id) {
-      dispatch(fetchPartyPlan(id) as any);
+      dispatch(fetchPartyPlan({ partyId: id, page: 1, limit: 10 }));
     }
 
     return () => {
       dispatch(clearPartyPlan());
     };
   }, [dispatch, id]);
+
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    dispatch(fetchPartyPlan({ partyId: id, page, limit: pageSize }));
+  };
 
   const tabs = [
     { id: "Calls Report" as Tab, label: "Calls Report" },
@@ -139,6 +143,9 @@ export default function VisitHistoryAccordion({ id }: any) {
             emptyMessage="No visit history found"
             renderExpandedRow={renderExpandedRow}
             PaginationComponent={TablePagination}
+            serverSidePagination={true}
+            totalItems={pagination?.total || 0}
+            onPaginationChange={handlePaginationChange}
           />
         </div>
       )}
