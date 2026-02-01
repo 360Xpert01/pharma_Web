@@ -513,7 +513,7 @@ export function DashboardContent({
 
         {UpdateDoctor && partyId && (
           <div className="rounded-md shadow-soft bg-[var(--background)]">
-            <UpdateDoctorForm partyId={partyId} channelId={channelId || undefined} />
+            <UpdateDoctorForm partyId={partyId} channelId={channelId} />
           </div>
         )}
 
