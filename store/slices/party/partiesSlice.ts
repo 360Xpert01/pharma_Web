@@ -47,9 +47,13 @@ interface PartiesState {
   loading: boolean;
   success: boolean;
   error: string | null;
-
   parties: PartyItem[];
-  totalParties: number;
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  } | null;
 }
 
 const initialState: PartiesState = {
@@ -57,39 +61,104 @@ const initialState: PartiesState = {
   success: false,
   error: null,
   parties: [],
-  totalParties: 0,
+  pagination: null,
 };
 
+// Pagination/Search Parameters Type
+interface GetPartiesParams {
+  channelTypeId: string;
+  page?: number;
+  limit?: number;
+  search?: string;
+}
+
+interface GetPartiesResponse {
+  success: boolean;
+  message?: string;
+  data: PartyItem[]; // or sometimes wrapped in 'items'
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
 export const getPartiesByChannelType = createAsyncThunk<
-  PartyItem[],
-  string,
+  GetPartiesResponse,
+  string | GetPartiesParams,
   { rejectValue: string }
->("parties/getPartiesByChannelType", async (channelTypeId: string, { rejectWithValue }) => {
+>("parties/getPartiesByChannelType", async (params, { rejectWithValue }) => {
   try {
     const sessionStr = localStorage.getItem("userSession");
     if (!sessionStr) {
       return rejectWithValue("No session found. Please login again.");
     }
 
-    const response = await axios.get<PartyItem[]>(
-      `${baseUrl}api/v1/parties?channelTypeId=${channelTypeId}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionStr}`,
-        },
-      }
-    );
+    let channelTypeId = "";
+    let page = 1;
+    let limit = 10;
+    let search = "";
 
-    const resData = response.data as any;
-    if (Array.isArray(resData)) return resData;
-    if (resData?.data?.items && Array.isArray(resData.data.items)) {
-      return resData.data.items;
+    if (typeof params === "string") {
+      channelTypeId = params;
+    } else {
+      channelTypeId = params.channelTypeId;
+      page = params.page || 1;
+      limit = params.limit || 10;
+      search = params.search || "";
     }
+
+    const response = await axios.get<GetPartiesResponse>(`${baseUrl}api/v1/parties`, {
+      params: { channelTypeId, page, limit, search },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStr}`,
+      },
+    });
+
+    // Normalize response data structure
+    const resData: any = response.data;
+
+    // If backend returns standard { success, data, pagination }
+    if (
+      resData.success !== undefined &&
+      (Array.isArray(resData.data) || Array.isArray(resData.data?.items))
+    ) {
+      let items = Array.isArray(resData.data) ? resData.data : resData.data?.items || [];
+      // If pagination is inside data
+      let pagination = resData.pagination || resData.data?.pagination || null;
+
+      return {
+        success: true,
+        data: items,
+        pagination,
+      };
+    }
+
+    // Fallback for simple array response or non-standard structure
+    if (Array.isArray(resData)) {
+      return {
+        success: true,
+        data: resData,
+        pagination: null,
+      };
+    }
+
+    // Fallback for { items: [] } structure
     if (resData?.items && Array.isArray(resData.items)) {
-      return resData.items;
+      return {
+        success: true,
+        data: resData.items,
+        pagination: resData.pagination || null,
+      };
     }
-    return [];
+
+    return {
+      success: true,
+      data: [],
+      pagination: null,
+    };
   } catch (error: any) {
     const errorMessage =
       error.response?.data?.message ||
@@ -109,7 +178,7 @@ const partiesSlice = createSlice({
       state.loading = false;
       state.error = null;
       state.parties = [];
-      state.totalParties = 0;
+      state.pagination = null;
     },
   },
   extraReducers: (builder) => {
@@ -119,11 +188,15 @@ const partiesSlice = createSlice({
         state.error = null;
         state.success = false;
       })
-      .addCase(getPartiesByChannelType.fulfilled, (state, action: PayloadAction<PartyItem[]>) => {
-        state.loading = false;
-        state.success = true;
-        state.parties = action.payload;
-      })
+      .addCase(
+        getPartiesByChannelType.fulfilled,
+        (state, action: PayloadAction<GetPartiesResponse>) => {
+          state.loading = false;
+          state.success = true;
+          state.parties = action.payload.data;
+          state.pagination = action.payload.pagination || null;
+        }
+      )
       .addCase(getPartiesByChannelType.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
