@@ -29,6 +29,12 @@ interface PartyGiveawayState {
   loading: boolean;
   error: string | null;
   lastFetchedPartyId: string | null;
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  } | null;
 }
 
 const initialState: PartyGiveawayState = {
@@ -36,17 +42,34 @@ const initialState: PartyGiveawayState = {
   loading: false,
   error: null,
   lastFetchedPartyId: null,
+  pagination: null,
 };
 
 // ────────────────────────────────────────────────
 //                  Async Thunk
 // ────────────────────────────────────────────────
 
+interface FetchGiveawaysParams {
+  partyId: string;
+  page?: number;
+  limit?: number;
+}
+
+interface FetchGiveawaysResponse {
+  data: GiveawayRecord[];
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
 export const fetchPartyGiveaways = createAsyncThunk<
-  GiveawayRecord[],
-  string, // argument = partyId
+  FetchGiveawaysResponse,
+  string | FetchGiveawaysParams,
   { rejectValue: string }
->("partyGiveaway/fetchPartyGiveaways", async (partyId, { rejectWithValue }) => {
+>("partyGiveaway/fetchPartyGiveaways", async (params, { rejectWithValue }) => {
   try {
     const token = localStorage.getItem("userSession");
 
@@ -54,26 +77,51 @@ export const fetchPartyGiveaways = createAsyncThunk<
       return rejectWithValue("No authentication token found. Please login.");
     }
 
+    let partyId = "";
+    let page = 1;
+    let limit = 10;
+
+    if (typeof params === "string") {
+      partyId = params;
+    } else {
+      partyId = params.partyId;
+      page = params.page || 1;
+      limit = params.limit || 10;
+    }
+
     const url = `${API_BASE_URL}api/v1/parties/giveaway/${partyId}`;
 
-    console.log(`→ Fetching giveaways for party: ${url}`);
+    console.log(`→ Fetching giveaways for party: ${url} with page=${page} limit=${limit}`);
 
+    // Update query params
     const response = await axios.get<{
       success: boolean;
       message?: string;
       data: GiveawayRecord[];
+      pagination?: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+      };
     }>(url, {
+      params: { page, limit },
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
 
-    if (!response.data.success) {
-      throw new Error(response.data.message || "Failed to fetch giveaway records");
+    const resData = response.data;
+
+    if (resData.success === false) {
+      throw new Error(resData.message || "Failed to fetch giveaway records");
     }
 
-    return response.data.data;
+    return {
+      data: resData.data || [],
+      pagination: resData.pagination,
+    };
   } catch (error: any) {
     const errorMessage =
       axios.isAxiosError(error) && error.response?.data?.message
@@ -98,6 +146,7 @@ const partyGiveawaySlice = createSlice({
       state.loading = false;
       state.error = null;
       state.lastFetchedPartyId = null;
+      state.pagination = null;
     },
   },
   extraReducers: (builder) => {
@@ -105,12 +154,20 @@ const partyGiveawaySlice = createSlice({
       .addCase(fetchPartyGiveaways.pending, (state, action) => {
         state.loading = true;
         state.error = null;
-        state.lastFetchedPartyId = action.meta.arg;
+        if (typeof action.meta.arg === "string") {
+          state.lastFetchedPartyId = action.meta.arg;
+        } else {
+          state.lastFetchedPartyId = action.meta.arg.partyId;
+        }
       })
-      .addCase(fetchPartyGiveaways.fulfilled, (state, action: PayloadAction<GiveawayRecord[]>) => {
-        state.loading = false;
-        state.data = action.payload;
-      })
+      .addCase(
+        fetchPartyGiveaways.fulfilled,
+        (state, action: PayloadAction<FetchGiveawaysResponse>) => {
+          state.loading = false;
+          state.data = action.payload.data;
+          state.pagination = action.payload.pagination || null;
+        }
+      )
       .addCase(fetchPartyGiveaways.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to fetch giveaway records";
