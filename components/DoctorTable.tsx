@@ -16,7 +16,15 @@ import EyeIcon from "@/components/svgs/eye-icon";
 
 interface Doctor extends PartyItem {}
 
-export default function DoctorsTable({ id, searchTerm }: { id: string; searchTerm?: string }) {
+export default function DoctorsTable({
+  id,
+  searchTerm,
+  filters,
+}: {
+  id: string;
+  searchTerm?: string;
+  filters?: { segmentId?: string; specializationId?: string; status?: string };
+}) {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { parties, loading, error, pagination } = useAppSelector((state) => state.parties);
@@ -37,9 +45,12 @@ export default function DoctorsTable({ id, searchTerm }: { id: string; searchTer
         page: paginationState.pageIndex + 1,
         limit: paginationState.pageSize,
         search: searchTerm,
+        segmentId: filters?.segmentId,
+        specializationId: filters?.specializationId,
+        status: filters?.status,
       })
     );
-  }, [dispatch, id, paginationState.pageIndex, paginationState.pageSize, searchTerm]);
+  }, [dispatch, id, paginationState.pageIndex, paginationState.pageSize, searchTerm, filters]);
 
   console.log("parties12321", parties);
 
