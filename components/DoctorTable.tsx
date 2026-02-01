@@ -22,11 +22,15 @@ export default function DoctorsTable({ id }: { id: string }) {
   // const [error] = useState<string | null>(null);
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { parties, loading, error } = useAppSelector((state) => state.parties);
+  const { parties, loading, error, pagination } = useAppSelector((state) => state.parties);
 
   React.useEffect(() => {
-    dispatch(getPartiesByChannelType(id));
-  }, [dispatch]);
+    dispatch(getPartiesByChannelType({ channelTypeId: id, page: 1, limit: 10 }));
+  }, [dispatch, id]);
+
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    dispatch(getPartiesByChannelType({ channelTypeId: id, page, limit: pageSize }));
+  };
 
   console.log("parties12321", parties);
 
@@ -240,6 +244,9 @@ export default function DoctorsTable({ id }: { id: string }) {
         error={error}
         onRetry={handleRetry}
         enablePagination={true}
+        serverSidePagination={true}
+        totalItems={pagination?.total || 0}
+        onPaginationChange={handlePaginationChange}
         pageSize={10}
         PaginationComponent={TablePagination}
         emptyMessage="No doctors found"

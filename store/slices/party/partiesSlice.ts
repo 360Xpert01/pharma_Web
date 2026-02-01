@@ -50,6 +50,12 @@ interface PartiesState {
 
   parties: PartyItem[];
   totalParties: number;
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  } | null;
 }
 
 const initialState: PartiesState = {
@@ -58,48 +64,67 @@ const initialState: PartiesState = {
   error: null,
   parties: [],
   totalParties: 0,
+  pagination: null,
 };
 
 export const getPartiesByChannelType = createAsyncThunk<
-  PartyItem[],
-  string,
+  { items: PartyItem[]; pagination: any; total: number },
+  { channelTypeId: string; page?: number; limit?: number },
   { rejectValue: string }
->("parties/getPartiesByChannelType", async (channelTypeId: string, { rejectWithValue }) => {
-  try {
-    const sessionStr = localStorage.getItem("userSession");
-    if (!sessionStr) {
-      return rejectWithValue("No session found. Please login again.");
-    }
-
-    const response = await axios.get<PartyItem[]>(
-      `${baseUrl}api/v1/parties?channelTypeId=${channelTypeId}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionStr}`,
-        },
+>(
+  "parties/getPartiesByChannelType",
+  async ({ channelTypeId, page = 1, limit = 10 }, { rejectWithValue }) => {
+    try {
+      const sessionStr = localStorage.getItem("userSession");
+      if (!sessionStr) {
+        return rejectWithValue("No session found. Please login again.");
       }
-    );
 
-    const resData = response.data as any;
-    if (Array.isArray(resData)) return resData;
-    if (resData?.data?.items && Array.isArray(resData.data.items)) {
-      return resData.data.items;
-    }
-    if (resData?.items && Array.isArray(resData.items)) {
-      return resData.items;
-    }
-    return [];
-  } catch (error: any) {
-    const errorMessage =
-      error.response?.data?.message ||
-      error.response?.data?.error ||
-      error.message ||
-      "Failed to fetch parties. Please try again.";
+      const response = await axios.get(
+        `${baseUrl}api/v1/parties?channelTypeId=${channelTypeId}&page=${page}&limit=${limit}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${sessionStr}`,
+          },
+        }
+      );
 
-    return rejectWithValue(errorMessage);
+      const resData = response.data;
+
+      // Check for success: true structure
+      if (resData.success && resData.data) {
+        // Support for structure: { success: true, data: { items: [], pagination: {}, ... } }
+        if (resData.data.items) {
+          return {
+            items: resData.data.items,
+            pagination: resData.data.pagination || null,
+            total: resData.data.pagination?.total || resData.data.total || 0,
+          };
+        }
+        // If data is just the array
+        if (Array.isArray(resData.data)) {
+          return { items: resData.data, pagination: null, total: resData.data.length };
+        }
+      }
+
+      // Direct array response
+      if (Array.isArray(resData)) {
+        return { items: resData, pagination: null, total: resData.length };
+      }
+
+      return { items: [], pagination: null, total: 0 };
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Failed to fetch parties. Please try again.";
+
+      return rejectWithValue(errorMessage);
+    }
   }
-});
+);
 
 const partiesSlice = createSlice({
   name: "parties",
@@ -110,6 +135,7 @@ const partiesSlice = createSlice({
       state.error = null;
       state.parties = [];
       state.totalParties = 0;
+      state.pagination = null;
     },
   },
   extraReducers: (builder) => {
@@ -119,16 +145,20 @@ const partiesSlice = createSlice({
         state.error = null;
         state.success = false;
       })
-      .addCase(getPartiesByChannelType.fulfilled, (state, action: PayloadAction<PartyItem[]>) => {
+      .addCase(getPartiesByChannelType.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
-        state.parties = action.payload;
+        state.parties = action.payload.items;
+        state.totalParties = action.payload.total;
+        state.pagination = action.payload.pagination;
       })
       .addCase(getPartiesByChannelType.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
         state.error = action.payload || "Failed to load parties";
         state.parties = [];
+        state.totalParties = 0;
+        state.pagination = null;
       });
   },
 });
