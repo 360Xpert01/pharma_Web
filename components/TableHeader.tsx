@@ -1,17 +1,23 @@
-"use client";
-
 import React, { useState } from "react";
-import { Search, ListFilter, Upload, ChevronDown, X } from "lucide-react";
+import { Search, Upload } from "lucide-react";
 import Image from "next/image";
-import { Checkbox } from "@/components/ui/checkbox";
 import FormSelect from "@/components/form/FormSelect";
+import TableFilter from "./TableFilter";
+
 interface UsersHeaderProps {
   campHeading?: string;
   filterT?: boolean;
   title?: string;
   showInactiveToggle?: boolean;
-  inactiveLabel?: string; // Optional custom label for inactive toggle
+  inactiveLabel?: string;
   onSearch?: (term: string) => void;
+  showDoctorFilters?: boolean;
+  channelId?: string;
+  onApplyFilters?: (filters: {
+    segmentId?: string;
+    specializationId?: string;
+    status?: string;
+  }) => void;
 }
 
 export default function UsersHeader({
@@ -21,8 +27,10 @@ export default function UsersHeader({
   showInactiveToggle = true,
   inactiveLabel,
   onSearch,
+  showDoctorFilters = false,
+  channelId,
+  onApplyFilters,
 }: UsersHeaderProps) {
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [openId, setOpenId] = useState<boolean>(false);
   const [showInactive, setShowInactive] = useState(false);
   const [sortBy, setSortBy] = useState("recently-created");
@@ -48,80 +56,11 @@ export default function UsersHeader({
           </div>
 
           {filterT && (
-            <div className="relative">
-              <button
-                onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className="flex items-center justify-center p-3.5 bg-[var(--primary)] text-[var(--light)] rounded-8 cursor-pointer transition-colors shadow-soft"
-                aria-label="Filter"
-              >
-                <ListFilter className="w-4 h-4" />
-              </button>
-
-              {/* Filter Dropdown */}
-              {isFilterOpen && (
-                <div className="absolute cursor-pointer left-0 mt-2 w-72 bg-[var(--background)] rounded-8 shadow-soft border border-[var(--gray-2)] z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
-                  <div className="p-5 space-y-5">
-                    {/* Header */}
-                    <div className="flex items-center justify-between">
-                      <h3 className="t-h4">Filter by</h3>
-                      <button
-                        onClick={() => setIsFilterOpen(false)}
-                        className="text-[var(--gray-4)] hover:text-[var(--gray-6)] transition"
-                      >
-                        <X className="w-5 h-5" />
-                      </button>
-                    </div>
-
-                    {/* Role Filter */}
-                    <div>
-                      <label className="t-label block mb-1.5">Role</label>
-                      <select className="w-full px-3 py-2.5 border border-[var(--gray-3)] rounded-8 text-sm focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] transition">
-                        <option>All Roles</option>
-                        <option>Admin</option>
-                        <option>Manager</option>
-                        <option>Sales Rep</option>
-                        <option>Doctor</option>
-                        <option>Pharmacist</option>
-                      </select>
-                    </div>
-
-                    {/* Status Filter */}
-                    <div>
-                      <label className="t-label block mb-1.5">Status</label>
-                      <select className="w-full px-3 py-2.5 border border-[var(--gray-3)] rounded-8 text-sm focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] transition">
-                        <option>All Status</option>
-                        <option>Active</option>
-                        <option>Inactive</option>
-                        <option>Pending</option>
-                        <option>Suspended</option>
-                      </select>
-                    </div>
-
-                    {/* Date Range */}
-                    <div>
-                      <label className="t-label block mb-1.5">Date Range</label>
-                      <select className="w-full px-3 py-2.5 border border-[var(--gray-3)] rounded-8 text-sm focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] transition">
-                        <option>Last 30 Days</option>
-                        <option>Last 7 Days</option>
-                        <option>This Month</option>
-                        <option>Last Month</option>
-                        <option>Custom Range</option>
-                      </select>
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex gap-3 pt-3">
-                      <button className="flex-1 px-4 py-2.5 border border-[var(--gray-3)] text-[var(--gray-7)] rounded-8 text-sm font-medium hover:bg-[var(--gray-0)] transition">
-                        Clear All
-                      </button>
-                      <button className="flex-1 px-4 py-2.5 bg-[var(--primary)] text-[var(--light)] rounded-8 text-sm font-medium hover:bg-[var(--primary-2)] transition shadow-soft">
-                        Apply Filters
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+            <TableFilter
+              showDoctorFilters={showDoctorFilters}
+              channelId={channelId}
+              onApplyFilters={onApplyFilters}
+            />
           )}
         </div>
 
@@ -183,11 +122,6 @@ export default function UsersHeader({
           </div>
         </div>
       </div>
-
-      {/* Optional: Overlay when filter is open */}
-      {isFilterOpen && (
-        <div className="fixed inset-0 z-40  bg-opacity-10" onClick={() => setIsFilterOpen(false)} />
-      )}
     </div>
   );
 }

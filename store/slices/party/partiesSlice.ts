@@ -70,6 +70,9 @@ interface GetPartiesParams {
   page?: number;
   limit?: number;
   search?: string;
+  segmentId?: string;
+  specializationId?: string;
+  status?: string;
 }
 
 interface GetPartiesResponse {
@@ -99,6 +102,9 @@ export const getPartiesByChannelType = createAsyncThunk<
     let page = 1;
     let limit = 10;
     let search = "";
+    let segmentId = "";
+    let specializationId = "";
+    let status = "";
 
     if (typeof params === "string") {
       channelTypeId = params;
@@ -107,10 +113,18 @@ export const getPartiesByChannelType = createAsyncThunk<
       page = params.page || 1;
       limit = params.limit || 10;
       search = params.search || "";
+      segmentId = params.segmentId || "";
+      specializationId = params.specializationId || "";
+      status = params.status || "";
     }
 
+    const queryParams: any = { channelTypeId, page, limit, search };
+    if (segmentId) queryParams.segmentId = segmentId;
+    if (specializationId) queryParams.specializationId = specializationId;
+    if (status) queryParams.status = status;
+
     const response = await axios.get<GetPartiesResponse>(`${baseUrl}api/v1/parties`, {
-      params: { channelTypeId, page, limit, search },
+      params: queryParams,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStr}`,

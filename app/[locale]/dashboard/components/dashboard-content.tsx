@@ -160,6 +160,11 @@ export function DashboardContent({
 
   // State for Doctor Table Search
   const [searchTerm, setSearchTerm] = useState("");
+  const [filters, setFilters] = useState<{
+    segmentId?: string;
+    specializationId?: string;
+    status?: string;
+  }>({});
 
   const handleSettings = () => {
     if (settingsRoute) {
@@ -253,7 +258,7 @@ export function DashboardContent({
           <div>
             <Channals />
             <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
-              <TableHeader campHeading={campHeading} filterT={filterT} />
+              <TableHeader campHeading={campHeading} filterT={filterT} showDoctorFilters={true} />
               <AllChannalB />
             </div>
           </div>
@@ -327,8 +332,15 @@ export function DashboardContent({
 
         {doctorTable && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading={campHeading} filterT={filterT} onSearch={setSearchTerm} />
-            <DoctorsTable id={id || ""} searchTerm={searchTerm} />
+            <TableHeader
+              campHeading={campHeading}
+              filterT={filterT}
+              onSearch={setSearchTerm}
+              showDoctorFilters={true}
+              channelId={id || ""}
+              onApplyFilters={setFilters}
+            />
+            <DoctorsTable id={id || ""} searchTerm={searchTerm} filters={filters} />
           </div>
         )}
 
@@ -513,7 +525,7 @@ export function DashboardContent({
 
         {UpdateDoctor && partyId && (
           <div className="rounded-md shadow-soft bg-[var(--background)]">
-            <UpdateDoctorForm partyId={partyId} channelId={channelId} />
+            <UpdateDoctorForm partyId={partyId} channelId={channelId || ""} />
           </div>
         )}
 
