@@ -61,6 +61,7 @@ const initialState: UsersState = {
 interface PaginationParams {
   page?: number;
   limit?: number;
+  search?: string;
 }
 
 // Async Thunk: Get All Users (GET /api/v1/users)
@@ -79,9 +80,10 @@ export const getAllUsers = createAsyncThunk<
     // Build query parameters
     const page = params && typeof params === "object" ? params.page || 1 : 1;
     const limit = params && typeof params === "object" ? params.limit || 10 : 10;
+    const search = params && typeof params === "object" ? params.search || "" : "";
 
     const response = await axios.get<GetUsersResponse>(`${baseUrl}api/v1/users`, {
-      params: { page, limit },
+      params: { page, limit, search },
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStr}`,

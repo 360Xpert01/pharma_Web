@@ -312,15 +312,20 @@ export function DashboardContent({
 
         {campTabel && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading={campHeading} filterT={filterT} />
-            <CampaignsTable />
+            <TableHeader campHeading={campHeading} filterT={filterT} onSearch={setSearchTerm} />
+            <CampaignsTable searchTerm={searchTerm} />
           </div>
         )}
 
         {prodTabel && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading={campHeading} filterT={filterT} showInactiveToggle={true} />
-            <ProductTableM />
+            <TableHeader
+              campHeading={campHeading}
+              filterT={filterT}
+              showInactiveToggle={true}
+              onSearch={setSearchTerm}
+            />
+            <ProductTableM searchTerm={searchTerm} />
           </div>
         )}
 
@@ -387,8 +392,8 @@ export function DashboardContent({
 
         {giveawayTable && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading={campHeading} filterT={filterT} />
-            <GiveawayTable />
+            <TableHeader campHeading={campHeading} filterT={filterT} onSearch={setSearchTerm} />
+            <GiveawayTable searchTerm={searchTerm} />
           </div>
         )}
 
@@ -443,8 +448,8 @@ export function DashboardContent({
 
         {proBar && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading="All User's" filterT />
-            <SalesTeamTable />
+            <TableHeader campHeading="All User's" filterT onSearch={setSearchTerm} />
+            <SalesTeamTable searchTerm={searchTerm} />
           </div>
         )}
 

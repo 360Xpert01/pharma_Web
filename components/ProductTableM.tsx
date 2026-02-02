@@ -20,7 +20,7 @@ interface Product {
   productFormula: string;
 }
 
-export default function MedicineTable() {
+export default function MedicineTable({ searchTerm }: { searchTerm: string }) {
   const router = useRouter();
   const [openId, setOpenId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -32,8 +32,8 @@ export default function MedicineTable() {
 
   // Fetch products on mount
   useEffect(() => {
-    dispatch(getAllProducts({ page: 1, limit: 10 }));
-  }, [dispatch]);
+    dispatch(getAllProducts({ page: 1, limit: 10, search: searchTerm }));
+  }, [dispatch, searchTerm]);
 
   const handleRetry = () => {
     dispatch(getAllProducts({ page: 1, limit: 10 }));
