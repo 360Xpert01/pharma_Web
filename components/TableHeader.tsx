@@ -67,7 +67,7 @@ export default function UsersHeader({
         {/* Right: Checkbox + Sort Dropdown + Export Button */}
         <div className="flex items-center gap-3">
           {/* Quick Sort Dropdown */}
-          <FormSelect
+          {/* <FormSelect
             label=""
             name="sortBy"
             value={sortBy}
@@ -79,7 +79,7 @@ export default function UsersHeader({
             placeholder="Quick Sort"
             className="mb-0"
             selectClassName="mt-0"
-          />
+          /> */}
 
           {/* Export Button */}
           <div

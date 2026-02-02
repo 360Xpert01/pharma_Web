@@ -73,7 +73,7 @@ export default function TableFilter({
               <h3 className="t-h4">Filter by</h3>
               <button
                 onClick={() => setIsFilterOpen(false)}
-                className="text-[var(--gray-4)] hover:text-[var(--gray-6)] transition"
+                className="text-[var(--gray-4)] hover:text-[var(--gray-6)] cursor-pointer transition"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -200,7 +200,7 @@ export default function TableFilter({
                   setSelectedDateRange("");
                   onClear?.();
                 }}
-                className="flex-1 px-4 py-2.5 border border-[var(--gray-3)] text-[var(--gray-7)] rounded-8 text-sm font-medium hover:bg-[var(--gray-0)] transition"
+                className="flex-1 px-4 py-2.5 border cursor-pointer border-[var(--gray-3)] text-[var(--gray-7)] rounded-8 text-sm font-medium hover:bg-[var(--gray-0)] transition"
               >
                 Clear All
               </button>
@@ -216,7 +216,7 @@ export default function TableFilter({
                   onApply?.();
                   setIsFilterOpen(false);
                 }}
-                className="flex-1 px-4 py-2.5 bg-[var(--primary)] text-[var(--light)] rounded-8 text-sm font-medium hover:bg-[var(--primary-2)] transition shadow-soft"
+                className="flex-1 px-4 py-2.5 bg-[var(--primary)] text-[var(--light)] rounded-8 cursor-pointer text-sm font-medium hover:bg-[var(--primary-2)] transition shadow-soft"
               >
                 Apply Filters
               </button>
