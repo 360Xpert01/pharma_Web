@@ -15,6 +15,8 @@ import {
   generatePrefix,
   resetGeneratePrefixState,
 } from "@/store/slices/preFix/generatePrefixSlice";
+import { uploadImageAction, resetUploadState } from "@/store/slices/upload/uploadSlice";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { giveawayCreationSchema } from "@/validations/giveawayValidation";
 import { ProfileImageUpload, FormInput } from "@/components/form";
@@ -27,6 +29,7 @@ type GiveawayFormProps = {
 
 export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormProps) {
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   // Redux state
   const {
@@ -40,14 +43,28 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
     error: createError,
     message: createMessage,
   } = useAppSelector((state) => state.createGiveaway);
-  // For update mode
+  // For update mode - Fetching Data
   const {
     giveaway,
     loading: fetchLoading,
-    error: updateError,
+    error: fetchError,
+  } = useAppSelector((state) => state.getGiveawayById || {}); // Ensure this matches your store key
+
+  // For update mode - Updating Data
+  const {
+    loading: updateLoading,
     success: updateSuccess,
+    error: updateError,
     message: updateMessage,
   } = useAppSelector((state) => state.updateGiveaway || {});
+
+  // Cloudinary/upload state
+  const {
+    loading: uploadLoading,
+    success: uploadSuccess,
+    error: uploadError,
+    uploadedFiles,
+  } = useAppSelector((state) => state.upload);
 
   // Form state
   const [image, setImage] = useState<string | null>(null);
@@ -72,6 +89,7 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
       dispatch(resetGeneratePrefixState());
       dispatch(resetGiveawayState());
       if (mode === "update") dispatch(resetUpdateGiveawayState());
+      dispatch(resetUploadState());
     };
   }, [mode, giveawayId, dispatch]);
 
@@ -79,9 +97,9 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
   useEffect(() => {
     if (mode === "update" && giveaway) {
       setName(giveaway.name || "");
-      setCategory(giveaway.category || "");
-      setProductName(giveaway.productName || "");
-      setDescription(giveaway.description || "");
+      setCategory(giveaway.category === "N/A" ? "" : giveaway.category || "");
+      setProductName(giveaway.productName === "N/A" ? "" : giveaway.productName || "");
+      setDescription(giveaway.description === "N/A" ? "" : giveaway.description || "");
       setUnits(giveaway.units || 1);
       setLegacyCode(giveaway.legacyCode || "");
       setPulseCode(giveaway.pulseCode || "");
@@ -112,16 +130,19 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
       setPulseCode("");
       setTimeout(() => {
         dispatch(resetGiveawayState());
+        router.push("/dashboard/giveaway-Management");
       }, 2000);
     }
     if (updateSuccess && mode === "update") {
       toast.success(updateMessage || "Giveaway updated!");
       setTimeout(() => {
         dispatch(resetUpdateGiveawayState());
+        router.push("/dashboard/giveaway-Management");
       }, 2000);
     }
     if (createError && mode === "add") toast.error(createError);
     if (updateError && mode === "update") toast.error(updateError);
+    if (fetchError && mode === "update") toast.error(fetchError);
   }, [
     createSuccess,
     updateSuccess,
@@ -132,6 +153,27 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
     mode,
     dispatch,
   ]);
+
+  // Image upload effect
+  useEffect(() => {
+    if (uploadSuccess && uploadedFiles.length > 0) {
+      setImage(uploadedFiles[0].url);
+      toast.success("Image uploaded successfully!");
+    }
+    if (uploadError) {
+      console.error("GiveawayForm: Upload error", uploadError);
+      toast.error(uploadError);
+    }
+  }, [uploadSuccess, uploadedFiles, uploadError]);
+
+  const handleImageChange = async (file: File | null) => {
+    if (file) {
+      dispatch(uploadImageAction(file));
+    } else {
+      setImage(null);
+      dispatch(resetUploadState());
+    }
+  };
 
   // Submit
   const handleSubmit = (e?: React.MouseEvent<HTMLButtonElement>) => {
@@ -160,7 +202,8 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
     if (mode === "add") {
       dispatch(createGiveaway(validation.data));
     } else if (mode === "update" && giveawayId) {
-      dispatch(updateGiveaway({ id: giveawayId, ...validation.data }));
+      const { pulseCode, ...updateData } = validation.data;
+      dispatch(updateGiveaway({ id: giveawayId, ...updateData }));
     }
   };
 
@@ -177,14 +220,16 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
     if (mode === "add") setPulseCode("");
   };
 
-  if (fetchLoading) return <p>Loading...</p>;
-
   return (
     <div className="p-8">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         {/* Image Upload */}
         <div className="space-y-6">
-          <ProfileImageUpload imagePreview={image} onImageChange={setImage} />
+          <ProfileImageUpload
+            imagePreview={image}
+            onImageChange={handleImageChange}
+            loading={uploadLoading}
+          />
         </div>
         {/* Form Fields */}
         <div className="lg:col-span-2 space-y-7">
@@ -281,18 +326,25 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
             <Button
               variant="primary"
               size="lg"
-              icon={mode === "add" ? Plus : Save}
+              icon={mode === "add" ? Plus : undefined}
               rounded="full"
               onClick={handleSubmit}
-              loading={createLoading || prefixLoading || fetchLoading}
+              loading={
+                createLoading || prefixLoading || fetchLoading || uploadLoading || updateLoading
+              }
+              disabled={
+                createLoading || prefixLoading || fetchLoading || uploadLoading || updateLoading
+              }
             >
-              {mode === "add"
-                ? createLoading
-                  ? "Adding..."
-                  : "Add Giveaway"
-                : updateSuccess
-                  ? "Updated!"
-                  : "Update Giveaway"}
+              {uploadLoading
+                ? "Uploading..."
+                : mode === "add"
+                  ? createLoading
+                    ? "Adding..."
+                    : "Add Giveaway"
+                  : updateLoading
+                    ? "Updating..."
+                    : "Update Giveaway"}
             </Button>
           </div>
         </div>

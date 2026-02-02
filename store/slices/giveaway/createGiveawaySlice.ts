@@ -12,7 +12,7 @@ interface CreateGiveawayPayload {
   description?: string | null;
   units: number;
   pulseCode: string;
-  legacyCode: string;
+  legacyCode?: string;
 }
 
 interface CreateGiveawayResponse {
@@ -66,9 +66,9 @@ export const createGiveaway = createAsyncThunk<
     // Note: imageUrl should be omitted if not provided, as API expects valid URI format
     const transformedPayload: any = {
       ...payload,
-      category: payload.category || "N/A",
-      productName: payload.productName || "N/A",
-      description: payload.description || "N/A",
+      category: payload.category,
+      productName: payload.productName,
+      description: payload.description,
     };
 
     // Only include imageUrl if it's a valid URL (not base64, not null, not empty)

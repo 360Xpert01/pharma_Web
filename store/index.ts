@@ -26,6 +26,8 @@ import allCallPointsReducer from "./slices/callPoint/getAllCallPointsSlice";
 import createCallPointReducer from "./slices/callPoint/createCallPointSlice";
 import allGiveawaysReducer from "./slices/giveaway/getAllGiveawaysSlice";
 import createGiveawayReducer from "./slices/giveaway/createGiveawaySlice";
+import getGiveawayByIdReducer from "./slices/giveaway/getGiveawayByIdSlice";
+import updateGiveawayReducer from "./slices/giveaway/updateGiveawaySlice";
 import allProductsReducer from "./slices/product/getAllProductsSlice";
 import productCategoriesReducer from "./slices/product/getProductCategoriesSlice";
 import createProductReducer from "./slices/product/createProductSlice";
@@ -89,6 +91,8 @@ const rootReducer = combineReducers({
   createCallPoint: createCallPointReducer,
   allGiveaways: allGiveawaysReducer,
   createGiveaway: createGiveawayReducer,
+  getGiveawayById: getGiveawayByIdReducer,
+  updateGiveaway: updateGiveawayReducer,
   allProducts: allProductsReducer,
   productCategories: productCategoriesReducer,
   createProduct: createProductReducer,

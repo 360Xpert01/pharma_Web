@@ -5,7 +5,6 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 export interface UpdateGiveawayPayload {
   id: string;
-  pulseCode: string;
   name: string;
   category: string;
   productName?: string;
@@ -55,9 +54,17 @@ export const updateGiveaway = createAsyncThunk<
     if (!token) {
       return rejectWithValue("No session found. Please login again.");
     }
+    const { id, ...data } = payload;
+
+    // Clean up valid body data
+    const requestBody = {
+      ...data,
+      imageUrl: data.imageUrl === "" ? null : data.imageUrl,
+    };
+
     const response = await axios.put<{ success: boolean; data: UpdatedGiveaway; message: string }>(
-      `${baseUrl || "https://api.ceturo.com/"}api/v1/giveaway/${payload.id}`,
-      payload,
+      `${baseUrl || "https://api.ceturo.com/"}api/v1/giveaway/${id}`,
+      requestBody,
       {
         headers: {
           "Content-Type": "application/json",
