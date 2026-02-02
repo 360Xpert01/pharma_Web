@@ -27,19 +27,19 @@ interface TeamMember {
   profilePicture: string;
 }
 
-export default function SalesTeamTable() {
+export default function SalesTeamTable({ searchTerm }: { searchTerm: string }) {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { users, loading, error, pagination } = useAppSelector((s) => s.allUsers);
 
   // Fetch users on mount
   useEffect(() => {
-    dispatch(getAllUsers({ page: 1, limit: 10 }));
-  }, [dispatch]);
+    dispatch(getAllUsers({ search: searchTerm, page: 1, limit: 10 }));
+  }, [dispatch, searchTerm]);
 
   // Handle pagination changes
   const handlePaginationChange = (page: number, pageSize: number) => {
-    dispatch(getAllUsers({ page, limit: pageSize }));
+    dispatch(getAllUsers({ search: searchTerm, page, limit: pageSize }));
   };
 
   // ================= DATA =================

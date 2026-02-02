@@ -41,6 +41,12 @@ interface TeamsState {
   success: boolean;
   error: string | null;
   teams: TeamItem[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  } | null;
 }
 
 // Initial State
@@ -49,38 +55,62 @@ const initialState: TeamsState = {
   success: false,
   error: null,
   teams: [],
+  pagination: null,
 };
 
 // Async Thunk: Get All Teams (GET /api/v1/team)
-export const getAllTeams = createAsyncThunk<TeamItem[], void, { rejectValue: string }>(
-  "teams/getAllTeams",
-  async (_, { rejectWithValue }) => {
-    try {
-      // Get token from localStorage
-      const sessionStr = localStorage.getItem("userSession");
-      if (!sessionStr) {
-        return rejectWithValue("No session found. Please login again.");
-      }
+interface GetAllTeamsParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+}
 
-      const response = await axios.get<TeamItem[]>(`${baseUrl}api/v1/team`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionStr}`,
-        },
-      });
-
-      return response.data;
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.response?.data?.error ||
-        error.message ||
-        "Failed to fetch teams. Please try again.";
-
-      return rejectWithValue(errorMessage);
+export const getAllTeams = createAsyncThunk<
+  { teams: TeamItem[]; pagination: any },
+  GetAllTeamsParams | undefined,
+  { rejectValue: string }
+>("teams/getAllTeams", async (params, { rejectWithValue }) => {
+  try {
+    // Get token from localStorage
+    const sessionStr = localStorage.getItem("userSession");
+    if (!sessionStr) {
+      return rejectWithValue("No session found. Please login again.");
     }
+
+    const response = await axios.get(`${baseUrl}api/v1/team`, {
+      params: {
+        page: params?.page || 1,
+        limit: params?.limit || 10,
+        search: params?.search || "",
+      },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStr}`,
+      },
+    });
+
+    // Check if response data is an array (old behavior) or object with pagination
+    if (Array.isArray(response.data)) {
+      return {
+        teams: response.data,
+        pagination: null,
+      };
+    }
+
+    return {
+      teams: response.data?.items || response.data?.data || [],
+      pagination: response.data?.pagination || null,
+    };
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.response?.data?.error ||
+      error.message ||
+      "Failed to fetch teams. Please try again.";
+
+    return rejectWithValue(errorMessage);
   }
-);
+});
 
 // Slice
 const getAllTeamsSlice = createSlice({
@@ -92,6 +122,7 @@ const getAllTeamsSlice = createSlice({
       state.success = false;
       state.error = null;
       state.teams = [];
+      state.pagination = null;
     },
   },
   extraReducers: (builder) => {
@@ -100,16 +131,18 @@ const getAllTeamsSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(getAllTeams.fulfilled, (state, action: PayloadAction<TeamItem[]>) => {
+      .addCase(getAllTeams.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
-        state.teams = action.payload;
+        state.teams = action.payload.teams;
+        state.pagination = action.payload.pagination;
       })
       .addCase(getAllTeams.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
         state.error = action.payload || "Failed to load teams";
         state.teams = [];
+        state.pagination = null;
       });
   },
 });

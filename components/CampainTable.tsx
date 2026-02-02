@@ -19,18 +19,38 @@ interface Team {
   users: { id: string; profilePicture?: string }[];
 }
 
-export default function CampaignsTable() {
+export default function CampaignsTable({ searchTerm }: { searchTerm: string }) {
   const dispatch = useAppDispatch();
-  const { teams, loading, error } = useAppSelector((state) => state.allTeams);
+  const { teams, loading, error, pagination } = useAppSelector((state) => state.allTeams);
 
   const [openId, setOpenId] = useState<string | null>(null);
+  const [paginationState, setPaginationState] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
 
   useEffect(() => {
-    dispatch(getAllTeams());
-  }, [dispatch]);
+    dispatch(
+      getAllTeams({
+        search: searchTerm,
+        page: paginationState.pageIndex + 1,
+        limit: paginationState.pageSize,
+      })
+    );
+  }, [dispatch, searchTerm, paginationState.pageIndex, paginationState.pageSize]);
+
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    setPaginationState({ pageIndex: page - 1, pageSize });
+  };
 
   const handleRetry = () => {
-    dispatch(getAllTeams());
+    dispatch(
+      getAllTeams({
+        search: searchTerm,
+        page: paginationState.pageIndex + 1,
+        limit: paginationState.pageSize,
+      })
+    );
   };
 
   const columns: ColumnDef<Team>[] = [
@@ -144,13 +164,16 @@ export default function CampaignsTable() {
   return (
     <div className="w-full">
       <CenturoTable
-        data={teams || []}
+        data={teams}
         columns={columns}
         loading={loading}
         error={error}
         onRetry={handleRetry}
         enablePagination={true}
-        pageSize={10}
+        serverSidePagination={true}
+        totalItems={pagination?.total || 0}
+        onPaginationChange={handlePaginationChange}
+        pageSize={paginationState.pageSize}
         PaginationComponent={TablePagination}
         emptyMessage="No teams found"
       />

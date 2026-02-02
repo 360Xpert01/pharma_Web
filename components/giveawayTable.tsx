@@ -18,36 +18,44 @@ interface Giveaway {
   createdAt: string;
 }
 
-export default function GiveawayTable() {
+export default function GiveawayTable({ searchTerm }: { searchTerm: string }) {
   const dispatch = useAppDispatch();
-  const hasFetched = useRef(false);
   const [openId, setOpenId] = useState<string | null>(null);
   const router = useRouter();
 
+  const [paginationState, setPaginationState] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+
   // Redux state
-  const { giveaways, loading, error } = useAppSelector((state) => state.allGiveaways);
+  const { giveaways, loading, error, total } = useAppSelector((state) => state.allGiveaways);
 
-  // Sort giveaways by createdAt (newest first)
-  const sortedGiveaways = useMemo(() => {
-    if (!giveaways || giveaways.length === 0) return [];
+  console.log(giveaways, "giveaways");
 
-    return [...giveaways].sort((a, b) => {
-      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-      return dateB - dateA; // Descending order (newest first)
-    });
-  }, [giveaways]);
-
-  // Fetch giveaways on mount (prevent double call)
+  // Fetch giveaways when searchTerm or pagination changes
   useEffect(() => {
-    if (!hasFetched.current) {
-      dispatch(getAllGiveaways());
-      hasFetched.current = true;
-    }
-  }, [dispatch]);
+    dispatch(
+      getAllGiveaways({
+        search: searchTerm,
+        page: paginationState.pageIndex + 1,
+        limit: paginationState.pageSize,
+      })
+    );
+  }, [dispatch, searchTerm, paginationState.pageIndex, paginationState.pageSize]);
+
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    setPaginationState({ pageIndex: page - 1, pageSize });
+  };
 
   const handleRetry = () => {
-    dispatch(getAllGiveaways());
+    dispatch(
+      getAllGiveaways({
+        search: searchTerm,
+        page: paginationState.pageIndex + 1,
+        limit: paginationState.pageSize,
+      })
+    );
   };
 
   const columns: ColumnDef<Giveaway>[] = [
@@ -110,13 +118,16 @@ export default function GiveawayTable() {
   return (
     <div className="w-full">
       <CenturoTable
-        data={sortedGiveaways}
+        data={giveaways}
         columns={columns}
         loading={loading}
         error={error}
         onRetry={handleRetry}
         enablePagination={true}
-        pageSize={10}
+        serverSidePagination={true}
+        totalItems={total || 0}
+        onPaginationChange={handlePaginationChange}
+        pageSize={paginationState.pageSize}
         PaginationComponent={TablePagination}
         emptyMessage="No giveaways found"
       />

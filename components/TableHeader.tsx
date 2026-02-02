@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDebounce } from "use-debounce";
 import { Search, Upload } from "lucide-react";
 import Image from "next/image";
 import FormSelect from "@/components/form/FormSelect";
@@ -34,6 +35,12 @@ export default function UsersHeader({
   const [openId, setOpenId] = useState<boolean>(false);
   const [showInactive, setShowInactive] = useState(false);
   const [sortBy, setSortBy] = useState("recently-created");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch] = useDebounce(searchTerm, 500);
+
+  useEffect(() => {
+    onSearch?.(debouncedSearch);
+  }, [debouncedSearch, onSearch]);
 
   const exportBtn = () => {
     console.log("export btn clicked");
@@ -50,7 +57,8 @@ export default function UsersHeader({
             <input
               type="text"
               placeholder="Search users..."
-              onChange={(e) => onSearch?.(e.target.value)}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 pr-4 py-2.5 w-64 bg-[var(--gray-2)] text-[var(--gray-9)] rounded-8 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:bg-[var(--light)] transition-all duration-200"
             />
           </div>
