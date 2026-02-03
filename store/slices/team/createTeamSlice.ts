@@ -11,7 +11,7 @@ interface SaleRepBrick {
 
 export interface CreateTeamPayload {
   pulseCode: string;
-  legacyCode: string;
+  legacyCode?: string;
   name: string;
   status: "active" | "inactive";
   callPointId: string;

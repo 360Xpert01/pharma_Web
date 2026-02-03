@@ -42,7 +42,7 @@ import AddEmployeeForm from "@/components/AddEmployee";
 import UserRoles from "@/components/UserRoles";
 import AddCallPoints from "@/components/AddCallPoints";
 import CallPointTable from "@/components/CallPointTable";
-import AddNewTeamForm from "@/components/AddNewTeamForm";
+import AddNewTeamForm from "@/components/TeamForm";
 import SetTargetPage from "@/components/SetTargetPage";
 import UpdateEmployees from "@/components/UpdateEmployee";
 import AddPrefixNameComponent from "@/components/AddPrefix";

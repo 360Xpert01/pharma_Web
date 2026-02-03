@@ -35,6 +35,8 @@ import updateProductReducer from "./slices/product/updateProductSlice";
 import productByIdReducer from "./slices/product/getProductByIdSlice";
 import allTeamsReducer from "./slices/team/getAllTeamsSlice";
 import createTeamReducer from "./slices/team/createTeamSlice";
+import updateTeamReducer from "./slices/team/updateTeamSlice";
+import getTeamByIdReducer from "./slices/team/getTeamByIdSlice";
 import brickListReducer from "./slices/brick/getBrickListSlice";
 import brickByIdReducer from "./slices/brick/getBrickByIdSlice";
 import allProductCategoriesReducer from "./slices/productCategory/getAllProductCategoriesSlice";
@@ -132,6 +134,8 @@ const rootReducer = combineReducers({
   updateParty: updatePartyReducer,
   organizationParties: organizationPartiesReducer,
   partyPlan: partyPlanReducer,
+  getTeamById: getTeamByIdReducer,
+  updateTeam: updateTeamReducer,
 });
 
 const persistConfig = {
