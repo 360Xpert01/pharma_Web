@@ -18,9 +18,14 @@ interface UserItem {
   profilePicture?: string;
   dob?: string;
   supervisorId?: string;
+  teamId?: string;
   role?: {
     roleName: string;
   };
+  teams?: Array<{
+    id: string;
+    name: string;
+  }>;
 }
 
 interface GetUsersResponse {
