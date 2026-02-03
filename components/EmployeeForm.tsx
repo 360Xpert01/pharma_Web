@@ -16,6 +16,7 @@ import {
 } from "@/store/slices/employee/updateEmployeeSlice";
 import { getUserById, resetGetUserByIdState } from "@/store/slices/employee/getUserByIdSlice";
 import { getAllUsers } from "@/store/slices/employee/getAllUsersSlice";
+import { uploadImageAction, resetUploadState } from "@/store/slices/upload/uploadSlice";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { employeeRegistrationSchema } from "@/validations";
@@ -57,6 +58,14 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
     error: fetchError,
   } = useAppSelector((state) => state.getUserById);
 
+  // Cloudinary/upload state
+  const {
+    loading: uploadLoading,
+    success: uploadSuccess,
+    error: uploadError,
+    uploadedFiles,
+  } = useAppSelector((state) => state.upload);
+
   // Form States
   const [status, setStatus] = useState<"Active" | "Inactive">("Active");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -97,8 +106,30 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
         dispatch(resetGeneratePrefixState());
         dispatch(resetEmployeeState());
       }
+      dispatch(resetUploadState());
     };
   }, [dispatch, isUpdateMode, userId]);
+
+  // Image upload effect
+  useEffect(() => {
+    if (uploadSuccess && uploadedFiles.length > 0) {
+      setImagePreview(uploadedFiles[0].url);
+      toast.success("Image uploaded successfully!");
+    }
+    if (uploadError) {
+      console.error("EmployeeForm: Upload error", uploadError);
+      toast.error(uploadError);
+    }
+  }, [uploadSuccess, uploadedFiles, uploadError]);
+
+  const handleImageChange = async (file: File | null) => {
+    if (file) {
+      dispatch(uploadImageAction(file));
+    } else {
+      setImagePreview(null);
+      dispatch(resetUploadState());
+    }
+  };
 
   // Populate form with fetched employee data (Update mode only)
   useEffect(() => {
@@ -108,7 +139,11 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
       setLastName(employeeData.lastName || "");
       setEmail(employeeData.email || "");
       setPhoneNumber(employeeData.mobileNumber || "");
-      setDob(employeeData.dob || "");
+      setDob(
+        (employeeData.dateOfBirth
+          ? employeeData.dateOfBirth.split("T")[0]
+          : employeeData.dob?.split("T")[0]) || ""
+      );
       setFullAddress(employeeData.fullAddress || "");
       setLegacyCode(employeeData.empLegacyCode || "");
       setPulseCode(employeeData.pulseCode || "");
@@ -311,7 +346,8 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
     );
   }
 
-  const loading = isUpdateMode ? updateLoading : registerLoading || prefixLoading;
+  const loading =
+    (isUpdateMode ? updateLoading : registerLoading) || prefixLoading || uploadLoading;
   const buttonText = isUpdateMode
     ? updateLoading
       ? "Updating..."
@@ -331,7 +367,8 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
             {/* Left: Profile Image Upload */}
             <ProfileImageUpload
               imagePreview={imagePreview}
-              onImageChange={setImagePreview}
+              onImageChange={handleImageChange}
+              loading={uploadLoading}
               className="space-y-6"
             />
 
@@ -550,7 +587,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
             rounded="full"
             className="px-8 shadow-soft"
           >
-            {buttonText}
+            {uploadLoading ? "Uploading..." : buttonText}
           </Button>
         </div>
       </div>

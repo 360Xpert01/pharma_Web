@@ -17,6 +17,7 @@ interface UserData {
   empLegacyCode?: string;
   profilePicture?: string;
   dob?: string;
+  dateOfBirth?: string;
   supervisorId?: string;
   status?: string;
 }
