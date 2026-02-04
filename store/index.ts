@@ -69,6 +69,8 @@ import partyGiveawayReducer from "./slices/party/partyGiveawaySlice";
 import updatePartyReducer from "./slices/party/updatePartySlice";
 import organizationPartiesReducer from "./slices/party/organizationPartiesSlice";
 import partyPlanReducer from "./slices/party/partyPlanSlice";
+import pendingRequestsReducer from "./slices/PendingRequest/pendingRequestsSlice";
+import handleOtpSliceReducer from "./slices/PendingRequest/handleOtpRequestsSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -136,6 +138,8 @@ const rootReducer = combineReducers({
   partyPlan: partyPlanReducer,
   getTeamById: getTeamByIdReducer,
   updateTeam: updateTeamReducer,
+  pendingRequests: pendingRequestsReducer,
+  handleOtp: handleOtpSliceReducer,
 });
 
 const persistConfig = {

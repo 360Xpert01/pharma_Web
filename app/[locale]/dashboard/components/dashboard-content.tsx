@@ -12,6 +12,7 @@ import SalesDashboard from "./charts/SalesDashboard";
 import SalesDashboard1 from "./SalesDashboard1";
 import { useRouter } from "next/navigation";
 import ExpenseRequestItem from "@/components/ExpenseRequestItem";
+import ExpenseApprovalList from "@/components/ExpenseApprovalList";
 import SalesTeamTable from "./data/EmploySection";
 import { User } from "lucide-react";
 import SalesPersonCard from "@/components/UserDetailTtle";
@@ -143,13 +144,6 @@ export function DashboardContent({
   const router = useRouter();
   const combinedLoading = externalLoading || isLoading;
   const topHcps = dataCard?.topHcps || [];
-  const requests = [
-    { title: "Client1", amount: 520 },
-    { title: "Client2", amount: 520 },
-    { title: "Client3", amount: 520 },
-    { title: "Client4", amount: 520 },
-    { title: "Client5", amount: 520 },
-  ];
 
   // State for segment editing
   const [selectedSegmentId, setSelectedSegmentId] = useState<string | null>(null);
@@ -468,18 +462,7 @@ export function DashboardContent({
           </div>
         )}
 
-        {btnApprovel && (
-          <div className=" mx-auto  space-y-2">
-            {requests.map((req, i) => (
-              <ExpenseRequestItem
-                key={i}
-                title={req.title}
-                onApprove={() => alert(`Approved: ${req.title}`)}
-                onReject={() => alert(`Rejected: ${req.title}`)}
-              />
-            ))}
-          </div>
-        )}
+        {btnApprovel && <ExpenseApprovalList />}
 
         {teamFormTabel && <AddNewTeamForm />}
 
