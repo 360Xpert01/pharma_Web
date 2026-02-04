@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllGiveaways } from "@/store/slices/giveaway/getAllGiveawaysSlice";
 import { useRouter } from "next/navigation";
 import EditIcon from "@/components/svgs/edit-icon";
+import EyeIcon from "@/components/svgs/eye-icon";
 
 interface Giveaway {
   id: string;
@@ -99,7 +100,8 @@ export default function GiveawayTable({ searchTerm }: { searchTerm: string }) {
       id: "actions",
       header: "",
       cell: ({ row }) => (
-        <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-3 justify-end" onClick={(e) => e.stopPropagation()}>
+          {/* Edit Icon */}
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -109,6 +111,19 @@ export default function GiveawayTable({ searchTerm }: { searchTerm: string }) {
             title="Edit Giveaway"
           >
             <EditIcon />
+          </button>
+
+          {/* View Icon */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              // Add your view details route here
+              router.push(`/dashboard/giveaway-details/${row.original.id}`);
+            }}
+            className="group hover:opacity-80 transition cursor-pointer"
+            title="View Details"
+          >
+            <EyeIcon />
           </button>
         </div>
       ),
