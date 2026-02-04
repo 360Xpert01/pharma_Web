@@ -415,8 +415,8 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
 
             {/* Right: Form Fields */}
             <div className="md:col-span-2 space-y-6">
-              {/* Row 1: Pulse Code, Legacy Code, Status */}
-              <div className="grid grid-cols-3 gap-4 items-center">
+              {/* Row 1: Pulse Code, Legacy Code */}
+              <div className="grid grid-cols-2 gap-4">
                 <FormInput
                   label="Pulse Code"
                   name="pulseCode"
@@ -441,26 +441,24 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                   }}
                   placeholder="000152"
                 />
-                <StatusToggle status={status} onChange={setStatus} />
               </div>
 
-              {/* Name */}
-              <FormInput
-                label="Name"
-                name="name"
-                value={name}
-                onChange={(value) => {
-                  setName(value);
-                  clearFieldError("firstName");
-                  clearFieldError("middleName");
-                  clearFieldError("lastName");
-                }}
-                placeholder="Enter full name"
-                required
-                error={getErrorMessage("firstName") || getErrorMessage("lastName")}
-              />
-              {/* Email, Phone, DOB */}
-              <div className="grid grid-cols-3 gap-4">
+              {/* Row 2: Name, Email */}
+              <div className="grid grid-cols-2 gap-4">
+                <FormInput
+                  label="Name"
+                  name="name"
+                  value={name}
+                  onChange={(value) => {
+                    setName(value);
+                    clearFieldError("firstName");
+                    clearFieldError("middleName");
+                    clearFieldError("lastName");
+                  }}
+                  placeholder="Enter full name"
+                  required
+                  error={getErrorMessage("firstName") || getErrorMessage("lastName")}
+                />
                 <FormInput
                   label="Email Address"
                   name="email"
@@ -474,6 +472,10 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                   required
                   error={getErrorMessage("email")}
                 />
+              </div>
+
+              {/* Row 3: Mobile Number, Date of Birth */}
+              <div className="grid grid-cols-2 gap-4">
                 <FormInput
                   label="Mobile Number"
                   name="mobileNumber"
@@ -511,11 +513,10 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                 }}
                 placeholder="e.g. B121, Block-2, Gulshan-e-Iqbal, Karachi, Pakistan"
                 error={getErrorMessage("fullAddress")}
-                className="md:col-span-2"
               />
 
-              {/* Joining Date & Team */}
-              <div className="grid grid-cols-2 gap-8">
+              {/* Row 4: Joining Date, Status */}
+              <div className="grid grid-cols-2 gap-4 items-end">
                 <FormInput
                   label="Joining Date"
                   name="joiningDate"
@@ -527,29 +528,33 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                   }}
                   error={getErrorMessage("joiningDate")}
                 />
-
-                <FormSelect
-                  label="Team"
-                  name="teamId"
-                  value={selectedTeamId}
-                  onChange={(value) => {
-                    setSelectedTeamId(value);
-                    clearFieldError("teamId");
-                  }}
-                  options={teams.map((t) => ({
-                    value: t.id,
-                    label: t.name,
-                  }))}
-                  placeholder="Select Team"
-                  loading={teamsLoading}
-                  error={getErrorMessage("teamId")}
-                />
+                <div className="flex flex-col gap-2">
+                  <StatusToggle status={status} onChange={setStatus} />
+                </div>
               </div>
 
-              {/* Assign Role */}
-              <div className="md:col-span-2 space-y-6 pt-4">
-                <h2 className="t-h2">Assign Role</h2>
-                <div className="grid grid-cols-2 gap-8">
+              {/* Role & Access Section */}
+              <div className="space-y-6 pt-4">
+                <h2 className="t-h2">Role & Access</h2>
+
+                {/* Row 5: Team, Select Role */}
+                <div className="grid grid-cols-2 gap-4">
+                  <FormSelect
+                    label="Team"
+                    name="teamId"
+                    value={selectedTeamId}
+                    onChange={(value) => {
+                      setSelectedTeamId(value);
+                      clearFieldError("teamId");
+                    }}
+                    options={teams.map((t) => ({
+                      value: t.id,
+                      label: t.name,
+                    }))}
+                    placeholder="Select Team"
+                    loading={teamsLoading}
+                    error={getErrorMessage("teamId")}
+                  />
                   <FormSelect
                     label="Select Role"
                     name="roleId"
@@ -568,6 +573,9 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                     loading={rolesLoading}
                     error={getErrorMessage("roleId")}
                   />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Row 6: Line Manager */}
                   <FormSelect
                     label="Select Line Manager"
                     name="supervisorId"
@@ -608,7 +616,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                     error={getErrorMessage("supervisorId")}
                   />
 
-                  {/* Territory Condition */}
+                  {/* Territory Condition - Only for Sales Rep */}
                   {roles
                     .find((r) => r.id === selectedRoleId)
                     ?.roleName?.toLowerCase()
@@ -627,11 +635,8 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                     />
                   )}
                 </div>
-              </div>
-
-              {/* System Access Toggles */}
-              <div className="space-y-6 pt-4">
-                <div className="flex gap-8 items-start flex-wrap">
+                {/* Mobile Access Toggles */}
+                <div className="flex gap-8 items-start flex-wrap pt-4">
                   {/* Enable Mobile Access Toggle */}
                   <div className="flex flex-col gap-2">
                     <label className="text-sm font-medium text-[var(--text-secondary)]">
