@@ -83,8 +83,10 @@ export default function DoctorsTable({
     // ID column - always show
     cols.push({
       header: "ID",
-      accessorKey: "id",
-      cell: ({ row }) => <span>{row.original?.id || "N/A"}</span>,
+      accessorKey: "pulsecode",
+      cell: ({ row }) => (
+        <span>{row.original?.pulsecode || row.original?.pulse_code || "N/A"}</span>
+      ),
     });
 
     // PMDC Number - conditional
@@ -111,10 +113,13 @@ export default function DoctorsTable({
     if (fieldConfig.specialty) {
       cols.push({
         header: "Specialization",
-        accessorKey: "specialty",
+        accessorKey: "specialization_name",
         cell: ({ row }) => (
           <span className="text-[var(--muted-foreground)]">
-            {row.original?.attributes?.specialization || row.original?.specialization || "N/A"}
+            {row.original?.specialization_name ||
+              row.original?.attributes?.specialization ||
+              row.original?.specialization ||
+              "N/A"}
           </span>
         ),
       });
@@ -192,8 +197,12 @@ export default function DoctorsTable({
     if (fieldConfig.parent) {
       cols.push({
         header: "Parent",
-        accessorKey: "parent",
-        cell: ({ row }) => <span>{row.original?.parent || "N/A"}</span>,
+        accessorKey: "organization.party_parent_name",
+        cell: ({ row }) => (
+          <span>
+            {row.original?.organization?.party_parent_name || row.original?.parent || "N/A"}
+          </span>
+        ),
       });
     }
 

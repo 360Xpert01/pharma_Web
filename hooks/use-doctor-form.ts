@@ -307,7 +307,17 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
       toast.success(isUpdateMode ? "Doctor updated successfully!" : "Doctor added successfully!");
       dispatch(resetCreatePartyState());
       dispatch(resetPartyByIdState());
-      router.push(`/dashboard/doctors-?id=${idForm || ""}`);
+
+      // Generate the proper channel slug from the channel name
+      const channelSlug = currentChannel?.name
+        ? currentChannel.name
+            .toLowerCase()
+            .replace(/&/g, "")
+            .replace(/\s+/g, "-")
+            .replace(/-+/g, "-")
+        : "doctors-hcps"; // Default fallback
+
+      router.push(`/dashboard/${channelSlug}?id=${idForm || ""}`);
     }
     if (createError || updateError) {
       toast.error(createError || updateError);
@@ -324,6 +334,7 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
     router,
     idForm,
     isUpdateMode,
+    currentChannel,
   ]);
 
   const addLocation = () => {

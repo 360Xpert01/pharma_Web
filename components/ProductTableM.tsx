@@ -129,8 +129,7 @@ export default function MedicineTable({ searchTerm }: { searchTerm: string }) {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              // Add your view details route here
-              router.push(`/dashboard/product-details/${row.original.id}`);
+              router.push(`/dashboard/product-details?id=${row.original.id}`);
             }}
             className="group hover:opacity-80 transition cursor-pointer"
             title="View Details"
