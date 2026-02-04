@@ -23,6 +23,7 @@ interface TeamMember {
   phone: string;
   role: string;
   supervisor: string;
+  team: string;
   roleBy: string;
   profilePicture: string;
 }
@@ -46,13 +47,21 @@ export default function SalesTeamTable({ searchTerm }: { searchTerm: string }) {
   const data = useMemo<TeamMember[]>(() => {
     return users.map((u) => {
       const supervisor = users.find((x) => x.id === u.supervisorId);
+      // Combine name parts, filtering out empty values
+      const nameParts = [u.firstName, u.middleName, u.lastName].filter(Boolean);
+      const fullName = nameParts.length > 0 ? nameParts.join(" ") : "N/A";
+
+      // Get first team name from teams array
+      const teamName = u.teams && u.teams.length > 0 ? u.teams[0].name : "N/A";
+
       return {
         id: u.id,
-        name: `${u.firstName} ${u.middleName ?? ""} ${u.lastName}`,
+        name: fullName,
         email: u.email,
         phone: u.mobileNumber || "N/A",
         role: u.pulseCode,
         supervisor: supervisor ? `${supervisor.firstName} ${supervisor.lastName}` : "N/A",
+        team: teamName,
         roleBy: u.role?.roleName || "N/A",
         profilePicture: u.profilePicture || "/girlPic.svg",
       };
@@ -105,6 +114,10 @@ export default function SalesTeamTable({ searchTerm }: { searchTerm: string }) {
       {
         accessorKey: "supervisor",
         header: "Supervisor",
+      },
+      {
+        accessorKey: "team",
+        header: "Team",
       },
       {
         id: "expand",

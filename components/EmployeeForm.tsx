@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { employeeRegistrationSchema } from "@/validations";
 import { ProfileImageUpload, FormInput, FormSelect, StatusToggle } from "@/components/form";
+import { getAllTeams } from "@/store/slices/team/getAllTeamsSlice";
 
 interface EmployeeFormProps {
   mode: "add" | "update";
@@ -40,6 +41,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
   } = useAppSelector((state) => state.generatePrefix);
   const { roles, loading: rolesLoading } = useAppSelector((state) => state.allRoles);
   const { users, loading: usersLoading } = useAppSelector((state) => state.allUsers);
+  const { teams, loading: teamsLoading } = useAppSelector((state) => state.allTeams);
   const {
     loading: registerLoading,
     success: registerSuccess,
@@ -69,17 +71,29 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
   // Form States
   const [status, setStatus] = useState<"Active" | "Inactive">("Active");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [firstName, setFirstName] = useState("");
-  const [middleName, setMiddleName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [dob, setDob] = useState("");
+  const [joiningDate, setJoiningDate] = useState("");
   const [fullAddress, setFullAddress] = useState("");
   const [legacyCode, setLegacyCode] = useState("");
   const [pulseCode, setPulseCode] = useState("");
   const [selectedRoleId, setSelectedRoleId] = useState("");
   const [selectedSupervisorId, setSelectedSupervisorId] = useState("");
+  const [selectedTeamId, setSelectedTeamId] = useState("");
+  const [selectedTerritoryId, setSelectedTerritoryId] = useState("");
+  const [enableMobileAccess, setEnableMobileAccess] = useState<"Enable" | "Disable">("Disable");
+  const [mobileView, setMobileView] = useState<"Sales Rep" | "Area Manager">("Sales Rep");
+
+  // Hardcoded territory options
+  const territoryOptions = [
+    { value: "territory-1", label: "North Region" },
+    { value: "territory-2", label: "South Region" },
+    { value: "territory-3", label: "East Region" },
+    { value: "territory-4", label: "West Region" },
+    { value: "territory-5", label: "Central Region" },
+  ];
 
   // Validation errors state
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
@@ -97,6 +111,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
     // Fetch roles and users for dropdowns
     dispatch(getAllRoles());
     dispatch(getAllUsers());
+    dispatch(getAllTeams({ limit: 100 }));
 
     return () => {
       if (isUpdateMode) {
@@ -134,9 +149,10 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
   // Populate form with fetched employee data (Update mode only)
   useEffect(() => {
     if (isUpdateMode && employeeData) {
-      setFirstName(employeeData.firstName || "");
-      setMiddleName(employeeData.middleName || "");
-      setLastName(employeeData.lastName || "");
+      const fullName = [employeeData.firstName, employeeData.middleName, employeeData.lastName]
+        .filter(Boolean)
+        .join(" ");
+      setName(fullName || "");
       setEmail(employeeData.email || "");
       setPhoneNumber(employeeData.mobileNumber || "");
       setDob(
@@ -149,6 +165,13 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
       setPulseCode(employeeData.pulseCode || "");
       setSelectedRoleId(employeeData.roleId || "");
       setSelectedSupervisorId(employeeData.supervisorId || "");
+      setSelectedTeamId(employeeData.teamId || "");
+      setSelectedTerritoryId(employeeData.territoryId || "");
+      setJoiningDate(
+        (employeeData.joiningDate ? employeeData.joiningDate.split("T")[0] : "") || ""
+      );
+      setEnableMobileAccess(employeeData.enableMobileAccess ? "Enable" : "Disable");
+      setMobileView((employeeData.mobileView as "Sales Rep" | "Area Manager") || "Sales Rep");
       setImagePreview(employeeData.profilePicture || null);
       setStatus(employeeData.status === "Inactive" ? "Inactive" : "Active");
     }
@@ -184,6 +207,12 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
       return;
     }
 
+    // Split name into parts (first, middle, last)
+    const nameParts = name.trim().split(/\s+/);
+    const firstName = nameParts[0] || "";
+    const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
+    const middleName = nameParts.length > 2 ? nameParts.slice(1, -1).join(" ") : "";
+
     // Prepare form data for validation
     const formData = {
       email,
@@ -198,6 +227,11 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
       profilePicture: imagePreview || "",
       dob,
       supervisorId: selectedSupervisorId,
+      teamId: selectedTeamId,
+      territoryId: selectedTerritoryId,
+      joiningDate,
+      enableMobileAccess: enableMobileAccess === "Enable",
+      mobileView,
       verifiedDevices: [],
     };
 
@@ -245,6 +279,15 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
     if (validatedData.fullAddress) payload.fullAddress = validatedData.fullAddress;
     if (validatedData.roleId) payload.roleId = validatedData.roleId;
 
+    // New fields (bypassing validation for now or assuming schema will be updated)
+    if (selectedTeamId) payload.teamId = selectedTeamId;
+    if (selectedTerritoryId) payload.territoryId = selectedTerritoryId;
+    if (joiningDate) payload.joiningDate = joiningDate;
+    payload.enableMobileAccess = enableMobileAccess === "Enable";
+    if (enableMobileAccess === "Enable") {
+      payload.mobileView = mobileView;
+    }
+
     // pulseCode can only be set during registration, not during update
     if (!isUpdateMode && validatedData.pulseCode) {
       payload.pulseCode = validatedData.pulseCode;
@@ -280,9 +323,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
 
       if (!isUpdateMode) {
         // Reset form for add mode
-        setFirstName("");
-        setMiddleName("");
-        setLastName("");
+        setName("");
         setEmail("");
         setPhoneNumber("");
         setDob("");
@@ -374,8 +415,8 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
 
             {/* Right: Form Fields */}
             <div className="md:col-span-2 space-y-6">
-              {/* Row 1: Pulse Code, Legacy Code, Status */}
-              <div className="grid grid-cols-3 gap-4 items-center">
+              {/* Row 1: Pulse Code, Legacy Code */}
+              <div className="grid grid-cols-2 gap-4">
                 <FormInput
                   label="Pulse Code"
                   name="pulseCode"
@@ -400,50 +441,24 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                   }}
                   placeholder="000152"
                 />
-                <StatusToggle status={status} onChange={setStatus} />
               </div>
 
-              {/* Names */}
-              <div className="grid grid-cols-3 gap-4">
+              {/* Row 2: Name, Email */}
+              <div className="grid grid-cols-2 gap-4">
                 <FormInput
-                  label="First Name"
-                  name="firstName"
-                  value={firstName}
+                  label="Name"
+                  name="name"
+                  value={name}
                   onChange={(value) => {
-                    setFirstName(value);
+                    setName(value);
                     clearFieldError("firstName");
-                  }}
-                  placeholder="First Name"
-                  required
-                  error={getErrorMessage("firstName")}
-                />
-                <FormInput
-                  label="Middle Name"
-                  name="middleName"
-                  value={middleName}
-                  onChange={(value) => {
-                    setMiddleName(value);
                     clearFieldError("middleName");
-                  }}
-                  placeholder="Middle Name"
-                  error={getErrorMessage("middleName")}
-                />
-                <FormInput
-                  label="Last Name"
-                  name="lastName"
-                  value={lastName}
-                  onChange={(value) => {
-                    setLastName(value);
                     clearFieldError("lastName");
                   }}
-                  placeholder="Last Name"
+                  placeholder="Enter full name"
                   required
-                  error={getErrorMessage("lastName")}
+                  error={getErrorMessage("firstName") || getErrorMessage("lastName")}
                 />
-              </div>
-
-              {/* Email, Phone, DOB */}
-              <div className="grid grid-cols-3 gap-4">
                 <FormInput
                   label="Email Address"
                   name="email"
@@ -457,6 +472,10 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                   required
                   error={getErrorMessage("email")}
                 />
+              </div>
+
+              {/* Row 3: Mobile Number, Date of Birth */}
+              <div className="grid grid-cols-2 gap-4">
                 <FormInput
                   label="Mobile Number"
                   name="mobileNumber"
@@ -494,13 +513,48 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                 }}
                 placeholder="e.g. B121, Block-2, Gulshan-e-Iqbal, Karachi, Pakistan"
                 error={getErrorMessage("fullAddress")}
-                className="md:col-span-2"
               />
 
-              {/* Assign Role */}
-              <div className="md:col-span-2 space-y-6 pt-4">
-                <h2 className="t-h2">Assign Role</h2>
-                <div className="grid grid-cols-2 gap-8">
+              {/* Row 4: Joining Date, Status */}
+              <div className="grid grid-cols-2 gap-4 items-end">
+                <FormInput
+                  label="Joining Date"
+                  name="joiningDate"
+                  type="date"
+                  value={joiningDate}
+                  onChange={(value) => {
+                    setJoiningDate(value);
+                    clearFieldError("joiningDate");
+                  }}
+                  error={getErrorMessage("joiningDate")}
+                />
+                <div className="flex flex-col gap-2">
+                  <StatusToggle status={status} onChange={setStatus} />
+                </div>
+              </div>
+
+              {/* Role & Access Section */}
+              <div className="space-y-6 pt-4">
+                <h2 className="t-h2">Role & Access</h2>
+
+                {/* Row 5: Team, Select Role */}
+                <div className="grid grid-cols-2 gap-4">
+                  <FormSelect
+                    label="Team"
+                    name="teamId"
+                    value={selectedTeamId}
+                    onChange={(value) => {
+                      setSelectedTeamId(value);
+                      clearFieldError("teamId");
+                    }}
+                    options={teams.map((t) => ({
+                      value: t.id,
+                      label: t.name,
+                    }))}
+                    placeholder="Select Team"
+                    loading={teamsLoading}
+                    error={getErrorMessage("teamId")}
+                  />
                   <FormSelect
                     label="Select Role"
                     name="roleId"
@@ -519,6 +573,9 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                     loading={rolesLoading}
                     error={getErrorMessage("roleId")}
                   />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Row 6: Line Manager */}
                   <FormSelect
                     label="Select Line Manager"
                     name="supervisorId"
@@ -558,6 +615,91 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                     loading={usersLoading}
                     error={getErrorMessage("supervisorId")}
                   />
+
+                  {/* Territory Condition - Only for Sales Rep */}
+                  {roles
+                    .find((r) => r.id === selectedRoleId)
+                    ?.roleName?.toLowerCase()
+                    .includes("sales rep") && (
+                    <FormSelect
+                      label="Territory"
+                      name="territoryId"
+                      value={selectedTerritoryId}
+                      onChange={(value) => {
+                        setSelectedTerritoryId(value);
+                        clearFieldError("territoryId");
+                      }}
+                      options={territoryOptions}
+                      placeholder="Select Territory"
+                      error={getErrorMessage("territoryId")}
+                    />
+                  )}
+                </div>
+                {/* Mobile Access Toggles */}
+                <div className="flex gap-8 items-start flex-wrap pt-4">
+                  {/* Enable Mobile Access Toggle */}
+                  <div className="flex flex-col gap-2">
+                    <label className="text-sm font-medium text-[var(--text-secondary)]">
+                      Mobile Access
+                    </label>
+                    <div className="inline-flex border border-[var(--gray-3)] rounded-full p-1 bg-[var(--gray-0)] overflow-hidden">
+                      <button
+                        type="button"
+                        onClick={() => setEnableMobileAccess("Disable")}
+                        className={`px-6 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
+                          enableMobileAccess === "Disable"
+                            ? "bg-[var(--primary)] text-[var(--light)]"
+                            : "text-[var(--gray-6)] hover:bg-[var(--gray-1)]"
+                        }`}
+                      >
+                        Disable
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEnableMobileAccess("Enable")}
+                        className={`px-6 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
+                          enableMobileAccess === "Enable"
+                            ? "bg-[var(--primary)] text-[var(--light)]"
+                            : "text-[var(--gray-6)] hover:bg-[var(--gray-1)]"
+                        }`}
+                      >
+                        Enable
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Mobile View Toggle */}
+                  {enableMobileAccess === "Enable" && (
+                    <div className="flex flex-col gap-2">
+                      <label className="text-sm font-medium text-[var(--text-secondary)]">
+                        Mobile View
+                      </label>
+                      <div className="inline-flex border border-[var(--gray-3)] rounded-full p-1 bg-[var(--gray-0)] overflow-hidden">
+                        <button
+                          type="button"
+                          onClick={() => setMobileView("Sales Rep")}
+                          className={`px-6 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
+                            mobileView === "Sales Rep"
+                              ? "bg-[var(--primary)] text-[var(--light)]"
+                              : "text-[var(--gray-6)] hover:bg-[var(--gray-1)]"
+                          }`}
+                        >
+                          Sales Rep
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setMobileView("Area Manager")}
+                          className={`px-6 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
+                            mobileView === "Area Manager"
+                              ? "bg-[var(--primary)] text-[var(--light)]"
+                              : "text-[var(--gray-6)] hover:bg-[var(--gray-1)]"
+                          }`}
+                        >
+                          Area Manager
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

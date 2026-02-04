@@ -79,6 +79,20 @@ export const employeeRegistrationSchema = z.object({
     .or(z.literal("")),
 
   verifiedDevices: z.array(z.string()).optional(),
+
+  territoryId: z
+    .string()
+    .uuid({ message: "Invalid territory selected" })
+    .optional()
+    .or(z.literal("")),
+  teamId: z.string().uuid({ message: "Invalid team selected" }).optional().or(z.literal("")),
+  joiningDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, { message: "Joining date must be in YYYY-MM-DD format" })
+    .optional()
+    .or(z.literal("")),
+  enableMobileAccess: z.boolean().optional(),
+  mobileView: z.enum(["Sales Rep", "Area Manager"]).optional(),
 });
 
 export type EmployeeRegistrationFormValues = z.infer<typeof employeeRegistrationSchema>;

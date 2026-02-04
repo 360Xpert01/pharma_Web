@@ -5,7 +5,9 @@ import { ColumnDef } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import StatusBadge from "@/components/shared/StatusBadge";
-import TableActionDropdown from "@/components/shared/table/TableActionDropdown";
+import EditIcon from "@/components/svgs/edit-icon";
+import EyeIcon from "@/components/svgs/eye-icon";
+import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllTeams } from "@/store/slices/team/getAllTeamsSlice";
 
@@ -20,10 +22,10 @@ interface Team {
 }
 
 export default function CampaignsTable({ searchTerm }: { searchTerm: string }) {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const { teams, loading, error, pagination } = useAppSelector((state) => state.allTeams);
 
-  const [openId, setOpenId] = useState<string | null>(null);
   const [paginationState, setPaginationState] = useState({
     pageIndex: 0,
     pageSize: 10,
@@ -135,27 +137,23 @@ export default function CampaignsTable({ searchTerm }: { searchTerm: string }) {
       id: "actions",
       header: "",
       cell: ({ row }) => (
-        <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
-          <TableActionDropdown
-            isOpen={openId === row.original.id}
-            onToggle={() => setOpenId(openId === row.original.id ? null : row.original.id)}
-            onClose={() => setOpenId(null)}
-            items={[
-              {
-                label: "Edit",
-                onClick: () => console.log("Edit", row.original.id),
-              },
-              {
-                label: "Duplicate",
-                onClick: () => console.log("Duplicate", row.original.id),
-              },
-              {
-                label: "Delete",
-                onClick: () => console.log("Delete", row.original.id),
-                variant: "danger",
-              },
-            ]}
-          />
+        <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
+          <button
+            onClick={() => {
+              router.push(`/dashboard/UpdateTeamForm?id=${row.original.id}&mode=update`);
+            }}
+            className="group hover:opacity-80 transition cursor-pointer"
+            title="Edit Campaign"
+          >
+            <EditIcon />
+          </button>
+          <button
+            onClick={() => console.log("View", row.original.id)}
+            className="group hover:opacity-80 transition cursor-pointer"
+            title="View Details"
+          >
+            <EyeIcon />
+          </button>
         </div>
       ),
     },

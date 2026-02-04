@@ -6,10 +6,6 @@ export const teamCreationSchema = z.object({
     .string()
     .min(1, { message: "Pulse code is required" })
     .max(100, { message: "Pulse code cannot exceed 100 characters" }),
-  legacyCode: z
-    .string()
-    .min(1, { message: "Legacy code is required" })
-    .max(100, { message: "Legacy code cannot exceed 100 characters" }),
   name: z
     .string()
     .min(1, { message: "Team name is required" })

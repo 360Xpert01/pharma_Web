@@ -20,6 +20,11 @@ interface UserData {
   dateOfBirth?: string;
   supervisorId?: string;
   status?: string;
+  territoryId?: string;
+  teamId?: string;
+  joiningDate?: string;
+  enableMobileAccess?: boolean;
+  mobileView?: string;
 }
 
 interface GetUserByIdResponse {
