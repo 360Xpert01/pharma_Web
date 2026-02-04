@@ -13,11 +13,17 @@ interface UsersHeaderProps {
   inactiveLabel?: string;
   onSearch?: (term: string) => void;
   showDoctorFilters?: boolean;
+  showEmployeeFilters?: boolean;
   channelId?: string;
   onApplyFilters?: (filters: {
+    // Doctor filters
     segmentId?: string;
     specializationId?: string;
     status?: string;
+    // Employee filters
+    roleId?: string;
+    teamId?: string;
+    supervisorId?: string;
   }) => void;
 }
 
@@ -29,6 +35,7 @@ export default function UsersHeader({
   inactiveLabel,
   onSearch,
   showDoctorFilters = false,
+  showEmployeeFilters = false,
   channelId,
   onApplyFilters,
 }: UsersHeaderProps) {
@@ -66,6 +73,7 @@ export default function UsersHeader({
           {filterT && (
             <TableFilter
               showDoctorFilters={showDoctorFilters}
+              showEmployeeFilters={showEmployeeFilters}
               channelId={channelId}
               onApplyFilters={onApplyFilters}
             />

@@ -4,22 +4,32 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllSpecializations } from "@/store/slices/specialization/getAllSpecializationsSlice";
 import { getAllSegments } from "@/store/slices/segment/getAllSegmentsSlice";
 import { getAllChannels } from "@/store/slices/channel/getAllChannelsSlice";
+import { getAllRoles } from "@/store/slices/role/getAllRolesSlice";
+import { getAllTeams } from "@/store/slices/team/getAllTeamsSlice";
+import { getAllUsers } from "@/store/slices/employee/getAllUsersSlice";
 import FormSelect from "@/components/form/FormSelect";
 
 interface TableFilterProps {
   showDoctorFilters?: boolean;
+  showEmployeeFilters?: boolean;
   channelId?: string;
   onApply?: () => void;
   onApplyFilters?: (filters: {
+    // Doctor filters
     segmentId?: string;
     specializationId?: string;
     status?: string;
+    // Employee filters
+    roleId?: string;
+    teamId?: string;
+    supervisorId?: string;
   }) => void;
   onClear?: () => void;
 }
 
 export default function TableFilter({
   showDoctorFilters = false,
+  showEmployeeFilters = false,
   channelId,
   onApply,
   onApplyFilters,
@@ -32,6 +42,8 @@ export default function TableFilter({
   const [selectedSegment, setSelectedSegment] = useState("");
   const [selectedSpecialization, setSelectedSpecialization] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
+  const [selectedTeam, setSelectedTeam] = useState("");
+  const [selectedSupervisor, setSelectedSupervisor] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedDateRange, setSelectedDateRange] = useState("");
 
@@ -39,6 +51,9 @@ export default function TableFilter({
   const { specializations } = useAppSelector((state) => state.allSpecializations);
   const { segments } = useAppSelector((state) => state.allSegments);
   const { channels } = useAppSelector((state) => state.allChannels);
+  const { roles } = useAppSelector((state) => state.allRoles);
+  const { teams } = useAppSelector((state) => state.allTeams);
+  const { users } = useAppSelector((state) => state.allUsers);
 
   // Find current channel to check if it's "Doctor"
   const currentChannel = channels.find((ch) => ch.id === channelId);
@@ -52,12 +67,23 @@ export default function TableFilter({
         dispatch(getAllChannels());
       }
     }
-  }, [dispatch, showDoctorFilters, isFilterOpen, channels.length]);
+    if (showEmployeeFilters && isFilterOpen) {
+      dispatch(getAllRoles());
+      dispatch(getAllTeams());
+      // Note: We don't fetch users here because it would interfere with the main table data
+      // The supervisor dropdown will use the already-loaded users from the table
+    }
+  }, [dispatch, showDoctorFilters, showEmployeeFilters, isFilterOpen, channels.length]);
 
   return (
     <div className="relative">
       <button
-        onClick={() => setIsFilterOpen(!isFilterOpen)}
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setIsFilterOpen(!isFilterOpen);
+        }}
         className="flex items-center justify-center p-3.5 bg-[var(--primary)] text-[var(--light)] rounded-8 cursor-pointer transition-colors shadow-soft"
         aria-label="Filter"
       >
@@ -121,7 +147,7 @@ export default function TableFilter({
                   </div>
                 )}
               </>
-            ) : (
+            ) : showEmployeeFilters ? (
               <>
                 {/* Role Filter */}
                 <div>
@@ -132,43 +158,82 @@ export default function TableFilter({
                     onChange={setSelectedRole}
                     options={[
                       { value: "", label: "All Roles" },
-                      { value: "admin", label: "Admin" },
-                      { value: "manager", label: "Manager" },
-                      { value: "sales_rep", label: "Sales Rep" },
-                      { value: "doctor", label: "Doctor" },
-                      { value: "pharmacist", label: "Pharmacist" },
+                      ...roles.map((role) => ({
+                        value: role.id,
+                        label: role.roleName,
+                      })),
                     ]}
                     placeholder="Select Role"
                     className="mb-0"
                   />
                 </div>
+
+                {/* Team Filter */}
+                <div>
+                  <FormSelect
+                    label="Team"
+                    name="team"
+                    value={selectedTeam}
+                    onChange={setSelectedTeam}
+                    options={[
+                      { value: "", label: "All Teams" },
+                      ...teams.map((team) => ({
+                        value: team.id,
+                        label: team.name,
+                      })),
+                    ]}
+                    placeholder="Select Team"
+                    className="mb-0"
+                  />
+                </div>
+
+                {/* Supervisor Filter */}
+                <div>
+                  <FormSelect
+                    label="Supervisor"
+                    name="supervisor"
+                    value={selectedSupervisor}
+                    onChange={setSelectedSupervisor}
+                    options={[
+                      { value: "", label: "All Supervisors" },
+                      ...users.map((user) => ({
+                        value: user.id,
+                        label: `${user.firstName} ${user.lastName}`,
+                      })),
+                    ]}
+                    placeholder="Select Supervisor"
+                    className="mb-0"
+                  />
+                </div>
               </>
-            )}
+            ) : null}
 
             {/* Status Filter (Common for both) */}
-            <div>
-              <FormSelect
-                label="Status"
-                name="status"
-                value={selectedStatus}
-                onChange={setSelectedStatus}
-                options={[
-                  { value: "", label: "All Status" },
-                  { value: "active", label: "Active" },
-                  { value: "inactive", label: "Inactive" },
-                  ...(!showDoctorFilters
-                    ? [
-                        { value: "pending", label: "Pending" },
-                        { value: "suspended", label: "Suspended" },
-                      ]
-                    : []),
-                ]}
-                placeholder="Select Status"
-                className="mb-0"
-              />
-            </div>
+            {(showDoctorFilters || showEmployeeFilters) && (
+              <div>
+                <FormSelect
+                  label="Status"
+                  name="status"
+                  value={selectedStatus}
+                  onChange={setSelectedStatus}
+                  options={[
+                    { value: "", label: "All Status" },
+                    { value: "active", label: "Active" },
+                    { value: "inactive", label: "Inactive" },
+                    ...(showEmployeeFilters
+                      ? [
+                          { value: "pending", label: "Pending" },
+                          { value: "suspended", label: "Suspended" },
+                        ]
+                      : []),
+                  ]}
+                  placeholder="Select Status"
+                  className="mb-0"
+                />
+              </div>
+            )}
 
-            {!showDoctorFilters && (
+            {!showDoctorFilters && !showEmployeeFilters && (
               /* Date Range */
               <div>
                 <FormSelect
@@ -192,25 +257,50 @@ export default function TableFilter({
             {/* Action Buttons */}
             <div className="flex gap-3 pt-3">
               <button
-                onClick={() => {
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
                   setSelectedSegment("");
                   setSelectedSpecialization("");
                   setSelectedRole("");
+                  setSelectedTeam("");
+                  setSelectedSupervisor("");
                   setSelectedStatus("");
                   setSelectedDateRange("");
+                  // Trigger filter update with empty values
+                  if (onApplyFilters) {
+                    onApplyFilters({
+                      segmentId: "",
+                      specializationId: "",
+                      status: "",
+                      roleId: "",
+                      teamId: "",
+                      supervisorId: "",
+                    });
+                  }
                   onClear?.();
+                  setIsFilterOpen(false);
                 }}
                 className="flex-1 px-4 py-2.5 border cursor-pointer border-[var(--gray-3)] text-[var(--gray-7)] rounded-8 text-sm font-medium hover:bg-[var(--gray-0)] transition"
               >
                 Clear All
               </button>
               <button
-                onClick={() => {
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
                   if (onApplyFilters) {
                     onApplyFilters({
+                      // Doctor filters
                       segmentId: selectedSegment,
                       specializationId: selectedSpecialization,
                       status: selectedStatus,
+                      // Employee filters
+                      roleId: selectedRole,
+                      teamId: selectedTeam,
+                      supervisorId: selectedSupervisor,
                     });
                   }
                   onApply?.();

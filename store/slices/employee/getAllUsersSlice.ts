@@ -67,6 +67,10 @@ interface PaginationParams {
   page?: number;
   limit?: number;
   search?: string;
+  status?: string;
+  roleId?: string;
+  teamId?: string;
+  supervisorId?: string;
 }
 
 // Async Thunk: Get All Users (GET /api/v1/users)
@@ -86,9 +90,20 @@ export const getAllUsers = createAsyncThunk<
     const page = params && typeof params === "object" ? params.page || 1 : 1;
     const limit = params && typeof params === "object" ? params.limit || 10 : 10;
     const search = params && typeof params === "object" ? params.search || "" : "";
+    const status = params && typeof params === "object" ? params.status || "" : "";
+    const roleId = params && typeof params === "object" ? params.roleId || "" : "";
+    const teamId = params && typeof params === "object" ? params.teamId || "" : "";
+    const supervisorId = params && typeof params === "object" ? params.supervisorId || "" : "";
+
+    // Build query params object, only include filters if they have values
+    const queryParams: any = { page, limit, search };
+    if (status) queryParams.status = status;
+    if (roleId) queryParams.roleId = roleId;
+    if (teamId) queryParams.teamId = teamId;
+    if (supervisorId) queryParams.supervisorId = supervisorId;
 
     const response = await axios.get<GetUsersResponse>(`${baseUrl}api/v1/users`, {
-      params: { page, limit, search },
+      params: queryParams,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStr}`,

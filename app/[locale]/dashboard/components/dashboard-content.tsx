@@ -160,6 +160,14 @@ export function DashboardContent({
     status?: string;
   }>({});
 
+  // State for Employee Table Filters
+  const [employeeFilters, setEmployeeFilters] = useState<{
+    status?: string;
+    roleId?: string;
+    teamId?: string;
+    supervisorId?: string;
+  }>({});
+
   const handleSettings = () => {
     if (settingsRoute) {
       router.push(settingsRoute);
@@ -442,8 +450,14 @@ export function DashboardContent({
 
         {proBar && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading="All User's" filterT onSearch={setSearchTerm} />
-            <SalesTeamTable searchTerm={searchTerm} />
+            <TableHeader
+              campHeading="All User's"
+              filterT
+              onSearch={setSearchTerm}
+              showEmployeeFilters={true}
+              onApplyFilters={setEmployeeFilters}
+            />
+            <SalesTeamTable searchTerm={searchTerm} filters={employeeFilters} />
           </div>
         )}
 

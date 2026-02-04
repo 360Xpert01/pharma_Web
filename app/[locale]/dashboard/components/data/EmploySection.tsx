@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
@@ -28,19 +28,49 @@ interface TeamMember {
   profilePicture: string;
 }
 
-export default function SalesTeamTable({ searchTerm }: { searchTerm: string }) {
+interface EmployeeFilters {
+  status?: string;
+  roleId?: string;
+  teamId?: string;
+  supervisorId?: string;
+}
+
+export default function SalesTeamTable({
+  searchTerm,
+  filters: externalFilters,
+}: {
+  searchTerm: string;
+  filters?: EmployeeFilters;
+}) {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { users, loading, error, pagination } = useAppSelector((s) => s.allUsers);
 
-  // Fetch users on mount
+  // Merge external filters with internal state
+  const filters = externalFilters || {};
+
+  // Fetch users on mount and when filters change
   useEffect(() => {
-    dispatch(getAllUsers({ search: searchTerm, page: 1, limit: 10 }));
-  }, [dispatch, searchTerm]);
+    dispatch(
+      getAllUsers({
+        search: searchTerm,
+        page: 1,
+        limit: 10,
+        ...filters,
+      })
+    );
+  }, [dispatch, searchTerm, filters]);
 
   // Handle pagination changes
   const handlePaginationChange = (page: number, pageSize: number) => {
-    dispatch(getAllUsers({ search: searchTerm, page, limit: pageSize }));
+    dispatch(
+      getAllUsers({
+        search: searchTerm,
+        page,
+        limit: pageSize,
+        ...filters,
+      })
+    );
   };
 
   // ================= DATA =================
@@ -168,7 +198,15 @@ export default function SalesTeamTable({ searchTerm }: { searchTerm: string }) {
       columns={columns}
       loading={loading}
       error={error}
-      onRetry={() => dispatch(getAllUsers({ page: 1, limit: 10 }))}
+      onRetry={() =>
+        dispatch(
+          getAllUsers({
+            page: 1,
+            limit: 10,
+            ...filters,
+          })
+        )
+      }
       enableSorting={true}
       enableExpanding={true}
       enablePagination={true}
