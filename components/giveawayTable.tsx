@@ -117,8 +117,7 @@ export default function GiveawayTable({ searchTerm }: { searchTerm: string }) {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              // Add your view details route here
-              router.push(`/dashboard/giveaway-details/${row.original.id}`);
+              router.push(`/dashboard/giveaway-details?id=${row.original.id}`);
             }}
             className="group hover:opacity-80 transition cursor-pointer"
             title="View Details"
