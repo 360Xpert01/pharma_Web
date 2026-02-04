@@ -9,6 +9,7 @@ export interface PartyItem {
   id: string;
   party_id?: string;
   party_name?: string;
+  party_type?: string;
   name?: string;
   email?: string;
   phone_number?: string;
@@ -20,10 +21,16 @@ export interface PartyItem {
   channel_id?: string;
   channel_name?: string;
   pmdcNumber?: string;
+  pulsecode?: string;
+  pulse_code?: string;
   specialization?: string;
+  specialization_name?: string;
+  specializationId?: string;
   qualification?: string;
   designation?: string;
   date_of_birth?: string;
+  description?: string;
+  image?: string;
   attributes?: {
     id?: string;
     partyId?: string;
@@ -38,6 +45,10 @@ export interface PartyItem {
     address?: string;
     country?: string;
   }>;
+  organization?: {
+    parent_id?: string | null;
+    party_parent_name?: string | null;
+  };
   parent?: string;
   created_at?: string;
   updated_at?: string;
