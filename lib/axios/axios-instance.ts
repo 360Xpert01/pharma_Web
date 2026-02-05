@@ -1,5 +1,6 @@
 import axios from "axios";
 import { getToken } from "@/lib//cookie/cookie";
+import { getSubdomain } from "@/utils/tenant";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001/api/v1";
 
@@ -10,13 +11,19 @@ export const axiosInstance = axios.create({
   },
 });
 
-// Request interceptor to attach token
+// Request interceptor to attach token and subdomain
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = getToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    const subdomain = getSubdomain();
+    if (subdomain) {
+      config.headers["subdomain"] = subdomain;
+    }
+
     return config;
   },
   (error) => {
