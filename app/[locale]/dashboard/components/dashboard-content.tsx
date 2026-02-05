@@ -63,6 +63,7 @@ import UpdateProductForm from "@/components/UpdateProduct";
 import UpdateGiveawayForm from "@/components/UpdateGiveaway";
 import GiveawayForm from "@/components/GivewayForm";
 import UpdateDoctorForm from "@/components/UpdateDoctorForm";
+import ProductDetails from "@/components/ProducDetails";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -139,6 +140,7 @@ export function DashboardContent({
   UpdateDoctor,
   partyId,
   channelId,
+  productDetailBtn,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -497,6 +499,8 @@ export function DashboardContent({
             </div>
           </div>
         )}
+
+        {productDetailBtn && <ProductDetails candidate={candidate} />}
 
         {doctorDetail && <DoctorDetail />}
 

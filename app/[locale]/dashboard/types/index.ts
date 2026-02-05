@@ -180,4 +180,5 @@ export interface DashboardProps {
   UpdateDoctor?: boolean;
   partyId?: string | null;
   channelId?: string | null;
+  productDetailBtn?: boolean;
 }
