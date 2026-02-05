@@ -1,11 +1,32 @@
 "use client";
+import { DashboardContent } from "../components/dashboard-content";
 
-import GiveawayDetail from "@/components/GiveawayDetail";
+export default function DashboardPage() {
+  const candidate = {
+    name: "John Doe",
+    email: "john.doe@example.com",
+    phone: "+92 300 1234567",
+    reportingManager: "Sarah Hammaz",
+    campaign: "Diabetics",
+    requestedMonth: "January 2025",
+    channel: "Doctor",
+    totalCalls: "248",
+    status: "Under Review",
+  };
 
-export default function GiveawayDetailPage() {
   return (
-    <div className="bg-[var(--gray-0)] p-6">
-      <GiveawayDetail />
+    <div className=" bg-(--page-background) mt-16">
+      <DashboardContent
+        sample={"Giveaway Details"}
+        descrip={"Unlock the potential of your candidates"}
+        table={"All product"}
+        btnAdd={"Add New Giveaway"}
+        settingsRoute={"/dashboard/Giveaway-Form"}
+        hideMetrics={true}
+        productDetailBtn={true}
+        ActiveOn={true}
+        showTabs={true}
+      />
     </div>
   );
 }
