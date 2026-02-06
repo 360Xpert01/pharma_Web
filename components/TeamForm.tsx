@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button/button";
 import {
   FormInput,
   FormSelect,
+  FormMultiSelect,
   StatusToggle,
   ProductSearch,
   MemberSearch,
@@ -38,7 +39,7 @@ export default function TeamForm() {
     teamName,
     pulseCode, // From hook state
     selectedChannelId,
-    selectedCallPointId,
+    selectedCallPointIds,
     products,
     selectedMembers,
     mergedHierarchy,
@@ -55,7 +56,7 @@ export default function TeamForm() {
     setStatus,
     setTeamName,
     setSelectedChannelId,
-    setSelectedCallPointId,
+    setSelectedCallPointIds,
     setProducts,
     handleMembersChange,
     handleAssignBrick,
@@ -130,22 +131,22 @@ export default function TeamForm() {
           </div>
 
           <div className="max-w-md">
-            <FormSelect
-              label="Call Point"
-              name="callPointId"
-              value={selectedCallPointId}
+            <FormMultiSelect
+              label="Call Points"
+              name="callPointIds"
+              value={selectedCallPointIds}
               onChange={(value) => {
-                setSelectedCallPointId(value);
-                clearFieldError("callPointId");
+                setSelectedCallPointIds(value);
+                clearFieldError("callPointIds");
               }}
-              options={callPoints.map((callPoint) => ({
+              options={(Array.isArray(callPoints) ? callPoints : []).map((callPoint) => ({
                 value: callPoint.id,
                 label: callPoint.name,
               }))}
-              placeholder="Select Call Point"
+              placeholder="Select Call Points"
               required
               loading={callPointsLoading}
-              error={getErrorMessage("callPointId")}
+              error={getErrorMessage("callPointIds")}
             />
           </div>
         </div>

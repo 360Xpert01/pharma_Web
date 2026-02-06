@@ -10,7 +10,8 @@ export interface UpdateTeamPayload {
   id: string; // ID is required to identify the team
   name?: string;
   channelId?: string;
-  callPointId?: string;
+  callPointId?: string; // Keep for backward compatibility
+  callPointIds?: string[]; // New multi-select support
   isActive?: boolean;
   status?: string; // "active" | "inactive"
   productIds?: string[];

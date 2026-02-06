@@ -46,7 +46,9 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
     error: prefixError,
   } = useAppSelector((state) => state.generatePrefix);
   const { channels, loading: channelsLoading } = useAppSelector((state) => state.allChannels);
-  const { callPoints, loading: callPointsLoading } = useAppSelector((state) => state.allCallPoints);
+  const { callPoints = [], loading: callPointsLoading } = useAppSelector(
+    (state) => state.allCallPoints
+  );
   const { products: allProducts, loading: productsLoading } = useAppSelector(
     (state) => state.allProducts
   );
@@ -86,7 +88,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
   const [pulseCode, setPulseCode] = useState(""); // Add local state for pulseCode to support update mode
   const [legacyCode, setLegacyCode] = useState("");
   const [selectedChannelId, setSelectedChannelId] = useState("");
-  const [selectedCallPointId, setSelectedCallPointId] = useState("");
+  const [selectedCallPointIds, setSelectedCallPointIds] = useState<string[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
 
   // Member search states
@@ -211,7 +213,13 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
       setPulseCode(result.pulseCode);
       setLegacyCode(result.legacyCode || "");
       setSelectedChannelId(result.channelId);
-      setSelectedCallPointId(result.callPointId);
+      // Handle both single callPointId (legacy) and callPointIds array
+      const teamResult = result as any; // Type assertion to handle both structures
+      if (teamResult.callPointId) {
+        setSelectedCallPointIds([teamResult.callPointId]);
+      } else if (teamResult.callPointIds && Array.isArray(teamResult.callPointIds)) {
+        setSelectedCallPointIds(teamResult.callPointIds);
+      }
 
       // Populate products
       if (teamProducts && teamProducts.length > 0) {
@@ -399,7 +407,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
       legacyCode: generatedPrefix || "",
       name: teamName.trim(),
       status: status.toLowerCase() as "active" | "inactive",
-      callPointId: selectedCallPointId,
+      callPointIds: selectedCallPointIds,
       channelId: selectedChannelId,
       productIds: products.map((p) => p.id),
       saleRepIds,
@@ -455,7 +463,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
       pulseCode: pulseCode || generatedPrefix || "", // Use existing for update
       name: teamName.trim(),
       status: status.toLowerCase() as "active" | "inactive",
-      callPointId: selectedCallPointId,
+      callPointIds: selectedCallPointIds,
       channelId: selectedChannelId,
       productIds: products.map((p) => p.id),
       saleRepIds,
@@ -511,7 +519,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
       pulseCode,
       legacyCode,
       selectedChannelId,
-      selectedCallPointId,
+      selectedCallPointIds,
       products,
       selectedMembers,
       mergedHierarchy,
@@ -527,7 +535,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
       setStatus,
       setTeamName,
       setSelectedChannelId,
-      setSelectedCallPointId,
+      setSelectedCallPointIds,
       setProducts,
       handleMembersChange,
       handleAssignBrick,

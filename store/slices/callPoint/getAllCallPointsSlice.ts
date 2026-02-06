@@ -17,7 +17,15 @@ interface CallPointItem {
 interface GetCallPointsResponse {
   success: boolean;
   message?: string;
-  data: CallPointItem[];
+  data: {
+    data: CallPointItem[];
+    pagination?: {
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    };
+  };
 }
 
 interface CallPointsState {
@@ -90,7 +98,8 @@ const getAllCallPointsSlice = createSlice({
         (state, action: PayloadAction<GetCallPointsResponse>) => {
           state.loading = false;
           state.success = true;
-          state.callPoints = action.payload.data;
+          // Extract call points from nested data structure
+          state.callPoints = action.payload.data.data || [];
         }
       )
       .addCase(getAllCallPoints.rejected, (state, action) => {

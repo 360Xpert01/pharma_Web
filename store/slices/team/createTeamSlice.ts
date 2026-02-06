@@ -14,7 +14,8 @@ export interface CreateTeamPayload {
   legacyCode?: string;
   name: string;
   status: "active" | "inactive";
-  callPointId: string;
+  callPointId?: string; // Keep for backward compatibility
+  callPointIds?: string[]; // New multi-select support
   channelId: string;
   productIds: string[];
   saleRepIds: SaleRepBrick[];
