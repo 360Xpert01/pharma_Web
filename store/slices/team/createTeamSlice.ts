@@ -15,7 +15,7 @@ export interface CreateTeamPayload {
   name: string;
   status: "active" | "inactive";
   callPointId?: string; // Keep for backward compatibility
-  callPointIds?: string[]; // New multi-select support
+  callPoints?: { id: string; name: string }[]; // New multi-select support with objects
   channelId: string;
   productIds: string[];
   saleRepIds: SaleRepBrick[];

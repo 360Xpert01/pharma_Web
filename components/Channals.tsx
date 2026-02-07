@@ -17,6 +17,7 @@ interface Channel {
   channelName: string;
   pulseCode: string;
   legacyCode: string;
+  code: string;
 }
 
 export default function AddChannelsCard() {
@@ -30,6 +31,7 @@ export default function AddChannelsCard() {
 
   const [channelName, setChannelName] = useState("");
   const [legacyCode, setLegacyCode] = useState("");
+  const [channelCode, setChannelCode] = useState("");
   const [channelsList, setChannelsList] = useState<Channel[]>([]);
 
   // Generate prefix on mount
@@ -50,6 +52,7 @@ export default function AddChannelsCard() {
       // Clear form
       setChannelName("");
       setLegacyCode("");
+      setChannelCode("");
 
       // Refresh channels list
       dispatch(getAllChannels());
@@ -77,6 +80,7 @@ export default function AddChannelsCard() {
       name: channelName.trim(),
       pulseCode: generatedPrefix, // Use API-generated prefix
       legacyCode: legacyCode.trim() || "",
+      code: channelCode.trim() || "",
       isActive: true,
     };
 
@@ -103,7 +107,7 @@ export default function AddChannelsCard() {
           {/* Add New Channel Form */}
           <div className="flex gap-6 items-end">
             {/* Input Fields Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 flex-1">
               {/* Pulse Code */}
               <FormInput
                 label="Pulse Code"
@@ -124,6 +128,17 @@ export default function AddChannelsCard() {
                 value={channelName}
                 onChange={setChannelName}
                 placeholder="e.g. Doctor Channel"
+                required
+              />
+
+              {/* Channel Code */}
+              <FormInput
+                label="Prefix"
+                name="channelCode"
+                type="text"
+                value={channelCode}
+                onChange={setChannelCode}
+                placeholder="e.g. KEY"
                 required
               />
 
@@ -174,6 +189,10 @@ export default function AddChannelsCard() {
                       <div>
                         <p className="t-cap">Legacy Code</p>
                         <p className="t-label-b">{channel.legacyCode}</p>
+                      </div>
+                      <div>
+                        <p className="t-cap">Code</p>
+                        <p className="t-label-b">{channel.code}</p>
                       </div>
                     </div>
                     <Button

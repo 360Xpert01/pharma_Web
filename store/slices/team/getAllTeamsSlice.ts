@@ -25,8 +25,7 @@ export interface TeamItem {
   name: string;
   pulseCode: string;
   legacyCode: string;
-  callPointId: string;
-  callPointName: string;
+  callPoints: { id: string; name: string }[];
   channelId: string;
   channelName: string;
   users: TeamUser[];

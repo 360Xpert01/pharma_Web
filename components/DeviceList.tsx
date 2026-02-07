@@ -1,74 +1,61 @@
 "use client";
 
-import React, { useState } from "react";
-import { Smartphone, Trash2, CheckCircle } from "lucide-react";
-import { Button } from "@/components/ui/button/button";
-
-interface Device {
-  id: string;
-  deviceName: string;
-  platform: string;
-  deviceId: string;
-  status: "pending" | "approved";
-}
+import React, { useEffect } from "react";
+import { Smartphone, Trash2, CheckCircle, Loader2 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/store/index";
+import { getUserDevices } from "@/store/slices/device/getUserDevicesSlice";
 
 export default function DeviceList() {
-  const [devices, setDevices] = useState<Device[]>([
-    {
-      id: "1",
-      deviceName: "Remdi Note 12",
-      platform: "Android",
-      deviceId: "123495648",
-      status: "pending",
-    },
-    {
-      id: "2",
-      deviceName: "Galaxy Tab S8",
-      platform: "Android",
-      deviceId: "456789012",
-      status: "approved",
-    },
-    {
-      id: "3",
-      deviceName: "Pixel 7a",
-      platform: "Android",
-      deviceId: "321654987",
-      status: "approved",
-    },
-    {
-      id: "4",
-      deviceName: "Remdi Note 12",
-      platform: "Android",
-      deviceId: "123495648",
-      status: "pending",
-    },
-    {
-      id: "5",
-      deviceName: "Galaxy Tab S8",
-      platform: "Android",
-      deviceId: "456789012",
-      status: "approved",
-    },
-    {
-      id: "6",
-      deviceName: "Pixel 7a",
-      platform: "Android",
-      deviceId: "321654987",
-      status: "approved",
-    },
-  ]);
+  const searchParams = useSearchParams();
+  const userId = searchParams.get("id");
+  const dispatch = useAppDispatch();
+
+  const { devices, loading, error } = useAppSelector((state) => state.userDevices);
+
+  useEffect(() => {
+    if (userId) {
+      dispatch(getUserDevices(userId));
+    }
+  }, [dispatch, userId]);
 
   const approveDevice = (id: string) => {
-    setDevices(devices.map((d) => (d.id === id ? { ...d, status: "approved" as const } : d)));
+    // TODO: Implement API call to approve device
+    console.log("Approve device:", id);
   };
 
   const rejectDevice = (id: string) => {
-    setDevices(devices.filter((d) => d.id !== id));
+    // TODO: Implement API call to reject/delete device
+    console.log("Reject device:", id);
   };
 
   const removeDevice = (id: string) => {
-    setDevices(devices.filter((d) => d.id !== id));
+    // TODO: Implement API call to remove device
+    console.log("Remove device:", id);
   };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20">
+        <Loader2 className="w-10 h-10 text-blue-600 animate-spin mb-4" />
+        <p className="text-gray-500 font-medium">Loading devices...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-20 bg-red-50 rounded-2xl border-2 border-dashed border-red-200 mx-4">
+        <p className="text-red-500 font-medium">{error}</p>
+        <button
+          onClick={() => userId && dispatch(getUserDevices(userId))}
+          className="mt-4 text-blue-600 hover:underline font-bold"
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">
@@ -89,7 +76,7 @@ export default function DeviceList() {
                 </div>
                 <div className="overflow-hidden">
                   <h3 className="font-bold text-gray-900 text-sm truncate">{device.deviceName}</h3>
-                  <p className="text-xs text-gray-500">{device.platform}</p>
+                  <p className="text-xs text-gray-500">{device.deviceType}</p>
                 </div>
               </div>
 
@@ -103,7 +90,7 @@ export default function DeviceList() {
 
               {/* Bottom Section: Actions */}
               <div className="flex items-center gap-2 mt-auto pt-2 border-t border-gray-50">
-                {device.status === "pending" ? (
+                {device.status !== "approved" ? (
                   <>
                     <button
                       onClick={() => approveDevice(device.id)}
@@ -139,7 +126,7 @@ export default function DeviceList() {
 
         {/* Empty State */}
         {devices.length === 0 && (
-          <div className="text-center py-20 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+          <div className="text-center py-20 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 mx-4">
             <Smartphone className="w-12 h-12 mx-auto text-gray-300 mb-3" />
             <p className="text-gray-500 font-medium">No devices registered</p>
           </div>

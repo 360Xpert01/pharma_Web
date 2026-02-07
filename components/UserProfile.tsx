@@ -9,12 +9,10 @@ interface Candidate {
   name: string;
   email: string;
   phone: string;
-  reportingManager: string;
-  campaign: string;
-  requestedMonth: string;
-  channel: string;
-  status: string;
-  totalCalls: string | number;
+  pulseCode: string;
+  profilePicture: string;
+  fullAddress: string;
+  dob: string;
 }
 
 interface CandidateCardProps {
@@ -29,15 +27,15 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
   };
 
   return (
-    <div className="w-full bg-background rounded-8 p-6 shadow-soft border border-gray-1 flex flex-col items-center">
+    <div className="w-full bg-background rounded-8 px-6 py-8 shadow-soft border border-gray-1 flex flex-col items-center">
       {/* Profile Image */}
       <div className="relative w-36 h-36 rounded-8 overflow-hidden mb-4">
         <Image
-          src="/capMan.svg"
+          src={candidate.profilePicture || "/capMan.svg"}
           alt={candidate.name}
           width={128}
           height={128}
-          className="object-cover"
+          className="object-cover w-full h-full"
         />
       </div>
 
@@ -49,20 +47,18 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
 
       {/* Address */}
       <p className="text-base text-(--gray-5) font-thin text-center mb-3 leading-relaxed">
-        B-121, Block-2, Gulshan,
-        <br />
-        Karachi, Pakistan
+        {candidate.fullAddress !== "N/A" ? candidate.fullAddress : "No address provided"}
       </p>
 
       {/* Phone */}
       <p className="text-base text-(--gray-5) font-thin text-center mb-3">{candidate.phone}</p>
 
       {/* Date of Birth */}
-      <p className="text-base text-(--gray-5) font-thin text-center mb-6">19-Jan-1997</p>
+      <p className="text-base text-(--gray-5) font-thin text-center mb-6">{candidate.dob}</p>
 
       {/* Employee ID Badge */}
       <div className="bg-primary text-white text-sm px-6 py-2 rounded-8 font-semibold">
-        PLS_EMP- 000124
+        {candidate.pulseCode}
       </div>
     </div>
   );

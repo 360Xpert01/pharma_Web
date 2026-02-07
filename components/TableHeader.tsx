@@ -14,6 +14,8 @@ interface UsersHeaderProps {
   onSearch?: (term: string) => void;
   showDoctorFilters?: boolean;
   showEmployeeFilters?: boolean;
+  showProductFilters?: boolean;
+  showGiveawayFilters?: boolean;
   channelId?: string;
   onApplyFilters?: (filters: {
     // Doctor filters
@@ -24,6 +26,10 @@ interface UsersHeaderProps {
     roleId?: string;
     teamId?: string;
     supervisorId?: string;
+    // Product filters
+    categoryId?: string;
+    // Giveaway filters
+    status?: string;
   }) => void;
 }
 
@@ -36,6 +42,8 @@ export default function UsersHeader({
   onSearch,
   showDoctorFilters = false,
   showEmployeeFilters = false,
+  showProductFilters = false,
+  showGiveawayFilters = false,
   channelId,
   onApplyFilters,
 }: UsersHeaderProps) {
@@ -74,6 +82,8 @@ export default function UsersHeader({
             <TableFilter
               showDoctorFilters={showDoctorFilters}
               showEmployeeFilters={showEmployeeFilters}
+              showProductFilters={showProductFilters}
+              showGiveawayFilters={showGiveawayFilters}
               channelId={channelId}
               onApplyFilters={onApplyFilters}
             />

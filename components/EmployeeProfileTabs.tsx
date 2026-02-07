@@ -1,7 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button/button";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { getUserById } from "@/store/slices/employee/getUserByIdSlice";
+
 import UserProfile from "@/components/UserProfile";
 import RegionInformation from "@/components/RegionInformation";
 import MonthlyTargets from "@/components/TargetEmployees";
@@ -16,25 +19,15 @@ import GiveawaysDetail from "@/components/GiveawaysDetail";
 import DeviceList from "@/components/DeviceList";
 import AnimatedTabs from "@/components/shared/AnimatedTabs";
 import MonthlyCalls from "@/components/MonthlyCalls";
-import Image from "next/image";
 
 type TabType = "Appointments" | "Attendance" | "Expenses" | "Samples" | "Giveaways" | "Devices";
 
-interface EmployeeProfileTabsProps {
-  candidate?: {
-    name: string;
-    email: string;
-    phone: string;
-    reportingManager: string;
-    campaign: string;
-    requestedMonth: string;
-    channel: string;
-    status: string;
-    totalCalls: string;
-  };
-}
+export default function EmployeeProfileTabs({ candidate }: { candidate?: any }) {
+  const searchParams = useSearchParams();
+  const userId = searchParams.get("id");
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.getUserById);
 
-export default function EmployeeProfileTabs({ candidate }: EmployeeProfileTabsProps) {
   const [activeTab, setActiveTab] = useState<TabType>("Appointments");
 
   const tabs = [
@@ -46,20 +39,21 @@ export default function EmployeeProfileTabs({ candidate }: EmployeeProfileTabsPr
     { id: "Devices" as TabType, label: "Devices" },
   ];
 
-  // Default candidate data
-  const defaultCandidate = {
-    name: "Mohammad Amir",
-    email: "samikashan0099@gmail.com",
-    phone: "+92 312 283 8270",
-    reportingManager: "Abdul Aziz Warsi",
-    campaign: "Diabetics",
-    requestedMonth: "January 2025",
-    channel: "Doctors",
-    status: "Under Review",
-    totalCalls: "220",
-  };
+  useEffect(() => {
+    if (userId) {
+      dispatch(getUserById(userId));
+    }
+  }, [dispatch, userId]);
 
-  const employeeData = candidate || defaultCandidate;
+  if (!user) {
+    return (
+      <div className="text-center py-20 bg-gray-50 rounded-8 border-2 border-dashed border-gray-200">
+        <p className="text-gray-500 font-medium">No employee data found</p>
+      </div>
+    );
+  }
+
+  const fullName = [user.firstName, user.middleName, user.lastName].filter(Boolean).join(" ");
 
   return (
     <div className="space-y-6">
@@ -67,14 +61,26 @@ export default function EmployeeProfileTabs({ candidate }: EmployeeProfileTabsPr
       <div className="grid grid-cols-[2fr_5fr_3fr] gap-6 items-start">
         {/* Left Column (25%) - User Profile & Region Info */}
         <div className="space-y-6">
-          <UserProfile candidate={employeeData} />
+          <UserProfile
+            candidate={{
+              name: fullName,
+              email: user.email,
+              phone: user.mobileNumber || "N/A",
+              pulseCode: user.pulseCode,
+              profilePicture: user.profilePicture || "/capMan.svg",
+              fullAddress: user.fullAddress || "N/A",
+              dob: user.dob || "N/A",
+            }}
+          />
           <RegionInformation
-            lineManager={employeeData.reportingManager}
-            legacy="000124"
-            channel={employeeData.channel}
-            team={employeeData.campaign}
-            totalCalls={employeeData.totalCalls}
-            status={employeeData.status}
+            lineManager={
+              user.supervisor ? `${user.supervisor.firstName} ${user.supervisor.lastName}` : "N/A"
+            }
+            legacy={user.empLegacyCode || "N/A"}
+            channel={user.teams?.[0]?.channel?.name || "N/A"}
+            team={user.teams?.[0]?.name || "N/A"}
+            totalCalls={user.totalCalls || 0}
+            status={user.status || "N/A"}
           />
         </div>
 

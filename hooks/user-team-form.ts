@@ -88,7 +88,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
   const [pulseCode, setPulseCode] = useState(""); // Add local state for pulseCode to support update mode
   const [legacyCode, setLegacyCode] = useState("");
   const [selectedChannelId, setSelectedChannelId] = useState("");
-  const [selectedCallPointIds, setSelectedCallPointIds] = useState<string[]>([]);
+  const [selectedCallPoints, setSelectedCallPoints] = useState<string[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
 
   // Member search states
@@ -216,9 +216,11 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
       // Handle both single callPointId (legacy) and callPointIds array
       const teamResult = result as any; // Type assertion to handle both structures
       if (teamResult.callPointId) {
-        setSelectedCallPointIds([teamResult.callPointId]);
+        setSelectedCallPoints([teamResult.callPointId]);
       } else if (teamResult.callPointIds && Array.isArray(teamResult.callPointIds)) {
-        setSelectedCallPointIds(teamResult.callPointIds);
+        setSelectedCallPoints(teamResult.callPointIds);
+      } else if (teamResult.callPoints && Array.isArray(teamResult.callPoints)) {
+        setSelectedCallPoints(teamResult.callPoints);
       }
 
       // Populate products
@@ -401,13 +403,19 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
         .filter((id) => id && typeof id === "string" && id.trim() !== ""),
     }));
 
+    // Map call point IDs to objects
+    const callPointObjects = selectedCallPoints.map((id) => {
+      const cp = callPoints.find((c) => c.id === id);
+      return { id, name: cp?.name || "" };
+    });
+
     // Prepare form data for validation
     const formData = {
       pulseCode: generatedPrefix || "",
       legacyCode: generatedPrefix || "",
       name: teamName.trim(),
       status: status.toLowerCase() as "active" | "inactive",
-      callPointIds: selectedCallPointIds,
+      callPoints: callPointObjects,
       channelId: selectedChannelId,
       productIds: products.map((p) => p.id),
       saleRepIds,
@@ -459,11 +467,17 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
         .filter((id) => id && typeof id === "string" && id.trim() !== ""),
     }));
 
+    // Map call point IDs to objects
+    const callPointObjects = selectedCallPoints.map((id) => {
+      const cp = callPoints.find((c) => c.id === id);
+      return { id, name: cp?.name || "" };
+    });
+
     const formData = {
       pulseCode: pulseCode || generatedPrefix || "", // Use existing for update
       name: teamName.trim(),
       status: status.toLowerCase() as "active" | "inactive",
-      callPointIds: selectedCallPointIds,
+      callPoints: callPointObjects,
       channelId: selectedChannelId,
       productIds: products.map((p) => p.id),
       saleRepIds,
@@ -496,6 +510,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
       productIds: products.map((p) => p.id), // Ensure productIds is sent
       // userIds: selectedMembers.map(m => m.id), // Removing simple userIds in favor of full structure
       saleRepIds, // Send the full structure with bricks
+      callPoints: callPointObjects,
     };
 
     dispatch(updateTeam(payload));
@@ -519,7 +534,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
       pulseCode,
       legacyCode,
       selectedChannelId,
-      selectedCallPointIds,
+      selectedCallPoints,
       products,
       selectedMembers,
       mergedHierarchy,
@@ -535,7 +550,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
       setStatus,
       setTeamName,
       setSelectedChannelId,
-      setSelectedCallPointIds,
+      setSelectedCallPoints,
       setProducts,
       handleMembersChange,
       handleAssignBrick,

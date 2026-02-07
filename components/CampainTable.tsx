@@ -16,7 +16,7 @@ interface Team {
   pulseCode: string;
   name: string;
   channelName: string;
-  callPointName: string;
+  callPoints: { id: string; name: string }[];
   isActive: boolean;
   users: { id: string; profilePicture?: string }[];
 }
@@ -85,12 +85,16 @@ export default function CampaignsTable({ searchTerm }: { searchTerm: string }) {
     },
     {
       header: "Call Point",
-      accessorKey: "callPointName",
-      cell: ({ row }) => (
-        <div className="t-td-b " title={row.original.callPointName || "N/A"}>
-          {row.original.callPointName || "N/A"}
-        </div>
-      ),
+      accessorKey: "callPoints",
+      cell: ({ row }) => {
+        const callPoints = row.original.callPoints;
+        if (!callPoints || callPoints.length === 0) return <span className="t-sm">N/A</span>;
+        return (
+          <div className="t-td-b max-w-[200px]" title={callPoints.map((cp) => cp.name).join(", ")}>
+            {callPoints.map((cp) => cp.name).join(", ")}
+          </div>
+        );
+      },
     },
     {
       header: "Assigned",

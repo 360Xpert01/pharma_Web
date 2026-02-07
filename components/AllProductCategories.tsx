@@ -5,7 +5,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import TableActionDropdown from "@/components/shared/table/TableActionDropdown";
-import StatusToggle from "@/components/form/StatusToggle";
+import StatusBadge from "@/components/shared/StatusBadge";
 
 interface ProductCategory {
   id: string;
@@ -71,10 +71,7 @@ export default function ProductCategoriesManager() {
       accessorKey: "isActive",
       cell: ({ row }) => (
         <div className="flex items-center">
-          <StatusToggle
-            status={row.original.isActive ? "Active" : "Inactive"}
-            onChange={() => toggleStatus(row.original.id)}
-          />
+          <StatusBadge status={row.original.isActive ? "active" : "inactive"} />
         </div>
       ),
     },

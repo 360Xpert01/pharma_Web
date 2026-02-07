@@ -4,18 +4,11 @@
 import React, { useState, useEffect } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useAppDispatch, useAppSelector } from "@/store/index";
-import { getAllChannels } from "@/store/slices/channel/getAllChannelsSlice";
+import { getAllChannels, ChannelItem } from "@/store/slices/channel/getAllChannelsSlice";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import TableActionDropdown from "@/components/shared/table/TableActionDropdown";
-import StatusToggle from "@/components/form/StatusToggle";
-
-interface Channel {
-  id: string;
-  pulseCode: string;
-  name: string;
-  isActive: boolean;
-}
+import StatusBadge from "@/components/shared/StatusBadge";
 
 export default function ChannelsManager() {
   const dispatch = useAppDispatch();
@@ -42,12 +35,12 @@ export default function ChannelsManager() {
     dispatch(getAllChannels());
   };
 
-  const columns: ColumnDef<Channel>[] = [
+  const columns: ColumnDef<ChannelItem>[] = [
     {
       header: "ID",
       accessorKey: "pulseCode",
       cell: ({ row }) => (
-        <div className="t-td-b truncate" title={row.original.pulseCode || "N/A"}>
+        <div className="t-td-b" title={row.original.pulseCode || "N/A"}>
           {row.original.pulseCode || "N/A"}
         </div>
       ),
@@ -56,8 +49,17 @@ export default function ChannelsManager() {
       header: "Channel Name",
       accessorKey: "name",
       cell: ({ row }) => (
-        <div className="t-td-b truncate" title={row.original.name}>
+        <div className="t-td-b" title={row.original.name}>
           {row.original.name}
+        </div>
+      ),
+    },
+    {
+      header: "Prefix",
+      accessorKey: "code",
+      cell: ({ row }) => (
+        <div className="t-td-b" title={row.original.code || "N/A"}>
+          {row.original.code || "N/A"}
         </div>
       ),
     },
@@ -66,14 +68,7 @@ export default function ChannelsManager() {
       accessorKey: "isActive",
       cell: ({ row }) => (
         <div className="flex items-center">
-          <StatusToggle
-            status={row.original.isActive ? "Active" : "Inactive"}
-            onChange={(newStatus) => {
-              // TODO: Implement API call to update channel status
-              console.log("Toggle status for channel:", row.original.id, newStatus);
-              toggleStatus(row.original.id);
-            }}
-          />
+          <StatusBadge status={row.original.isActive ? "active" : "inactive"} />
         </div>
       ),
     },
