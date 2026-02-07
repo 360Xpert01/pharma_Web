@@ -13,18 +13,35 @@ interface UserData {
   pulseCode: string;
   roleId?: string;
   mobileNumber?: string;
-  fullAddress?: string;
-  empLegacyCode?: string;
-  profilePicture?: string;
-  dob?: string;
-  dateOfBirth?: string;
+  fullAddress?: string | null;
+  empLegacyCode?: string | null;
+  profilePicture?: string | null;
+  dob?: string | null;
   supervisorId?: string;
   status?: string;
-  territoryId?: string;
-  teamId?: string;
-  joiningDate?: string;
-  enableMobileAccess?: boolean;
-  mobileView?: string;
+  created_at?: string;
+  lastLoginAt?: string;
+  role?: {
+    id: string;
+    roleName: string;
+  };
+  supervisor?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    role: {
+      roleName: string;
+    };
+  };
+  teams?: {
+    id: string;
+    name: string;
+    channel: {
+      id: string;
+      name: string;
+    };
+  }[];
+  totalCalls?: number;
 }
 
 interface GetUserByIdResponse {
