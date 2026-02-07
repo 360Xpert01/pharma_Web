@@ -201,7 +201,7 @@ export default function LoginScreen() {
             <button
               onClick={handleSendOTP}
               disabled={loading || !email.includes("@")}
-              className="w-full h-12 bg-gradient-to-r from-[var(--primary-gradient-start)] to-[var(--primary-gradient-end)] hover:from-[var(--primary-gradient-start-hover)] hover:to-[var(--primary-gradient-end-hover)] text-white font-semibold rounded-8 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full h-12 cursor-pointer bg-gradient-to-r from-[var(--primary-gradient-start)] to-[var(--primary-gradient-end)] hover:from-[var(--primary-gradient-start-hover)] hover:to-[var(--primary-gradient-end-hover)] text-white font-semibold rounded-8 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Sending..." : "Send OTP"}
             </button>
