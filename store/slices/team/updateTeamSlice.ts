@@ -11,7 +11,7 @@ export interface UpdateTeamPayload {
   name?: string;
   channelId?: string;
   callPointId?: string; // Keep for backward compatibility
-  callPointIds?: string[]; // New multi-select support
+  callPoints?: { id: string; name: string }[]; // New multi-select support with objects
   isActive?: boolean;
   status?: string; // "active" | "inactive"
   productIds?: string[];

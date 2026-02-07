@@ -39,7 +39,7 @@ export default function TeamForm() {
     teamName,
     pulseCode, // From hook state
     selectedChannelId,
-    selectedCallPointIds,
+    selectedCallPoints,
     products,
     selectedMembers,
     mergedHierarchy,
@@ -56,7 +56,7 @@ export default function TeamForm() {
     setStatus,
     setTeamName,
     setSelectedChannelId,
-    setSelectedCallPointIds,
+    setSelectedCallPoints,
     setProducts,
     handleMembersChange,
     handleAssignBrick,
@@ -133,11 +133,11 @@ export default function TeamForm() {
           <div className="max-w-md">
             <FormMultiSelect
               label="Call Points"
-              name="callPointIds"
-              value={selectedCallPointIds}
+              name="callPoints"
+              value={selectedCallPoints}
               onChange={(value) => {
-                setSelectedCallPointIds(value);
-                clearFieldError("callPointIds");
+                setSelectedCallPoints(value);
+                clearFieldError("callPoints");
               }}
               options={(Array.isArray(callPoints) ? callPoints : []).map((callPoint) => ({
                 value: callPoint.id,
@@ -146,7 +146,7 @@ export default function TeamForm() {
               placeholder="Select Call Points"
               required
               loading={callPointsLoading}
-              error={getErrorMessage("callPointIds")}
+              error={getErrorMessage("callPoints")}
             />
           </div>
         </div>

@@ -74,6 +74,7 @@ import handleOtpSliceReducer from "./slices/PendingRequest/handleOtpRequestsSlic
 import attendanceReducer from "./slices/Attendance/AttandanceGetSlice";
 import userSamplesReducer from "./slices/UserSamples/userSamplesSlice";
 import userGiveawaysReducer from "./slices/UserGiveaways/userGiveawaysSlice";
+import userDevicesReducer from "./slices/device/getUserDevicesSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -146,6 +147,7 @@ const rootReducer = combineReducers({
   attendance: attendanceReducer,
   userSamples: userSamplesReducer,
   userGiveaways: userGiveawaysReducer,
+  userDevices: userDevicesReducer,
 });
 
 const persistConfig = {
