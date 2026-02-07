@@ -37,6 +37,13 @@ interface GetGiveawaysResponse {
   success: boolean;
   message?: string;
   data: GiveawayItem[];
+  pagination?: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+  // Legacy support for flat structure
   total?: number;
   page?: number;
   limit?: number;
@@ -76,6 +83,7 @@ interface PaginationParams {
   page?: number;
   limit?: number;
   search?: string;
+  status?: string;
 }
 
 // Async Thunk: Get All Giveaways (GET /api/v1/giveaway)
@@ -94,9 +102,15 @@ export const getAllGiveaways = createAsyncThunk<
     const page = params && typeof params === "object" ? params.page || 1 : 1;
     const limit = params && typeof params === "object" ? params.limit || 10 : 10;
     const search = params && typeof params === "object" ? params.search || "" : "";
+    const status = params && typeof params === "object" ? params.status || "" : "";
+
+    // Build params object, only including non-empty values
+    const queryParams: Record<string, any> = { page, limit };
+    if (search) queryParams.search = search;
+    if (status) queryParams.status = status;
 
     const response = await axios.get<GetGiveawaysResponse>(`${baseUrl}api/v1/giveaway`, {
-      params: { page, limit, search },
+      params: queryParams,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStr}`,
@@ -141,9 +155,10 @@ const getAllGiveawaysSlice = createSlice({
         state.success = true;
         // Transform all items to replace null with "N/A"
         state.giveaways = (action.payload.data || []).map(transformGiveaway);
-        state.total = action.payload.pagination?.total || 0;
-        state.page = action.payload.pagination?.page || 1;
-        state.limit = action.payload.pagination?.limit || 10;
+        // Extract pagination from pagination object or fallback to root level
+        state.total = action.payload.pagination?.total || action.payload.total || 0;
+        state.page = action.payload.pagination?.page || action.payload.page || 1;
+        state.limit = action.payload.pagination?.limit || action.payload.limit || 10;
       })
       .addCase(getAllGiveaways.rejected, (state, action) => {
         state.loading = false;

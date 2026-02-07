@@ -21,7 +21,13 @@ interface Product {
   productFormula: string;
 }
 
-export default function MedicineTable({ searchTerm }: { searchTerm: string }) {
+export default function MedicineTable({
+  searchTerm,
+  filters,
+}: {
+  searchTerm?: string;
+  filters?: { categoryId?: string; status?: string };
+}) {
   const router = useRouter();
   const [openId, setOpenId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -31,10 +37,18 @@ export default function MedicineTable({ searchTerm }: { searchTerm: string }) {
   // Get products from Redux store
   const { products, loading, error, total } = useAppSelector((state) => state.allProducts);
 
-  // Fetch products on mount
+  // Fetch products with filters
   useEffect(() => {
-    dispatch(getAllProducts({ page: 1, limit: 10, search: searchTerm }));
-  }, [dispatch, searchTerm]);
+    dispatch(
+      getAllProducts({
+        page: 1,
+        limit: 10,
+        search: searchTerm,
+        categoryId: filters?.categoryId,
+        status: filters?.status,
+      })
+    );
+  }, [dispatch, searchTerm, filters]);
 
   const handleRetry = () => {
     dispatch(getAllProducts({ page: 1, limit: 10 }));
@@ -42,7 +56,15 @@ export default function MedicineTable({ searchTerm }: { searchTerm: string }) {
 
   // Handle pagination changes from the table
   const handlePaginationChange = (page: number, pageSize: number) => {
-    dispatch(getAllProducts({ page, limit: pageSize }));
+    dispatch(
+      getAllProducts({
+        page,
+        limit: pageSize,
+        search: searchTerm,
+        categoryId: filters?.categoryId,
+        status: filters?.status,
+      })
+    );
   };
 
   const columns: ColumnDef<Product>[] = [

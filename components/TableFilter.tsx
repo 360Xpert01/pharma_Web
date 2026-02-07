@@ -7,22 +7,28 @@ import { getAllChannels } from "@/store/slices/channel/getAllChannelsSlice";
 import { getAllRoles } from "@/store/slices/role/getAllRolesSlice";
 import { getAllTeams } from "@/store/slices/team/getAllTeamsSlice";
 import { getAllUsers } from "@/store/slices/employee/getAllUsersSlice";
+import { getProductCategories } from "@/store/slices/product/getProductCategoriesSlice";
 import FormSelect from "@/components/form/FormSelect";
 
 interface TableFilterProps {
   showDoctorFilters?: boolean;
   showEmployeeFilters?: boolean;
+  showProductFilters?: boolean;
+  showGiveawayFilters?: boolean;
   channelId?: string;
   onApply?: () => void;
   onApplyFilters?: (filters: {
     // Doctor filters
     segmentId?: string;
     specializationId?: string;
-    status?: string;
     // Employee filters
     roleId?: string;
     teamId?: string;
     supervisorId?: string;
+    // Product filters
+    categoryId?: string;
+    // Giveaway filters
+    status?: string;
   }) => void;
   onClear?: () => void;
 }
@@ -30,6 +36,8 @@ interface TableFilterProps {
 export default function TableFilter({
   showDoctorFilters = false,
   showEmployeeFilters = false,
+  showProductFilters = false,
+  showGiveawayFilters = false,
   channelId,
   onApply,
   onApplyFilters,
@@ -46,6 +54,9 @@ export default function TableFilter({
   const [selectedSupervisor, setSelectedSupervisor] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedDateRange, setSelectedDateRange] = useState("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState("");
+  const [selectedProductStatus, setSelectedProductStatus] = useState("");
+  const [selectedGiveawayStatus, setSelectedGiveawayStatus] = useState("");
 
   // Redux state for filters
   const { specializations } = useAppSelector((state) => state.allSpecializations);
@@ -54,6 +65,7 @@ export default function TableFilter({
   const { roles } = useAppSelector((state) => state.allRoles);
   const { teams } = useAppSelector((state) => state.allTeams);
   const { users } = useAppSelector((state) => state.allUsers);
+  const { categories } = useAppSelector((state) => state.productCategories);
 
   // Find current channel to check if it's "Doctor"
   const currentChannel = channels.find((ch) => ch.id === channelId);
@@ -70,10 +82,18 @@ export default function TableFilter({
     if (showEmployeeFilters && isFilterOpen) {
       dispatch(getAllRoles());
       dispatch(getAllTeams());
-      // Note: We don't fetch users here because it would interfere with the main table data
-      // The supervisor dropdown will use the already-loaded users from the table
     }
-  }, [dispatch, showDoctorFilters, showEmployeeFilters, isFilterOpen, channels.length]);
+    if (showProductFilters && isFilterOpen) {
+      dispatch(getProductCategories());
+    }
+  }, [
+    dispatch,
+    showDoctorFilters,
+    showEmployeeFilters,
+    showProductFilters,
+    isFilterOpen,
+    channels.length,
+  ]);
 
   return (
     <div className="relative">
@@ -206,16 +226,56 @@ export default function TableFilter({
                   />
                 </div>
               </>
+            ) : showProductFilters ? (
+              <>
+                {/* Category Filter */}
+                <div>
+                  <FormSelect
+                    label="Category"
+                    name="categoryId"
+                    value={selectedCategoryId}
+                    onChange={setSelectedCategoryId}
+                    options={[
+                      { value: "", label: "All Categories" },
+                      ...categories.map((cat) => ({
+                        value: cat.id,
+                        label: cat.productCategory,
+                      })),
+                    ]}
+                    placeholder="Select Category"
+                    className="mb-0"
+                  />
+                </div>
+              </>
+            ) : showGiveawayFilters ? (
+              <>
+                {/* Status Filter for Giveaways */}
+                <div>
+                  <FormSelect
+                    label="Status"
+                    name="status"
+                    value={selectedGiveawayStatus}
+                    onChange={setSelectedGiveawayStatus}
+                    options={[
+                      { value: "", label: "All Status" },
+                      { value: "active", label: "Active" },
+                      { value: "inactive", label: "Inactive" },
+                    ]}
+                    placeholder="Select Status"
+                    className="mb-0"
+                  />
+                </div>
+              </>
             ) : null}
 
-            {/* Status Filter (Common for both) */}
-            {(showDoctorFilters || showEmployeeFilters) && (
+            {/* Status Filter (Common for Doctor, Employee, and Product) */}
+            {(showDoctorFilters || showEmployeeFilters || showProductFilters) && (
               <div>
                 <FormSelect
                   label="Status"
                   name="status"
-                  value={selectedStatus}
-                  onChange={setSelectedStatus}
+                  value={showProductFilters ? selectedProductStatus : selectedStatus}
+                  onChange={showProductFilters ? setSelectedProductStatus : setSelectedStatus}
                   options={[
                     { value: "", label: "All Status" },
                     { value: "active", label: "Active" },
@@ -233,26 +293,29 @@ export default function TableFilter({
               </div>
             )}
 
-            {!showDoctorFilters && !showEmployeeFilters && (
-              /* Date Range */
-              <div>
-                <FormSelect
-                  label="Date Range"
-                  name="dateRange"
-                  value={selectedDateRange}
-                  onChange={setSelectedDateRange}
-                  options={[
-                    { value: "30_days", label: "Last 30 Days" },
-                    { value: "7_days", label: "Last 7 Days" },
-                    { value: "this_month", label: "This Month" },
-                    { value: "last_month", label: "Last Month" },
-                    { value: "custom", label: "Custom Range" },
-                  ]}
-                  placeholder="Select Date Range"
-                  className="mb-0"
-                />
-              </div>
-            )}
+            {!showDoctorFilters &&
+              !showEmployeeFilters &&
+              !showProductFilters &&
+              !showGiveawayFilters && (
+                /* Date Range */
+                <div>
+                  <FormSelect
+                    label="Date Range"
+                    name="dateRange"
+                    value={selectedDateRange}
+                    onChange={setSelectedDateRange}
+                    options={[
+                      { value: "30_days", label: "Last 30 Days" },
+                      { value: "7_days", label: "Last 7 Days" },
+                      { value: "this_month", label: "This Month" },
+                      { value: "last_month", label: "Last Month" },
+                      { value: "custom", label: "Custom Range" },
+                    ]}
+                    placeholder="Select Date Range"
+                    className="mb-0"
+                  />
+                </div>
+              )}
 
             {/* Action Buttons */}
             <div className="flex gap-3 pt-3">
@@ -268,15 +331,19 @@ export default function TableFilter({
                   setSelectedSupervisor("");
                   setSelectedStatus("");
                   setSelectedDateRange("");
+                  setSelectedCategoryId("");
+                  setSelectedProductStatus("");
+                  setSelectedGiveawayStatus("");
                   // Trigger filter update with empty values
                   if (onApplyFilters) {
                     onApplyFilters({
                       segmentId: "",
                       specializationId: "",
-                      status: "",
                       roleId: "",
                       teamId: "",
                       supervisorId: "",
+                      categoryId: "",
+                      status: "",
                     });
                   }
                   onClear?.();
@@ -296,11 +363,17 @@ export default function TableFilter({
                       // Doctor filters
                       segmentId: selectedSegment,
                       specializationId: selectedSpecialization,
-                      status: selectedStatus,
                       // Employee filters
                       roleId: selectedRole,
                       teamId: selectedTeam,
                       supervisorId: selectedSupervisor,
+                      // Product filters
+                      categoryId: selectedCategoryId,
+                      status: showProductFilters
+                        ? selectedProductStatus
+                        : showGiveawayFilters
+                          ? selectedGiveawayStatus
+                          : selectedStatus,
                     });
                   }
                   onApply?.();

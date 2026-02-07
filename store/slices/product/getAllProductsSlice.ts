@@ -52,6 +52,8 @@ interface PaginationParams {
   page?: number;
   limit?: number;
   search?: string;
+  categoryId?: string;
+  status?: string;
 }
 
 // Async Thunk: Get All Products (GET /api/v1/product)
@@ -71,9 +73,16 @@ export const getAllProducts = createAsyncThunk<
     const page = params && typeof params === "object" ? params.page || 1 : 1;
     const limit = params && typeof params === "object" ? params.limit || 20 : 20;
     const search = params && typeof params === "object" ? params.search || "" : "";
+    const categoryId = params && typeof params === "object" ? params.categoryId || "" : "";
+    const status = params && typeof params === "object" ? params.status || "" : "";
+
+    // Build params object dynamically - only include non-empty values
+    const queryParams: Record<string, any> = { page, limit, search };
+    if (categoryId) queryParams.categoryId = categoryId;
+    if (status) queryParams.status = status;
 
     const response = await axios.get<GetProductsResponse>(`${baseUrl}api/v1/product`, {
-      params: { page, limit, search },
+      params: queryParams,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStr}`,

@@ -19,7 +19,13 @@ interface Giveaway {
   createdAt: string;
 }
 
-export default function GiveawayTable({ searchTerm }: { searchTerm: string }) {
+export default function GiveawayTable({
+  searchTerm,
+  filters,
+}: {
+  searchTerm?: string;
+  filters?: { status?: string };
+}) {
   const dispatch = useAppDispatch();
   const [openId, setOpenId] = useState<string | null>(null);
   const router = useRouter();
@@ -34,16 +40,17 @@ export default function GiveawayTable({ searchTerm }: { searchTerm: string }) {
 
   console.log(giveaways, "giveaways");
 
-  // Fetch giveaways when searchTerm or pagination changes
+  // Fetch giveaways when searchTerm, filters, or pagination changes
   useEffect(() => {
     dispatch(
       getAllGiveaways({
         search: searchTerm,
         page: paginationState.pageIndex + 1,
         limit: paginationState.pageSize,
+        status: filters?.status,
       })
     );
-  }, [dispatch, searchTerm, paginationState.pageIndex, paginationState.pageSize]);
+  }, [dispatch, searchTerm, filters, paginationState.pageIndex, paginationState.pageSize]);
 
   const handlePaginationChange = (page: number, pageSize: number) => {
     setPaginationState({ pageIndex: page - 1, pageSize });

@@ -170,6 +170,17 @@ export function DashboardContent({
     supervisorId?: string;
   }>({});
 
+  // State for Product Table Filters
+  const [productFilters, setProductFilters] = useState<{
+    categoryId?: string;
+    status?: string;
+  }>({});
+
+  // State for Giveaway Table Filters
+  const [giveawayFilters, setGiveawayFilters] = useState<{
+    status?: string;
+  }>({});
+
   const handleSettings = () => {
     if (settingsRoute) {
       router.push(settingsRoute);
@@ -327,9 +338,11 @@ export function DashboardContent({
               campHeading={campHeading}
               filterT={filterT}
               showInactiveToggle={true}
+              showProductFilters={true}
               onSearch={setSearchTerm}
+              onApplyFilters={setProductFilters}
             />
-            <ProductTableM searchTerm={searchTerm} />
+            <ProductTableM searchTerm={searchTerm} filters={productFilters} />
           </div>
         )}
 
@@ -396,8 +409,14 @@ export function DashboardContent({
 
         {giveawayTable && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading={campHeading} filterT={filterT} onSearch={setSearchTerm} />
-            <GiveawayTable searchTerm={searchTerm} />
+            <TableHeader
+              campHeading={campHeading}
+              filterT={filterT}
+              showGiveawayFilters={true}
+              onSearch={setSearchTerm}
+              onApplyFilters={setGiveawayFilters}
+            />
+            <GiveawayTable searchTerm={searchTerm} filters={giveawayFilters} />
           </div>
         )}
 
