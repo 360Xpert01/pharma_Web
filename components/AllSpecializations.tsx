@@ -6,7 +6,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import TableActionDropdown from "@/components/shared/table/TableActionDropdown";
-import StatusToggle from "@/components/form/StatusToggle";
+import StatusBadge from "@/components/shared/StatusBadge";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   getAllSpecializations,
@@ -74,12 +74,7 @@ export default function AllSpecializations() {
       accessorKey: "status",
       cell: ({ row }) => (
         <div className="flex items-center">
-          <StatusToggle
-            status={row.original.status === "active" ? "Active" : "Inactive"}
-            onChange={(newStatus) => {
-              toggleStatus(row.original.id);
-            }}
-          />
+          <StatusBadge status={row.original.status} />
         </div>
       ),
     },

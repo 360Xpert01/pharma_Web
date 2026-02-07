@@ -8,7 +8,7 @@ import { getAllChannels } from "@/store/slices/channel/getAllChannelsSlice";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import TableActionDropdown from "@/components/shared/table/TableActionDropdown";
-import StatusToggle from "@/components/form/StatusToggle";
+import StatusBadge from "@/components/shared/StatusBadge";
 
 interface Channel {
   id: string;
@@ -66,14 +66,7 @@ export default function ChannelsManager() {
       accessorKey: "isActive",
       cell: ({ row }) => (
         <div className="flex items-center">
-          <StatusToggle
-            status={row.original.isActive ? "Active" : "Inactive"}
-            onChange={(newStatus) => {
-              // TODO: Implement API call to update channel status
-              console.log("Toggle status for channel:", row.original.id, newStatus);
-              toggleStatus(row.original.id);
-            }}
-          />
+          <StatusBadge status={row.original.isActive ? "active" : "inactive"} />
         </div>
       ),
     },
