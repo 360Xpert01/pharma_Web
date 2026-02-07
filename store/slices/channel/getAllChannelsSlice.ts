@@ -4,11 +4,12 @@ import axios from "axios";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://api.ceturo.com/";
 
 // Types
-interface ChannelItem {
+export interface ChannelItem {
   id: string;
   name: string;
   legacyCode: string;
   pulseCode: string;
+  code: string;
   isActive: boolean;
 }
 

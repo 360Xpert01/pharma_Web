@@ -8,6 +8,7 @@ interface CreateChannelPayload {
   pulseCode: string;
   legacyCode: string;
   name: string;
+  code: string;
   isActive: boolean;
 }
 
@@ -19,6 +20,7 @@ interface CreateChannelResponse {
     name: string;
     pulseCode: string;
     legacyCode: string;
+    code: string;
     isActive: boolean;
     createdAt: string;
   };
