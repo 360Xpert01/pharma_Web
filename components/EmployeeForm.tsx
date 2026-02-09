@@ -213,6 +213,10 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
     const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
     const middleName = nameParts.length > 2 ? nameParts.slice(1, -1).join(" ") : "";
 
+    // Get the selected role name for conditional validation
+    const selectedRole = roles.find((r) => r.id === selectedRoleId);
+    const roleName = selectedRole?.roleName || "";
+
     // Prepare form data for validation
     const formData = {
       email,
@@ -221,6 +225,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
       lastName,
       fullAddress,
       roleId: selectedRoleId,
+      roleName, // Add roleName for conditional validation
       mobileNumber: phoneNumber,
       pulseCode: isUpdateMode ? pulseCode : generatedPrefix || "",
       empLegacyCode: legacyCode,
@@ -512,6 +517,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                   clearFieldError("fullAddress");
                 }}
                 placeholder="e.g. B121, Block-2, Gulshan-e-Iqbal, Karachi, Pakistan"
+                required
                 error={getErrorMessage("fullAddress")}
               />
 
@@ -631,6 +637,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                       }}
                       options={territoryOptions}
                       placeholder="Select Territory"
+                      required
                       error={getErrorMessage("territoryId")}
                     />
                   )}

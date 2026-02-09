@@ -149,6 +149,8 @@ export function DashboardContent({
 
   // State for segment editing
   const [selectedSegmentId, setSelectedSegmentId] = useState<string | null>(null);
+  // State for channel editing
+  const [selectedChannelId, setSelectedChannelId] = useState<string | null>(null);
   // State for speciality editing
   const [selectedSpecialityId, setSelectedSpecialityId] = useState<string | null>(null);
   // State for qualification editing
@@ -204,6 +206,15 @@ export function DashboardContent({
 
   const handleUpdateComplete = () => {
     setSelectedSegmentId(null);
+  };
+
+  const handleEditChannel = (channelId: string) => {
+    setSelectedChannelId(channelId);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleChannelUpdateComplete = () => {
+    setSelectedChannelId(null);
   };
 
   const handleEditSpeciality = (specialityId: string) => {
@@ -271,10 +282,10 @@ export function DashboardContent({
 
         {channalD && (
           <div>
-            <Channals />
+            <Channals updateId={selectedChannelId} onUpdateComplete={handleChannelUpdateComplete} />
             <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
               <TableHeader campHeading={campHeading} filterT={filterT} showDoctorFilters={true} />
-              <AllChannalB />
+              <AllChannalB onEditChannel={handleEditChannel} />
             </div>
           </div>
         )}

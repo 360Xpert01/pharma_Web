@@ -104,7 +104,6 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
               clearFieldError("pmdcNumber");
             }}
             placeholder="e.g. 12345-P"
-            required
             error={getErrorMessage("pmdcNumber")}
           />
         )}
@@ -136,7 +135,6 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
               clearFieldError("contactNumber");
             }}
             placeholder="e.g. +92345678910"
-            required
             error={getErrorMessage("contactNumber")}
           />
         )}
@@ -158,7 +156,6 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
               })),
             ]}
             placeholder="Select qualification"
-            required
             loading={qualificationsLoading}
             error={getErrorMessage("qualification")}
           />
@@ -178,7 +175,6 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
               label: spec.name,
             }))}
             placeholder="e.g. Cardiologist, Neurologist..."
-            required
             loading={specializationsLoading}
             error={getErrorMessage("specialization")}
           />
@@ -201,7 +197,6 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
               })),
             ]}
             placeholder="Select segment"
-            required
             loading={segmentsLoading}
             error={getErrorMessage("segment")}
           />
@@ -218,7 +213,6 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
               clearFieldError("designation");
             }}
             placeholder="e.g. Senior Consultant"
-            required
             error={getErrorMessage("designation")}
           />
         )}
@@ -234,7 +228,6 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
               clearFieldError("email");
             }}
             placeholder="e.g. abc123@gmail.com"
-            required
             error={getErrorMessage("email")}
           />
         )}
@@ -250,7 +243,6 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
               clearFieldError("dateOfBirth");
             }}
             placeholder="e.g. 5/10/2001"
-            required
             error={getErrorMessage("dateOfBirth")}
           />
         )}
@@ -279,9 +271,7 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
 
         {fieldConfig.status && (
           <div className="flex flex-col gap-2">
-            <label className="t-label">
-              Status <span className="t-err">*</span>
-            </label>
+            <label className="t-label">Status</label>
             <StatusToggle status={status} onChange={(newStatus) => setStatus(newStatus)} />
           </div>
         )}

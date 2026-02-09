@@ -236,8 +236,8 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
 
       const findParent = (parentId: string) => {
         return (
-          areas.find((a: any) => a.id === parentId) ||
           zones.find((z: any) => z.id === parentId) ||
+          areas.find((a: any) => a.id === parentId) ||
           cities.find((c: any) => c.id === parentId) ||
           provinces.find((p: any) => p.id === parentId) ||
           regions.find((r: any) => r.id === parentId)
@@ -247,7 +247,9 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
       let currentArea = "";
       let currentCity = "";
       let currentCountry = "";
+      let currentZone = "";
 
+      // Start from the brick's parent
       let parent = findParent(selectedBrickDetails.parentId);
 
       if (selectedBrickDetails.parentId === selectedBrickDetails.id) {
@@ -257,34 +259,48 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
         }
       }
 
+      // Traverse up the hierarchy to collect all parent information
       let depth = 0;
-      while (parent && depth < 5) {
-        const parentName = parent.name;
-        const parentId = parent.id;
+      const maxDepth = 10; // Increased to handle deeper hierarchies
 
-        if (areas.some((a: any) => a.id === parentId)) currentArea = parentName;
-        else if (cities.some((c: any) => c.id === parentId)) currentCity = parentName;
-        else if (regions.some((r: any) => r.id === parentId)) currentCountry = parentName;
-        else if (provinces.some((p: any) => p.id === parentId)) {
-          if (!currentCity) currentCity = parentName;
+      while (parent && depth < maxDepth) {
+        const parentId = parent.id;
+        const parentName = parent.name;
+
+        // Identify what type of geographic unit this is
+        if (zones.some((z: any) => z.id === parentId)) {
+          currentZone = parentName;
+        } else if (areas.some((a: any) => a.id === parentId)) {
+          currentArea = parentName;
+        } else if (cities.some((c: any) => c.id === parentId)) {
+          currentCity = parentName;
+        } else if (provinces.some((p: any) => p.id === parentId)) {
+          // Province can act as a fallback for city if no city is found
+          if (!currentCity) {
+            currentCity = parentName;
+          }
+        } else if (regions.some((r: any) => r.id === parentId)) {
+          currentCountry = parentName;
         }
 
+        // Move to the next parent
         if (parent.parentId && parent.parentId !== parent.id) {
           parent = findParent(parent.parentId);
         } else {
-          parent = undefined;
+          break;
         }
         depth++;
       }
 
+      // Update the location with the found values
       setLocations((prev) =>
         prev.map((loc) =>
           loc.id === updatingLocationId
             ? {
                 ...loc,
-                area: currentArea || "N/A",
-                city: currentCity || "N/A",
-                country: currentCountry || "N/A",
+                area: currentArea || currentZone || "",
+                city: currentCity || "",
+                country: currentCountry || "",
               }
             : loc
         )

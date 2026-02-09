@@ -220,7 +220,7 @@ export default function DoctorsTable({
       header: "Status",
       accessorKey: "status",
       cell: ({ row }) => (
-        <div className="flex justify-center">
+        <div className="flex justify-right">
           <StatusBadge status={row.original?.status} />
         </div>
       ),
