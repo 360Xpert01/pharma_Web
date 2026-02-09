@@ -440,7 +440,7 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
           onClick={handleSubmit}
           loading={createLoading}
         >
-          {isUpdateMode ? "Update Doctor" : "Add Doctor"}
+          {"Add " + currentChannel?.name}
         </Button>
       </div>
     </div>
