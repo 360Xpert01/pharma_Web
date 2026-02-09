@@ -20,7 +20,7 @@ export interface HierarchyNodeType {
 export function cloneHierarchyNode(node: HierarchyNodeType): HierarchyNodeType {
   return {
     ...node,
-    children: node.children.map(cloneHierarchyNode),
+    children: (node.children || []).map(cloneHierarchyNode),
   };
 }
 
@@ -103,12 +103,12 @@ export function HierarchyNode({
   onToggleBrickItemSearch,
 }: HierarchyNodeProps) {
   const [isOpen, setIsOpen] = useState(true);
-  const hasChildren = node.children && node.children.length > 0;
+  const hasChildren = Array.isArray(node.children) && node.children.length > 0;
   const isSearchActive = activeBrickItemSearchUserId === node.userId;
   const userBrickItems = assignedBrickItems.get(node.userId) || [];
 
   // Filter bricks by search query (exclude already assigned)
-  const filteredBrickItems = availableBrickItems.filter(
+  const filteredBrickItems = (availableBrickItems || []).filter(
     (brick) =>
       !userBrickItems.find((b) => b.id === brick.id) &&
       brick.name.toLowerCase().includes(brickSearchQuery.toLowerCase())
@@ -153,6 +153,7 @@ export function HierarchyNode({
           <span className="text-[var(--gray-6)] font-bold text-lg">
             {node.fullName
               ?.split(" ")
+              .filter(Boolean)
               .map((n) => n[0])
               .join("")
               .toUpperCase()}
@@ -285,7 +286,7 @@ export function HierarchyNode({
             />
           )}
           <div className="space-y-4">
-            {node.children.map((child) => (
+            {(node.children || []).map((child) => (
               <HierarchyNode
                 key={child.userId}
                 node={child}

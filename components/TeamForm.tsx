@@ -115,7 +115,7 @@ export default function TeamForm() {
                 setSelectedChannelId(value);
                 clearFieldError("channelId");
               }}
-              options={channels.map((channel) => ({
+              options={(Array.isArray(channels) ? channels : []).map((channel) => ({
                 value: channel.id,
                 label: channel.name,
               }))}
@@ -201,7 +201,7 @@ export default function TeamForm() {
           </div>
 
           {/* Hierarchy Tree - Dynamic from API (Merged Hierarchies) */}
-          {mergedHierarchy.length > 0 && (
+          {Array.isArray(mergedHierarchy) && mergedHierarchy.length > 0 && (
             <div className="relative mt-6 space-y-4">
               {mergedHierarchy.map((hierarchyRoot) => (
                 <HierarchyNode
