@@ -206,7 +206,7 @@ export default function CenturoTable<T>({
   return (
     <div className="w-full">
       {/* Table */}
-      <div className="overflow-x-auto border border-(--gray-2) rounded-8 bg-(--background)">
+      <div className="overflow-x-auto border border-(--gray-2) rounded-8 bg-(--background) mx-4">
         <table className="w-full border-collapse">
           <thead className="bg-(--gray-0) border-b border-(--gray-2)">
             {table.getHeaderGroups().map((headerGroup) => (

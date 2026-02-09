@@ -65,13 +65,15 @@ const Navbar = () => {
     },
     {
       label: "Accounts",
-      items: channels.map((channel) => ({
-        label: channel.name,
-        href: `/dashboard/${channel.name
-          .toLowerCase()
-          .replace(/[^a-z0-9\s]/g, "")
-          .replace(/\s+/g, "-")}/?id=${channel.id}`,
-      })),
+      items: channels
+        .filter((channel) => channel.isActive)
+        .map((channel) => ({
+          label: channel.name,
+          href: `/dashboard/${channel.name
+            .toLowerCase()
+            .replace(/[^a-z0-9\s]/g, "")
+            .replace(/\s+/g, "-")}/?id=${channel.id}`,
+        })),
     },
     {
       label: "Products & Samples",

@@ -22,6 +22,7 @@ import usersByRoleReducer from "./slices/employee/getUsersByRoleSlice";
 import userHierarchyReducer from "./slices/employee/getUserHierarchySlice";
 import allChannelsReducer from "./slices/channel/getAllChannelsSlice";
 import createChannelReducer from "./slices/channel/createChannelSlice";
+import updateChannelReducer from "./slices/channel/updateChannelSlice";
 import allCallPointsReducer from "./slices/callPoint/getAllCallPointsSlice";
 import createCallPointReducer from "./slices/callPoint/createCallPointSlice";
 import allGiveawaysReducer from "./slices/giveaway/getAllGiveawaysSlice";
@@ -95,6 +96,7 @@ const rootReducer = combineReducers({
   userHierarchy: userHierarchyReducer,
   allChannels: allChannelsReducer,
   createChannel: createChannelReducer,
+  updateChannel: updateChannelReducer,
   allCallPoints: allCallPointsReducer,
   createCallPoint: createCallPointReducer,
   allGiveaways: allGiveawaysReducer,

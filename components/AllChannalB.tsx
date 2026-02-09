@@ -9,8 +9,13 @@ import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import TableActionDropdown from "@/components/shared/table/TableActionDropdown";
 import StatusBadge from "@/components/shared/StatusBadge";
+import EditIcon from "@/components/svgs/edit-icon";
 
-export default function ChannelsManager() {
+interface AllChannalBProps {
+  onEditChannel?: (channelId: string) => void;
+}
+
+export default function ChannelsManager({ onEditChannel }: AllChannalBProps) {
   const dispatch = useAppDispatch();
   const { channels, loading, error } = useAppSelector((state) => state.allChannels);
   const [openId, setOpenId] = useState<string | null>(null);
@@ -33,6 +38,12 @@ export default function ChannelsManager() {
 
   const handleRetry = () => {
     dispatch(getAllChannels());
+  };
+
+  const handleEdit = (id: string) => {
+    if (onEditChannel) {
+      onEditChannel(id);
+    }
   };
 
   const columns: ColumnDef<ChannelItem>[] = [
@@ -77,26 +88,16 @@ export default function ChannelsManager() {
       header: "",
       cell: ({ row }) => (
         <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
-          <TableActionDropdown
-            isOpen={openId === row.original.id}
-            onToggle={() => setOpenId(openId === row.original.id ? null : row.original.id)}
-            onClose={() => setOpenId(null)}
-            items={[
-              {
-                label: "Add New Campaign",
-                onClick: () => console.log("Add New Campaign", row.original.id),
-              },
-              {
-                label: "Edit Channel",
-                onClick: () => console.log("Edit Channel", row.original.id),
-              },
-              {
-                label: "Delete Channel",
-                onClick: () => deleteChannel(row.original.id),
-                variant: "danger",
-              },
-            ]}
-          />
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEdit(row.original.id);
+            }}
+            className="group hover:opacity-80 transition cursor-pointer"
+            title="Edit Channel"
+          >
+            <EditIcon />
+          </button>
         </div>
       ),
     },
