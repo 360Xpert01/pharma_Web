@@ -76,6 +76,8 @@ import attendanceReducer from "./slices/Attendance/AttandanceGetSlice";
 import userSamplesReducer from "./slices/UserSamples/userSamplesSlice";
 import userGiveawaysReducer from "./slices/UserGiveaways/userGiveawaysSlice";
 import userDevicesReducer from "./slices/device/getUserDevicesSlice";
+import allocationListReducer from "./slices/allocation/getAllocationListSlice";
+import targetListReducer from "./slices/target/getTargetListSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -150,6 +152,8 @@ const rootReducer = combineReducers({
   userSamples: userSamplesReducer,
   userGiveaways: userGiveawaysReducer,
   userDevices: userDevicesReducer,
+  allocationList: allocationListReducer,
+  targetList: targetListReducer,
 });
 
 const persistConfig = {
