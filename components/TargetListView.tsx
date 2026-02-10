@@ -1,282 +1,113 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
-import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ColumnDef } from "@tanstack/react-table";
-import { EmployeeTarget } from "@/types/target";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { getTargetList, resetTargetListState } from "@/store/slices/target/getTargetListSlice";
+import EditIcon from "@/components/svgs/edit-icon";
 
-// Mock data for demonstration
-const mockTargetData: EmployeeTarget[] = [
-  {
-    id: "1",
-    employeeId: "emp001",
-    employeeName: "Mohammad Amr",
-    employeeRole: "Sales Representative",
-    profilePicture: "/girlPic.svg",
-    teamName: "[Team Name]",
-    channelName: "Channel name",
-    lineManager: "Line Manager",
-    month: "January",
-    year: 2025,
-    tags: ["L43", "L02", "E74"],
-    products: [
-      {
-        id: "p1",
-        productName: "VitalBoost 400mg",
-        targetPackets: 800,
-        achievedPackets: 264,
-        achievementPercentage: 33,
-        status: "in-progress",
-      },
-      {
-        id: "p2",
-        productName: "NutriPlus 300mg",
-        targetPackets: 1200,
-        achievedPackets: 600,
-        achievementPercentage: 50,
-        status: "in-progress",
-      },
-      {
-        id: "p3",
-        productName: "Klinex 250mg",
-        targetPackets: 500,
-        achievedPackets: 100,
-        achievementPercentage: 20,
-        status: "pending",
-      },
-      {
-        id: "p4",
-        productName: "Dapakan 500mg",
-        targetPackets: 1000,
-        achievedPackets: 1000,
-        achievementPercentage: 100,
-        status: "completed",
-      },
-      {
-        id: "p5",
-        productName: "Fitwell 750mg",
-        targetPackets: 760,
-        achievedPackets: 76,
-        achievementPercentage: 10,
-        status: "pending",
-      },
-      {
-        id: "p6",
-        productName: "Klinex 250mg",
-        targetPackets: 500,
-        achievedPackets: 100,
-        achievementPercentage: 20,
-        status: "pending",
-      },
-    ],
-  },
-  {
-    id: "2",
-    employeeId: "emp002",
-    employeeName: "Emily Martinez",
-    employeeRole: "Sales Representative",
-    profilePicture: "/girlPic.svg",
-    teamName: "Healing Hands",
-    channelName: "Retail Channel",
-    lineManager: "James Green",
-    month: "June",
-    year: 2025,
-    tags: [],
-    products: [
-      {
-        id: "p6",
-        productName: "Dapakan 500mg",
-        targetPackets: 1000,
-        achievedPackets: 1000,
-        achievementPercentage: 100,
-        status: "completed",
-      },
-    ],
-  },
-  {
-    id: "3",
-    employeeId: "emp003",
-    employeeName: "Sarah Khan",
-    employeeRole: "Sales Representative",
-    profilePicture: "/girlPic.svg",
-    teamName: "Health Innovators",
-    channelName: "Pharmacy Channel",
-    lineManager: "John Smith",
-    month: "February",
-    year: 2025,
-    tags: [],
-    products: [
-      {
-        id: "p7",
-        productName: "Atorvastatin 10mg",
-        targetPackets: 750,
-        achievedPackets: 375,
-        achievementPercentage: 50,
-        status: "in-progress",
-      },
-      {
-        id: "p8",
-        productName: "Fitwell 750mg",
-        targetPackets: 760,
-        achievedPackets: 76,
-        achievementPercentage: 10,
-        status: "pending",
-      },
-    ],
-  },
-  {
-    id: "4",
-    employeeId: "emp004",
-    employeeName: "Karen Lee",
-    employeeRole: "Sales Representative",
-    profilePicture: "/girlPic.svg",
-    teamName: "Wellness Warriors",
-    channelName: "Clinic Channel",
-    lineManager: "Robert Brown",
-    month: "April",
-    year: 2025,
-    tags: [],
-    products: [
-      {
-        id: "p9",
-        productName: "HealthBoost 500mg",
-        targetPackets: 900,
-        achievedPackets: 450,
-        achievementPercentage: 50,
-        status: "in-progress",
-      },
-    ],
-  },
-  {
-    id: "5",
-    employeeId: "emp005",
-    employeeName: "Michael Johnson",
-    employeeRole: "Sales Representative",
-    profilePicture: "/girlPic.svg",
-    teamName: "Life Science Crew",
-    channelName: "Hospital Channel",
-    lineManager: "Emily Davis",
-    month: "March",
-    year: 2025,
-    tags: [],
-    products: [
-      {
-        id: "p10",
-        productName: "MediCare 300mg",
-        targetPackets: 650,
-        achievedPackets: 325,
-        achievementPercentage: 50,
-        status: "in-progress",
-      },
-    ],
-  },
-  {
-    id: "6",
-    employeeId: "emp006",
-    employeeName: "Lucas White",
-    employeeRole: "Sales Representative",
-    profilePicture: "/girlPic.svg",
-    teamName: "Health Plus",
-    channelName: "Online Channel",
-    lineManager: "Sophia Taylor",
-    month: "May",
-    year: 2025,
-    tags: [],
-    products: [
-      {
-        id: "p11",
-        productName: "VitaMax 400mg",
-        targetPackets: 800,
-        achievedPackets: 400,
-        achievementPercentage: 50,
-        status: "in-progress",
-      },
-    ],
-  },
-  {
-    id: "7",
-    employeeId: "emp007",
-    employeeName: "Olivia Brown",
-    employeeRole: "Sales Representative",
-    profilePicture: "/girlPic.svg",
-    teamName: "Vitality Group",
-    channelName: "Wholesale Channel",
-    lineManager: "Daniel Wilson",
-    month: "July",
-    year: 2025,
-    tags: [],
-    products: [
-      {
-        id: "p12",
-        productName: "PowerPlus 250mg",
-        targetPackets: 500,
-        achievedPackets: 250,
-        achievementPercentage: 50,
-        status: "in-progress",
-      },
-    ],
-  },
-];
+interface TargetListItem {
+  userId: string;
+  username: string;
+  profilePic: string | null;
+  roleName: string;
+  teamName: string;
+  channelId: string;
+  channelName: string;
+  lineManagerId: string;
+  lineManagerName: string;
+  targetId: string;
+  targetMonth: number;
+  targetYear: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Helper function to get month name
+const getMonthName = (month: number): string => {
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  return months[month - 1] || "";
+};
 
 export default function TargetListView() {
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const { targets, loading, error } = useAppSelector((state) => state.targetList);
+
+  // Fetch target list on mount
+  useEffect(() => {
+    dispatch(getTargetList());
+
+    return () => {
+      dispatch(resetTargetListState());
+    };
+  }, [dispatch]);
+
+  const handleRetry = () => {
+    dispatch(getTargetList());
+  };
 
   const filteredTargets = useMemo(() => {
-    return mockTargetData.filter((target) => {
+    return targets.filter((target) => {
       const matchesSearch =
-        target.employeeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        target.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
         target.teamName.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesSearch;
     });
-  }, [searchQuery]);
+  }, [searchQuery, targets]);
 
-  const handleViewDetails = (e: React.MouseEvent) => {
+  const handleViewDetails = (e: React.MouseEvent, targetId: string) => {
     e.stopPropagation();
-    router.push(`/dashboard/SetTarget`);
+    router.push(`/dashboard/SetTarget?targetId=${targetId}`);
   };
 
-  const getStatusBadgeColor = (tag: string) => {
-    switch (tag) {
-      case "L43":
-        return "bg-[var(--destructive)]/10 text-[var(--destructive)]";
-      case "L02":
-        return "bg-[var(--primary)] text-[var(--light)]";
-      case "E74":
-        return "bg-[var(--primary)] text-[var(--light)]";
-      default:
-        return "bg-[var(--gray-0)] text-[var(--gray-6)]";
-    }
-  };
-
-  const columns: ColumnDef<EmployeeTarget>[] = [
+  const columns: ColumnDef<TargetListItem>[] = [
     {
       header: "Month",
-      accessorKey: "month",
-      cell: ({ row }) => <div className="t-label-b">{row.original.month}</div>,
+      accessorKey: "targetMonth",
+      cell: ({ row }) => (
+        <div className="t-label-b">
+          {getMonthName(row.original.targetMonth)} {row.original.targetYear}
+        </div>
+      ),
     },
     {
       header: "Employee",
-      accessorKey: "employeeName",
+      accessorKey: "username",
       cell: ({ row }) => (
         <div className="flex items-center gap-3 min-w-0">
           <Image
-            src={row.original.profilePicture || "/girlPic.svg"}
-            alt={row.original.employeeName}
+            src={row.original.profilePic || "/girlPic.svg"}
+            alt={row.original.username}
             width={40}
             height={40}
-            className="rounded-8 flex-shrink-0"
+            className="rounded-8 flex-shrink-0 object-cover"
           />
           <div className="min-w-0 flex-1">
-            <h3 className="t-label-b truncate" title={row.original.employeeName}>
-              {row.original.employeeName}
+            <h3 className="t-label-b truncate" title={row.original.username}>
+              {row.original.username}
             </h3>
-            <p className="t-cap truncate" title={row.original.employeeRole}>
-              {row.original.employeeRole}
+            <p className="t-cap truncate" title={row.original.roleName}>
+              {row.original.roleName}
             </p>
           </div>
         </div>
@@ -302,89 +133,44 @@ export default function TargetListView() {
     },
     {
       header: "Supervisor",
-      accessorKey: "lineManager",
+      accessorKey: "lineManagerName",
       cell: ({ row }) => (
-        <div className="t-td-b truncate" title={row.original.lineManager}>
-          {row.original.lineManager}
+        <div className="t-td-b truncate" title={row.original.lineManagerName}>
+          {row.original.lineManagerName}
         </div>
       ),
     },
     {
       id: "actions",
       header: "",
-      cell: ({ row, table }) => (
+      cell: ({ row }) => (
         <div className="flex justify-end">
           <button
             onClick={(e) => {
               e.stopPropagation();
-              row.toggleExpanded();
+              handleViewDetails(e, row.original.targetId);
             }}
-            className="flex items-center gap-2 t-sm hover:text-[var(--gray-9)] transition whitespace-nowrap cursor-pointer"
+            className="group hover:opacity-80 transition cursor-pointer"
+            title="Edit Target"
           >
-            <span className="font-medium">View Details</span>
-            <ChevronDown
-              className={`w-4 h-4 transition-transform ${row.getIsExpanded() ? "rotate-180" : ""}`}
-            />
+            <EditIcon />
           </button>
         </div>
       ),
     },
   ];
 
-  const renderExpandedRow = (target: EmployeeTarget) => {
-    return (
-      <div className="px-6 py-5 bg-[var(--gray-0)]">
-        {/* Tags */}
-        <div className="mb-5 flex items-center justify-end border-b border-[var(--gray-2)] pb-4">
-          {target.tags && target.tags.length > 0 && (
-            <div className="flex gap-2">
-              {target.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className={`px-3 py-1 rounded-8 text-xs font-semibold ${getStatusBadgeColor(tag)}`}
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Product Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {target.products.map((product) => (
-            <div
-              key={product.id}
-              className="rounded-8 px-4 py-3 border-2 bg-[var(--background)] border-[var(--gray-2)]"
-            >
-              <div className="flex items-center justify-between w-full">
-                <div className="flex-1">
-                  <p className="t-label-b text-[var(--gray-9)]">{product.productName}</p>
-                </div>
-                <div className="flex-1 text-center">
-                  <p className="t-label-b text-[var(--gray-9)]">{product.targetPackets} Packets</p>
-                </div>
-                <div className="flex-1 text-right">
-                  <p className="t-label-b text-[var(--gray-9)]">{product.achievementPercentage}%</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="w-full">
       <CenturoTable
         data={filteredTargets}
         columns={columns}
+        loading={loading}
+        error={error}
+        onRetry={handleRetry}
         enablePagination={true}
         pageSize={10}
         PaginationComponent={TablePagination}
-        enableExpanding={true}
-        renderExpandedRow={renderExpandedRow}
         emptyMessage="No targets found"
       />
     </div>
