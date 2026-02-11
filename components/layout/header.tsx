@@ -240,6 +240,7 @@ const Navbar = () => {
             { label: "Product Categories", href: "/dashboard/product-categories" },
             { label: "Doctor Segments(A/B/C)", href: "/dashboard/doctor-segments" },
             { label: "Qualification", href: "/dashboard/doctor-qualifications" },
+            { label: "Distributor Type", href: "/dashboard/distributor-types" },
             { label: "Speciality", href: "/dashboard/doctor-specialities" },
           ],
         },

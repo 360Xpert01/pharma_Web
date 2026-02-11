@@ -172,6 +172,8 @@ export interface DashboardProps {
   doctorSegmentsTrue?: boolean;
   qualificationsD?: boolean;
   qualificationsTrue?: boolean;
+  distributorTypesD?: boolean;
+  distributorTypesTrue?: boolean;
   specialitiesD?: boolean;
   specialitiesTrue?: boolean;
   UpdateGiveaway?: boolean;

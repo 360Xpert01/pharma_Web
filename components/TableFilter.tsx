@@ -69,7 +69,7 @@ export default function TableFilter({
 
   // Find current channel to check if it's "Doctor"
   const currentChannel = channels.find((ch) => ch.id === channelId);
-  const isDoctorChannel = currentChannel?.name?.toLowerCase().includes("doctor") || false;
+  const isDoctorChannel = (currentChannel?.name?.toLowerCase() ?? "").includes("doctor");
 
   useEffect(() => {
     if (showDoctorFilters && isFilterOpen) {

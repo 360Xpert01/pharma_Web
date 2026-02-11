@@ -6,6 +6,7 @@ export * from "./giveawayValidation";
 export * from "./prefixValidation";
 export * from "./productValidation";
 export * from "./qualificationValidation";
+export * from "./distributorTypeValidation";
 export * from "./roleValidation";
 export * from "./segmentValidation";
 export * from "./specializationValidation";
