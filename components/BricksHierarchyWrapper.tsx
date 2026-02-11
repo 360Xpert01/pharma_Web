@@ -9,9 +9,7 @@ export default function BricksHierarchyWrapper() {
   const dispatch = useAppDispatch();
 
   // Select state from Redux store
-  const { loading, error, regions, provinces, cities, areas, bricks } = useAppSelector(
-    (state) => state.brickList
-  );
+  const { loading, error, zones, regions, bricks } = useAppSelector((state) => state.brickList);
 
   // Fetch brick list on mount
   useEffect(() => {
@@ -32,10 +30,8 @@ export default function BricksHierarchyWrapper() {
 
   return (
     <BricksHierarchy
+      zones={zones}
       regions={regions}
-      provinces={provinces}
-      cities={cities}
-      areas={areas}
       bricks={bricks}
       loading={loading}
       error={error}

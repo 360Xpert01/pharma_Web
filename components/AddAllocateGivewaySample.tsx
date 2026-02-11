@@ -1,10 +1,17 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Search, Plus, Edit2, Trash2 } from "lucide-react";
+import { Search, Plus, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllGiveaways } from "@/store/slices/giveaway/getAllGiveawaysSlice";
 import { getAllUsers } from "@/store/slices/employee/getAllUsersSlice";
+import { getAllProductSkus } from "@/store/slices/product/getAllProductSkusSlice";
+import { allocateUser, resetAllocateUserState } from "@/store/slices/allocation/allocateUserSlice";
+import toast from "react-hot-toast";
+import { FormInput } from "@/components/form";
+import GiveawayAllocation from "./allocation/GiveawayAllocation";
+import SampleAllocation from "./allocation/SampleAllocation";
 
 interface GiveawayItem {
   id: string;
@@ -31,11 +38,18 @@ interface EmployeeData {
 
 export default function AddAllocateGivewaySample() {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Redux state for employees and giveaways
+  // Redux state for employees, giveaways, and samples
   const { users, loading: employeesLoading } = useAppSelector((state) => state.allUsers);
   const { giveaways, loading: giveawaysLoading } = useAppSelector((state) => state.allGiveaways);
+  const { productSkus, loading: samplesLoading } = useAppSelector((state) => state.allProductSkus);
+  const {
+    loading: allocateLoading,
+    success: allocateSuccess,
+    error: allocateError,
+  } = useAppSelector((state) => state.allocateUser);
 
   // Employee search and selection states
   const [employeeSearch, setEmployeeSearch] = useState("");
@@ -43,39 +57,43 @@ export default function AddAllocateGivewaySample() {
   const [selectedEmployee, setSelectedEmployee] = useState<EmployeeData | null>(null);
 
   // Selected items state
-  const [selectedGiveaways, setSelectedGiveaways] = useState<GiveawayItem[]>([
-    { id: "1", name: "Diagnostic Stetosc...", quantity: 25 },
-    { id: "2", name: "Doctor USB Disk", quantity: 25 },
-    { id: "3", name: "Prescription folder", quantity: 25 },
-    { id: "4", name: "Notebook and Pen...", quantity: 25 },
-    { id: "5", name: "Wet wipes", quantity: 25 },
-    { id: "6", name: "Notebook and Pen...", quantity: 25 },
-    { id: "7", name: "First aid mini kit", quantity: 25 },
-    { id: "8", name: "Smartwatch", quantity: 25 },
-  ]);
+  const [selectedGiveaways, setSelectedGiveaways] = useState<GiveawayItem[]>([]);
+  const [selectedSamples, setSelectedSamples] = useState<SampleItem[]>([]);
 
-  const [selectedSamples, setSelectedSamples] = useState<SampleItem[]>([
-    { id: "1", name: "Lisinopril 250gm", quantity: 25 },
-    { id: "2", name: "Dapakan 500mg", quantity: 25 },
-    { id: "3", name: "Rigix 10 mg", quantity: 25 },
-    { id: "4", name: "Evion 400 mg", quantity: 25 },
-    { id: "5", name: "VitaBoost 400mg", quantity: 25 },
-    { id: "6", name: "Motilium 10 mg", quantity: 25 },
-    { id: "7", name: "Atorvastatin 10gm", quantity: 25 },
-    { id: "8", name: "Digene Tablet", quantity: 25 },
-  ]);
-
-  // Search states for giveaways and samples
-  const [giveawaySearch, setGiveawaySearch] = useState("");
-  const [sampleSearch, setSampleSearch] = useState("");
-
-  // Fetch employees and giveaways on mount
+  // Fetch employees, giveaways, and product SKUs on mount
   useEffect(() => {
-    dispatch(getAllUsers());
-    dispatch(getAllGiveaways());
+    dispatch(getAllUsers({ page: 1, limit: 1000 }));
+    dispatch(getAllGiveaways({ page: 1, limit: 1000 }));
+    dispatch(getAllProductSkus());
+
+    return () => {
+      dispatch(resetAllocateUserState());
+    };
   }, [dispatch]);
 
-  // Handle click outside dropdown
+  // Handle allocation success
+  useEffect(() => {
+    if (allocateSuccess) {
+      toast.success("Items allocated successfully!");
+
+      // Reset form
+      handleDiscard();
+
+      // Redirect to allocation list page after a short delay
+      setTimeout(() => {
+        router.push("/dashboard/allocate-giveways-sample");
+      }, 1500);
+    }
+  }, [allocateSuccess, router]);
+
+  // Handle allocation error
+  useEffect(() => {
+    if (allocateError) {
+      toast.error(allocateError);
+    }
+  }, [allocateError]);
+
+  // Handle click outside dropdowns
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -98,15 +116,6 @@ export default function AddAllocateGivewaySample() {
     );
   });
 
-  // Filter functions for giveaways and samples
-  const filteredGiveaways = selectedGiveaways.filter((item) =>
-    item.name.toLowerCase().includes(giveawaySearch.toLowerCase())
-  );
-
-  const filteredSamples = selectedSamples.filter((item) =>
-    item.name.toLowerCase().includes(sampleSearch.toLowerCase())
-  );
-
   // Employee selection handler
   const handleSelectEmployee = (employee: EmployeeData) => {
     setSelectedEmployee(employee);
@@ -123,20 +132,39 @@ export default function AddAllocateGivewaySample() {
     setSelectedSamples((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const handleEditGiveaway = (id: string) => {
-    // TODO: Implement edit quantity modal/inline
+  const handleUpdateGiveawayQuantity = (id: string, quantity: number) => {
+    setSelectedGiveaways((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item))
+    );
   };
 
-  const handleEditSample = (id: string) => {
-    // TODO: Implement edit quantity modal/inline
+  const handleUpdateSampleQuantity = (id: string, quantity: number) => {
+    setSelectedSamples((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item))
+    );
   };
 
-  const handleAddGiveaway = () => {
-    // TODO: Implement add giveaway modal/selection
+  const handleAddGiveaway = (giveaway: any) => {
+    if (!selectedGiveaways.find((g) => g.id === giveaway.id)) {
+      setSelectedGiveaways((prev) => [
+        ...prev,
+        { id: giveaway.id, name: giveaway.name, quantity: 1 },
+      ]);
+    } else {
+      toast.error("This giveaway is already added");
+    }
   };
 
-  const handleAddSample = () => {
-    // TODO: Implement add sample modal/selection
+  const handleAddSample = (sample: any) => {
+    if (!selectedSamples.find((s) => s.id === sample.productSkuId)) {
+      const skuStr = typeof sample.sku === "object" ? sample.sku?.sku : sample.sku;
+      setSelectedSamples((prev) => [
+        ...prev,
+        { id: sample.productSkuId, name: `${sample.productName} - ${skuStr}`, quantity: 1 },
+      ]);
+    } else {
+      toast.error("This sample is already added");
+    }
   };
 
   const handleDiscard = () => {
@@ -144,27 +172,27 @@ export default function AddAllocateGivewaySample() {
     setEmployeeSearch("");
     setSelectedGiveaways([]);
     setSelectedSamples([]);
-    setGiveawaySearch("");
-    setSampleSearch("");
+    dispatch(resetAllocateUserState());
   };
 
   const handleAllocate = () => {
     if (!selectedEmployee) {
+      toast.error("Please select an employee");
       return;
     }
     if (selectedGiveaways.length === 0 && selectedSamples.length === 0) {
+      toast.error("Please select at least one giveaway or sample");
       return;
     }
 
-    // TODO: Implement allocation API call
-    console.log("Allocating:", {
-      employee: selectedEmployee,
-      giveaways: selectedGiveaways,
-      samples: selectedSamples,
-    });
+    // Prepare payload for API
+    const payload = {
+      userId: selectedEmployee.id,
+      giveaway: selectedGiveaways.map((g) => ({ id: g.id, quantity: g.quantity })),
+      sample: selectedSamples.map((s) => ({ id: s.id, quantity: s.quantity })),
+    };
 
-    // Reset form
-    handleDiscard();
+    dispatch(allocateUser(payload));
   };
 
   return (
@@ -189,11 +217,14 @@ export default function AddAllocateGivewaySample() {
                   onChange={(e) => {
                     setEmployeeSearch(e.target.value);
                     setShowEmployeeDropdown(true);
-                    setSelectedEmployee(null); // Clear selection when typing
+                    setSelectedEmployee(null);
                   }}
                   onFocus={() => setShowEmployeeDropdown(true)}
                   className="w-full pl-10 pr-4 py-2.5 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) outline-none text-sm"
                 />
+                {employeesLoading && (
+                  <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-(--primary)" />
+                )}
               </div>
 
               {/* Employee Dropdown */}
@@ -229,7 +260,7 @@ export default function AddAllocateGivewaySample() {
                           <p className="text-sm font-medium text-(--gray-9) truncate">
                             {employee.firstName} {employee.lastName}
                           </p>
-                          <p className="text-xs text-(--gray-0)0 truncate">{employee.email}</p>
+                          <p className="text-xs text-(--gray-6) truncate">{employee.email}</p>
                         </div>
                       </div>
                     ))}
@@ -239,7 +270,7 @@ export default function AddAllocateGivewaySample() {
 
             {/* Helper Text */}
             <div className="flex-1">
-              <p className="text-sm text-(--gray-0)0 mt-6">
+              <p className="text-sm text-(--gray-6) mt-6">
                 You can easily search the assignee you want and
                 <br />
                 take on different responsibilities.
@@ -252,183 +283,55 @@ export default function AddAllocateGivewaySample() {
         {selectedEmployee && (
           <div className="space-y-6">
             {/* Employee Details Section */}
-            <div>
-              <div className="grid grid-cols-4 gap-4">
-                {/* Team Pulse Code */}
-                <div>
-                  <label className="block text-xs font-medium text-(--gray-6) mb-2">
-                    Team Pulse Code<span className="text-(--destructive)">*</span>
-                  </label>
-                  <div className="flex items-center px-4 py-2.5 bg-(--gray-0) rounded-8 text-sm">
-                    <span className="text-(--gray-9) ml-1">{selectedEmployee.pulseCode}</span>
-                  </div>
-                </div>
-
-                {/* Employee Name */}
-                <div>
-                  <label className="block text-xs font-medium text-(--gray-6) mb-2">
-                    Employee Name
-                  </label>
-                  <div className="flex items-center px-4 py-2.5 bg-(--gray-0) rounded-8 text-sm">
-                    <span className="text-(--gray-9)">
-                      {selectedEmployee.firstName} {selectedEmployee.lastName}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Role */}
-                <div>
-                  <label className="block text-xs font-medium text-(--gray-6) mb-2">Role</label>
-                  <div className="flex items-center px-4 py-2.5 bg-(--gray-0) rounded-8 text-sm">
-                    <span className="text-(--gray-9)">Sales Representative</span>
-                  </div>
-                </div>
-
-                {/* Manager */}
-                <div>
-                  <label className="block text-xs font-medium text-(--gray-6) mb-2">Manager</label>
-                  <div className="flex items-center px-4 py-2.5 bg-(--gray-0) rounded-8 text-sm">
-                    <span className="text-(--gray-9)">Abdul Aziz Warsi</span>
-                  </div>
-                </div>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <FormInput
+                label="Team Pulse Code"
+                name="pulseCode"
+                value={selectedEmployee.pulseCode || ""}
+                onChange={() => {}}
+                required
+                readOnly
+              />
+              <FormInput
+                label="Employee Name"
+                name="employeeName"
+                value={`${selectedEmployee.firstName} ${selectedEmployee.lastName}`}
+                onChange={() => {}}
+                readOnly
+              />
+              <FormInput
+                label="Role"
+                name="role"
+                value="Sales Representative"
+                onChange={() => {}}
+                readOnly
+              />
+              <FormInput label="Manager" name="manager" value="-" onChange={() => {}} readOnly />
             </div>
 
             {/* Select Giveaway Section */}
-            <div>
-              <h2 className="text-xl font-bold text-(--gray-9) mb-4">Select Giveaway</h2>
-
-              {/* Search & Add Row */}
-              <div className="flex gap-3 mb-4 w-1/3">
-                <div className="flex-1 relative">
-                  <label className="block text-xs font-medium text-(--gray-6) mb-2">
-                    Search Giveaway Name<span className="text-(--destructive)">*</span>
-                  </label>
-                  <Search className="absolute left-3 bottom-3 w-4 h-4 text-(--gray-4)" />
-                  <input
-                    type="text"
-                    placeholder="Search Product Name"
-                    value={giveawaySearch}
-                    onChange={(e) => setGiveawaySearch(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) outline-none text-sm"
-                  />
-                </div>
-                <div className="flex items-end">
-                  <button
-                    onClick={handleAddGiveaway}
-                    className="px-5 py-2.5 bg-(--primary) text-(--light) rounded-8 hover:bg-(--primary-2) transition flex items-center gap-2 text-sm font-medium cursor-pointer whitespace-nowrap"
-                  >
-                    <Plus className="w-4 h-4" />
-                    Add Giveaway
-                  </button>
-                </div>
-              </div>
-
-              {/* Giveaway Cards Grid */}
-              {filteredGiveaways.length > 0 && (
-                <div className="bg-(--gray-0) rounded-8 p-4">
-                  <div className="grid grid-cols-4 gap-3">
-                    {filteredGiveaways.map((item) => (
-                      <div
-                        key={item.id}
-                        className="flex items-center justify-between px-4 py-3 (--background) border border-(--gray-2) rounded-8 hover:shadow-soft transition"
-                      >
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-(--gray-9) truncate">
-                            {item.name}
-                          </p>
-                          <p className="text-xs text-(--gray-0)0 mt-0.5">QTY: {item.quantity}</p>
-                        </div>
-                        <div className="flex items-center gap-2 ml-2">
-                          <button
-                            onClick={() => handleEditGiveaway(item.id)}
-                            className="p-1.5 text-(--primary) hover:bg-(--primary-0) rounded cursor-pointer"
-                            title="Edit quantity"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteGiveaway(item.id)}
-                            className="p-1.5 text-(--destructive) hover:bg-(--destructive-0) rounded cursor-pointer"
-                            title="Delete"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+            <GiveawayAllocation
+              allGiveaways={giveaways.filter(
+                (g) => !selectedGiveaways.find((sg) => sg.id === g.id)
               )}
-            </div>
+              selectedGiveaways={selectedGiveaways}
+              onAddGiveaway={handleAddGiveaway}
+              onRemoveGiveaway={handleDeleteGiveaway}
+              onUpdateQuantity={handleUpdateGiveawayQuantity}
+              loading={giveawaysLoading}
+            />
 
             {/* Select Sample Section */}
-            <div>
-              <h2 className="text-xl font-bold text-(--gray-9) mb-4">Select Sample</h2>
-
-              {/* Search & Add Row */}
-              <div className="flex gap-3 mb-4 w-1/3">
-                <div className="flex-1 relative">
-                  <label className="block text-xs font-medium text-(--gray-6) mb-2">
-                    Search Sample Name<span className="text-(--destructive)">*</span>
-                  </label>
-                  <Search className="absolute left-3 bottom-3 w-4 h-4 text-(--gray-4)" />
-                  <input
-                    type="text"
-                    placeholder="Search Sample Name"
-                    value={sampleSearch}
-                    onChange={(e) => setSampleSearch(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) outline-none text-sm"
-                  />
-                </div>
-                <div className="flex items-end">
-                  <button
-                    onClick={handleAddSample}
-                    className="px-5 py-2.5 bg-(--primary) text-(--light) rounded-8 hover:bg-(--primary-2) transition flex items-center gap-2 text-sm font-medium cursor-pointer whitespace-nowrap"
-                  >
-                    <Plus className="w-4 h-4" />
-                    Add Sample
-                  </button>
-                </div>
-              </div>
-
-              {/* Sample Cards Grid */}
-              {filteredSamples.length > 0 && (
-                <div className="bg-(--gray-0) rounded-8 p-4">
-                  <div className="grid grid-cols-4 gap-3">
-                    {filteredSamples.map((item) => (
-                      <div
-                        key={item.id}
-                        className="flex items-center justify-between px-4 py-3 (--background) border border-(--gray-2) rounded-8 hover:shadow-soft transition"
-                      >
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-(--gray-9) truncate">
-                            {item.name}
-                          </p>
-                          <p className="text-xs text-(--gray-0)0 mt-0.5">QTY: {item.quantity}</p>
-                        </div>
-                        <div className="flex items-center gap-2 ml-2">
-                          <button
-                            onClick={() => handleEditSample(item.id)}
-                            className="p-1.5 text-(--primary) hover:bg-(--primary-0) rounded cursor-pointer"
-                            title="Edit quantity"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteSample(item.id)}
-                            className="p-1.5 text-(--destructive) hover:bg-(--destructive-0) rounded cursor-pointer"
-                            title="Delete"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+            <SampleAllocation
+              allSamples={productSkus.filter(
+                (s) => !selectedSamples.find((ss) => ss.id === s.productSkuId)
               )}
-            </div>
+              selectedSamples={selectedSamples}
+              onAddSample={handleAddSample}
+              onRemoveSample={handleDeleteSample}
+              onUpdateQuantity={handleUpdateSampleQuantity}
+              loading={samplesLoading}
+            />
           </div>
         )}
 
@@ -436,19 +339,29 @@ export default function AddAllocateGivewaySample() {
         <div className="flex justify-end gap-4 pt-6 mt-8">
           <button
             onClick={handleDiscard}
-            className="px-8 py-3 border border-(--gray-3) text-(--gray-7) rounded-8 hover:bg-(--gray-0) transition cursor-pointer"
+            disabled={allocateLoading}
+            className="px-8 py-3 border border-(--gray-3) text-(--gray-7) rounded-8 hover:bg-(--gray-0) transition cursor-pointer disabled:opacity-50"
           >
             Discard
           </button>
           <button
             onClick={handleAllocate}
-            disabled={!selectedEmployee}
+            disabled={!selectedEmployee || allocateLoading}
             className={`px-10 py-3 bg-(--primary) text-(--light) rounded-8 hover:bg-(--primary-2) transition flex items-center gap-2 shadow-soft cursor-pointer ${
-              !selectedEmployee ? "opacity-50 cursor-not-allowed" : ""
+              !selectedEmployee || allocateLoading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
-            <Plus className="w-5 h-5" />
-            Allocate
+            {allocateLoading ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Allocating...
+              </>
+            ) : (
+              <>
+                <Plus className="w-5 h-5" />
+                Allocate
+              </>
+            )}
           </button>
         </div>
       </div>

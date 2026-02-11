@@ -6,9 +6,9 @@ export default function BricksHierarchyPage() {
     <div className="bg-(--gray-0)">
       <DashboardContent
         sample="Bricks hierarchy"
-        descrip="Manage geographical hierarchy - Region, Province, City, Area, and Bricks"
+        descrip="Manage geographical hierarchy - Zone, Region, Territory, and Bricks"
         table="Geographical Hierarchy"
-        btnAdd="Add New Region"
+        btnAdd="Add New Zone"
         hideData={false}
         hideHeader={true}
         hideMetrics={true}

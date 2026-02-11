@@ -39,3 +39,33 @@ export interface TargetListResponse {
 export interface GroupedTargets {
   [month: string]: EmployeeTarget[];
 }
+
+// Target Allocation API Types
+export interface SkuAllocation {
+  productSkuId: string;
+  targetValue: number;
+  percentage: number;
+}
+
+export interface BrickAllocation {
+  brickId: string;
+  skuAllocations: SkuAllocation[];
+}
+
+export interface UserAllocation {
+  userId: string;
+  brickAllocations: BrickAllocation[];
+}
+
+export interface CreateTargetPayload {
+  teamId: string;
+  month: number;
+  year: number;
+  allocations: UserAllocation[];
+}
+
+export interface CreateTargetResponse {
+  success: boolean;
+  message: string;
+  data?: any;
+}

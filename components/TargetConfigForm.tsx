@@ -5,7 +5,7 @@ import { FormInput, FormSelect } from "@/components/form";
 
 interface TargetConfigFormProps {
   selectedTeam: string;
-  targetMonth: string;
+  targetMonth: any[]; // Teams array
   teamRoleCode: string;
   teamName: string;
   channelName: string;
