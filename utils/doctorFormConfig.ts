@@ -103,17 +103,19 @@ export const channelFieldConfigs: Record<string, FieldConfig> = {
 export function getFieldConfigByChannel(channelNameOrId?: string): FieldConfig {
   if (!channelNameOrId) {
     // Return a default configuration with all fields
-    return channelFieldConfigs["pharmacies"];
+    return channelFieldConfigs["doctors-hcps"];
   }
 
   // Normalize the channel name to match our keys (lowercase with hyphens)
   const normalizedName = channelNameOrId.toLowerCase().replace(/\s+/g, "-").replace(/&/g, "");
+
+  console.log("normalizedName", normalizedName);
 
   // Check if we have a configuration for this channel
   if (channelFieldConfigs[normalizedName]) {
     return channelFieldConfigs[normalizedName];
   }
 
-  // Return default configuration (Doctors & HCPs has all fields)
-  return channelFieldConfigs["pharmacies"];
+  // Return pharmacies configuration as the default fallback for unknown channels
+  return channelFieldConfigs["doctors-hcps"];
 }

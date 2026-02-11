@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UserProfile from "@/components/UserProfile";
 import RegionInformation from "@/components/RegionInformation";
 import WeeklyExpenses from "@/components/WeeklyExpenses";
@@ -9,8 +9,31 @@ import AssignedProductTeam from "./AssignProductTeam";
 import Heatmap from "./dashboard/Heatmap";
 import ProductSkuChart from "./productSKUs";
 import SalesTrend from "./SalesTrend";
+import { useParams, useSearchParams } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { getProductById, resetProductByIdState } from "@/store/slices/product/getProductByIdSlice";
+import { RootState } from "@/store";
 
 export default function ProductDetails({ candidate }: any) {
+  const searchParams = useSearchParams();
+  const productId = searchParams.get("id");
+  console.log(productId, "producasdasdatId");
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (productId) {
+      dispatch(getProductById(productId));
+    }
+
+    return () => {
+      dispatch(resetProductByIdState());
+    };
+  }, [dispatch, productId]);
+
+  const productById = useSelector((state: RootState) => state.productById);
+
+  const productData = productById?.product || {};
+
   // Default candidate data matched to picture image_107e81
   const defaultCandidate = {
     name: "Daplyza",
@@ -28,13 +51,14 @@ export default function ProductDetails({ candidate }: any) {
       <div className="flex flex-col lg:flex-row gap-6 w-full">
         {/* LEFT SIDEBAR: ~22% Width (as per image_107e81) */}
         <div className="w-full lg:w-[22%] space-y-6">
-          <UserProfile candidate={defaultCandidate} /> {/* Product Image & Name */}
+          <UserProfile candidate={defaultCandidate} productData={productData} />{" "}
+          {/* Product Image & Name */}
           <RegionInformation
-            status="Active"
-            legacy="000124"
-            category="SGLT2"
-            skuCount="6"
-            formula="Dapagliflozin"
+            status={productData?.status}
+            legacy={productData?.productFormula}
+            category={productData?.productCode}
+            skuCount={productData?.skuCount}
+            formula={productData?.productCategory}
           />{" "}
           {/* Product Info Section */}
         </div>
