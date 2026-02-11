@@ -38,6 +38,7 @@ import allTeamsReducer from "./slices/team/getAllTeamsSlice";
 import createTeamReducer from "./slices/team/createTeamSlice";
 import updateTeamReducer from "./slices/team/updateTeamSlice";
 import getTeamByIdReducer from "./slices/team/getTeamByIdSlice";
+import getTeamDetailsReducer from "./slices/team/getTeamDetailsSlice";
 import brickListReducer from "./slices/brick/getBrickListSlice";
 import brickByIdReducer from "./slices/brick/getBrickByIdSlice";
 import allProductCategoriesReducer from "./slices/productCategory/getAllProductCategoriesSlice";
@@ -81,7 +82,10 @@ import userSamplesReducer from "./slices/UserSamples/userSamplesSlice";
 import userGiveawaysReducer from "./slices/UserGiveaways/userGiveawaysSlice";
 import userDevicesReducer from "./slices/device/getUserDevicesSlice";
 import allocationListReducer from "./slices/allocation/getAllocationListSlice";
+import allocateUserReducer from "./slices/allocation/allocateUserSlice";
 import targetListReducer from "./slices/target/getTargetListSlice";
+import createTargetReducer from "./slices/target/createTargetSlice";
+import allProductSkusReducer from "./slices/product/getAllProductSkusSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -153,6 +157,7 @@ const rootReducer = combineReducers({
   organizationParties: organizationPartiesReducer,
   partyPlan: partyPlanReducer,
   getTeamById: getTeamByIdReducer,
+  teamDetails: getTeamDetailsReducer,
   updateTeam: updateTeamReducer,
   pendingRequests: pendingRequestsReducer,
   handleOtp: handleOtpSliceReducer,
@@ -161,7 +166,10 @@ const rootReducer = combineReducers({
   userGiveaways: userGiveawaysReducer,
   userDevices: userDevicesReducer,
   allocationList: allocationListReducer,
+  allocateUser: allocateUserReducer,
   targetList: targetListReducer,
+  createTarget: createTargetReducer,
+  allProductSkus: allProductSkusReducer,
 });
 
 const persistConfig = {

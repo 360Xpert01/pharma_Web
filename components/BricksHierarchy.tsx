@@ -10,14 +10,12 @@ import {
   Globe,
   Building2,
   Building,
-  LayoutGrid,
   Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button/button";
-import type { Region, Province, City, Area, Brick } from "@/store/slices/brick/getBrickListSlice";
+import type { BrickItem } from "@/store/slices/brick/getBrickListSlice";
 
-type GeoUnitType = "region" | "province" | "city" | "area" | "brick";
+type GeoUnitType = "zone" | "region" | "territory" | "brick";
 
 interface HierarchyNode {
   id: string;
@@ -25,16 +23,15 @@ interface HierarchyNode {
   type: GeoUnitType;
   latitude?: number;
   longitude?: number;
+  brickCode?: string;
   children?: HierarchyNode[];
 }
 
-// Define the hierarchy: what can be added under each type
 const CHILD_TYPE_MAP: Record<GeoUnitType, GeoUnitType | null> = {
-  region: "province",
-  province: "city",
-  city: "area",
-  area: "brick",
-  brick: null, // Bricks cannot have children
+  zone: "region",
+  region: "territory",
+  territory: "brick",
+  brick: null,
 };
 
 interface BrickNodeProps {
@@ -48,20 +45,19 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
   const [isExpanded, setIsExpanded] = useState(true);
 
   const hasChildren = item.children && item.children.length > 0;
-  const canHaveChildren = CHILD_TYPE_MAP[item.type] !== null;
-  const childType = CHILD_TYPE_MAP[item.type];
 
-  // Get icon based on type
+  // For dynamic type support, we determine next type based on CHILD_TYPE_MAP
+  const childType = CHILD_TYPE_MAP[item.type];
+  const canHaveChildren = childType !== null;
+
   const getTypeIcon = (type: GeoUnitType) => {
     switch (type) {
-      case "region":
+      case "zone":
         return Globe;
-      case "province":
+      case "region":
         return Building2;
-      case "city":
+      case "territory":
         return Building;
-      case "area":
-        return LayoutGrid;
       case "brick":
         return MapPin;
       default:
@@ -69,17 +65,14 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
     }
   };
 
-  // Determine colors based on type - using theme variables
   const getTypeStyles = (type: GeoUnitType) => {
     switch (type) {
+      case "zone":
+        return "bg-[var(--chart-4)] text-[var(--light)]";
       case "region":
-        return "bg-[var(--chart-4)] text-[var(--light)]"; // Using chart-4 for variety
-      case "province":
         return "bg-[var(--primary)] text-[var(--light)]";
-      case "city":
+      case "territory":
         return "bg-[var(--primary)]/80 text-[var(--light)]";
-      case "area":
-        return "bg-[var(--success)] text-[var(--light)]";
       case "brick":
         return "bg-[var(--warning)] text-[var(--light)]";
       default:
@@ -87,51 +80,23 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
     }
   };
 
-  const getTypeLabel = (type: GeoUnitType) => {
-    switch (type) {
-      case "region":
-        return "Region";
-      case "province":
-        return "Province";
-      case "city":
-        return "City";
-      case "area":
-        return "Area";
-      case "brick":
-        return "Brick";
-      default:
-        return type;
-    }
-  };
-
   const Icon = getTypeIcon(item.type);
 
   return (
     <div className="relative" style={{ marginLeft: level > 0 ? "48px" : "0" }}>
-      {/* Vertical line from parent */}
       {level > 0 && (
         <>
           <div
             className="absolute border-l-2 border-dashed border-[var(--gray-3)]"
-            style={{
-              left: "-24px",
-              top: "0",
-              height: "36px",
-            }}
+            style={{ left: "-24px", top: "0", height: "36px" }}
           />
-          {/* Horizontal line to node */}
           <div
             className="absolute border-t-2 border-dashed border-[var(--gray-3)]"
-            style={{
-              left: "-24px",
-              top: "36px",
-              width: "24px",
-            }}
+            style={{ left: "-24px", top: "36px", width: "24px" }}
           />
         </>
       )}
 
-      {/* Vertical line to children - extends to connect all children */}
       {hasChildren && isExpanded && (
         <div
           className="absolute border-l-2 border-dashed border-[var(--gray-3)]"
@@ -144,13 +109,11 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
       )}
 
       <div className="flex items-center gap-3 group border border-[var(--gray-2)] rounded-8 p-4 bg-[var(--background)] hover:bg-[var(--gray-0)] transition-colors">
-        {/* Expand/Collapse Button */}
         <div className="flex items-center">
           {hasChildren ? (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
               className="w-6 h-6 flex items-center justify-center hover:bg-[var(--gray-2)] rounded transition-colors z-10 mr-2 cursor-pointer"
-              aria-label={isExpanded ? "Collapse" : "Expand"}
             >
               {isExpanded ? (
                 <ChevronDown className="w-4 h-4 text-[var(--gray-6)]" />
@@ -163,7 +126,6 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
           )}
         </div>
 
-        {/* Icon */}
         <div
           className={cn(
             "w-10 h-10 rounded-8 flex items-center justify-center",
@@ -173,28 +135,16 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
           <Icon className="w-5 h-5" />
         </div>
 
-        {/* Name and Type */}
         <div className="flex-1 min-w-0">
           <div className="font-semibold text-[var(--gray-9)]">{item.name}</div>
-          <div className="text-sm text-[var(--gray-5)]">
-            {getTypeLabel(item.type)}
-            {item.type === "brick" &&
-              item.latitude !== undefined &&
-              item.longitude !== undefined && (
-                <span className="ml-2 text-xs text-[var(--gray-4)]">
-                  ({item.latitude.toFixed(4)}, {item.longitude.toFixed(4)})
-                </span>
-              )}
-          </div>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex items-center gap-2">
           {canHaveChildren && (
             <button
               className="h-10 w-10 rounded-8 bg-[var(--primary)] hover:bg-[var(--primary)]/80 text-[var(--light)] border-none shadow-soft cursor-pointer flex items-center justify-center transition-colors"
               onClick={() => childType && onAddChild?.(item.id, childType)}
-              title={`Add ${childType}`}
+              title={`Add child`}
             >
               <Plus className="w-5 h-5" />
             </button>
@@ -203,14 +153,12 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
           <button
             className="w-9 h-9 flex items-center justify-center hover:bg-[var(--gray-1)] rounded-8 transition-colors cursor-pointer"
             onClick={() => onMoreOptions?.(item.id, item.type)}
-            aria-label="More options"
           >
             <MoreVertical className="w-4 h-4 text-[var(--gray-6)]" />
           </button>
         </div>
       </div>
 
-      {/* Children */}
       {hasChildren && isExpanded && (
         <div className="relative mt-4 space-y-4">
           {item.children!.map((child) => (
@@ -228,13 +176,11 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
   );
 };
 
-// Props for the BricksHierarchy component
 interface BricksHierarchyProps {
-  regions: Region[];
-  provinces: Province[];
-  cities: City[];
-  areas: Area[];
-  bricks: Brick[];
+  zones: BrickItem[];
+  regions: BrickItem[];
+  territories?: BrickItem[];
+  bricks: BrickItem[];
   loading?: boolean;
   error?: string | null;
   onAddChild?: (parentId: string, childType: GeoUnitType) => void;
@@ -242,93 +188,53 @@ interface BricksHierarchyProps {
 }
 
 export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
+  zones,
   regions,
-  provinces,
-  cities,
-  areas,
+  territories = [],
   bricks,
   loading = false,
   error = null,
   onAddChild,
   onMoreOptions,
 }) => {
-  // Transform flat API data into hierarchical structure
   const hierarchyData = useMemo((): HierarchyNode[] => {
-    // Create maps for efficient lookup
-    const provincesByRegion = new Map<string, Province[]>();
-    const citiesByProvince = new Map<string, City[]>();
-    const areasByCity = new Map<string, Area[]>();
-    const bricksByArea = new Map<string, Brick[]>();
+    // 1. Tag items with their type and put them in a flat map grouped by parentId
+    const allItems = [
+      ...zones.map((z) => ({ ...z, _type: "zone" as GeoUnitType })),
+      ...regions.map((r) => ({ ...r, _type: "region" as GeoUnitType })),
+      ...territories.map((t) => ({ ...t, _type: "territory" as GeoUnitType })),
+      ...bricks.map((b) => ({ ...b, _type: "brick" as GeoUnitType })),
+    ];
 
-    // Group provinces by region
-    provinces.forEach((province) => {
-      const existing = provincesByRegion.get(province.regionId) || [];
-      existing.push(province);
-      provincesByRegion.set(province.regionId, existing);
+    const itemsByParentId = new Map<string, any[]>();
+    allItems.forEach((item) => {
+      if (item.parentId) {
+        const existing = itemsByParentId.get(item.parentId) || [];
+        existing.push(item);
+        itemsByParentId.set(item.parentId, existing);
+      }
     });
 
-    // Group cities by province
-    cities.forEach((city) => {
-      const existing = citiesByProvince.get(city.provinceId) || [];
-      existing.push(city);
-      citiesByProvince.set(city.provinceId, existing);
-    });
+    // 2. Recursive function to build the tree
+    const buildNode = (item: any): HierarchyNode => {
+      const type = item._type as GeoUnitType;
+      const childrenRaw = itemsByParentId.get(item.id) || [];
 
-    // Group areas by city
-    areas.forEach((area) => {
-      const existing = areasByCity.get(area.cityId) || [];
-      existing.push(area);
-      areasByCity.set(area.cityId, existing);
-    });
+      return {
+        id: item.id,
+        name: item.name,
+        type: type,
+        latitude: item.latitude,
+        longitude: item.longitude,
+        brickCode: item.brickCode,
+        children: childrenRaw.length > 0 ? childrenRaw.map((child) => buildNode(child)) : undefined,
+      };
+    };
 
-    // Group bricks by area
-    bricks.forEach((brick) => {
-      const existing = bricksByArea.get(brick.areaId) || [];
-      existing.push(brick);
-      bricksByArea.set(brick.areaId, existing);
-    });
+    // 3. Build hierarchy starting from zones (roots)
+    return zones.map((zone) => buildNode({ ...zone, _type: "zone" }));
+  }, [zones, regions, territories, bricks]);
 
-    // Build hierarchy from top down
-    return regions.map(
-      (region): HierarchyNode => ({
-        id: region.id,
-        name: region.name,
-        type: "region",
-        children: (provincesByRegion.get(region.id) || []).map(
-          (province): HierarchyNode => ({
-            id: province.id,
-            name: province.name,
-            type: "province",
-            children: (citiesByProvince.get(province.id) || []).map(
-              (city): HierarchyNode => ({
-                id: city.id,
-                name: city.name,
-                type: "city",
-                children: (areasByCity.get(city.id) || []).map(
-                  (area): HierarchyNode => ({
-                    id: area.id,
-                    name: area.name,
-                    type: "area",
-                    children: (bricksByArea.get(area.id) || []).map(
-                      (brick): HierarchyNode => ({
-                        id: brick.id,
-                        name: brick.name,
-                        type: "brick",
-                        latitude: brick.latitude,
-                        longitude: brick.longitude,
-                      })
-                    ),
-                  })
-                ),
-              })
-            ),
-          })
-        ),
-      })
-    );
-  }, [regions, provinces, cities, areas, bricks]);
-
-  // Loading state
   if (loading) {
     return (
       <div className="w-full bg-[var(--background)] rounded-8">
@@ -340,7 +246,6 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
     );
   }
 
-  // Error state
   if (error) {
     return (
       <div className="w-full bg-[var(--background)] rounded-8">
@@ -355,7 +260,6 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
     );
   }
 
-  // Empty state
   if (hierarchyData.length === 0) {
     return (
       <div className="w-full bg-[var(--background)] rounded-8">
@@ -363,9 +267,9 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
           <div className="w-12 h-12 rounded-8 bg-[var(--gray-1)] flex items-center justify-center mb-4">
             <Globe className="w-6 h-6 text-[var(--gray-4)]" />
           </div>
-          <p className="text-[var(--gray-5)] font-medium mb-2">No regions found</p>
+          <p className="text-[var(--gray-5)] font-medium mb-2">No zones found</p>
           <p className="text-[var(--gray-4)] text-sm text-center">
-            Add a new region to get started with your geographical hierarchy.
+            Add a new zone to get started with your geographical hierarchy.
           </p>
         </div>
       </div>
@@ -374,7 +278,6 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
 
   return (
     <div className="w-full bg-[var(--background)] rounded-8">
-      {/* Hierarchy Tree */}
       <div className="px-6 py-8 space-y-6">
         {hierarchyData.map((item) => (
           <BrickNode

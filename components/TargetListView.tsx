@@ -9,6 +9,15 @@ import TablePagination from "@/components/TablePagination";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getTargetList, resetTargetListState } from "@/store/slices/target/getTargetListSlice";
 import EditIcon from "@/components/svgs/edit-icon";
+import EyeIcon from "@/components/svgs/eye-icon";
+import TargetExpandedRow from "@/components/TargetExpandedRow";
+
+interface Product {
+  id: string;
+  productName: string;
+  targetPackets: number;
+  achievementPercentage: number;
+}
 
 interface TargetListItem {
   userId: string;
@@ -26,6 +35,9 @@ interface TargetListItem {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  territory?: string;
+  tags?: string[];
+  products: Product[];
 }
 
 // Helper function to get month name
@@ -114,7 +126,7 @@ export default function TargetListView() {
       ),
     },
     {
-      header: "Team Name",
+      header: "Team",
       accessorKey: "teamName",
       cell: ({ row }) => (
         <div className="t-td-b truncate" title={row.original.teamName}>
@@ -132,6 +144,15 @@ export default function TargetListView() {
       ),
     },
     {
+      header: "Territory",
+      accessorKey: "territory",
+      cell: ({ row }) => (
+        <div className="t-td-b truncate" title={row.original.territory || "N/A"}>
+          {row.original.territory || "N/A"}
+        </div>
+      ),
+    },
+    {
       header: "Supervisor",
       accessorKey: "lineManagerName",
       cell: ({ row }) => (
@@ -144,7 +165,17 @@ export default function TargetListView() {
       id: "actions",
       header: "",
       cell: ({ row }) => (
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-2">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              row.toggleExpanded();
+            }}
+            className="group hover:opacity-80 transition cursor-pointer"
+            title={row.getIsExpanded() ? "Collapse" : "Expand"}
+          >
+            <EyeIcon />
+          </button>
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -172,6 +203,8 @@ export default function TargetListView() {
         pageSize={10}
         PaginationComponent={TablePagination}
         emptyMessage="No targets found"
+        enableExpanding={true}
+        renderExpandedRow={(target) => <TargetExpandedRow target={target} />}
       />
     </div>
   );

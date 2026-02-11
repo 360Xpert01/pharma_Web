@@ -26,11 +26,21 @@ export default function AllocatedGiveawaysTable() {
   const dispatch = useAppDispatch();
   const { allocations, loading, error } = useAppSelector((state) => state.allocationList);
 
-  // Fetch allocation data on mount
+  // Fetch allocation data on mount and when page becomes visible
   useEffect(() => {
     dispatch(getAllocationList());
 
+    // Refresh data when page becomes visible (e.g., after navigation back)
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        dispatch(getAllocationList());
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       dispatch(resetAllocationListState());
     };
   }, [dispatch]);

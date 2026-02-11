@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TargetConfigForm from "./TargetConfigForm";
 import ManagerSection, { Manager } from "./ManagerSection";
 import ConflictModal from "./ConflictModal";
@@ -8,41 +8,75 @@ import { Button } from "@/components/ui/button/button";
 import { FormInput } from "@/components/form";
 import { mockManagers } from "@/data/targetData";
 import { getAllTeams } from "@/store/slices/team/getAllTeamsSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { se } from "date-fns/locale";
+import { getTeamDetails } from "@/store/slices/team/getTeamDetailsSlice";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { createTarget, resetCreateTargetState } from "@/store/slices/target/createTargetSlice";
+import type { CreateTargetPayload } from "@/types/target";
 
 export default function SetTargetPage() {
   // Form state
   const [selectedTeam, setSelectedTeam] = useState("");
-
   const [targetMonth, setTargetMonth] = useState("");
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const teamId = selectedTeam;
+  // Redux selectors
+  const { teams } = useAppSelector((state) => state.allTeams);
+  const { teamDetails, loading: teamDetailsLoading } = useAppSelector((state) => state.teamDetails);
+  const { loading, success, error, message } = useAppSelector((state) => state.createTarget);
 
-  React.useEffect(() => {
-    dispatch(getAllTeams());
-  }, [dispatch]);
-
-  // Manager selection state
+  // Manager selection state (keeping for backward compatibility with UI)
   const [selectedManager1, setSelectedManager1] = useState("manager1");
   const [selectedManager2, setSelectedManager2] = useState("manager2");
-  const { teams } = useSelector((state: any) => state.allTeams);
 
   // Conflict Modal state
   const [isConflictModalOpen, setIsConflictModalOpen] = useState(false);
 
-  const matchTeam = teams.filter((teams: any) => teams.id === selectedTeam);
+  // Find selected team data
+  const matchTeam = teams.find((team: any) => team.id === selectedTeam);
+  const selectedTeamDetail = teamDetails.find((team) => team.id === selectedTeam);
 
-  // Mock data imported from data file
+  // Mock data imported from data file (keep for now if no real data)
   const [managers, setManagers] = useState<Manager[]>(mockManagers);
+
+  // Fetch teams on mount
+  useEffect(() => {
+    dispatch(getAllTeams());
+    dispatch(getTeamDetails());
+  }, [dispatch]);
+
+  // Fetch team details when team is selected
+  useEffect(() => {
+    if (selectedTeam) {
+      dispatch(getTeamDetails());
+    }
+  }, [selectedTeam, dispatch]);
+
+  // Handle API success
+  useEffect(() => {
+    if (success) {
+      alert(message || "Target allocation created successfully!");
+      // Reset form
+      setManagers(mockManagers);
+      dispatch(resetCreateTargetState());
+    }
+  }, [success, message, dispatch]);
+
+  // Handle API error
+  useEffect(() => {
+    if (error) {
+      alert(`Error: ${error}`);
+      dispatch(resetCreateTargetState());
+    }
+  }, [error, dispatch]);
 
   // Read-only field values (populated when team is selected)
   const teamMetadata = {
-    teamRoleCode: matchTeam[0]?.pulseCode,
-    teamName: matchTeam[0]?.name,
-    channelName: matchTeam[0]?.channelName,
-    callPoint: matchTeam[0]?.callPointName,
+    teamRoleCode: matchTeam?.pulseCode || "",
+    teamName: matchTeam?.name || "",
+    channelName: selectedTeamDetail?.channelName || matchTeam?.channelName || "",
+    callPoint: selectedTeamDetail?.callPoints?.length
+      ? selectedTeamDetail.callPoints[0]?.name || "No Callpoint available"
+      : "No Callpoint available",
   };
 
   // Handler functions
@@ -80,7 +114,18 @@ export default function SetTargetPage() {
     );
   };
 
-  const handleSetTarget = () => {
+  const handleSetTarget = async () => {
+    // Validation
+    if (!selectedTeam) {
+      alert("Please select a team");
+      return;
+    }
+
+    if (!targetMonth) {
+      alert("Please select a target month");
+      return;
+    }
+
     // Validate for conflicts
     const hasConflicts = managers.some((manager) =>
       manager.salesReps.some((rep) => rep.products.some((product) => product.hasConflict))
@@ -91,9 +136,85 @@ export default function SetTargetPage() {
       return;
     }
 
-    // Submit logic here
-    console.log("Setting targets...", { selectedTeam, targetMonth, managers });
-    alert("Targets set successfully!");
+    // Parse month/year from targetMonth (assuming format like "2026-12" or just "12" or month name)
+    const currentYear = new Date().getFullYear();
+    let month: number;
+    let year: number;
+
+    if (targetMonth.includes("-")) {
+      [year, month] = targetMonth.split("-").map(Number);
+    } else if (!isNaN(parseInt(targetMonth))) {
+      month = parseInt(targetMonth);
+      year = currentYear;
+    } else {
+      // Month name mapping
+      const monthNames = [
+        "january",
+        "february",
+        "march",
+        "april",
+        "may",
+        "june",
+        "july",
+        "august",
+        "september",
+        "october",
+        "november",
+        "december",
+      ];
+      month = monthNames.indexOf(targetMonth.toLowerCase()) + 1;
+      year = currentYear;
+    }
+
+    // Build allocation payload from team details or fall back to managers data
+    let allocations;
+
+    if (selectedTeamDetail && selectedTeamDetail.users.length > 0) {
+      // Use real API data
+      allocations = selectedTeamDetail.users.map((user) => ({
+        userId: user.id,
+        brickAllocations: selectedTeamDetail.products.map((product) => ({
+          brickId: "default-brick-id", // No brick info in API, using default
+          skuAllocations: product.skus.map((sku) => ({
+            productSkuId: sku.id,
+            targetValue: 0, // Default value, should be set by user input
+            percentage: 100,
+          })),
+        })),
+      }));
+    } else {
+      // Fall back to mock data structure
+      allocations = managers.flatMap((manager) =>
+        manager.salesReps.map((rep) => ({
+          userId: rep.id,
+          brickAllocations: [
+            {
+              brickId: rep.productTags?.[0] || "default-brick-id",
+              skuAllocations: rep.products.map((product) => ({
+                productSkuId: product.id,
+                targetValue: parseInt(product.inputValue) || parseInt(product.targetQuantity) || 0,
+                percentage: product.completionPercentage || 100,
+              })),
+            },
+          ],
+        }))
+      );
+    }
+
+    const payload: CreateTargetPayload = {
+      teamId: selectedTeam,
+      month: month,
+      year: year,
+      allocations,
+    };
+
+    console.log("Submitting target payload:", payload);
+
+    try {
+      await dispatch(createTarget(payload)).unwrap();
+    } catch (err) {
+      console.error("Failed to create target:", err);
+    }
   };
 
   return (
@@ -206,8 +327,10 @@ export default function SetTargetPage() {
             size="lg"
             rounded="full"
             className="px-8 shadow-soft"
+            disabled={loading || !selectedTeam || !targetMonth}
+            loading={loading}
           >
-            Set Target
+            {loading ? "Submitting..." : "Set Target"}
           </Button>
         </div>
       </div>

@@ -7,20 +7,17 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://api.ceturo.com/";
 interface BrickItem {
   id: string;
   name: string;
-  parentId: string;
-  latitude: number;
-  longitude: number;
-  brickCode: string;
-  createdAt: string;
+  parentId?: string;
+  latitude?: number;
+  longitude?: number;
+  brickCode?: string;
+  createdAt?: string;
 }
 
 interface BrickListResponse {
-  regions?: BrickItem[];
-  provinces?: BrickItem[];
-  cities?: BrickItem[];
-  areas?: BrickItem[];
-  bricks?: BrickItem[];
   zones?: BrickItem[];
+  regions?: BrickItem[];
+  bricks?: BrickItem[];
   [key: string]: BrickItem[] | undefined;
 }
 
@@ -28,12 +25,9 @@ interface BrickListState {
   loading: boolean;
   success: boolean;
   error: string | null;
-  bricks: BrickItem[];
-  areas: BrickItem[];
-  cities: BrickItem[];
-  provinces: BrickItem[];
-  regions: BrickItem[];
   zones: BrickItem[];
+  regions: BrickItem[];
+  bricks: BrickItem[];
 }
 
 // Initial State
@@ -41,12 +35,9 @@ const initialState: BrickListState = {
   loading: false,
   success: false,
   error: null,
-  bricks: [],
-  areas: [],
-  cities: [],
-  provinces: [],
-  regions: [],
   zones: [],
+  regions: [],
+  bricks: [],
 };
 
 // Async Thunk: Get Brick List (GET /api/v1/brick/list)
@@ -88,12 +79,9 @@ const getBrickListSlice = createSlice({
       state.loading = false;
       state.success = false;
       state.error = null;
-      state.bricks = [];
-      state.areas = [];
-      state.cities = [];
-      state.provinces = [];
-      state.regions = [];
       state.zones = [];
+      state.regions = [];
+      state.bricks = [];
     },
   },
   extraReducers: (builder) => {
@@ -105,23 +93,17 @@ const getBrickListSlice = createSlice({
       .addCase(getBrickList.fulfilled, (state, action: PayloadAction<BrickListResponse>) => {
         state.loading = false;
         state.success = true;
-        state.bricks = action.payload.bricks || [];
-        state.areas = action.payload.areas || [];
-        state.cities = action.payload.cities || [];
-        state.provinces = action.payload.provinces || [];
-        state.regions = action.payload.regions || [];
         state.zones = action.payload.zones || [];
+        state.regions = action.payload.regions || [];
+        state.bricks = action.payload.bricks || [];
       })
       .addCase(getBrickList.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
         state.error = action.payload || "Failed to load brick list";
-        state.bricks = [];
-        state.areas = [];
-        state.cities = [];
-        state.provinces = [];
-        state.regions = [];
         state.zones = [];
+        state.regions = [];
+        state.bricks = [];
       });
   },
 });
