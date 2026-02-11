@@ -58,6 +58,10 @@ import allQualificationsReducer from "./slices/qualification/getAllQualification
 import createQualificationReducer from "./slices/qualification/createQualificationSlice";
 import updateQualificationReducer from "./slices/qualification/updateQualificationSlice";
 import getQualificationByIdReducer from "./slices/qualification/getQualificationByIdSlice";
+import allDistributorTypesReducer from "./slices/distributorType/getAllDistributorTypesSlice";
+import createDistributorTypeReducer from "./slices/distributorType/createDistributorTypeSlice";
+import updateDistributorTypeReducer from "./slices/distributorType/updateDistributorTypeSlice";
+import getDistributorTypeByIdReducer from "./slices/distributorType/getDistributorTypeByIdSlice";
 import allSegmentsReducer from "./slices/segment/getAllSegmentsSlice";
 import createSegmentReducer from "./slices/segment/createSegmentSlice";
 import getSegmentByIdReducer from "./slices/segment/getSegmentByIdSlice";
@@ -132,6 +136,10 @@ const rootReducer = combineReducers({
   createQualification: createQualificationReducer,
   updateQualification: updateQualificationReducer,
   qualificationById: getQualificationByIdReducer,
+  allDistributorTypes: allDistributorTypesReducer,
+  createDistributorType: createDistributorTypeReducer,
+  updateDistributorType: updateDistributorTypeReducer,
+  distributorTypeById: getDistributorTypeByIdReducer,
   allSegments: allSegmentsReducer,
   createSegment: createSegmentReducer,
   segmentById: getSegmentByIdReducer,

@@ -33,6 +33,8 @@ import DoctorSegments from "@/components/DoctorSegments";
 import AllDoctorSegments from "@/components/AllDoctorSegments";
 import Qualifications from "@/components/Qualifications";
 import AllQualifications from "@/components/AllQualifications";
+import DistributorTypes from "@/components/DistributorTypes";
+import AllDistributorTypes from "@/components/AllDistributorTypes";
 import Specialities from "@/components/Specialities";
 import AllSpecialities from "@/components/AllSpecialities";
 import AddSampleForm from "@/components/AddSampleForm";
@@ -131,6 +133,8 @@ export function DashboardContent({
   doctorSegmentsTrue,
   qualificationsD,
   qualificationsTrue,
+  distributorTypesD,
+  distributorTypesTrue,
   specialitiesD,
   specialitiesTrue,
   UpdateGiveaway,
@@ -155,6 +159,8 @@ export function DashboardContent({
   const [selectedSpecialityId, setSelectedSpecialityId] = useState<string | null>(null);
   // State for qualification editing
   const [selectedQualificationId, setSelectedQualificationId] = useState<string | null>(null);
+  // State for distributor type editing
+  const [selectedDistributorTypeId, setSelectedDistributorTypeId] = useState<string | null>(null);
 
   // State for Doctor Table Search
   const [searchTerm, setSearchTerm] = useState("");
@@ -235,6 +241,15 @@ export function DashboardContent({
     setSelectedQualificationId(null);
   };
 
+  const handleEditDistributorType = (distributorTypeId: string) => {
+    setSelectedDistributorTypeId(distributorTypeId);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleDistributorTypeUpdateComplete = () => {
+    setSelectedDistributorTypeId(null);
+  };
+
   return (
     <div className="space-y-1 px-3 mt-30 bg-(--gray-0)">
       {!channalTrue &&
@@ -242,6 +257,7 @@ export function DashboardContent({
         !specializationsTrue &&
         !doctorSegmentsTrue &&
         !qualificationsTrue &&
+        !distributorTypesTrue &&
         !specialitiesTrue && (
           <DashboardHeader
             onRefresh={handleRefresh}
@@ -309,6 +325,19 @@ export function DashboardContent({
             <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
               <TableHeader campHeading={campHeading} filterT={filterT} />
               <AllQualifications onEditQualification={handleEditQualification} />
+            </div>
+          </div>
+        )}
+
+        {distributorTypesD && (
+          <div>
+            <DistributorTypes
+              updateId={selectedDistributorTypeId}
+              onUpdateComplete={handleDistributorTypeUpdateComplete}
+            />
+            <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
+              <TableHeader campHeading={campHeading} filterT={filterT} />
+              <AllDistributorTypes onEditDistributorType={handleEditDistributorType} />
             </div>
           </div>
         )}
