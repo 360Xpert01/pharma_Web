@@ -7,32 +7,39 @@ import { Button } from "@/components/ui/button/button";
 
 interface Candidate {
   name: string;
-  email: string;
-  phone: string;
-  pulseCode: string;
-  profilePicture: string;
-  fullAddress: string;
-  dob: string;
+  email?: string;
+  phone?: string;
+  pulseCode?: string;
+  profilePicture?: string;
+  fullAddress?: string;
+  dob?: string;
 }
 
-interface CandidateCardProps {
+interface UserProfileProps {
   candidate: Candidate;
+  productData?: any;
 }
 
-const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
+const UserProfile: FC<UserProfileProps> = ({ candidate, productData }) => {
   const router = useRouter();
 
-  const handlePush = () => {
-    router.push("/dashboard/UpdateEmployees");
-  };
+  // Determine display values based on whether it's a product or a person
+  const name = productData?.productName || candidate.name;
+  const subTitle = candidate.email;
+  const description = productData?.productGroup || candidate.fullAddress;
+  const extraInfo = productData?.productCategory || candidate.phone;
+  const footerInfo = candidate.dob;
+  const pulseCode = productData?.pulseCode || candidate.pulseCode;
+  const profilePicture = productData?.imageUrl || candidate.profilePicture;
+  const Name = productData?.name || candidate.name;
 
   return (
     <div className="w-full bg-background rounded-8 px-6 py-8 shadow-soft border border-gray-1 flex flex-col items-center">
       {/* Profile Image */}
       <div className="relative w-36 h-36 rounded-8 overflow-hidden mb-4">
         <Image
-          src={candidate.profilePicture || "/capMan.svg"}
-          alt={candidate.name}
+          src={profilePicture || "/capMan.svg"}
+          alt={name}
           width={128}
           height={128}
           className="object-cover w-full h-full"
@@ -40,28 +47,36 @@ const CandidateCard: FC<CandidateCardProps> = ({ candidate }) => {
       </div>
 
       {/* Name */}
-      <h2 className="text-3xl font-bold text-center text-gray-9 mb-2">{candidate.name}</h2>
+      <h2 className="text-3xl font-bold text-center text-gray-9 mb-2">{Name}</h2>
 
-      {/* Email */}
-      <p className="text-base font-thin text-center mb-3">{candidate.email}</p>
+      {/* Subtitle (Email/Formula) */}
+      {subTitle && <p className="text-base font-thin text-center mb-3">{subTitle}</p>}
 
-      {/* Address */}
-      <p className="text-base text-(--gray-5) font-thin text-center mb-3 leading-relaxed">
-        {candidate.fullAddress !== "N/A" ? candidate.fullAddress : "No address provided"}
-      </p>
+      {/* Description (Address/Group) */}
+      {description && description !== "N/A" && (
+        <p className="text-base text-(--gray-5) font-thin text-center mb-3 leading-relaxed">
+          {description}
+        </p>
+      )}
 
-      {/* Phone */}
-      <p className="text-base text-(--gray-5) font-thin text-center mb-3">{candidate.phone}</p>
+      {/* Extra Info (Phone/Category) */}
+      {extraInfo && extraInfo !== "N/A" && (
+        <p className="text-base text-(--gray-5) font-semibold text-center mb-3">({extraInfo})</p>
+      )}
 
-      {/* Date of Birth */}
-      <p className="text-base text-(--gray-5) font-thin text-center mb-6">{candidate.dob}</p>
+      {/* Footer Info (DOB/Code) */}
+      {footerInfo && footerInfo !== "N/A" && (
+        <p className="text-base text-(--gray-5) font-thin text-center mb-6">{footerInfo}</p>
+      )}
 
-      {/* Employee ID Badge */}
-      <div className="bg-primary text-white text-sm px-6 py-2 rounded-8 font-semibold">
-        {candidate.pulseCode}
-      </div>
+      {/* Badge (PulseCode/Code) */}
+      {pulseCode && (
+        <div className="bg-primary text-white text-sm px-6 py-2 rounded-8 font-semibold">
+          {pulseCode}
+        </div>
+      )}
     </div>
   );
 };
 
-export default CandidateCard;
+export default UserProfile;
