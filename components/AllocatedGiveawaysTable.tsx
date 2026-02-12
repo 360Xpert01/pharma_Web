@@ -2,6 +2,7 @@
 
 import React, { useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { ColumnDef } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
@@ -22,18 +23,29 @@ interface AllocationRecord {
   profilePicture?: string;
 }
 
-export default function AllocatedGiveawaysTable() {
+export default function AllocatedGiveawaysTable({
+  searchTerm = "",
+  employeeId = "",
+}: {
+  searchTerm?: string;
+  employeeId?: string;
+}) {
   const dispatch = useAppDispatch();
-  const { allocations, loading, error } = useAppSelector((state) => state.allocationList);
+  const { allocations, loading, error, pagination } = useAppSelector(
+    (state) => state.allocationList
+  );
 
-  // Fetch allocation data on mount and when page becomes visible
+  const router = useRouter();
+  const pageSize = 10;
+
+  // Fetch allocation data on mount and when searchTerm or employeeId changes
   useEffect(() => {
-    dispatch(getAllocationList());
+    dispatch(getAllocationList({ search: searchTerm, page: 1, limit: pageSize, employeeId }));
 
     // Refresh data when page becomes visible (e.g., after navigation back)
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        dispatch(getAllocationList());
+        dispatch(getAllocationList({ search: searchTerm, page: 1, limit: pageSize, employeeId }));
       }
     };
 
@@ -43,10 +55,14 @@ export default function AllocatedGiveawaysTable() {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       dispatch(resetAllocationListState());
     };
-  }, [dispatch]);
+  }, [dispatch, searchTerm, employeeId]);
 
   const handleRetry = () => {
-    dispatch(getAllocationList());
+    dispatch(getAllocationList({ search: searchTerm, page: 1, limit: pageSize, employeeId }));
+  };
+
+  const handlePageChange = (page: number, size: number) => {
+    dispatch(getAllocationList({ search: searchTerm, page, limit: size, employeeId }));
   };
 
   const handleViewDetails = (userId: string) => {
@@ -71,19 +87,19 @@ export default function AllocatedGiveawaysTable() {
       header: "Employee Name",
       accessorKey: "employeeName",
       cell: ({ row }) => (
-        <div className="flex items-center gap-3 min-w-0">
+        <div
+          onClick={() => router.push(`/dashboard/Employee-Profile?id=${row.original.userId}`)}
+          className="flex items-center gap-3 cursor-pointer group hover:opacity-80 transition-opacity"
+        >
           <Image
             src={row.original.profilePicture || "/girlPic.svg"}
             alt={row.original.employeeName}
-            width={40}
-            height={40}
+            width={36}
+            height={36}
             className="rounded-8 flex-shrink-0 object-cover"
           />
           <div className="min-w-0 flex-1">
-            <p
-              className="font-semibold text-[var(--gray-9)] truncate text-sm"
-              title={row.original.employeeName}
-            >
+            <p className="text-[var(--primary)] underline truncate font-medium text-sm">
               {row.original.employeeName}
             </p>
             <span
@@ -147,7 +163,10 @@ export default function AllocatedGiveawaysTable() {
         error={error}
         onRetry={handleRetry}
         enablePagination={true}
-        pageSize={10}
+        serverSidePagination={true}
+        totalItems={pagination?.total || 0}
+        pageSize={pageSize}
+        onPaginationChange={handlePageChange}
         PaginationComponent={TablePagination}
         emptyMessage="No allocations found"
       />

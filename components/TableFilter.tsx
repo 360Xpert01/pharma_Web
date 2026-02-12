@@ -15,20 +15,18 @@ interface TableFilterProps {
   showEmployeeFilters?: boolean;
   showProductFilters?: boolean;
   showGiveawayFilters?: boolean;
+  isAllocate?: boolean;
   channelId?: string;
   onApply?: () => void;
   onApplyFilters?: (filters: {
-    // Doctor filters
     segmentId?: string;
     specializationId?: string;
-    // Employee filters
     roleId?: string;
     teamId?: string;
     supervisorId?: string;
-    // Product filters
     categoryId?: string;
-    // Giveaway filters
     status?: string;
+    employeeId?: string;
   }) => void;
   onClear?: () => void;
 }
@@ -38,6 +36,7 @@ export default function TableFilter({
   showEmployeeFilters = false,
   showProductFilters = false,
   showGiveawayFilters = false,
+  isAllocate = false,
   channelId,
   onApply,
   onApplyFilters,
@@ -57,6 +56,7 @@ export default function TableFilter({
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [selectedProductStatus, setSelectedProductStatus] = useState("");
   const [selectedGiveawayStatus, setSelectedGiveawayStatus] = useState("");
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
 
   // Redux state for filters
   const { specializations } = useAppSelector((state) => state.allSpecializations);
@@ -85,6 +85,9 @@ export default function TableFilter({
     }
     if (showProductFilters && isFilterOpen) {
       dispatch(getProductCategories());
+    }
+    if (isAllocate && isFilterOpen) {
+      dispatch(getAllUsers({ page: 1, limit: 100 })); // Fetch more users for dropdown
     }
   }, [
     dispatch,
@@ -266,6 +269,27 @@ export default function TableFilter({
                   />
                 </div>
               </>
+            ) : isAllocate ? (
+              <>
+                {/* Employee Filter */}
+                <div>
+                  <FormSelect
+                    label="Employee"
+                    name="employeeId"
+                    value={selectedEmployeeId}
+                    onChange={setSelectedEmployeeId}
+                    options={[
+                      { value: "", label: "All Employees" },
+                      ...users.map((user) => ({
+                        value: user.id,
+                        label: `${user.firstName} ${user.lastName}`,
+                      })),
+                    ]}
+                    placeholder="Select Employee"
+                    className="mb-0"
+                  />
+                </div>
+              </>
             ) : null}
 
             {/* Status Filter (Common for Doctor, Employee, and Product) */}
@@ -296,7 +320,8 @@ export default function TableFilter({
             {!showDoctorFilters &&
               !showEmployeeFilters &&
               !showProductFilters &&
-              !showGiveawayFilters && (
+              !showGiveawayFilters &&
+              !isAllocate && (
                 /* Date Range */
                 <div>
                   <FormSelect
@@ -334,6 +359,7 @@ export default function TableFilter({
                   setSelectedCategoryId("");
                   setSelectedProductStatus("");
                   setSelectedGiveawayStatus("");
+                  setSelectedEmployeeId("");
                   // Trigger filter update with empty values
                   if (onApplyFilters) {
                     onApplyFilters({
@@ -344,6 +370,7 @@ export default function TableFilter({
                       supervisorId: "",
                       categoryId: "",
                       status: "",
+                      employeeId: "",
                     });
                   }
                   onClear?.();
@@ -374,6 +401,7 @@ export default function TableFilter({
                         : showGiveawayFilters
                           ? selectedGiveawayStatus
                           : selectedStatus,
+                      employeeId: selectedEmployeeId,
                     });
                   }
                   onApply?.();
