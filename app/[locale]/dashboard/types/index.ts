@@ -183,4 +183,6 @@ export interface DashboardProps {
   partyId?: string | null;
   channelId?: string | null;
   productDetailBtn?: boolean;
+  pulseAddBtn?: boolean;
+  onAddClick?: () => void;
 }

@@ -9,13 +9,12 @@ import {
   MapPin,
   Globe,
   Building2,
-  Building,
   Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { BrickItem } from "@/store/slices/brick/getBrickListSlice";
 
-type GeoUnitType = "zone" | "region" | "territory" | "brick";
+type GeoUnitType = "zone" | "region" | "brick";
 
 interface HierarchyNode {
   id: string;
@@ -29,26 +28,50 @@ interface HierarchyNode {
 
 const CHILD_TYPE_MAP: Record<GeoUnitType, GeoUnitType | null> = {
   zone: "region",
-  region: "territory",
-  territory: "brick",
+  region: "brick",
   brick: null,
 };
 
 interface BrickNodeProps {
   item: HierarchyNode;
   level: number;
+  addingId: string | null;
   onAddChild?: (parentId: string, childType: GeoUnitType) => void;
+  onCancelAdd?: () => void;
+  onCreateChild?: (parentId: string, type: GeoUnitType, name: string) => void;
   onMoreOptions?: (itemId: string, itemType: GeoUnitType) => void;
 }
 
-const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOptions }) => {
+const BrickNode: React.FC<BrickNodeProps> = ({
+  item,
+  level,
+  addingId,
+  onAddChild,
+  onCancelAdd,
+  onCreateChild,
+  onMoreOptions,
+}) => {
   const [isExpanded, setIsExpanded] = useState(true);
+  const [newName, setNewName] = useState("");
 
   const hasChildren = item.children && item.children.length > 0;
+  const isAddingToThis = addingId === item.id;
 
   // For dynamic type support, we determine next type based on CHILD_TYPE_MAP
   const childType = CHILD_TYPE_MAP[item.type];
   const canHaveChildren = childType !== null;
+
+  const handleCreate = () => {
+    if (newName.trim() && childType) {
+      onCreateChild?.(item.id, childType, newName.trim());
+      setNewName("");
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") handleCreate();
+    if (e.key === "Escape") onCancelAdd?.();
+  };
 
   const getTypeIcon = (type: GeoUnitType) => {
     switch (type) {
@@ -56,8 +79,6 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
         return Globe;
       case "region":
         return Building2;
-      case "territory":
-        return Building;
       case "brick":
         return MapPin;
       default:
@@ -71,8 +92,6 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
         return "bg-[var(--chart-4)] text-[var(--light)]";
       case "region":
         return "bg-[var(--primary)] text-[var(--light)]";
-      case "territory":
-        return "bg-[var(--primary)]/80 text-[var(--light)]";
       case "brick":
         return "bg-[var(--warning)] text-[var(--light)]";
       default:
@@ -97,7 +116,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
         </>
       )}
 
-      {hasChildren && isExpanded && (
+      {(hasChildren || isAddingToThis) && isExpanded && (
         <div
           className="absolute border-l-2 border-dashed border-[var(--gray-3)]"
           style={{
@@ -143,10 +162,13 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
           {canHaveChildren && (
             <button
               className="h-10 w-10 rounded-8 bg-[var(--primary)] hover:bg-[var(--primary)]/80 text-[var(--light)] border-none shadow-soft cursor-pointer flex items-center justify-center transition-colors"
-              onClick={() => childType && onAddChild?.(item.id, childType)}
+              onClick={() => {
+                setIsExpanded(true);
+                childType && onAddChild?.(item.id, childType);
+              }}
               title={`Add child`}
             >
-              <Plus className="w-5 h-5" />
+              <Plus className="w-5 h-5 animate-pulse" />
             </button>
           )}
 
@@ -159,17 +181,71 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
         </div>
       </div>
 
-      {hasChildren && isExpanded && (
+      {isExpanded && (
         <div className="relative mt-4 space-y-4">
-          {item.children!.map((child) => (
-            <BrickNode
-              key={child.id}
-              item={child}
-              level={level + 1}
-              onAddChild={onAddChild}
-              onMoreOptions={onMoreOptions}
-            />
-          ))}
+          {hasChildren &&
+            item.children!.map((child) => (
+              <BrickNode
+                key={child.id}
+                item={child}
+                level={level + 1}
+                addingId={addingId}
+                onAddChild={onAddChild}
+                onCancelAdd={onCancelAdd}
+                onCreateChild={onCreateChild}
+                onMoreOptions={onMoreOptions}
+              />
+            ))}
+
+          {isAddingToThis && (
+            <div className="relative" style={{ marginLeft: "48px" }}>
+              <div
+                className="absolute border-l-2 border-dashed border-[var(--gray-3)]"
+                style={{ left: "-24px", top: "0", height: "36px" }}
+              />
+              <div
+                className="absolute border-t-2 border-dashed border-[var(--gray-3)]"
+                style={{ left: "-24px", top: "36px", width: "24px" }}
+              />
+              <div className="flex items-center gap-3 border border-[var(--primary)] rounded-8 p-4 bg-[var(--background)] shadow-soft animate-in slide-in-from-left-2 duration-200">
+                <div
+                  className={cn(
+                    "w-10 h-10 rounded-8 flex items-center justify-center",
+                    childType ? getTypeStyles(childType) : "bg-[var(--gray-2)]"
+                  )}
+                >
+                  {childType &&
+                    React.createElement(getTypeIcon(childType), { className: "w-5 h-5" })}
+                </div>
+                <div className="flex-1">
+                  <input
+                    autoFocus
+                    type="text"
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Enter Tree Name"
+                    className="w-full bg-transparent border-none outline-none text-[var(--gray-9)] font-semibold placeholder:text-[var(--gray-4)]"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={onCancelAdd}
+                    className="px-3 py-1.5 text-sm text-[var(--gray-5)] hover:text-[var(--gray-7)] font-medium cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleCreate}
+                    disabled={!newName.trim()}
+                    className="px-4 py-1.5 text-sm bg-[var(--primary)] text-[var(--light)] rounded-8 font-medium hover:bg-[var(--primary)]/90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                  >
+                    Create
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -179,49 +255,67 @@ const BrickNode: React.FC<BrickNodeProps> = ({ item, level, onAddChild, onMoreOp
 interface BricksHierarchyProps {
   zones: BrickItem[];
   regions: BrickItem[];
-  territories?: BrickItem[];
   bricks: BrickItem[];
   loading?: boolean;
   error?: string | null;
   onAddChild?: (parentId: string, childType: GeoUnitType) => void;
+  onCancelAdd?: () => void;
+  onCreateChild?: (parentId: string, type: GeoUnitType, name: string) => void;
   onMoreOptions?: (itemId: string, itemType: GeoUnitType) => void;
+  addingId?: string | null;
 }
 
 export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
   zones,
   regions,
-  territories = [],
   bricks,
   loading = false,
   error = null,
   onAddChild,
+  onCancelAdd,
+  onCreateChild,
   onMoreOptions,
+  addingId = null,
 }) => {
   const hierarchyData = useMemo((): HierarchyNode[] => {
-    // 1. Tag items with their type and put them in a flat map grouped by parentId
+    // 1. Tag items and normalize they IDs/parentIds
     const allItems = [
       ...zones.map((z) => ({ ...z, _type: "zone" as GeoUnitType })),
       ...regions.map((r) => ({ ...r, _type: "region" as GeoUnitType })),
-      ...territories.map((t) => ({ ...t, _type: "territory" as GeoUnitType })),
       ...bricks.map((b) => ({ ...b, _type: "brick" as GeoUnitType })),
     ];
 
     const itemsByParentId = new Map<string, any[]>();
+    const allItemsMap = new Map<string, any>();
+
     allItems.forEach((item) => {
-      if (item.parentId) {
-        const existing = itemsByParentId.get(item.parentId) || [];
+      const id = String(item.id).trim();
+      allItemsMap.set(id, item);
+
+      // Try to find parent link in any of these common fields
+      const anyItem = item as any;
+      const pId = anyItem.parentId || anyItem.zoneId || anyItem.regionId || anyItem.parent_id;
+
+      if (pId) {
+        const normalizedPId = String(pId).trim();
+        const existing = itemsByParentId.get(normalizedPId) || [];
         existing.push(item);
-        itemsByParentId.set(item.parentId, existing);
+        itemsByParentId.set(normalizedPId, existing);
       }
     });
 
+    const visitedIds = new Set<string>();
+
     // 2. Recursive function to build the tree
     const buildNode = (item: any): HierarchyNode => {
+      const id = String(item.id).trim();
+      visitedIds.add(id);
+
       const type = item._type as GeoUnitType;
-      const childrenRaw = itemsByParentId.get(item.id) || [];
+      const childrenRaw = itemsByParentId.get(id) || [];
 
       return {
-        id: item.id,
+        id: id,
         name: item.name,
         type: type,
         latitude: item.latitude,
@@ -232,8 +326,21 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
     };
 
     // 3. Build hierarchy starting from zones (roots)
-    return zones.map((zone) => buildNode({ ...zone, _type: "zone" }));
-  }, [zones, regions, territories, bricks]);
+    const roots = zones.map((zone) => buildNode({ ...zone, _type: "zone" }));
+
+    // 4. Handle Orphans: Items that were not reached by building from zones
+    const orphans: HierarchyNode[] = [];
+    allItems.forEach((item) => {
+      const id = String(item.id).trim();
+      if (!visitedIds.has(id)) {
+        // This item is an orphan (not connected to a zone)
+        // We add it as a top-level item so it's at least visible
+        orphans.push(buildNode(item));
+      }
+    });
+
+    return [...roots, ...orphans];
+  }, [zones, regions, bricks]);
 
   if (loading) {
     return (
@@ -260,7 +367,7 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
     );
   }
 
-  if (hierarchyData.length === 0) {
+  if (hierarchyData.length === 0 && !addingId) {
     return (
       <div className="w-full bg-[var(--background)] rounded-8">
         <div className="px-6 py-16 flex flex-col items-center justify-center">
@@ -284,10 +391,43 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
             key={item.id}
             item={item}
             level={0}
+            addingId={addingId}
             onAddChild={onAddChild}
+            onCancelAdd={onCancelAdd}
+            onCreateChild={onCreateChild}
             onMoreOptions={onMoreOptions}
           />
         ))}
+        {addingId === "root" && (
+          <div className="relative">
+            <div className="flex items-center gap-3 border border-[var(--primary)] rounded-8 p-4 bg-[var(--background)] shadow-soft animate-in slide-in-from-left-2 duration-200">
+              <div className="w-10 h-10 rounded-8 flex items-center justify-center bg-[var(--chart-4)] text-[var(--light)]">
+                <Globe className="w-5 h-5" />
+              </div>
+              <div className="flex-1">
+                <input
+                  autoFocus
+                  type="text"
+                  placeholder="Enter Tree Name"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter")
+                      onCreateChild?.("root", "zone", (e.target as HTMLInputElement).value);
+                    if (e.key === "Escape") onCancelAdd?.();
+                  }}
+                  className="w-full bg-transparent border-none outline-none text-[var(--gray-9)] font-semibold placeholder:text-[var(--gray-4)]"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={onCancelAdd}
+                  className="px-3 py-1.5 text-sm text-[var(--gray-5)] hover:text-[var(--gray-7)] font-medium cursor-pointer"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

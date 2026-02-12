@@ -1,7 +1,10 @@
 "use client";
 import { DashboardContent } from "../components/dashboard-content";
+import { useBricksImport } from "@/hooks/useBricksImport";
 
 export default function BricksHierarchyPage() {
+  const { handleImport } = useBricksImport();
+
   return (
     <div className="bg-(--gray-0)">
       <DashboardContent
@@ -15,6 +18,11 @@ export default function BricksHierarchyPage() {
         proBar={false}
         bricksHierarchy={true}
         settingsRoute="/dashboard/bricks-hierarchy/add"
+        pulseAddBtn={true}
+        onAddClick={() => {
+          // This will be handled by the Wrapper via a shared state or event
+          window.dispatchEvent(new CustomEvent("bricks:add-root"));
+        }}
       />
     </div>
   );
