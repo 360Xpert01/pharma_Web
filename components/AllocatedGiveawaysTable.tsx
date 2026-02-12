@@ -66,8 +66,7 @@ export default function AllocatedGiveawaysTable({
   };
 
   const handleViewDetails = (userId: string) => {
-    // TODO: Implement view details functionality
-    console.log("View details for user:", userId);
+    router.push(`/dashboard/UpdateAllocateGivewaySample?userId=${userId}`);
   };
 
   const columns: ColumnDef<AllocationRecord>[] = [

@@ -5,12 +5,12 @@ import axios from "axios";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://api.ceturo.com/";
 
 export interface GiveawayItem {
-  id: string;
-  productSkuId: string;
-  productSku: string;
+  id: string; // Allocation Record ID
+  giveawayId: string; // The Actual Giveaway ID (Must use this for allocation/update)
   name: string;
   description: string;
   imageUrl: string;
+  productSku: string;
   quantity: number;
   quantityLeft: number;
   createdAt: string;

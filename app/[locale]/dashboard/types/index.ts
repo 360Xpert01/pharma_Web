@@ -157,6 +157,7 @@ export interface DashboardProps {
   showTabs?: boolean;
   allocateGiveaways?: boolean;
   AddAllocateGiveaway?: boolean;
+  UpdateAllocation?: boolean;
   bricksHierarchy?: boolean;
   roleHierarchy?: boolean;
   allocatedGiveawaysTable?: boolean;

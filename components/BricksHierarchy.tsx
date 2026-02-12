@@ -171,7 +171,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({
               }}
               title={`Add child`}
             >
-              <Plus className="w-5 h-5 animate-pulse" />
+              <Plus className="w-5 h-5" />
             </button>
           )}
 

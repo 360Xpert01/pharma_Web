@@ -52,7 +52,7 @@ import AddPrefixNameComponent from "@/components/AddPrefix";
 import PreFixTable from "@/components/PreFixTable";
 import TargetListView from "@/components/TargetListView";
 import EmployeeProfileTabs from "@/components/EmployeeProfileTabs";
-import AddAllocateGivewaySample from "@/components/AddAllocateGivewaySample";
+import AddAllocateGivewaySample from "@/components/AllocateGiveawaySample";
 import BricksHierarchyWrapper from "@/components/BricksHierarchyWrapper";
 import RoleHierarchyWrapper from "@/components/RoleHierarchyWrapper";
 import AllocatedGiveawaysTable from "@/components/AllocatedGiveawaysTable";
@@ -118,6 +118,7 @@ export function DashboardContent({
   showTabs,
   allocateGiveaways,
   AddAllocateGiveaway,
+  UpdateAllocation,
   bricksHierarchy,
   roleHierarchy,
   allocatedGiveawaysTable,
@@ -433,7 +434,13 @@ export function DashboardContent({
 
         {AddAllocateGiveaway && (
           <div className="">
-            <AddAllocateGivewaySample />
+            <AddAllocateGivewaySample mode="add" />
+          </div>
+        )}
+
+        {UpdateAllocation && (
+          <div className="">
+            <AddAllocateGivewaySample mode="edit" updateUserId={employeeId || ""} />
           </div>
         )}
 
