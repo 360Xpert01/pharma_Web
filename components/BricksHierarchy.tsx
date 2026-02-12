@@ -51,7 +51,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({
   onCreateChild,
   onMoreOptions,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [newName, setNewName] = useState("");
 
   const hasChildren = item.children && item.children.length > 0;
@@ -154,8 +154,11 @@ const BrickNode: React.FC<BrickNodeProps> = ({
           <Icon className="w-5 h-5" />
         </div>
 
-        <div className="flex-1 min-w-0">
-          <div className="font-semibold text-[var(--gray-9)]">{item.name}</div>
+        <div className="flex-1 min-w-0 flex flex-col">
+          <span className="font-bold text-(--gray-9) truncate" title={item.name}>
+            {item.name}
+          </span>
+          <span className="text-xs text-(--gray-5) capitalize">{item.type}</span>
         </div>
 
         <div className="flex items-center gap-2">
@@ -183,20 +186,6 @@ const BrickNode: React.FC<BrickNodeProps> = ({
 
       {isExpanded && (
         <div className="relative mt-4 space-y-4">
-          {hasChildren &&
-            item.children!.map((child) => (
-              <BrickNode
-                key={child.id}
-                item={child}
-                level={level + 1}
-                addingId={addingId}
-                onAddChild={onAddChild}
-                onCancelAdd={onCancelAdd}
-                onCreateChild={onCreateChild}
-                onMoreOptions={onMoreOptions}
-              />
-            ))}
-
           {isAddingToThis && (
             <div className="relative" style={{ marginLeft: "48px" }}>
               <div
@@ -246,6 +235,20 @@ const BrickNode: React.FC<BrickNodeProps> = ({
               </div>
             </div>
           )}
+
+          {hasChildren &&
+            item.children!.map((child) => (
+              <BrickNode
+                key={child.id}
+                item={child}
+                level={level + 1}
+                addingId={addingId}
+                onAddChild={onAddChild}
+                onCancelAdd={onCancelAdd}
+                onCreateChild={onCreateChild}
+                onMoreOptions={onMoreOptions}
+              />
+            ))}
         </div>
       )}
     </div>
@@ -312,7 +315,11 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
       visitedIds.add(id);
 
       const type = item._type as GeoUnitType;
-      const childrenRaw = itemsByParentId.get(id) || [];
+      const childrenRaw = (itemsByParentId.get(id) || []).sort((a, b) => {
+        const dateA = new Date(a.createdAt || 0).getTime();
+        const dateB = new Date(b.createdAt || 0).getTime();
+        return dateB - dateA; // Newest on top
+      });
 
       return {
         id: id,
@@ -325,8 +332,16 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
       };
     };
 
-    // 3. Build hierarchy starting from zones (roots)
-    const roots = zones.map((zone) => buildNode({ ...zone, _type: "zone" }));
+    // 3. Build hierarchy starting from zones (roots) - Sort roots as well
+    const roots = zones
+      .map((zone) => buildNode({ ...zone, _type: "zone" }))
+      .sort((a, b) => {
+        const originalA = allItemsMap.get(a.id);
+        const originalB = allItemsMap.get(b.id);
+        const dateA = new Date(originalA?.createdAt || 0).getTime();
+        const dateB = new Date(originalB?.createdAt || 0).getTime();
+        return dateB - dateA;
+      });
 
     // 4. Handle Orphans: Items that were not reached by building from zones
     const orphans: HierarchyNode[] = [];
@@ -339,7 +354,16 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
       }
     });
 
-    return [...roots, ...orphans];
+    return [
+      ...roots,
+      ...orphans.sort((a, b) => {
+        const originalA = allItemsMap.get(a.id);
+        const originalB = allItemsMap.get(b.id);
+        const dateA = new Date(originalA?.createdAt || 0).getTime();
+        const dateB = new Date(originalB?.createdAt || 0).getTime();
+        return dateB - dateA;
+      }),
+    ];
   }, [zones, regions, bricks]);
 
   if (loading) {
@@ -386,18 +410,6 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
   return (
     <div className="w-full bg-[var(--background)] rounded-8">
       <div className="px-6 py-8 space-y-6">
-        {hierarchyData.map((item) => (
-          <BrickNode
-            key={item.id}
-            item={item}
-            level={0}
-            addingId={addingId}
-            onAddChild={onAddChild}
-            onCancelAdd={onCancelAdd}
-            onCreateChild={onCreateChild}
-            onMoreOptions={onMoreOptions}
-          />
-        ))}
         {addingId === "root" && (
           <div className="relative">
             <div className="flex items-center gap-3 border border-[var(--primary)] rounded-8 p-4 bg-[var(--background)] shadow-soft animate-in slide-in-from-left-2 duration-200">
@@ -428,6 +440,18 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
             </div>
           </div>
         )}
+        {hierarchyData.map((item) => (
+          <BrickNode
+            key={item.id}
+            item={item}
+            level={0}
+            addingId={addingId}
+            onAddChild={onAddChild}
+            onCancelAdd={onCancelAdd}
+            onCreateChild={onCreateChild}
+            onMoreOptions={onMoreOptions}
+          />
+        ))}
       </div>
     </div>
   );
