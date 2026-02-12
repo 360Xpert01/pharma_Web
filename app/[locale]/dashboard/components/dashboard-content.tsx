@@ -191,6 +191,11 @@ export function DashboardContent({
     status?: string;
   }>({});
 
+  // State for Allocation Table Filters
+  const [allocationFilters, setAllocationFilters] = useState<{
+    employeeId?: string;
+  }>({});
+
   const handleSettings = () => {
     if (settingsRoute) {
       router.push(settingsRoute);
@@ -562,8 +567,17 @@ export function DashboardContent({
 
         {allocatedGiveawaysTable && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading={campHeading} filterT={filterT} />
-            <AllocatedGiveawaysTable />
+            <TableHeader
+              campHeading={campHeading}
+              filterT={filterT}
+              onSearch={setSearchTerm}
+              isAllocate={true}
+              onApplyFilters={setAllocationFilters}
+            />
+            <AllocatedGiveawaysTable
+              searchTerm={searchTerm}
+              employeeId={allocationFilters.employeeId}
+            />
           </div>
         )}
 
