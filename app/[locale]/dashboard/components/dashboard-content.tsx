@@ -145,6 +145,8 @@ export function DashboardContent({
   partyId,
   channelId,
   productDetailBtn,
+  pulseAddBtn,
+  onAddClick,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -270,6 +272,8 @@ export function DashboardContent({
             btntextReq={btntextReq}
             btnReqquest={btnReqquest}
             onSettingView={handleSettingView}
+            pulseAddBtn={pulseAddBtn}
+            onAddClick={onAddClick}
           />
         )}
 
@@ -524,7 +528,7 @@ export function DashboardContent({
 
         {employeeProfileBtn && showTabs && <EmployeeProfileTabs candidate={candidate} />}
 
-        {AddemployeeBtn && <AddEmployeeForm ActiveOn={ActiveOn} />}
+        {AddemployeeBtn && <AddEmployeeForm />}
         {UpdateEmp && <UpdateEmployees employeeId={employeeId} />}
 
         {AddCallPointTrue && (

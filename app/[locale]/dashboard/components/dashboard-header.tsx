@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button/button";
 import { RefreshCw, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import CalendarFilter from "@/components/dashboard/CalendarFilter";
+import { cn } from "@/lib/utils";
 
 interface DashboardHeaderProps {
   onRefresh?: () => void;
@@ -17,6 +18,8 @@ interface DashboardHeaderProps {
   onSettingView?: () => void;
   showCalendar?: boolean;
   onDateChange?: (startDate: Date, endDate: Date) => void;
+  pulseAddBtn?: boolean;
+  onAddClick?: () => void;
 }
 
 export function DashboardHeader({
@@ -32,6 +35,8 @@ export function DashboardHeader({
   onSettingView,
   showCalendar = false,
   onDateChange,
+  pulseAddBtn,
+  onAddClick,
 }: DashboardHeaderProps) {
   const t = useTranslations("dashboard");
   const heading = title;
@@ -54,11 +59,11 @@ export function DashboardHeader({
         {!btnTrue && (
           <button
             className="p-3 cursor-pointer bg-(--primary) hover:bg-(--primary-2) text-sm text-(--light) rounded-8 flex items-center"
-            onClick={onSettings}
+            onClick={onAddClick || onSettings}
             title={t("tooltips.settings")}
             aria-label={t("tooltips.settings")}
           >
-            <Plus className="h-4 w-4 mr-1" />
+            <Plus className={cn("h-4 w-4 mr-1", pulseAddBtn && "animate-pulse")} />
             {btnAdd || "add"}
           </button>
         )}
