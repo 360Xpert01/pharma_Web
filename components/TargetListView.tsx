@@ -166,7 +166,7 @@ export default function TargetListView() {
       header: "",
       cell: ({ row }) => (
         <div className="flex justify-end gap-2">
-          <button
+          {/* <button
             onClick={(e) => {
               e.stopPropagation();
               row.toggleExpanded();
@@ -175,7 +175,7 @@ export default function TargetListView() {
             title={row.getIsExpanded() ? "Collapse" : "Expand"}
           >
             <EyeIcon />
-          </button>
+          </button> */}
           <button
             onClick={(e) => {
               e.stopPropagation();
