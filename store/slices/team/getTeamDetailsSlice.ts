@@ -37,14 +37,14 @@ export interface TeamDetailData {
 
 interface GetTeamDetailResponse {
   success: boolean;
-  data: TeamDetailData[];
+  data: TeamDetailData;
 }
 
 interface TeamDetailState {
   loading: boolean;
   success: boolean;
   error: string | null;
-  teamDetails: TeamDetailData[];
+  teamDetails: TeamDetailData | null;
 }
 
 // Initial State
@@ -52,22 +52,22 @@ const initialState: TeamDetailState = {
   loading: false,
   success: false,
   error: null,
-  teamDetails: [],
+  teamDetails: null,
 };
 
 // Async Thunk: Get Team Details with Users and Products
 export const getTeamDetails = createAsyncThunk<
   GetTeamDetailResponse,
-  void,
+  string, // teamId
   { rejectValue: string }
->("team/getTeamDetails", async (_, { rejectWithValue }) => {
+>("team/getTeamDetails", async (teamId, { rejectWithValue }) => {
   try {
     const token = localStorage.getItem("userSession");
     if (!token) {
       return rejectWithValue("No session found. Please login again.");
     }
 
-    const response = await axios.get<GetTeamDetailResponse>(`${baseUrl}api/v1/teams/details`, {
+    const response = await axios.get<GetTeamDetailResponse>(`${baseUrl}api/v1/team/${teamId}`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -95,7 +95,7 @@ const getTeamDetailsSlice = createSlice({
       state.loading = false;
       state.success = false;
       state.error = null;
-      state.teamDetails = [];
+      state.teamDetails = null;
     },
   },
   extraReducers: (builder) => {
@@ -107,13 +107,13 @@ const getTeamDetailsSlice = createSlice({
       .addCase(getTeamDetails.fulfilled, (state, action: PayloadAction<GetTeamDetailResponse>) => {
         state.loading = false;
         state.success = true;
-        state.teamDetails = action.payload.data || [];
+        state.teamDetails = action.payload.data;
       })
       .addCase(getTeamDetails.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
         state.error = action.payload || "Failed to load team details";
-        state.teamDetails = [];
+        state.teamDetails = null;
       });
   },
 });

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button/button";
 import { FormInput } from "@/components/form";
 import { mockManagers } from "@/data/targetData";
 import { getAllTeams } from "@/store/slices/team/getAllTeamsSlice";
-import { getTeamDetails } from "@/store/slices/team/getTeamDetailsSlice";
+import { getTeamDetails, resetTeamDetailsState } from "@/store/slices/team/getTeamDetailsSlice";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { createTarget, resetCreateTargetState } from "@/store/slices/target/createTargetSlice";
 import type { CreateTargetPayload } from "@/types/target";
@@ -28,12 +28,18 @@ export default function SetTargetPage() {
   const [selectedManager1, setSelectedManager1] = useState("manager1");
   const [selectedManager2, setSelectedManager2] = useState("manager2");
 
+  // New state for SKU targets: { [skuId: string]: string }
+  const [skuTargets, setSkuTargets] = useState<Record<string, string>>({});
+
   // Conflict Modal state
   const [isConflictModalOpen, setIsConflictModalOpen] = useState(false);
 
   // Find selected team data
-  const matchTeam = teams.find((team: any) => team.id === selectedTeam);
-  const selectedTeamDetail = teamDetails.find((team) => team.id === selectedTeam);
+  const matchTeam = (teams as any[]).find((team: any) => team.id === selectedTeam);
+
+  // Use the one that has products populated
+  const currentTeam: any = teamDetails || matchTeam;
+  const products: any[] = currentTeam?.products || [];
 
   // Mock data imported from data file (keep for now if no real data)
   const [managers, setManagers] = useState<Manager[]>(mockManagers);
@@ -41,13 +47,14 @@ export default function SetTargetPage() {
   // Fetch teams on mount
   useEffect(() => {
     dispatch(getAllTeams());
-    dispatch(getTeamDetails());
   }, [dispatch]);
 
   // Fetch team details when team is selected
   useEffect(() => {
     if (selectedTeam) {
-      dispatch(getTeamDetails());
+      dispatch(getTeamDetails(selectedTeam));
+    } else {
+      dispatch(resetTeamDetailsState());
     }
   }, [selectedTeam, dispatch]);
 
@@ -73,9 +80,9 @@ export default function SetTargetPage() {
   const teamMetadata = {
     teamRoleCode: matchTeam?.pulseCode || "",
     teamName: matchTeam?.name || "",
-    channelName: selectedTeamDetail?.channelName || matchTeam?.channelName || "",
-    callPoint: selectedTeamDetail?.callPoints?.length
-      ? selectedTeamDetail.callPoints[0]?.name || "No Callpoint available"
+    channelName: currentTeam?.channelName || matchTeam?.channelName || "",
+    callPoint: currentTeam?.callPoints?.length
+      ? currentTeam.callPoints[0]?.name || "No Callpoint available"
       : "No Callpoint available",
   };
 
@@ -96,22 +103,11 @@ export default function SetTargetPage() {
     );
   };
 
-  const handleProductInputChange = (repId: string, productId: string, value: string) => {
-    setManagers((prevManagers) =>
-      prevManagers.map((manager) => ({
-        ...manager,
-        salesReps: manager.salesReps.map((rep) =>
-          rep.id === repId
-            ? {
-                ...rep,
-                products: rep.products.map((p) =>
-                  p.id === productId ? { ...p, inputValue: value } : p
-                ),
-              }
-            : rep
-        ),
-      }))
-    );
+  const handleSkuTargetChange = (skuId: string, value: string) => {
+    setSkuTargets((prev) => ({
+      ...prev,
+      [skuId]: value,
+    }));
   };
 
   const handleSetTarget = async () => {
@@ -166,40 +162,23 @@ export default function SetTargetPage() {
       year = currentYear;
     }
 
-    // Build allocation payload from team details or fall back to managers data
-    let allocations;
-
-    if (selectedTeamDetail && selectedTeamDetail.users.length > 0) {
-      // Use real API data
-      allocations = selectedTeamDetail.users.map((user) => ({
-        userId: user.id,
-        brickAllocations: selectedTeamDetail.products.map((product) => ({
-          brickId: "default-brick-id", // No brick info in API, using default
-          skuAllocations: product.skus.map((sku) => ({
-            productSkuId: sku.id,
-            targetValue: 0, // Default value, should be set by user input
-            percentage: 100,
-          })),
-        })),
-      }));
-    } else {
-      // Fall back to mock data structure
-      allocations = managers.flatMap((manager) =>
-        manager.salesReps.map((rep) => ({
-          userId: rep.id,
-          brickAllocations: [
-            {
-              brickId: rep.productTags?.[0] || "default-brick-id",
-              skuAllocations: rep.products.map((product) => ({
-                productSkuId: product.id,
-                targetValue: parseInt(product.inputValue) || parseInt(product.targetQuantity) || 0,
-                percentage: product.completionPercentage || 100,
-              })),
-            },
-          ],
-        }))
-      );
+    // Build allocation payload from team details
+    if (!currentTeam || !currentTeam.users?.length) {
+      alert("No team members found for the selected team.");
+      return;
     }
+
+    const allocations = currentTeam.users.map((user: any) => ({
+      userId: user.id,
+      brickAllocations: currentTeam.products.map((product: any) => ({
+        brickId: "default-brick-id",
+        skuAllocations: product.skus.map((sku: any) => ({
+          productSkuId: sku.id,
+          targetValue: parseInt(skuTargets[sku.id] || "0") || 0,
+          percentage: 100,
+        })),
+      })),
+    }));
 
     const payload: CreateTargetPayload = {
       teamId: selectedTeam,
@@ -229,24 +208,87 @@ export default function SetTargetPage() {
 
         <TargetConfigForm
           selectedTeam={selectedTeam}
-          targetMonth={teams}
+          targetTeams={teams}
           targetMonthValue={targetMonth}
-          teamRoleCode={teamMetadata.teamRoleCode}
-          teamName={teamMetadata.teamName}
-          channelName={teamMetadata.channelName}
-          callPoint={teamMetadata.callPoint}
+          areaManager={(currentTeam as any)?.areaManagerName || "Abdul Aziz Warisi"}
+          channelName={teamMetadata.channelName || "Chain Pharmacy"}
+          territory={(currentTeam as any)?.territory || "T1"}
           onTeamChange={setSelectedTeam}
           onMonthChange={setTargetMonth}
         />
 
-        {/* Members Info Section */}
+        {/* Define Target Section */}
+        {selectedTeam && (
+          <div className="space-y-6 pt-10">
+            <div className="flex items-center gap-2">
+              <h2 className="t-h2 text-(--gray-9)">Define Target</h2>
+            </div>
+
+            <div className="space-y-8">
+              {teamDetailsLoading && (
+                <div className="py-20 text-center">
+                  <div className="inline-block w-8 h-8 border-4 border-(--gray-3) border-t-primary rounded-full animate-spin mb-4"></div>
+                  <p className="t-md text-(--gray-5)">Loading team products and SKUs...</p>
+                </div>
+              )}
+
+              {!teamDetailsLoading && products.length === 0 && (
+                <div className="py-20 text-center bg-(--gray-0) rounded-2xl border-2 border-dashed border-(--gray-2)">
+                  <p className="t-lg text-(--gray-5)">No products found for this team.</p>
+                </div>
+              )}
+
+              {!teamDetailsLoading &&
+                products.length > 0 &&
+                (products as any[]).map((product: any) => (
+                  <div key={product.id} className="flex gap-8 items-start">
+                    {/* Product Branding */}
+                    <div className="flex flex-col items-center w-32 shrink-0">
+                      <div className="w-24 h-24 bg-(--gray-1) rounded-xl flex items-center justify-center overflow-hidden mb-3">
+                        <div className="text-(--gray-3) text-4xl">💊</div>
+                      </div>
+                      <span className="t-h4 text-center text-(--gray-9) font-bold">
+                        {product.name}
+                      </span>
+                    </div>
+
+                    {/* SKU Grid */}
+                    <div className="flex-1 bg-(--gray-0) rounded-2xl p-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                        {product.skus?.map((sku: any) => (
+                          <div
+                            key={sku.id}
+                            className="bg-white rounded-xl border border-(--gray-2) p-3 flex items-center justify-between shadow-sm"
+                          >
+                            <span className="t-sm font-semibold text-(--gray-8)">
+                              {sku.sku || "N/A"}
+                            </span>
+                            <div className="w-24">
+                              <input
+                                type="text"
+                                placeholder="Target"
+                                className="w-full text-right t-sm font-medium focus:outline-none placeholder:text-(--gray-3)"
+                                value={skuTargets[sku.id] || ""}
+                                onChange={(e) => handleSkuTargetChange(sku.id, e.target.value)}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
+
+        {/* Members Info Section (Commented Out) */}
+        {/* 
         <div className="space-y-6 pt-6">
           <div>
             <h2 className="t-h2 text-(--gray-9) mb-6">Members Info</h2>
 
-            {/* Manager Selection Input Fields */}
             <div className="grid grid-cols-4 gap-4 mb-8">
-              {/* First Manager Input */}
               <div className="relative">
                 <FormInput
                   label="Head of Sales"
@@ -268,7 +310,6 @@ export default function SetTargetPage() {
                 )}
               </div>
 
-              {/* Second Manager Input */}
               <div className="relative">
                 <FormInput
                   label="Sales Manager"
@@ -290,12 +331,10 @@ export default function SetTargetPage() {
                 )}
               </div>
 
-              {/* Empty columns to maintain 50% width */}
               <div></div>
               <div></div>
             </div>
 
-            {/* Manager Sections */}
             <div className="space-y-10">
               {[selectedManager1, selectedManager2].map((managerId) => {
                 const manager = managers.find((m) => m.id === managerId);
@@ -306,7 +345,7 @@ export default function SetTargetPage() {
                     key={manager.id}
                     manager={manager}
                     onDeleteProduct={handleDeleteProduct}
-                    onProductInputChange={handleProductInputChange}
+                    onProductInputChange={(repId, productId, value) => {}}
                     onConflictClick={() => setIsConflictModalOpen(true)}
                   />
                 );
@@ -314,9 +353,10 @@ export default function SetTargetPage() {
             </div>
           </div>
         </div>
+        */}
 
         {/* Footer Action Buttons */}
-        <div className="flex justify-end gap-4 pt-6 border-t border-(--gray-2)">
+        <div className="flex justify-end gap-4 pt-6">
           <Button type="button" variant="outline" size="lg" rounded="full" className="px-6">
             Discard
           </Button>
