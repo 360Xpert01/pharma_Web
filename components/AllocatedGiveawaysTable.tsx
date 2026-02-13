@@ -66,8 +66,7 @@ export default function AllocatedGiveawaysTable({
   };
 
   const handleViewDetails = (userId: string) => {
-    // TODO: Implement view details functionality
-    console.log("View details for user:", userId);
+    router.push(`/dashboard/UpdateAllocateGivewaySample?userId=${userId}`);
   };
 
   const columns: ColumnDef<AllocationRecord>[] = [
@@ -87,10 +86,7 @@ export default function AllocatedGiveawaysTable({
       header: "Employee Name",
       accessorKey: "employeeName",
       cell: ({ row }) => (
-        <div
-          onClick={() => router.push(`/dashboard/Employee-Profile?id=${row.original.userId}`)}
-          className="flex items-center gap-3 cursor-pointer group hover:opacity-80 transition-opacity"
-        >
+        <div className="flex items-center gap-3 cursor-pointer group">
           <Image
             src={row.original.profilePicture || "/girlPic.svg"}
             alt={row.original.employeeName}
@@ -99,7 +95,7 @@ export default function AllocatedGiveawaysTable({
             className="rounded-8 flex-shrink-0 object-cover"
           />
           <div className="min-w-0 flex-1">
-            <p className="text-[var(--primary)] underline truncate font-medium text-sm">
+            <p className="text-[var(--gray-9)] truncate font-medium text-sm">
               {row.original.employeeName}
             </p>
             <span

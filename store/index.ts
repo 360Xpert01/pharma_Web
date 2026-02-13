@@ -87,6 +87,8 @@ import allocateUserReducer from "./slices/allocation/allocateUserSlice";
 import targetListReducer from "./slices/target/getTargetListSlice";
 import createTargetReducer from "./slices/target/createTargetSlice";
 import allProductSkusReducer from "./slices/product/getAllProductSkusSlice";
+import getAllocateUserByIdReducer from "./slices/allocation/getAllocateUserByIdSlice";
+import updateAllocateUserReducer from "./slices/allocation/updateAllocateUserSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -172,6 +174,8 @@ const rootReducer = combineReducers({
   targetList: targetListReducer,
   createTarget: createTargetReducer,
   allProductSkus: allProductSkusReducer,
+  getAllocateUserById: getAllocateUserByIdReducer,
+  updateAllocateUser: updateAllocateUserReducer,
 });
 
 const persistConfig = {

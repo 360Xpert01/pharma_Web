@@ -63,7 +63,7 @@ export function DashboardHeader({
             title={t("tooltips.settings")}
             aria-label={t("tooltips.settings")}
           >
-            <Plus className={cn("h-4 w-4 mr-1", pulseAddBtn && "animate-pulse")} />
+            <Plus className={cn("h-4 w-4 mr-1", pulseAddBtn)} />
             {btnAdd || "add"}
           </button>
         )}

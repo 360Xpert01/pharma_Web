@@ -72,6 +72,41 @@ export const allocateUser = createAsyncThunk<
   }
 });
 
+// Async Thunk: Update User Allocation (PUT /api/v1/users/allocate/:userId)
+export const updateAllocateUser = createAsyncThunk<
+  AllocateUserResponse,
+  { userId: string; payload: Omit<AllocateUserPayload, "userId"> },
+  { rejectValue: string }
+>("allocation/updateAllocateUser", async ({ userId, payload }, { rejectWithValue }) => {
+  try {
+    const sessionStr = localStorage.getItem("userSession");
+    if (!sessionStr) {
+      return rejectWithValue("No session found. Please login again.");
+    }
+
+    const response = await axios.put<AllocateUserResponse>(
+      `${baseUrl}api/v1/users/allocate/${userId}`,
+      payload,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStr}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.response?.data?.error ||
+      error.message ||
+      "Failed to update allocation. Please try again.";
+
+    return rejectWithValue(errorMessage);
+  }
+});
+
 // Slice
 const allocateUserSlice = createSlice({
   name: "allocateUser",
@@ -101,6 +136,26 @@ const allocateUserSlice = createSlice({
         state.loading = false;
         state.success = false;
         state.error = action.payload || "Failed to allocate items";
+        state.response = null;
+      })
+      .addCase(updateAllocateUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.success = false;
+      })
+      .addCase(
+        updateAllocateUser.fulfilled,
+        (state, action: PayloadAction<AllocateUserResponse>) => {
+          state.loading = false;
+          state.success = true;
+          state.response = action.payload;
+          state.error = null;
+        }
+      )
+      .addCase(updateAllocateUser.rejected, (state, action) => {
+        state.loading = false;
+        state.success = false;
+        state.error = action.payload || "Failed to update allocation";
         state.response = null;
       });
   },

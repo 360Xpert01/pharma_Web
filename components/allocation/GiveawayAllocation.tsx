@@ -31,9 +31,7 @@ export default function GiveawayAllocation({
   const [searchQuery, setSearchQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editQuantity, setEditQuantity] = useState<number>(0);
 
   // Filter items based on search query
   const availableItems = allGiveaways.filter((g) => {
@@ -67,21 +65,36 @@ export default function GiveawayAllocation({
     onAddGiveaway(item);
     setSearchQuery("");
     setShowDropdown(false);
+    setEditingId(String(item.id));
   };
 
-  const handleEdit = (id: string) => {
-    const item = selectedGiveaways.find((g) => g.id === id);
-    if (item) {
-      setEditingId(id);
-      setEditQuantity(item.quantity);
-    }
-  };
-
-  const handleSaveQuantity = () => {
+  // Auto-focus the quantity input when editingId changes
+  useEffect(() => {
     if (editingId) {
-      onUpdateQuantity(editingId, Math.max(1, editQuantity));
-      setEditingId(null);
-      setEditQuantity(0);
+      setTimeout(() => {
+        const input = document.getElementById(`qty-input-${editingId}`);
+        if (input) {
+          (input as HTMLInputElement).focus();
+          (input as HTMLInputElement).select();
+        }
+      }, 50);
+    }
+  }, [editingId]);
+
+  const handleKeyDown = (e: React.KeyboardEvent, currentId: string) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const currentIndex = selectedGiveaways.findIndex((g) => g.id === currentId);
+      if (currentIndex < selectedGiveaways.length - 1) {
+        // Switch next item to edit mode
+        setEditingId(selectedGiveaways[currentIndex + 1].id);
+      } else {
+        // Exit edit mode if it's the last item
+        setEditingId(null);
+        // Optionally focus the search input
+        const searchInput = dropdownRef.current?.querySelector("input");
+        if (searchInput) (searchInput as HTMLInputElement).focus();
+      }
     }
   };
 
@@ -163,60 +176,56 @@ export default function GiveawayAllocation({
             {selectedGiveaways.map((item) => (
               <div
                 key={item.id}
-                className="flex flex-col gap-3 px-4 py-4 bg-(--background) border border-(--gray-2) rounded-8 hover:shadow-sm transition-all min-h-[100px]"
+                className="flex items-center gap-4 px-4 py-3 bg-(--background) border border-(--gray-2) rounded-8 hover:shadow-sm transition-all"
               >
-                <div className="flex items-start justify-between">
-                  <p className="text-base font-bold text-(--gray-9) flex-1 line-clamp-2">
-                    {item.name}
-                  </p>
-                </div>
+                <p
+                  className="text-base font-semibold text-(--gray-9) flex-1 truncate"
+                  title={item.name}
+                >
+                  {item.name}
+                </p>
 
-                {editingId === item.id ? (
-                  <div className="flex items-center gap-2">
-                    <div className="relative flex items-center flex-1">
-                      <span className="absolute left-3 text-xs font-bold text-(--gray-4) uppercase">
+                <div className="flex items-center gap-2">
+                  {editingId === item.id ? (
+                    <div className="relative flex items-center w-28 h-9 border border-(--gray-2) rounded-8 bg-(--background) overflow-hidden focus-within:ring-2 focus-within:ring-(--primary)">
+                      <span className="pl-3 text-[10px] font-bold text-(--gray-4) uppercase pointer-events-none whitespace-nowrap">
                         Qty
                       </span>
                       <input
+                        id={`qty-input-${item.id}`}
                         type="number"
                         min="1"
-                        value={editQuantity}
-                        onChange={(e) => setEditQuantity(parseInt(e.target.value) || 1)}
-                        className="w-full pl-12 pr-3 py-2 bg-(--gray-0) border border-(--gray-2) rounded-6 text-sm font-medium focus:ring-1 focus:ring-(--primary) outline-none"
-                        autoFocus
+                        value={item.quantity}
+                        onChange={(e) => onUpdateQuantity(item.id, parseInt(e.target.value) || 1)}
+                        onKeyDown={(e) => handleKeyDown(e, item.id)}
+                        className="w-full h-full pl-1.5 pr-2 bg-transparent outline-none text-sm font-semibold text-(--gray-9)"
+                        onFocus={(e) => e.target.select()}
                       />
                     </div>
-                    <button
-                      onClick={handleSaveQuantity}
-                      className="p-2 bg-(--primary) text-(--light) rounded-6 hover:bg-(--primary-2) transition"
-                    >
-                      <Plus className="w-4 h-4" />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-(--gray-5)">
-                      QTY:{" "}
-                      <span className="font-bold text-(--gray-9) text-base">{item.quantity}</span>
-                    </span>
-                    <div className="flex items-center gap-2">
+                  ) : (
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-6">
+                        <span className="text-xs font-medium text-(--gray-5)">QTY:</span>
+                        <span className="text-sm font-bold text-(--gray-9)">{item.quantity}</span>
+                      </div>
                       <button
-                        onClick={() => handleEdit(item.id)}
-                        className="group hover:opacity-80 transition cursor-pointer"
+                        onClick={() => setEditingId(item.id)}
+                        className="p-1 px-2 text-(--primary) rounded-4 transition cursor-pointer"
                         title="Edit quantity"
                       >
                         <EditIcon />
                       </button>
-                      <button
-                        onClick={() => onRemoveGiveaway(item.id)}
-                        className="group hover:opacity-80 transition cursor-pointer"
-                        title="Delete"
-                      >
-                        <DeleteIcon />
-                      </button>
                     </div>
-                  </div>
-                )}
+                  )}
+
+                  <button
+                    onClick={() => onRemoveGiveaway(item.id)}
+                    className="flex items-center justify-center w-9 h-9 text-(--destructive) rounded-8 transition cursor-pointer shrink-0"
+                    title="Delete"
+                  >
+                    <DeleteIcon />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
