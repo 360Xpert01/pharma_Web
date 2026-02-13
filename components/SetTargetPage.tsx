@@ -12,6 +12,8 @@ import { getTeamDetails, resetTeamDetailsState } from "@/store/slices/team/getTe
 import { useAppDispatch, useAppSelector } from "@/store";
 import { createTarget, resetCreateTargetState } from "@/store/slices/target/createTargetSlice";
 import type { CreateTargetPayload } from "@/types/target";
+import { targetSchema } from "@/validations/targetValidation";
+import { z } from "zod";
 
 export default function SetTargetPage() {
   // Form state
@@ -170,14 +172,21 @@ export default function SetTargetPage() {
 
     const allocations = currentTeam.users.map((user: any) => ({
       userId: user.id,
-      brickAllocations: currentTeam.products.map((product: any) => ({
-        brickId: "default-brick-id",
-        skuAllocations: product.skus.map((sku: any) => ({
-          productSkuId: sku.id,
-          targetValue: parseInt(skuTargets[sku.id] || "0") || 0,
-          percentage: 100,
-        })),
-      })),
+      brickAllocations:
+        currentTeam.products.length > 0
+          ? [
+              {
+                brickId: user.brickId || currentTeam.callPoints?.[0]?.id || currentTeam.id,
+                skuAllocations: currentTeam.products.flatMap((product: any) =>
+                  product.skus.map((sku: any) => ({
+                    productSkuId: sku.id,
+                    targetValue: parseInt(skuTargets[sku.id] || "0") || 0,
+                    percentage: 100,
+                  }))
+                ),
+              },
+            ]
+          : [],
     }));
 
     const payload: CreateTargetPayload = {
@@ -186,6 +195,16 @@ export default function SetTargetPage() {
       year: year,
       allocations,
     };
+    // Zod Validation
+    try {
+      targetSchema.parse(payload);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        const firstError = err.errors[0]?.message || "Invalid target data";
+        alert(`Validation Error: ${firstError}`);
+        return;
+      }
+    }
 
     console.log("Submitting target payload:", payload);
 
