@@ -213,14 +213,21 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
       setPulseCode(result.pulseCode);
       setLegacyCode(result.legacyCode || "");
       setSelectedChannelId(result.channelId);
-      // Handle both single callPointId (legacy) and callPointIds array
-      const teamResult = result as any; // Type assertion to handle both structures
-      if (teamResult.callPointId) {
+
+      // Handle call point pre-selection - map objects/IDs to string array
+      const teamResult = result as any;
+      if (teamResult.callPointId && typeof teamResult.callPointId === "string") {
         setSelectedCallPoints([teamResult.callPointId]);
       } else if (teamResult.callPointIds && Array.isArray(teamResult.callPointIds)) {
-        setSelectedCallPoints(teamResult.callPointIds);
+        // Map objects or strings to IDs
+        setSelectedCallPoints(
+          teamResult.callPointIds.map((cp: any) => (typeof cp === "string" ? cp : cp.id))
+        );
       } else if (teamResult.callPoints && Array.isArray(teamResult.callPoints)) {
-        setSelectedCallPoints(teamResult.callPoints);
+        // Handle array of objects or strings (as renamed back by user)
+        setSelectedCallPoints(
+          teamResult.callPoints.map((cp: any) => (typeof cp === "string" ? cp : cp.id))
+        );
       }
 
       // Populate products
