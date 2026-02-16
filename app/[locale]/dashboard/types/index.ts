@@ -185,5 +185,6 @@ export interface DashboardProps {
   channelId?: string | null;
   productDetailBtn?: boolean;
   pulseAddBtn?: boolean;
+  territoryConflicts?: boolean;
   onAddClick?: () => void;
 }

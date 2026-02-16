@@ -5,7 +5,6 @@ import TargetConfigForm from "./TargetConfigForm";
 import ManagerSection, { Manager } from "./ManagerSection";
 import ConflictModal from "./ConflictModal";
 import { Button } from "@/components/ui/button/button";
-import { FormInput } from "@/components/form";
 import { mockManagers } from "@/data/targetData";
 import { getAllTeams } from "@/store/slices/team/getAllTeamsSlice";
 import { getTeamDetails, resetTeamDetailsState } from "@/store/slices/team/getTeamDetailsSlice";
@@ -18,6 +17,7 @@ import { z } from "zod";
 export default function SetTargetPage() {
   // Form state
   const [selectedTeam, setSelectedTeam] = useState("");
+  const [selectedSalesRep, setSelectedSalesRep] = useState("");
   const [targetMonth, setTargetMonth] = useState("");
   const dispatch = useAppDispatch();
 
@@ -57,6 +57,7 @@ export default function SetTargetPage() {
       dispatch(getTeamDetails(selectedTeam));
     } else {
       dispatch(resetTeamDetailsState());
+      setSelectedSalesRep("");
     }
   }, [selectedTeam, dispatch]);
 
@@ -121,16 +122,6 @@ export default function SetTargetPage() {
 
     if (!targetMonth) {
       alert("Please select a target month");
-      return;
-    }
-
-    // Validate for conflicts
-    const hasConflicts = managers.some((manager) =>
-      manager.salesReps.some((rep) => rep.products.some((product) => product.hasConflict))
-    );
-
-    if (hasConflicts) {
-      alert("Please resolve all conflicts before setting targets");
       return;
     }
 
@@ -228,11 +219,14 @@ export default function SetTargetPage() {
         <TargetConfigForm
           selectedTeam={selectedTeam}
           targetTeams={teams}
+          selectedSalesRep={selectedSalesRep}
+          salesReps={currentTeam?.users || []}
           targetMonthValue={targetMonth}
           areaManager={(currentTeam as any)?.areaManagerName || "Abdul Aziz Warisi"}
           channelName={teamMetadata.channelName || "Chain Pharmacy"}
           territory={(currentTeam as any)?.territory || "T1"}
           onTeamChange={setSelectedTeam}
+          onSalesRepChange={setSelectedSalesRep}
           onMonthChange={setTargetMonth}
         />
 
@@ -240,19 +234,19 @@ export default function SetTargetPage() {
         {selectedTeam && (
           <div className="space-y-6 pt-10">
             <div className="flex items-center gap-2">
-              <h2 className="t-h2 text-(--gray-9)">Define Target</h2>
+              <h2 className="t-h2 text-(--gray-9) font-bold">Define Target</h2>
             </div>
 
             <div className="space-y-8">
               {teamDetailsLoading && (
                 <div className="py-20 text-center">
-                  <div className="inline-block w-8 h-8 border-4 border-(--gray-3) border-t-primary rounded-full animate-spin mb-4"></div>
+                  <div className="inline-block w-8 h-8 border-4 border-(--gray-3) border-t-primary rounded-8 animate-spin mb-4"></div>
                   <p className="t-md text-(--gray-5)">Loading team products and SKUs...</p>
                 </div>
               )}
 
               {!teamDetailsLoading && products.length === 0 && (
-                <div className="py-20 text-center bg-(--gray-0) rounded-2xl border-2 border-dashed border-(--gray-2)">
+                <div className="py-20 text-center bg-(--gray-0) rounded-8 border-2 border-dashed border-(--gray-2)">
                   <p className="t-lg text-(--gray-5)">No products found for this team.</p>
                 </div>
               )}
@@ -260,11 +254,19 @@ export default function SetTargetPage() {
               {!teamDetailsLoading &&
                 products.length > 0 &&
                 (products as any[]).map((product: any) => (
-                  <div key={product.id} className="flex gap-8 items-start">
+                  <div key={product.id} className="flex gap-8 items-center bg-white rounded-8 p-4">
                     {/* Product Branding */}
                     <div className="flex flex-col items-center w-32 shrink-0">
-                      <div className="w-24 h-24 bg-(--gray-1) rounded-xl flex items-center justify-center overflow-hidden mb-3">
-                        <div className="text-(--gray-3) text-4xl">💊</div>
+                      <div className="w-24 h-24 bg-(--gray-0) rounded-8 flex items-center justify-center overflow-hidden mb-3 border border-(--gray-1)">
+                        {product.image ? (
+                          <img
+                            src={product.image}
+                            alt={product.name}
+                            className="w-full h-full object-contain"
+                          />
+                        ) : (
+                          <div className="text-(--gray-3) text-4xl">💊</div>
+                        )}
                       </div>
                       <span className="t-h4 text-center text-(--gray-9) font-bold">
                         {product.name}
@@ -272,21 +274,21 @@ export default function SetTargetPage() {
                     </div>
 
                     {/* SKU Grid */}
-                    <div className="flex-1 bg-(--gray-0) rounded-2xl p-6">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="flex-1 bg-(--gray-0) rounded-8 p-6 border border-(--gray-1)">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-(--background) p-4 rounded-8">
                         {product.skus?.map((sku: any) => (
                           <div
                             key={sku.id}
-                            className="bg-white rounded-xl border border-(--gray-2) p-3 flex items-center justify-between shadow-sm"
+                            className="bg-(--gray-0) rounded-8 px-4 py-3 flex items-center justify-between shadow-soft"
                           >
-                            <span className="t-sm font-semibold text-(--gray-8)">
+                            <span className="t-sm font-bold text-(--gray-9)">
                               {sku.sku || "N/A"}
                             </span>
-                            <div className="w-24">
+                            <div className="w-24 h-9 bg-(--background) rounded-8 border border-(--gray-2) flex items-center justify-center overflow-hidden focus-within:border-(--primary) transition-colors">
                               <input
                                 type="text"
                                 placeholder="Target"
-                                className="w-full text-right t-sm font-medium focus:outline-none placeholder:text-(--gray-3)"
+                                className="w-full h-full text-center t-sm font-bold text-(--gray-9) focus:outline-none placeholder:text-(--gray-3) placeholder:font-normal bg-transparent"
                                 value={skuTargets[sku.id] || ""}
                                 onChange={(e) => handleSkuTargetChange(sku.id, e.target.value)}
                               />

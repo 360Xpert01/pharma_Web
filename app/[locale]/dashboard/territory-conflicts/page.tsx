@@ -2,17 +2,17 @@
 
 import { DashboardContent } from "../components/dashboard-content";
 
-export default function SetTargetRoute() {
+export default function TerritoryConflictsRoute() {
   return (
     <div className="bg-(--gray-0)">
       <DashboardContent
-        sample={"Define Target"}
+        sample={"Conflict Resolution"}
         descrip={"Unlock the potential of your candidates"}
         hideHeader={false}
         hideMetrics={true}
         hideData={true}
         btnTrue={true}
-        setTargetlist={true}
+        territoryConflicts={true}
       />
     </div>
   );

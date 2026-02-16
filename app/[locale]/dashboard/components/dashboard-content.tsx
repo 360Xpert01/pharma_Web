@@ -66,6 +66,7 @@ import UpdateGiveawayForm from "@/components/UpdateGiveaway";
 import GiveawayForm from "@/components/GivewayForm";
 import UpdateDoctorForm from "@/components/UpdateDoctorForm";
 import ProductDetails from "@/components/ProducDetails";
+import TerritoryConflictsPage from "@/components/TerritoryConflictsPage";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -147,6 +148,7 @@ export function DashboardContent({
   channelId,
   productDetailBtn,
   pulseAddBtn,
+  territoryConflicts,
   onAddClick,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
@@ -431,6 +433,8 @@ export function DashboardContent({
             <AddAllocateGivewaySample />
           </div>
         )}
+
+        {territoryConflicts && <TerritoryConflictsPage />}
 
         {AddAllocateGiveaway && (
           <div className="">

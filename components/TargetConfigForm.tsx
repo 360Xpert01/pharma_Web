@@ -6,22 +6,28 @@ import { FormInput, FormSelect } from "@/components/form";
 interface TargetConfigFormProps {
   selectedTeam: string;
   targetTeams: any[]; // Teams array
+  selectedSalesRep?: string;
+  salesReps?: any[];
   targetMonthValue?: string;
   areaManager?: string;
   channelName?: string;
   territory?: string;
   onTeamChange: (value: string) => void;
+  onSalesRepChange?: (value: string) => void;
   onMonthChange: (value: string) => void;
 }
 
 export default function TargetConfigForm({
   selectedTeam,
   targetTeams,
+  selectedSalesRep,
+  salesReps = [],
   targetMonthValue,
   areaManager = "N/A",
   channelName = "N/A",
   territory = "N/A",
   onTeamChange,
+  onSalesRepChange,
   onMonthChange,
 }: TargetConfigFormProps) {
   const monthOptions = [
@@ -62,6 +68,21 @@ export default function TargetConfigForm({
 
         <div className="md:col-span-4">
           <FormSelect
+            label="Sales Rep"
+            name="salesRep"
+            value={selectedSalesRep || ""}
+            onChange={onSalesRepChange || (() => {})}
+            options={salesReps?.map((user: any) => ({
+              value: user.id,
+              label: user.fullName || user.userName || user.email,
+            }))}
+            placeholder="Select Sales Rep"
+            required
+          />
+        </div>
+
+        <div className="md:col-span-4">
+          <FormSelect
             label="Target Month"
             name="month"
             value={targetMonthValue || ""}
@@ -70,12 +91,6 @@ export default function TargetConfigForm({
             placeholder="Select Month"
             required
           />
-        </div>
-
-        <div className="md:col-span-4 self-center">
-          <p className="t-sm text-(--gray-5) leading-snug">
-            You can easily name the role you want and take on different responsibilities.
-          </p>
         </div>
       </div>
 

@@ -93,6 +93,7 @@ const Navbar = () => {
           items: [
             { label: "Monthly Work plans", href: "/dashboard/plan-Management" },
             { label: "Revenue Targets", href: "/dashboard/target-listview" },
+            { label: "Territory Conflicts", href: "/dashboard/territory-conflicts" },
           ],
         },
         {
