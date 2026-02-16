@@ -111,7 +111,7 @@ export default function MemberSearch({
           {hasError && <p className="mt-1 t-sm t-err">{error}</p>}
 
           {/* Dropdown */}
-          {showSearchResults && searchQuery && !loading && (
+          {showSearchResults && !loading && (
             <div className="relative">
               <div className="absolute z-10 w-full mt-2 bg-(--light) border border-(--gray-2) rounded-8 shadow-soft max-h-64 overflow-y-auto">
                 {filteredMembers.length > 0 ? (

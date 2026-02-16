@@ -138,7 +138,6 @@ export default function TableFilter({
                     value={selectedSegment}
                     onChange={setSelectedSegment}
                     options={[
-                      { value: "", label: "All Segments" },
                       ...segments.map((seg) => ({
                         value: seg.id,
                         label: seg.name,
@@ -180,7 +179,6 @@ export default function TableFilter({
                     value={selectedRole}
                     onChange={setSelectedRole}
                     options={[
-                      { value: "", label: "All Roles" },
                       ...roles.map((role) => ({
                         value: role.id,
                         label: role.roleName,
@@ -199,7 +197,6 @@ export default function TableFilter({
                     value={selectedTeam}
                     onChange={setSelectedTeam}
                     options={[
-                      { value: "", label: "All Teams" },
                       ...teams.map((team) => ({
                         value: team.id,
                         label: team.name,
@@ -218,7 +215,6 @@ export default function TableFilter({
                     value={selectedSupervisor}
                     onChange={setSelectedSupervisor}
                     options={[
-                      { value: "", label: "All Supervisors" },
                       ...users.map((user) => ({
                         value: user.id,
                         label: `${user.firstName} ${user.lastName}`,
@@ -239,7 +235,6 @@ export default function TableFilter({
                     value={selectedCategoryId}
                     onChange={setSelectedCategoryId}
                     options={[
-                      { value: "", label: "All Categories" },
                       ...categories.map((cat) => ({
                         value: cat.id,
                         label: cat.productCategory,
@@ -260,7 +255,6 @@ export default function TableFilter({
                     value={selectedGiveawayStatus}
                     onChange={setSelectedGiveawayStatus}
                     options={[
-                      { value: "", label: "All Status" },
                       { value: "active", label: "Active" },
                       { value: "inactive", label: "Inactive" },
                     ]}
@@ -279,7 +273,6 @@ export default function TableFilter({
                     value={selectedEmployeeId}
                     onChange={setSelectedEmployeeId}
                     options={[
-                      { value: "", label: "All Employees" },
                       ...users.map((user) => ({
                         value: user.id,
                         label: `${user.firstName} ${user.lastName}`,
@@ -301,7 +294,6 @@ export default function TableFilter({
                   value={showProductFilters ? selectedProductStatus : selectedStatus}
                   onChange={showProductFilters ? setSelectedProductStatus : setSelectedStatus}
                   options={[
-                    { value: "", label: "All Status" },
                     { value: "active", label: "Active" },
                     { value: "inactive", label: "Inactive" },
                     ...(showEmployeeFilters
