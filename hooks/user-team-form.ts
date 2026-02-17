@@ -145,7 +145,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
     dispatch(getAllRoles());
 
     // Fetch all territories for assignment
-    dispatch(getAllTerritories({ limit: 1000 }));
+    dispatch(getAllTerritories({ notassigned: true }));
 
     return () => {
       dispatch(resetGeneratePrefixState());
