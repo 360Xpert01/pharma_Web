@@ -6,23 +6,31 @@ import { FormInput, FormSelect } from "@/components/form";
 interface TargetConfigFormProps {
   selectedTeam: string;
   targetTeams: any[]; // Teams array
+  selectedSalesRep?: string;
+  salesReps?: any[];
   targetMonthValue?: string;
   areaManager?: string;
   channelName?: string;
   territory?: string;
   onTeamChange: (value: string) => void;
+  onSalesRepChange?: (value: string) => void;
   onMonthChange: (value: string) => void;
+  errors?: Record<string, string>;
 }
 
 export default function TargetConfigForm({
   selectedTeam,
   targetTeams,
+  selectedSalesRep,
+  salesReps = [],
   targetMonthValue,
   areaManager = "N/A",
   channelName = "N/A",
   territory = "N/A",
   onTeamChange,
+  onSalesRepChange,
   onMonthChange,
+  errors = {},
 }: TargetConfigFormProps) {
   const monthOptions = [
     { value: "january-2026", label: "January 2026" },
@@ -57,6 +65,24 @@ export default function TargetConfigForm({
             options={targetTeams?.map((team: any) => ({ value: team.id, label: team.name }))}
             placeholder="e.g, Endo-Care North"
             required
+            error={errors.team}
+          />
+        </div>
+
+        <div className="md:col-span-4">
+          <FormSelect
+            label="Sales Rep"
+            name="salesRep"
+            value={selectedSalesRep || ""}
+            onChange={onSalesRepChange || (() => {})}
+            options={salesReps?.map((user: any) => ({
+              value: user.userId || user.id,
+              label: user.firstName
+                ? `${user.firstName} ${user.lastName}`
+                : user.fullName || user.userName || user.email,
+            }))}
+            placeholder="Select Sales Rep"
+            required
           />
         </div>
 
@@ -69,13 +95,8 @@ export default function TargetConfigForm({
             options={monthOptions}
             placeholder="Select Month"
             required
+            error={errors.month}
           />
-        </div>
-
-        <div className="md:col-span-4 self-center">
-          <p className="t-sm text-(--gray-5) leading-snug">
-            You can easily name the role you want and take on different responsibilities.
-          </p>
         </div>
       </div>
 

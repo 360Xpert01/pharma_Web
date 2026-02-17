@@ -66,6 +66,10 @@ import UpdateGiveawayForm from "@/components/UpdateGiveaway";
 import GiveawayForm from "@/components/GivewayForm";
 import UpdateDoctorForm from "@/components/UpdateDoctorForm";
 import ProductDetails from "@/components/ProducDetails";
+import TerritoryConflictsPage from "@/components/TerritoryConflictsPage";
+import TerritoryTable from "@/components/TerritoryTable";
+import TerritoryForm from "@/components/TerritoryForm";
+import UpdateTargetPage from "@/components/UpdateTargetPage";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -110,6 +114,7 @@ export function DashboardContent({
   AddCallPointTrue,
   teamFormTabel,
   setTargetlist,
+  updateTargetlist,
   ActiveOn,
   UpdateEmp,
   employeeId,
@@ -147,6 +152,9 @@ export function DashboardContent({
   channelId,
   productDetailBtn,
   pulseAddBtn,
+  territoryConflicts,
+  territoryTable,
+  territoryForm,
   onAddClick,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
@@ -423,6 +431,7 @@ export function DashboardContent({
         )}
 
         {setTargetlist && <SetTargetPage />}
+        {updateTargetlist && <UpdateTargetPage />}
 
         {allocateGiveaways && (
           <div className="">
@@ -431,6 +440,8 @@ export function DashboardContent({
             <AddAllocateGivewaySample />
           </div>
         )}
+
+        {territoryConflicts && <TerritoryConflictsPage />}
 
         {AddAllocateGiveaway && (
           <div className="">
@@ -616,6 +627,19 @@ export function DashboardContent({
         {UpdateDoctor && partyId && (
           <div className="rounded-md shadow-soft bg-[var(--background)]">
             <UpdateDoctorForm partyId={partyId} channelId={channelId || ""} />
+          </div>
+        )}
+
+        {territoryTable && (
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
+            <TableHeader campHeading="All Territories" filterT onSearch={setSearchTerm} />
+            <TerritoryTable searchTerm={searchTerm} />
+          </div>
+        )}
+
+        {territoryForm && (
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
+            <TerritoryForm />
           </div>
         )}
 

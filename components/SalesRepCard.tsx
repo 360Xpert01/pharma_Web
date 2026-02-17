@@ -3,7 +3,14 @@
 import React, { useState } from "react";
 import { Search, MoreVertical, AlertTriangle } from "lucide-react";
 import Image from "next/image";
-import { ProductTarget } from "./ProductTargetRow";
+export interface ProductTarget {
+  id: string;
+  name: string;
+  targetQuantity: string;
+  completionPercentage: number;
+  hasConflict?: boolean;
+  inputValue?: string;
+}
 import EditIcon from "./svgs/edit-icon";
 import DeleteIcon from "./svgs/delete-icon";
 
@@ -305,7 +312,7 @@ export default function SalesRepCard({
           className="flex items-center gap-2 px-5 py-3 bg-(--destructive-light) cursor-pointer hover:opacity-90 transition-opacity"
         >
           <AlertTriangle className="w-4 h-4 text-(--destructive) flex-shrink-0" />
-          <p className="t-md text-(--destructive) font-medium">Conflicts In Sales Allocation</p>
+          <p className="t-md text-(--destructive) font-bold">Conflicts In Sales Allocation</p>
         </div>
       )}
     </div>

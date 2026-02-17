@@ -1,103 +1,70 @@
 "use client";
 
 import React from "react";
-import { Trash2, AlertCircle } from "lucide-react";
 
-export interface ProductTarget {
+export interface SKU {
   id: string;
   name: string;
-  targetQuantity: string;
-  completionPercentage: number;
-  inputValue: string;
-  hasConflict?: boolean;
-  conflictMessage?: string;
+}
+
+export interface Product {
+  id: string;
+  name: string;
+  profilePicture?: string;
+  skus: SKU[];
 }
 
 interface ProductTargetRowProps {
-  product: ProductTarget;
-  onDelete: (id: string) => void;
-  onInputChange: (id: string, value: string) => void;
-  onConflictClick?: () => void;
+  product: Product;
+  skuTargets: Record<string, string>;
+  onSkuTargetChange: (skuId: string, value: string) => void;
 }
 
 export default function ProductTargetRow({
   product,
-  onDelete,
-  onInputChange,
-  onConflictClick,
+  skuTargets,
+  onSkuTargetChange,
 }: ProductTargetRowProps) {
-  const getPercentageColor = (percentage: number) => {
-    if (percentage === 100) return "text-(--success)";
-    if (percentage >= 50) return "text-(--warning)";
-    return "text-(--destructive)";
-  };
-
   return (
-    <div className="space-y-2">
-      {/* Product Name and Target Info Row */}
-      <div className="flex items-center gap-3">
-        {/* Product Name */}
-        <div className="flex-1">
-          <p className="font-semibold text-(--gray-9) text-sm">{product.name}</p>
+    <div className="flex gap-8 items-center bg-white rounded-8 p-4">
+      {/* Product Branding */}
+      <div className="flex flex-col items-center w-32 shrink-0">
+        <div className="w-24 h-24 bg-(--gray-0) rounded-8 flex items-center justify-center overflow-hidden mb-3 border border-(--gray-1)">
+          {product.profilePicture ? (
+            <img
+              src={product.profilePicture}
+              alt={product.name}
+              className="w-full h-full object-contain"
+            />
+          ) : (
+            <div className="text-(--gray-3) text-full">💊</div>
+          )}
         </div>
-
-        {/* Target Quantity */}
-        <div>
-          <p className="text-sm text-(--gray-5)">{product.targetQuantity}</p>
-        </div>
-
-        {/* Completion Percentage */}
-        <div>
-          <p className={`text-sm font-bold ${getPercentageColor(product.completionPercentage)}`}>
-            {product.completionPercentage}%
-          </p>
-        </div>
-
-        {/* Delete Icon */}
-        <button
-          onClick={() => onDelete(product.id)}
-          className="text-(--destructive) hover:text-(--destructive) transition cursor-pointer p-1.5 hover:bg-(--destructive-0) rounded-8"
-          title="Delete product target"
-        >
-          <Trash2 className="w-4 h-4" />
-        </button>
+        <span className="t-h4 text-center text-(--gray-9) font-bold">{product.name}</span>
       </div>
 
-      {/* Two Input Fields Row */}
-      <div className={`grid grid-cols-2 gap-3 ${product.hasConflict ? "pb-2" : ""}`}>
-        {/* First Input Field */}
-        <input
-          type="text"
-          value={product.inputValue}
-          onChange={(e) => onInputChange(product.id, e.target.value)}
-          placeholder="e.g. Atorvastatin 10mg"
-          className={`px-3 py-2 border rounded-8 focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none text-sm ${
-            product.hasConflict
-              ? "border-(--destructive-1) bg-(--destructive-0)"
-              : "border-(--gray-3)"
-          }`}
-        />
-
-        {/* Second Input Field (placeholder for future use) */}
-        <input
-          type="text"
-          placeholder="e.g. Elt 250mg"
-          className="px-3 py-2 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none text-sm"
-        />
-      </div>
-
-      {/* Conflict Error Message */}
-      {product.hasConflict && (
-        <div
-          onClick={onConflictClick}
-          className="flex items-center gap-2 px-3 py-2 bg-(--destructive-0) border border-(--destructive-1) rounded-8 cursor-pointer hover:bg-(--destructive-0) transition-colors"
-        >
-          <AlertCircle className="w-4 h-4 text-(--destructive) flex-shrink-0" />
-          <p className="text-xs text-(--destructive)">
-            {product.conflictMessage || "Conflict with existing target"}
-          </p>
+      {/* SKU Grid */}
+      <div className="flex-1 bg-(--gray-0) rounded-8 p-6 border border-(--gray-1)">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-(--background) p-4 rounded-8">
+          {product.skus?.map((sku) => (
+            <div
+              key={sku.id}
+              className="bg-(--gray-0) rounded-8 px-4 py-3 flex items-center justify-between shadow-soft"
+            >
+              <span className="t-sm font-bold text-(--gray-9)">{sku.name || "N/A"}</span>
+              <div className="w-24 h-9 bg-(--background) rounded-8 border border-(--gray-2) flex items-center justify-center overflow-hidden focus-within:border-(--primary) transition-colors">
+                <input
+                  type="text"
+                  placeholder="Target"
+                  className="w-full h-full text-center t-sm font-bold text-(--gray-9) focus:outline-none placeholder:text-(--gray-3) placeholder:font-normal bg-transparent"
+                  value={skuTargets[sku.id] || ""}
+                  onChange={(e) => onSkuTargetChange(sku.id, e.target.value)}
+                />
+              </div>
+            </div>
+          ))}
         </div>
-      )}
+      </div>
     </div>
   );
 }

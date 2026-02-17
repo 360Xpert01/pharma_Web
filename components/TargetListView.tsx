@@ -9,7 +9,6 @@ import TablePagination from "@/components/TablePagination";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getTargetList, resetTargetListState } from "@/store/slices/target/getTargetListSlice";
 import EditIcon from "@/components/svgs/edit-icon";
-import EyeIcon from "@/components/svgs/eye-icon";
 import TargetExpandedRow from "@/components/TargetExpandedRow";
 
 interface Product {

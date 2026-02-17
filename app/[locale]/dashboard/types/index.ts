@@ -149,6 +149,7 @@ export interface DashboardProps {
   AddCallPointTrue?: boolean;
   teamFormTabel?: boolean;
   setTargetlist?: boolean;
+  updateTargetlist?: boolean;
   ActiveOn?: boolean;
   UpdateEmp?: boolean;
   employeeId?: string | null;
@@ -185,5 +186,8 @@ export interface DashboardProps {
   channelId?: string | null;
   productDetailBtn?: boolean;
   pulseAddBtn?: boolean;
+  territoryConflicts?: boolean;
+  territoryTable?: boolean;
+  territoryForm?: boolean;
   onAddClick?: () => void;
 }

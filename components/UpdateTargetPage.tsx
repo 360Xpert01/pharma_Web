@@ -1,11 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import TargetConfigForm from "./TargetConfigForm";
-import ManagerSection, { Manager } from "./ManagerSection";
 import ConflictModal from "./ConflictModal";
 import { Button } from "@/components/ui/button/button";
-import { mockManagers } from "@/data/targetData";
 import { getTeamAll } from "@/store/slices/team/getTeamAllSlice";
 import {
   getTeamTargetProducts,
@@ -22,7 +20,7 @@ import toast from "react-hot-toast";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { getTargetById, resetTargetByIdState } from "@/store/slices/target/getTargetByIdSlice";
 
-export default function SetTargetPage() {
+export default function UpdateTargetPage() {
   // Form state
   const [selectedTeam, setSelectedTeam] = useState("");
   const [selectedSalesRep, setSelectedSalesRep] = useState("");
@@ -55,18 +53,11 @@ export default function SetTargetPage() {
     success: targetSuccess,
   } = useAppSelector((state) => state.targetById);
 
-  // Manager selection state (keeping for backward compatibility with UI)
-  const [selectedManager1, setSelectedManager1] = useState("manager1");
-  const [selectedManager2, setSelectedManager2] = useState("manager2");
-
   // New state for SKU targets: { [skuId: string]: string }
   const [skuTargets, setSkuTargets] = useState<Record<string, string>>({});
 
   // Validation errors state
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
-
-  // Helper function to get error message for a field
-  const getErrorMessage = (fieldName: string) => validationErrors[fieldName] || "";
 
   // Helper function to clear error for a specific field when user types
   const clearFieldError = (fieldName: string) => {
@@ -88,9 +79,6 @@ export default function SetTargetPage() {
   // Use the one that has products populated
   const products = teamTargetData?.products || [];
 
-  // Mock data imported from data file (keep for now if no real data)
-  const [managers, setManagers] = useState<Manager[]>(mockManagers);
-
   // Fetch teams and roles on mount
   useEffect(() => {
     dispatch(getTeamAll());
@@ -111,18 +99,32 @@ export default function SetTargetPage() {
   // Populate form when target data is fetched
   useEffect(() => {
     if (targetSuccess && targetData) {
-      // Set team if available
-      if (targetData.teamId) {
-        setSelectedTeam(targetData.teamId);
-      } else if (targetData.team?.id) {
-        setSelectedTeam(targetData.team.id);
-      } else if (targetData.teamName) {
-        // Find team by name if ID is missing (not ideal but defensive)
-        const team = teams.find((t: any) => t.name === targetData.teamName);
-        if (team) setSelectedTeam(team.id);
+      const data = targetData.data || targetData;
+
+      // Set team
+      if (data.teamId) setSelectedTeam(data.teamId);
+
+      // Handle allocations mapping
+      const allocations = data.allocations || [];
+      if (allocations.length > 0) {
+        // Default to first sales rep if not selected
+        const firstRep = allocations[0];
+        if (firstRep.userId) setSelectedSalesRep(firstRep.userId);
+
+        // Map all targets back to skuTargets state (from all reps in the allocation)
+        const newSkuTargets: Record<string, string> = {};
+        allocations.forEach((alloc: any) => {
+          const skuAllocations = alloc.skuAllocations || alloc.productTargets || [];
+          skuAllocations.forEach((skuAlloc: any) => {
+            if (skuAlloc.productSkuId) {
+              newSkuTargets[skuAlloc.productSkuId] = String(skuAlloc.targetValue || "0");
+            }
+          });
+        });
+        setSkuTargets(newSkuTargets);
       }
 
-      // Format month and year back to the format expected by the form
+      // Format month and year
       const monthNames = [
         "january",
         "february",
@@ -137,51 +139,22 @@ export default function SetTargetPage() {
         "november",
         "december",
       ];
-
-      const month = targetData.month || targetData.targetMonth;
-      const year = targetData.year || targetData.targetYear;
-
+      const month = data.month || data.targetMonth;
+      const year = data.year || data.targetYear;
       if (month && year) {
         const monthName =
           typeof month === "number" ? monthNames[month - 1] : String(month).toLowerCase();
         setTargetMonth(`${monthName}-${year}`);
       }
-
-      // Map targets back to skuTargets state
-      const newSkuTargets: Record<string, string> = {};
-
-      // Case 1: Team-level targets (array of users)
-      if (Array.isArray(targetData.targets)) {
-        targetData.targets.forEach((userTarget: any) => {
-          if (Array.isArray(userTarget.productTargets)) {
-            userTarget.productTargets.forEach((pt: any) => {
-              if (pt.productSkuId) {
-                newSkuTargets[pt.productSkuId] = String(pt.targetValue || pt.targetPackets || "0");
-              }
-            });
-          }
-        });
-      }
-      // Case 2: Individual target (list of products directly)
-      else if (Array.isArray(targetData.products)) {
-        targetData.products.forEach((product: any) => {
-          const skuId = product.productSkuId || product.id || product.skuId;
-          if (skuId) {
-            newSkuTargets[skuId] = String(product.targetValue || product.targetPackets || "0");
-          }
-        });
-      }
-
-      setSkuTargets(newSkuTargets);
     }
-  }, [targetSuccess, targetData, teams]);
+  }, [targetSuccess, targetData]);
 
   // Fetch team target products and users when team is selected
   useEffect(() => {
     if (selectedTeam) {
       dispatch(getTeamTargetProducts(selectedTeam));
 
-      // Find the "Sales Representative" role to filter users
+      // Find relevant roles
       const salesRepRole = roles.find(
         (r) => r.roleName === "Sales Representative" || r.pulseCode === "SR"
       );
@@ -192,23 +165,17 @@ export default function SetTargetPage() {
           roleId: salesRepRole?.id,
         })
       );
-    } else {
-      dispatch(resetTeamTargetProductsState());
-      dispatch(resetTeamUsersState());
-      setSelectedSalesRep("");
-      setValidationErrors({});
     }
   }, [selectedTeam, roles, dispatch]);
 
   // Handle API success
   useEffect(() => {
     if (createSuccess) {
-      toast.success(createMessage || "Target allocation created successfully!");
-      // Reset form
-      setManagers(mockManagers);
+      toast.success(createMessage || "Target allocation updated successfully!");
       dispatch(resetCreateTargetState());
+      router.push(`/${locale}/dashboard/target-listview`);
     }
-  }, [createSuccess, createMessage, dispatch]);
+  }, [createSuccess, createMessage, dispatch, router, locale]);
 
   // Handle API error
   useEffect(() => {
@@ -218,16 +185,20 @@ export default function SetTargetPage() {
     }
   }, [createError, dispatch]);
 
-  // Read-only field values (populated when team is selected)
-  const selectedRepData = teamUsers.find((u) => u.userId === selectedSalesRep);
+  // Read-only field values (populated when team/sales rep is selected)
+  // Check if targetData has specific rep info before falling back to teamUsers
+  const currentRepFromAlloc = targetData?.data?.allocations?.find(
+    (a: any) => a.userId === selectedSalesRep
+  );
+  const currentRepFromUsers = teamUsers.find((u) => u.userId === selectedSalesRep);
 
   const teamMetadata = {
-    teamRoleCode: matchTeam?.pulseCode || "",
-    teamName: matchTeam?.name || "",
-    channelName: teamTargetData?.channelName || matchTeam?.channelName || "",
-    callPoint: "No Callpoint available", // Not in target API
-    areaManager: selectedRepData?.supervisorName || "Abdul Aziz Warisi",
-    territory: selectedRepData?.territoryName || "T1",
+    teamName: targetData?.data?.teamName || matchTeam?.name || "",
+    channelName:
+      targetData?.data?.channelName || teamTargetData?.channelName || matchTeam?.channelName || "",
+    areaManager:
+      currentRepFromAlloc?.supervisorName || currentRepFromUsers?.supervisorName || "N/A",
+    territory: currentRepFromAlloc?.territoryName || currentRepFromUsers?.territoryName || "N/A",
   };
 
   const handleSkuTargetChange = (skuId: string, value: string) => {
@@ -237,8 +208,7 @@ export default function SetTargetPage() {
     }));
   };
 
-  const handleSetTarget = async () => {
-    // Parse month/year from targetMonth (assuming format like "january-2026", "2026-12", or month name)
+  const handleUpdateTarget = async () => {
     const currentYear = new Date().getFullYear();
     let month: number = 0;
     let year: number = currentYear;
@@ -263,18 +233,10 @@ export default function SetTargetPage() {
       const monthIdx = monthNames.indexOf(mPart.toLowerCase());
       month = monthIdx !== -1 ? monthIdx + 1 : parseInt(mPart) || 0;
       year = parseInt(yPart) || currentYear;
-    } else if (!isNaN(parseInt(targetMonth))) {
-      month = parseInt(targetMonth);
-      year = currentYear;
-    } else {
-      const monthIdx = monthNames.indexOf(targetMonth.toLowerCase());
-      month = monthIdx !== -1 ? monthIdx + 1 : 0;
-      year = currentYear;
     }
 
-    // Build allocation payload from team details and users
     if (!teamUsers || teamUsers.length === 0) {
-      toast.error("No team members found for the selected team.");
+      toast.error("No team members found.");
       return;
     }
 
@@ -294,32 +256,24 @@ export default function SetTargetPage() {
       year: year,
       targets,
     };
-    // Zod Validation
-    const validation = targetSchema.safeParse(payload);
 
+    const validation = targetSchema.safeParse(payload);
     if (!validation.success) {
       const errors: Record<string, string> = {};
       validation.error.errors.forEach((err) => {
         const fieldName = err.path[0] as string;
-        // Map top-level field names for UI
         if (fieldName === "teamId") errors.team = err.message;
         if (fieldName === "month") errors.month = err.message;
-        // Add more mappings if needed
       });
-
       setValidationErrors(errors);
       return;
     }
 
     setValidationErrors({});
-
-    console.log("Submitting target payload:", payload);
-
     try {
       await dispatch(createTarget(payload)).unwrap();
-      router.push(`/${locale}/dashboard/target-listview`);
     } catch (err) {
-      console.error("Failed to create target:", err);
+      console.error("Failed to update target:", err);
     }
   };
 
@@ -347,23 +301,28 @@ export default function SetTargetPage() {
           errors={validationErrors}
         />
 
-        {/* Define Target Section */}
         <DefineTargetSection
           products={products}
-          teamDetailsLoading={teamTargetLoading}
+          teamDetailsLoading={teamTargetLoading || targetLoading}
           skuTargets={skuTargets}
           onSkuTargetChange={handleSkuTargetChange}
           selectedTeam={selectedTeam}
         />
 
-        {/* Footer Action Buttons */}
         <div className="flex justify-end gap-4 pt-6">
-          <Button type="button" variant="outline" size="lg" rounded="full" className="px-6">
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            rounded="full"
+            className="px-6"
+            onClick={() => router.back()}
+          >
             Discard
           </Button>
           <Button
             type="button"
-            onClick={handleSetTarget}
+            onClick={handleUpdateTarget}
             variant="primary"
             size="lg"
             rounded="full"
@@ -371,12 +330,11 @@ export default function SetTargetPage() {
             disabled={createLoading || targetLoading || !selectedTeam || !targetMonth}
             loading={createLoading || targetLoading}
           >
-            {createLoading ? "Submitting..." : targetId ? "Update Target" : "Set Target"}
+            {createLoading ? "Updating..." : "Update Target"}
           </Button>
         </div>
       </div>
 
-      {/* Conflict Modal */}
       <ConflictModal isOpen={isConflictModalOpen} onClose={() => setIsConflictModalOpen(false)} />
     </div>
   );

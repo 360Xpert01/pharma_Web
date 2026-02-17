@@ -93,6 +93,7 @@ const Navbar = () => {
           items: [
             { label: "Monthly Work plans", href: "/dashboard/plan-Management" },
             { label: "Revenue Targets", href: "/dashboard/target-listview" },
+            { label: "Territory Conflicts", href: "/dashboard/territory-conflicts" },
           ],
         },
         {
@@ -230,6 +231,7 @@ const Navbar = () => {
             { label: "Branches / Divisions", href: "/dashboard/bricks-hierarchy" },
             { label: "Organization Hierarchy", href: "/dashboard/role-hierarchy" },
             { label: "Document Numbering", href: "/dashboard/AddPrefix" },
+            { label: "Territory Management", href: "/dashboard/territory-Management" },
           ],
         },
         {

@@ -39,6 +39,10 @@ import createTeamReducer from "./slices/team/createTeamSlice";
 import updateTeamReducer from "./slices/team/updateTeamSlice";
 import getTeamByIdReducer from "./slices/team/getTeamByIdSlice";
 import getTeamDetailsReducer from "./slices/team/getTeamDetailsSlice";
+import getTeamUsersReducer from "./slices/team/getTeamUsersSlice";
+import getTeamTargetProductsReducer from "./slices/team/getTeamTargetProductsSlice";
+import getTeamConflictsReducer from "./slices/team/getTeamConflictsSlice";
+import getTeamAllReducer from "./slices/team/getTeamAllSlice";
 import brickListReducer from "./slices/brick/getBrickListSlice";
 import brickByIdReducer from "./slices/brick/getBrickByIdSlice";
 import createBrickReducer from "./slices/brick/createBrickSlice";
@@ -89,6 +93,12 @@ import createTargetReducer from "./slices/target/createTargetSlice";
 import allProductSkusReducer from "./slices/product/getAllProductSkusSlice";
 import getAllocateUserByIdReducer from "./slices/allocation/getAllocateUserByIdSlice";
 import updateAllocateUserReducer from "./slices/allocation/updateAllocateUserSlice";
+import getTargetByIdReducer from "./slices/target/getTargetByIdSlice";
+import allTerritoriesReducer from "./slices/territory/getAllTerritoriesSlice";
+import territoryByIdReducer from "./slices/territory/getTerritoryByIdSlice";
+import createTerritoryReducer from "./slices/territory/createTerritorySlice";
+import updateTerritoryReducer from "./slices/territory/updateTerritorySlice";
+import deleteTerritoryReducer from "./slices/territory/deleteTerritorySlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -162,6 +172,10 @@ const rootReducer = combineReducers({
   partyPlan: partyPlanReducer,
   getTeamById: getTeamByIdReducer,
   teamDetails: getTeamDetailsReducer,
+  teamUsers: getTeamUsersReducer,
+  teamTargetProducts: getTeamTargetProductsReducer,
+  teamConflicts: getTeamConflictsReducer,
+  teamAll: getTeamAllReducer,
   updateTeam: updateTeamReducer,
   pendingRequests: pendingRequestsReducer,
   handleOtp: handleOtpSliceReducer,
@@ -176,6 +190,12 @@ const rootReducer = combineReducers({
   allProductSkus: allProductSkusReducer,
   getAllocateUserById: getAllocateUserByIdReducer,
   updateAllocateUser: updateAllocateUserReducer,
+  targetById: getTargetByIdReducer,
+  allTerritories: allTerritoriesReducer,
+  territoryById: territoryByIdReducer,
+  createTerritory: createTerritoryReducer,
+  updateTerritory: updateTerritoryReducer,
+  deleteTerritory: deleteTerritoryReducer,
 });
 
 const persistConfig = {
