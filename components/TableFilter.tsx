@@ -5,7 +5,7 @@ import { getAllSpecializations } from "@/store/slices/specialization/getAllSpeci
 import { getAllSegments } from "@/store/slices/segment/getAllSegmentsSlice";
 import { getAllChannels } from "@/store/slices/channel/getAllChannelsSlice";
 import { getAllRoles } from "@/store/slices/role/getAllRolesSlice";
-import { getAllTeams } from "@/store/slices/team/getAllTeamsSlice";
+import { getTeamAll } from "@/store/slices/team/getTeamAllSlice";
 import { getAllUsers } from "@/store/slices/employee/getAllUsersSlice";
 import { getProductCategories } from "@/store/slices/product/getProductCategoriesSlice";
 import FormSelect from "@/components/form/FormSelect";
@@ -63,7 +63,7 @@ export default function TableFilter({
   const { segments } = useAppSelector((state) => state.allSegments);
   const { channels } = useAppSelector((state) => state.allChannels);
   const { roles } = useAppSelector((state) => state.allRoles);
-  const { teams } = useAppSelector((state) => state.allTeams);
+  const { teams } = useAppSelector((state) => state.teamAll);
   const { users } = useAppSelector((state) => state.allUsers);
   const { categories } = useAppSelector((state) => state.productCategories);
 
@@ -81,7 +81,7 @@ export default function TableFilter({
     }
     if (showEmployeeFilters && isFilterOpen) {
       dispatch(getAllRoles());
-      dispatch(getAllTeams());
+      dispatch(getTeamAll());
     }
     if (showProductFilters && isFilterOpen) {
       dispatch(getProductCategories());

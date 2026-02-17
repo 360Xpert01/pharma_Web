@@ -231,6 +231,7 @@ const Navbar = () => {
             { label: "Branches / Divisions", href: "/dashboard/bricks-hierarchy" },
             { label: "Organization Hierarchy", href: "/dashboard/role-hierarchy" },
             { label: "Document Numbering", href: "/dashboard/AddPrefix" },
+            { label: "Territory Management", href: "/dashboard/territory-Management" },
           ],
         },
         {

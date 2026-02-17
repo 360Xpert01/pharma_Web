@@ -3,7 +3,14 @@
 import React, { useState } from "react";
 import { Search, MoreVertical, AlertTriangle } from "lucide-react";
 import Image from "next/image";
-import { ProductTarget } from "./ProductTargetRow";
+export interface ProductTarget {
+  id: string;
+  name: string;
+  targetQuantity: string;
+  completionPercentage: number;
+  hasConflict?: boolean;
+  inputValue?: string;
+}
 import EditIcon from "./svgs/edit-icon";
 import DeleteIcon from "./svgs/delete-icon";
 

@@ -15,6 +15,7 @@ interface TargetConfigFormProps {
   onTeamChange: (value: string) => void;
   onSalesRepChange?: (value: string) => void;
   onMonthChange: (value: string) => void;
+  errors?: Record<string, string>;
 }
 
 export default function TargetConfigForm({
@@ -29,6 +30,7 @@ export default function TargetConfigForm({
   onTeamChange,
   onSalesRepChange,
   onMonthChange,
+  errors = {},
 }: TargetConfigFormProps) {
   const monthOptions = [
     { value: "january-2026", label: "January 2026" },
@@ -63,6 +65,7 @@ export default function TargetConfigForm({
             options={targetTeams?.map((team: any) => ({ value: team.id, label: team.name }))}
             placeholder="e.g, Endo-Care North"
             required
+            error={errors.team}
           />
         </div>
 
@@ -73,8 +76,10 @@ export default function TargetConfigForm({
             value={selectedSalesRep || ""}
             onChange={onSalesRepChange || (() => {})}
             options={salesReps?.map((user: any) => ({
-              value: user.id,
-              label: user.fullName || user.userName || user.email,
+              value: user.userId || user.id,
+              label: user.firstName
+                ? `${user.firstName} ${user.lastName}`
+                : user.fullName || user.userName || user.email,
             }))}
             placeholder="Select Sales Rep"
             required
@@ -90,6 +95,7 @@ export default function TargetConfigForm({
             options={monthOptions}
             placeholder="Select Month"
             required
+            error={errors.month}
           />
         </div>
       </div>

@@ -4,27 +4,21 @@ import axios from "axios";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 // Type Definitions
-interface SkuAllocation {
+interface ProductTargetInput {
   productSkuId: string;
   targetValue: number;
-  percentage: number;
 }
 
-interface BrickAllocation {
-  brickId: string;
-  skuAllocations: SkuAllocation[];
-}
-
-interface UserAllocation {
+interface UserTargetInput {
   userId: string;
-  brickAllocations: BrickAllocation[];
+  productTargets: ProductTargetInput[];
 }
 
 export interface CreateTargetPayload {
   teamId: string;
   month: number;
   year: number;
-  allocations: UserAllocation[];
+  targets: UserTargetInput[];
 }
 
 interface CreateTargetResponse {

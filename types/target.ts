@@ -40,28 +40,22 @@ export interface GroupedTargets {
   [month: string]: EmployeeTarget[];
 }
 
-// Target Allocation API Types
-export interface SkuAllocation {
+// Target Creation API Types
+export interface ProductTargetInput {
   productSkuId: string;
   targetValue: number;
-  percentage: number;
 }
 
-export interface BrickAllocation {
-  brickId: string;
-  skuAllocations: SkuAllocation[];
-}
-
-export interface UserAllocation {
+export interface UserTargetInput {
   userId: string;
-  brickAllocations: BrickAllocation[];
+  productTargets: ProductTargetInput[];
 }
 
 export interface CreateTargetPayload {
   teamId: string;
   month: number;
   year: number;
-  allocations: UserAllocation[];
+  targets: UserTargetInput[];
 }
 
 export interface CreateTargetResponse {

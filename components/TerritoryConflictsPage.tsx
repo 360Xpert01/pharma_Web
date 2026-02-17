@@ -4,65 +4,48 @@ import React, { useState } from "react";
 import { FormSelect } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
-
-interface TerritoryConflict {
-  id: string;
-  code: string;
-  percentage: number;
-  territories: { name: string; share: string }[];
-  isResolved: boolean;
-}
+import { useAppDispatch, useAppSelector } from "@/store";
+import { getTeamAll } from "@/store/slices/team/getTeamAllSlice";
+import {
+  getTeamConflicts,
+  resetTeamConflictsState,
+} from "@/store/slices/team/getTeamConflictsSlice";
+import { useEffect } from "react";
 
 export default function TerritoryConflictsPage() {
   const [selectedTeam, setSelectedTeam] = useState("");
+  const dispatch = useAppDispatch();
+  const { teams } = useAppSelector((state) => state.teamAll);
+  const { data: teamConflictData, loading: conflictLoading } = useAppSelector(
+    (state) => state.teamConflicts
+  );
 
-  // Mock data for conflicts
-  const [conflicts, setConflicts] = useState<TerritoryConflict[]>([
-    {
-      id: "1",
-      code: "L52",
-      percentage: 0,
-      territories: Array(12)
-        .fill(null)
-        .map((_, i) => ({ name: `Territory ${i + 1}`, share: "" })),
-      isResolved: false,
-    },
-    {
-      id: "2",
-      code: "L46",
-      percentage: 100,
-      territories: [
-        { name: "Territory 1", share: "30" },
-        { name: "Territory 1", share: "30" },
-        { name: "Territory 1", share: "40" },
-      ],
-      isResolved: true,
-    },
-    {
-      id: "3",
-      code: "L56",
-      percentage: 70,
-      territories: [
-        { name: "Territory 1", share: "20" },
-        { name: "Territory 2", share: "20" },
-        { name: "Territory 3", share: "30" },
-      ],
-      isResolved: false,
-    },
-  ]);
+  useEffect(() => {
+    dispatch(getTeamAll());
+  }, [dispatch]);
 
-  const handleShareChange = (conflictId: string, territoryIdx: number, value: string) => {
-    setConflicts((prev) =>
-      prev.map((c) => {
-        if (c.id === conflictId) {
-          const newTerritories = [...c.territories];
-          newTerritories[territoryIdx] = { ...newTerritories[territoryIdx], share: value };
-          return { ...c, territories: newTerritories };
-        }
-        return c;
-      })
-    );
+  useEffect(() => {
+    if (selectedTeam) {
+      dispatch(getTeamConflicts(selectedTeam));
+    } else {
+      dispatch(resetTeamConflictsState());
+    }
+  }, [selectedTeam, dispatch]);
+
+  // Local state to manage input shares before saving
+  const [localShares, setLocalShares] = useState<Record<string, Record<string, string>>>({});
+
+  const handleShareChange = (brickId: string, territoryId: string, value: string) => {
+    setLocalShares((prev) => ({
+      ...prev,
+      [brickId]: {
+        ...(prev[brickId] || {}),
+        [territoryId]: value,
+      },
+    }));
   };
+
+  const conflicts = teamConflictData?.conflicts || [];
 
   return (
     <div className="bg-background rounded-8 shadow-soft p-8 overflow-hidden">
@@ -77,10 +60,10 @@ export default function TerritoryConflictsPage() {
                 name="team"
                 value={selectedTeam}
                 onChange={setSelectedTeam}
-                options={[
-                  { value: "team1", label: "Team North" },
-                  { value: "team2", label: "Team South" },
-                ]}
+                options={teams.map((team: any) => ({
+                  value: team.id,
+                  label: team.name,
+                }))}
                 placeholder="Search teams"
                 required
               />
@@ -100,65 +83,78 @@ export default function TerritoryConflictsPage() {
           <h2 className="t-h2 text-(--gray-9) font-bold">Conflicting Bricks</h2>
 
           <div className="space-y-6">
-            {conflicts.map((conflict) => (
-              <div
-                key={conflict.id}
-                className="bg-white rounded-8 border border-(--gray-2) overflow-hidden shadow-soft"
-              >
-                <div className="p-8 space-y-6">
-                  {/* Card Header: Code and Percentage */}
-                  <div className="flex items-center gap-6">
-                    <div className="bg-(--primary) text-white px-6 py-2 rounded-8 t-h4 font-bold">
-                      {conflict.code}
-                    </div>
-                    <div
-                      className={`t-h1 font-bold ${conflict.isResolved ? "text-(--success)" : "text-(--destructive)"}`}
-                    >
-                      {conflict.percentage}%
-                    </div>
-                  </div>
-
-                  {/* Territory Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                    {conflict.territories.map((t, idx) => (
-                      <div
-                        key={idx}
-                        className="bg-(--gray-0) border border-(--gray-1) rounded-8 p-4 flex items-center justify-between"
-                      >
-                        <span className="font-medium text-(--gray-9)">{t.name}</span>
-                        <div className="w-16 h-8 bg-white rounded-8 border border-(--gray-1) flex items-center justify-center px-1">
-                          <input
-                            type="text"
-                            value={t.share}
-                            onChange={(e) => handleShareChange(conflict.id, idx, e.target.value)}
-                            placeholder="0"
-                            className="w-full h-full text-right font-normal focus:outline-none placeholder:text-(--gray-4) placeholder:font-normal bg-transparent"
-                          />
-                          <span className="ml-0.5 text-(--gray-5) select-none text-xs">%</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Status Alert */}
-                  {conflict.isResolved ? (
-                    <div className="bg-(--success-0) rounded-8 px-4 py-3 flex items-center gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-(--success)" />
-                      <span className="font-medium text-xs text-(--success)">
-                        Conflict Resolved
-                      </span>
-                    </div>
-                  ) : (
-                    <div className="bg-(--destructive-0) rounded-8 px-4 py-3 flex items-center gap-3">
-                      <AlertCircle className="w-5 h-5 text-(--destructive)" />
-                      <span className="font-medium text-xs text-(--destructive)">
-                        Conflicts in Sales Allocation
-                      </span>
-                    </div>
-                  )}
-                </div>
+            {conflictLoading ? (
+              <div className="py-20 text-center">
+                <div className="inline-block w-8 h-8 border-4 border-(--gray-3) border-t-primary rounded-8 animate-spin mb-4"></div>
+                <p className="t-md text-(--gray-5)">Loading team conflicts...</p>
               </div>
-            ))}
+            ) : conflicts.length === 0 ? (
+              <div className="py-20 text-center bg-(--gray-0) rounded-8 border-2 border-dashed border-(--gray-2)">
+                <p className="t-lg text-(--gray-5)">No conflicts found for this team.</p>
+              </div>
+            ) : (
+              conflicts.map((conflict) => (
+                <div
+                  key={conflict.brickId}
+                  className="bg-white rounded-8 border border-(--gray-2) overflow-hidden shadow-soft"
+                >
+                  <div className="p-8 space-y-6">
+                    {/* Card Header: Code and Percentage */}
+                    <div className="flex items-center gap-6">
+                      <div className="bg-(--primary) text-white px-6 py-2 rounded-8 t-h4 font-bold">
+                        {conflict.brickName}
+                      </div>
+                      <div
+                        className={`t-h1 font-bold ${conflict.isResolved ? "text-(--success)" : "text-(--destructive)"}`}
+                      >
+                        {conflict.totalPercentage}%
+                      </div>
+                    </div>
+
+                    {/* Territory Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                      {conflict.territories.map((t) => (
+                        <div
+                          key={t.territoryId}
+                          className="bg-(--gray-0) border border-(--gray-1) rounded-8 p-4 flex items-center justify-between"
+                        >
+                          <span className="font-medium text-(--gray-9)">{t.territoryName}</span>
+                          <div className="w-16 h-8 bg-white rounded-8 border border-(--gray-1) flex items-center justify-center px-1">
+                            <input
+                              type="text"
+                              value={localShares[conflict.brickId]?.[t.territoryId] ?? t.percentage}
+                              onChange={(e) =>
+                                handleShareChange(conflict.brickId, t.territoryId, e.target.value)
+                              }
+                              placeholder="0"
+                              className="w-full h-full text-right font-normal focus:outline-none placeholder:text-(--gray-4) placeholder:font-normal bg-transparent"
+                            />
+                            <span className="ml-0.5 text-(--gray-5) select-none text-xs">%</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Status Alert */}
+                    {conflict.isResolved ? (
+                      <div className="bg-(--success-0) rounded-8 px-4 py-3 flex items-center gap-3">
+                        <CheckCircle2 className="w-5 h-5 text-(--success)" />
+                        <span className="font-medium text-xs text-(--success)">
+                          Conflict Resolved
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="bg-(--destructive-0) rounded-8 px-4 py-3 flex items-center gap-3">
+                        <AlertCircle className="w-5 h-5 text-(--destructive)" />
+                        <span className="font-medium text-xs text-(--destructive)">
+                          Conflicts in Sales Allocation
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </section>
 

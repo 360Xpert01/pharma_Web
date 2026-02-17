@@ -21,7 +21,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { employeeRegistrationSchema } from "@/validations";
 import { ProfileImageUpload, FormInput, FormSelect, StatusToggle } from "@/components/form";
-import { getAllTeams } from "@/store/slices/team/getAllTeamsSlice";
+import { getTeamAll } from "@/store/slices/team/getTeamAllSlice";
 
 interface EmployeeFormProps {
   mode: "add" | "update";
@@ -41,7 +41,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
   } = useAppSelector((state) => state.generatePrefix);
   const { roles, loading: rolesLoading } = useAppSelector((state) => state.allRoles);
   const { users, loading: usersLoading } = useAppSelector((state) => state.allUsers);
-  const { teams, loading: teamsLoading } = useAppSelector((state) => state.allTeams);
+  const { teams, loading: teamsLoading } = useAppSelector((state) => state.teamAll);
   const {
     loading: registerLoading,
     success: registerSuccess,
@@ -111,7 +111,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
     // Fetch roles and users for dropdowns
     dispatch(getAllRoles());
     dispatch(getAllUsers());
-    dispatch(getAllTeams({ limit: 100 }));
+    dispatch(getTeamAll());
 
     return () => {
       if (isUpdateMode) {
