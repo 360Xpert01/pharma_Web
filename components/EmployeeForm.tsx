@@ -110,7 +110,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
     dispatch(getAllRoles());
     dispatch(getAllUsers());
     dispatch(getTeamAll());
-    dispatch(getAllTerritories({ limit: 1000 })); // Fetch all territories without pagination
+    dispatch(getAllTerritories({ notassigned: true })); // Fetch unassigned territories without pagination
 
     return () => {
       if (isUpdateMode) {
@@ -637,7 +637,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                       }}
                       options={territories.map((territory) => ({
                         value: territory.id,
-                        label: territory.name,
+                        label: territory.pulseCode,
                       }))}
                       placeholder="Select Territory"
                       loading={territoriesLoading}
