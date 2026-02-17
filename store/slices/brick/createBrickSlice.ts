@@ -11,6 +11,7 @@ export interface CreateBrickPayload {
   type: GeoUnitType;
   parentId?: string;
   brickCode?: string;
+  description?: string;
   latitude?: number;
   longitude?: number;
   id?: string;
@@ -24,6 +25,7 @@ interface CreatedBrick {
   type: GeoUnitType;
   parentId?: string;
   brickCode?: string;
+  description?: string;
   latitude?: number;
   longitude?: number;
   createdAt?: string;

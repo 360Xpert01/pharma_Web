@@ -27,9 +27,14 @@ export default function BricksHierarchyWrapper() {
     return () => window.removeEventListener("bricks:add-root", handleAddRoot);
   }, []);
 
-  const handleCreateChild = async (parentId: string, type: string, name: string) => {
+  const handleCreateChild = async (
+    parentId: string,
+    type: string,
+    name: string,
+    description: string
+  ) => {
     try {
-      const payload: any = { name, type };
+      const payload: any = { name, type, description };
       if (parentId !== "root") {
         payload.parentId = parentId;
       }

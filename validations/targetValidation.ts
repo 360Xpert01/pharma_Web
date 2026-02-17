@@ -21,4 +21,10 @@ export const targetSchema = z.object({
   targets: z.array(userTargetSchema).min(1, "At least one user target is required"),
 });
 
+// Update Target Schema - Only allows modifying targetValue
+export const updateTargetSchema = z.object({
+  targets: z.array(userTargetSchema).min(1, "At least one user target is required"),
+});
+
 export type TargetValidationType = z.infer<typeof targetSchema>;
+export type UpdateTargetValidationType = z.infer<typeof updateTargetSchema>;
