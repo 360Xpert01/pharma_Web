@@ -22,6 +22,10 @@ import toast from "react-hot-toast";
 import { employeeRegistrationSchema } from "@/validations";
 import { ProfileImageUpload, FormInput, FormSelect, StatusToggle } from "@/components/form";
 import { getTeamAll } from "@/store/slices/team/getTeamAllSlice";
+import {
+  getAllTerritories,
+  resetTerritoriesState,
+} from "@/store/slices/territory/getAllTerritoriesSlice";
 
 interface EmployeeFormProps {
   mode: "add" | "update";
@@ -41,6 +45,9 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
   } = useAppSelector((state) => state.generatePrefix);
   const { roles, loading: rolesLoading } = useAppSelector((state) => state.allRoles);
   const { users, loading: usersLoading } = useAppSelector((state) => state.allUsers);
+  const { territories, loading: territoriesLoading } = useAppSelector(
+    (state) => state.allTerritories
+  );
   const { teams, loading: teamsLoading } = useAppSelector((state) => state.teamAll);
   const {
     loading: registerLoading,
@@ -86,15 +93,6 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
   const [enableMobileAccess, setEnableMobileAccess] = useState<"Enable" | "Disable">("Disable");
   const [mobileView, setMobileView] = useState<"Sales Rep" | "Area Manager">("Sales Rep");
 
-  // Hardcoded territory options
-  const territoryOptions = [
-    { value: "territory-1", label: "North Region" },
-    { value: "territory-2", label: "South Region" },
-    { value: "territory-3", label: "East Region" },
-    { value: "territory-4", label: "West Region" },
-    { value: "territory-5", label: "Central Region" },
-  ];
-
   // Validation errors state
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
@@ -108,10 +106,11 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
       dispatch(generatePrefix({ entity: "User" }));
     }
 
-    // Fetch roles and users for dropdowns
+    // Fetch roles, users, teams, and territories for dropdowns
     dispatch(getAllRoles());
     dispatch(getAllUsers());
     dispatch(getTeamAll());
+    dispatch(getAllTerritories({ limit: 1000 })); // Fetch all territories without pagination
 
     return () => {
       if (isUpdateMode) {
@@ -122,6 +121,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
         dispatch(resetEmployeeState());
       }
       dispatch(resetUploadState());
+      dispatch(resetTerritoriesState());
     };
   }, [dispatch, isUpdateMode, userId]);
 
@@ -635,8 +635,12 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                         setSelectedTerritoryId(value);
                         clearFieldError("territoryId");
                       }}
-                      options={territoryOptions}
+                      options={territories.map((territory) => ({
+                        value: territory.id,
+                        label: territory.name,
+                      }))}
                       placeholder="Select Territory"
+                      loading={territoriesLoading}
                       required
                       error={getErrorMessage("territoryId")}
                     />
