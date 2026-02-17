@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronRight, X, Search, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button/button";
-import type { BrickItem } from "@/store/slices/brick/getBrickListSlice";
+import type { TerritoryItem } from "@/store/slices/territory/types";
 
 export interface HierarchyNodeType {
   userId: string;
@@ -75,56 +75,54 @@ export function mergeHierarchies(hierarchies: HierarchyNodeType[]): HierarchyNod
   return Array.from(mergedMap.values());
 }
 
-// Props for HierarchyNode with brick assignment
+// Props for HierarchyNode with territory assignment
 interface HierarchyNodeProps {
   node: HierarchyNodeType;
   level: number;
-  availableBrickItems: BrickItem[];
-  assignedBrickItems: Map<string, BrickItem[]>;
-  onAssignBrickItem: (userId: string, brick: BrickItem) => void;
-  onRemoveBrickItem: (userId: string, brickId: string) => void;
-  brickSearchQuery: string;
-  activeBrickItemSearchUserId: string | null;
-  onBrickItemSearchChange: (query: string) => void;
-  onToggleBrickItemSearch: (userId: string | null) => void;
+  availableTerritories: TerritoryItem[];
+  assignedTerritories: Map<string, TerritoryItem>;
+  onAssignTerritory: (userId: string, territory: TerritoryItem) => void;
+  onRemoveTerritory: (userId: string) => void;
+  territorySearchQuery: string;
+  activeTerritorySearchUserId: string | null;
+  onTerritorySearchChange: (query: string) => void;
+  onToggleTerritorySearch: (userId: string | null) => void;
 }
 
-// Recursive Hierarchy Node Component with BrickItem Assignment
+// Recursive Hierarchy Node Component with Territory Assignment
 export function HierarchyNode({
   node,
   level,
-  availableBrickItems,
-  assignedBrickItems,
-  onAssignBrickItem,
-  onRemoveBrickItem,
-  brickSearchQuery,
-  activeBrickItemSearchUserId,
-  onBrickItemSearchChange,
-  onToggleBrickItemSearch,
+  availableTerritories,
+  assignedTerritories,
+  onAssignTerritory,
+  onRemoveTerritory,
+  territorySearchQuery,
+  activeTerritorySearchUserId,
+  onTerritorySearchChange,
+  onToggleTerritorySearch,
 }: HierarchyNodeProps) {
   const [isOpen, setIsOpen] = useState(true);
   const hasChildren = Array.isArray(node.children) && node.children.length > 0;
-  const isSearchActive = activeBrickItemSearchUserId === node.userId;
-  const userBrickItems = assignedBrickItems.get(node.userId) || [];
+  const isSearchActive = activeTerritorySearchUserId === node.userId;
+  const userTerritory = assignedTerritories.get(node.userId);
 
-  // Filter bricks by search query (exclude already assigned)
-  const filteredBrickItems = (availableBrickItems || []).filter(
-    (brick) =>
-      !userBrickItems.find((b) => b.id === brick.id) &&
-      brick.name.toLowerCase().includes(brickSearchQuery.toLowerCase())
+  // Filter territories by search query
+  const filteredTerritories = (availableTerritories || []).filter((territory) =>
+    territory.name.toLowerCase().includes(territorySearchQuery.toLowerCase())
   );
 
-  const handleAssignBrickItemsClick = (e: React.MouseEvent) => {
+  const handleAssignTerritoryClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onToggleBrickItemSearch(isSearchActive ? null : node.userId);
-    onBrickItemSearchChange("");
+    onToggleTerritorySearch(isSearchActive ? null : node.userId);
+    onTerritorySearchChange("");
   };
 
-  const handleBrickItemSelect = (brick: BrickItem) => {
-    onAssignBrickItem(node.userId, brick);
-    onBrickItemSearchChange("");
-    // Close search after selecting a brick - button will reappear
-    onToggleBrickItemSearch(null);
+  const handleTerritorySelect = (territory: TerritoryItem) => {
+    onAssignTerritory(node.userId, territory);
+    onTerritorySearchChange("");
+    // Close search after selecting a territory
+    onToggleTerritorySearch(null);
   };
 
   return (
@@ -167,47 +165,39 @@ export function HierarchyNode({
 
         {node.isSalesRep && (
           <div className="flex items-center gap-2">
-            {/* Assigned BrickItems Pills */}
-            {userBrickItems.slice(0, 4).map((brick) => (
-              <span
-                key={brick.id}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--primary)] text-[var(--primary-foreground)] text-sm font-medium rounded-8 whitespace-nowrap"
-              >
-                {brick.name}
+            {/* Assigned Territory Pill (Single) */}
+            {userTerritory && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--primary)] text-[var(--primary-foreground)] text-sm font-medium rounded-8 whitespace-nowrap">
+                {userTerritory.name}
                 <Button
                   size="icon-sm"
                   variant="ghost"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onRemoveBrickItem(node.userId, brick.id);
+                    onRemoveTerritory(node.userId);
                   }}
                   className="w-4 h-4 hover:bg-[var(--primary-2)]"
                 >
                   <X className="w-3 h-3" />
                 </Button>
               </span>
-            ))}
-            {userBrickItems.length > 4 && (
-              <span className="inline-flex items-center px-3 py-1.5 bg-[var(--primary)] text-[var(--primary-foreground)] text-sm font-medium rounded-8 whitespace-nowrap">
-                +{userBrickItems.length - 4}
-              </span>
             )}
 
-            {/* Assign BrickItems Button OR Search Input */}
+            {/* Assign Territory Button OR Search Input */}
             {isSearchActive ? (
               <div className="relative" onClick={(e) => e.stopPropagation()}>
                 <div className="relative">
                   <input
                     type="text"
-                    value={brickSearchQuery}
-                    onChange={(e) => onBrickItemSearchChange(e.target.value)}
+                    value={territorySearchQuery}
+                    onChange={(e) => onTerritorySearchChange(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        onToggleBrickItemSearch(null);
+                        onToggleTerritorySearch(null);
                       }
                     }}
-                    placeholder="e.g: KL123, KL456, KL789"
+                    placeholder="Search territory..."
                     className="w-64 px-4 py-3 pl-12 border border-[var(--gray-3)] rounded-8 focus:ring-2 focus:ring-[var(--primary)] outline-none"
                     autoFocus
                   />
@@ -215,7 +205,7 @@ export function HierarchyNode({
                   <Button
                     size="icon-sm"
                     variant="ghost"
-                    onClick={() => onToggleBrickItemSearch(null)}
+                    onClick={() => onToggleTerritorySearch(null)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--gray-4)] hover:text-[var(--gray-6)]"
                   >
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -225,36 +215,44 @@ export function HierarchyNode({
                     </svg>
                   </Button>
                 </div>{" "}
-                {/* BrickItem Dropdown */}
-                {brickSearchQuery && (
+                {/* Territory Dropdown */}
+                {territorySearchQuery && (
                   <div className="absolute z-20 w-64 mt-2 bg-[var(--light)] border border-[var(--gray-2)] rounded-8 shadow-soft max-h-48 overflow-y-auto">
-                    {filteredBrickItems.length > 0 ? (
-                      filteredBrickItems.map((brick) => (
+                    {filteredTerritories.length > 0 ? (
+                      filteredTerritories.map((territory) => (
                         <div
-                          key={brick.id}
-                          onClick={() => handleBrickItemSelect(brick)}
+                          key={territory.id}
+                          onClick={() => handleTerritorySelect(territory)}
                           className="p-3 hover:bg-[var(--muted)] cursor-pointer border-b border-[var(--gray-1)] last:border-0 transition-colors"
                         >
-                          <p className="font-medium text-[var(--gray-9)]">{brick.name}</p>
+                          <p className="font-medium text-[var(--gray-9)]">{territory.name}</p>
+                          {territory.pulseCode && (
+                            <p className="text-xs text-[var(--gray-5)]">{territory.pulseCode}</p>
+                          )}
                         </div>
                       ))
                     ) : (
-                      <div className="p-3 text-center text-[var(--gray-5)]">No bricks found</div>
+                      <div className="p-3 text-center text-[var(--gray-5)]">
+                        No territories found
+                      </div>
                     )}
                   </div>
                 )}
               </div>
             ) : (
-              <Button
-                onClick={handleAssignBrickItemsClick}
-                variant="primary"
-                size="lg"
-                icon={Plus}
-                rounded="default"
-                className="shadow-soft"
-              >
-                Assign Bricks
-              </Button>
+              // Only show "Assign Territory" button if no territory is assigned yet
+              !userTerritory && (
+                <Button
+                  onClick={handleAssignTerritoryClick}
+                  variant="primary"
+                  size="lg"
+                  icon={Plus}
+                  rounded="default"
+                  className="shadow-soft"
+                >
+                  Assign Territory
+                </Button>
+              )
             )}
           </div>
         )}
@@ -291,14 +289,14 @@ export function HierarchyNode({
                 key={child.userId}
                 node={child}
                 level={level + 1}
-                availableBrickItems={availableBrickItems}
-                assignedBrickItems={assignedBrickItems}
-                onAssignBrickItem={onAssignBrickItem}
-                onRemoveBrickItem={onRemoveBrickItem}
-                brickSearchQuery={brickSearchQuery}
-                activeBrickItemSearchUserId={activeBrickItemSearchUserId}
-                onBrickItemSearchChange={onBrickItemSearchChange}
-                onToggleBrickItemSearch={onToggleBrickItemSearch}
+                availableTerritories={availableTerritories}
+                assignedTerritories={assignedTerritories}
+                onAssignTerritory={onAssignTerritory}
+                onRemoveTerritory={onRemoveTerritory}
+                territorySearchQuery={territorySearchQuery}
+                activeTerritorySearchUserId={activeTerritorySearchUserId}
+                onTerritorySearchChange={onTerritorySearchChange}
+                onToggleTerritorySearch={onToggleTerritorySearch}
               />
             ))}
           </div>

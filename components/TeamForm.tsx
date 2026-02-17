@@ -34,7 +34,8 @@ export default function TeamForm() {
     productsLoading,
     salesRepUsers,
     usersLoading,
-    availableBricks,
+    availableTerritories,
+    territoriesLoading,
     status,
     teamName,
     pulseCode, // From hook state
@@ -44,9 +45,9 @@ export default function TeamForm() {
     selectedMembers,
     mergedHierarchy,
     hierarchyLoading,
-    assignedBricks,
-    brickSearchQuery,
-    activeBrickSearchUserId,
+    assignedTerritories,
+    territorySearchQuery,
+    activeTerritorySearchUserId,
     createTeamLoading,
     updateTeamLoading,
     teamLoading,
@@ -59,10 +60,10 @@ export default function TeamForm() {
     setSelectedCallPoints,
     setProducts,
     handleMembersChange,
-    handleAssignBrick,
-    handleRemoveBrick,
-    handleBrickSearchChange,
-    handleToggleBrickSearch,
+    handleAssignTerritory,
+    handleRemoveTerritory,
+    handleTerritorySearchChange,
+    handleToggleTerritorySearch,
     handleSubmit,
     clearFieldError,
     getErrorMessage,
@@ -208,14 +209,14 @@ export default function TeamForm() {
                   key={hierarchyRoot.userId}
                   node={hierarchyRoot}
                   level={0}
-                  availableBrickItems={availableBricks}
-                  assignedBrickItems={assignedBricks}
-                  onAssignBrickItem={handleAssignBrick}
-                  onRemoveBrickItem={handleRemoveBrick}
-                  brickSearchQuery={brickSearchQuery}
-                  activeBrickItemSearchUserId={activeBrickSearchUserId}
-                  onBrickItemSearchChange={handleBrickSearchChange}
-                  onToggleBrickItemSearch={handleToggleBrickSearch}
+                  availableTerritories={availableTerritories}
+                  assignedTerritories={assignedTerritories}
+                  onAssignTerritory={handleAssignTerritory}
+                  onRemoveTerritory={handleRemoveTerritory}
+                  territorySearchQuery={territorySearchQuery}
+                  activeTerritorySearchUserId={activeTerritorySearchUserId}
+                  onTerritorySearchChange={handleTerritorySearchChange}
+                  onToggleTerritorySearch={handleToggleTerritorySearch}
                 />
               ))}
             </div>

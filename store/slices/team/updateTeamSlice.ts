@@ -10,13 +10,12 @@ export interface UpdateTeamPayload {
   id: string; // ID is required to identify the team
   name?: string;
   channelId?: string;
-  callPointId?: string; // Keep for backward compatibility
-  callPoints?: { id: string; name: string }[]; // New multi-select support with objects
+  callPointIds?: string[]; // Array of call point IDs
   isActive?: boolean;
   status?: string; // "active" | "inactive"
   productIds?: string[];
   userIds?: string[]; // Array of user IDs - might be deprecated in favor of saleRepIds
-  saleRepIds?: { id: string; brickIds: string[] }[]; // Match CreateTeamPayload structure
+  saleRepIds?: { id: string; territoryId?: string | null }[]; // Updated to use territoryId instead of brickIds
   // Add other fields as needed
 }
 
