@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import StatusBadge from "@/components/shared/StatusBadge";
 import {
   Table,
   TableBody,
@@ -110,25 +111,6 @@ export function DataTable<T extends Record<string, any>>({
     return <SortIcon className="h-4 w-4" />;
   };
 
-  const getStatusBadge = (status: string) => {
-    const statusColors = {
-      active: "bg-green-100 text-green-800",
-      inactive: "bg-red-100 text-red-800",
-      pending: "bg-yellow-100 text-yellow-800",
-      completed: "bg-green-100 text-green-800",
-      processing: "bg-blue-100 text-blue-800",
-      cancelled: "bg-red-100 text-red-800",
-    };
-
-    return (
-      <Badge
-        className={statusColors[status as keyof typeof statusColors] || "bg-gray-100 text-gray-800"}
-      >
-        {status}
-      </Badge>
-    );
-  };
-
   if (isLoading) {
     return <DataTableSkeleton />;
   }
@@ -137,14 +119,14 @@ export function DataTable<T extends Record<string, any>>({
       <CardHeader>
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-2xl font-bold">
-              <CardTitle>{title}</CardTitle>
+            <div className="flex items-center gap-2">
+              <CardTitle className="t-h2">{title}</CardTitle>
             </div>
 
             <div className="flex items-center gap-4 ">
               {searchKey && (
-                <div className="relative bg-white flex-1 max-w-sm">
-                  <SearchInputIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <div className="relative bg-(--background) flex-1 max-w-sm">
+                  <SearchInputIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-(--gray-4)" />
                   <Input
                     placeholder={t("placeholders.search")}
                     value={searchTerm}
@@ -186,11 +168,11 @@ export function DataTable<T extends Record<string, any>>({
           </div>
 
           {/* Add description here */}
-          {description && <p className="text-sm text-gray-600">{description}</p>}
+          {description && <p className="t-sm">{description}</p>}
         </div>
       </CardHeader>
       <CardContent>
-        <div className="rounded-md shadow-md ">
+        <div className="rounded-8 shadow-soft ">
           <Table>
             <TableHeader>
               <TableRow>
@@ -200,7 +182,7 @@ export function DataTable<T extends Record<string, any>>({
                     className={column.sortable ? "cursor-pointer select-none" : ""}
                     onClick={column.sortable ? () => handleSort(column.key) : undefined}
                   >
-                    <div className="flex text-black items-center gap-2">
+                    <div className="flex text-[var(--dark)] items-center gap-2">
                       {column.label}
                       {column.sortable && getSortIcon(column.key)}
                     </div>
@@ -235,7 +217,7 @@ export function DataTable<T extends Record<string, any>>({
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                           <DropdownMenuItem>{tShared("actions.edit")}</DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-600">
+                          <DropdownMenuItem className="text-(--destructive)">
                             {tShared("actions.delete")}
                           </DropdownMenuItem>
                         </DropdownMenuContent>

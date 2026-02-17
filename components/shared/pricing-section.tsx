@@ -74,7 +74,7 @@ export function PricingSection() {
   ];
 
   return (
-    <section className="relative py-16 md:py-24 px-4 md:px-6 lg:px-8 bg-white dark:bg-black transition-colors duration-300">
+    <section className="relative py-16 md:py-24 px-4 md:px-6 lg:px-8 bg-(--background) dark:bg-black transition-colors duration-300">
       <div className="relative max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-12 md:mb-16">

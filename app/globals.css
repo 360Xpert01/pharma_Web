@@ -1,5 +1,215 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "@webdatarocks/webdatarocks/webdatarocks.css";
+
+@layer utilities {
+  .shadow-soft {
+    box-shadow: 0px 0.63px 5.5px 0px rgba(0, 0, 0, 0.1);
+  }
+
+  .shadow-header {
+    box-shadow: 0px 4px 10px 0px #0000000d;
+  }
+
+  .rounded-8 {
+    border-radius: 8px;
+  }
+
+  .rounded-tl-8 {
+    border-radius: 8px;
+  }
+
+  .rounded-tr-8 {
+    border-radius: 8px;
+  }
+
+  .rounded-br-8 {
+    border-radius: 8px;
+  }
+
+  .rounded-bl-8 {
+    border-radius: 8px;
+  }
+
+  /* ============================================
+     TYPOGRAPHY SYSTEM
+     Consistent text styles for the entire app
+     ============================================ */
+
+  /* Headings */
+  .t-h1 {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+    font-weight: 700;
+    /* color: var(--gray-9); */
+  }
+
+  .t-h2 {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 700;
+    /* color: var(--gray-9); */
+  }
+
+  .t-h3 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    font-weight: 600;
+    color: var(--gray-9);
+  }
+
+  .t-h4 {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    font-weight: 700;
+    /* color: var(--gray-9); */
+  }
+
+  .t-h5 {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 600;
+    color: var(--gray-8);
+  }
+
+  /* Body */
+  .t-lg {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 400;
+    /* color: var(--gray-7); */
+  }
+
+  .t-md {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 400;
+    /* color: var(--gray-6); */
+  }
+
+  .t-sm {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 400;
+    /* color: var(--gray-5); */
+  }
+
+  /* Labels */
+  .t-label {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+    /* color: var(--gray-7); */
+  }
+
+  .t-label-b {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 700;
+    /* color: var(--gray-9); */
+  }
+
+  /* Caption & Overline */
+  .t-cap {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 400;
+    /* color: var(--gray-5); */
+  }
+
+  .t-over {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    /* color: var(--gray-5); */
+  }
+
+  /* Values */
+  .t-val {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 700;
+    /* color: var(--gray-9); */
+  }
+
+  .t-val-lg {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    font-weight: 700;
+    /* color: var(--gray-9); */
+  }
+
+  .t-val-sm {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    font-weight: 700;
+    /* color: var(--gray-9); */
+  }
+
+  /* Links */
+  .t-link {
+    font-size: 0.875rem;
+    font-weight: 500;
+    /* color: var(--primary); */
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+
+  .t-link:hover {
+    color: var(--primary-2);
+  }
+
+  /* Semantic */
+  .t-ok {
+    color: var(--success);
+  }
+
+  .t-warn {
+    color: var(--warning-2);
+  }
+
+  .t-err {
+    color: var(--destructive);
+  }
+
+  .t-mute {
+    color: var(--gray-5);
+  }
+
+  /* Table */
+  .t-th {
+    font-size: 0.875rem;
+    font-weight: 600;
+    /* color: var(--gray-7); */
+  }
+
+  .t-td {
+    font-size: 0.875rem;
+    font-weight: 400;
+    /* color: var(--gray-9); */
+  }
+
+  .t-td-b {
+    font-size: 0.875rem;
+    font-weight: 500;
+    /* color: var(--gray-9); */
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari and Opera */
+  }
+}
 
 @custom-variant dark (&:is(.dark *));
 
@@ -108,10 +318,94 @@
   --sidebar-ring: var(--ring);
 }
 
+.ceturo {
+  --page-background: #fafafa;
+  --background: #fff;
+  --foreground: #feb8b8;
+  --employee-detail-tab-heading: #414d55;
+  --subheading-color: #776f69;
+  --light: #ffffff;
+  --gray-0: #fafafa;
+  /* for the page background */
+  --gray-1: #f3f4f6;
+  --gray-2: #e5e7eb;
+  --gray-3: #d1d5dc;
+  --gray-4: #99a1af;
+  --gray-5: #6a7282;
+  --gray-6: #4a5565;
+  --gray-7: #364153;
+  --gray-8: #1e2939;
+  --gray-9: #101828;
+  --dark: #000000;
+  --card: #fafafa;
+  --card-foreground: #0a0a0a;
+  --popover: #fafafa;
+  --popover-foreground: #0a0a0a;
+  --primary-0: #eff6ff;
+  --primary-1: #358afb;
+  --primary: #0f72f4;
+  --primary-2: #0261dc;
+  --primary-foreground: #fafafa;
+  --primary-gradient-start: #0261dc;
+  --primary-gradient-end: #7076f6;
+  --primary-gradient-start-hover: #0353c0;
+  --primary-gradient-end-hover: #5f65e2;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #171717;
+  --warning-2: #dcac00;
+  --warning: #eebf16;
+  --warning-0: #fff6d6;
+  --warning-light: #fef3c7;
+  --success: #42b46c;
+  --success-0: #42b46c33;
+  --success-light: #dcfce7;
+  --muted: #ededef;
+  --muted-foreground: #999999;
+  --accent: #f5f5f5;
+  --accent-foreground: #171717;
+  --destructive-0: #e0272333;
+  --destructive-1: #f9423f;
+  --destructive: #e02723;
+  --destructive-2: #cd1613;
+  --destructive-light: #fee2e2;
+  --destructive-foreground: #e7000b;
+  --border: #f4f4f4;
+  --header-border: #c8c8c8b2;
+  --input: #070000;
+  --ring: #a4a4a433;
+  --chart-1: #f54900;
+  --chart-2: #009689;
+  --chart-3: #104e64;
+  --chart-4: #ffb900;
+  --chart-5: #fe9a00;
+  --radius: 0.625rem;
+  --sidebar: #fafafa;
+  --sidebar-foreground: #0a0a0a;
+  --sidebar-primary: #171717;
+  --sidebar-primary-foreground: #fafafa;
+  --sidebar-accent: #f5f5f5;
+  --sidebar-accent-foreground: #171717;
+  --sidebar-border: #e5e5e5;
+  --sidebar-ring: #a1a1a1;
+}
+
 @theme inline {
-  --font-sans: var(--font-geist-sans);
+  --font-poppins: var(--font-poppins);
+  --font-sans: var(--font-poppins);
   --font-mono: var(--font-geist-mono);
   --font-urdu: var(--font-urdu);
+
+  /* Font family utilities */
+  --font-family-poppins:
+    var(--font-poppins), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  --font-family-sans:
+    var(--font-poppins), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  --font-family-mono:
+    var(--font-geist-mono), ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas,
+    monospace;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -154,7 +448,17 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
+    font-family:
+      var(--font-poppins),
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      Arial,
+      sans-serif;
     background: var(--background);
     color: var(--foreground);
   }
@@ -169,20 +473,55 @@
   }
 }
 
+@layer utilities {
+  .font-poppins {
+    font-family:
+      var(--font-poppins),
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      Arial,
+      sans-serif;
+  }
+
+  .font-sans {
+    font-family:
+      var(--font-poppins),
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      Arial,
+      sans-serif;
+  }
+
+  .font-mono {
+    font-family:
+      var(--font-geist-mono), ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas,
+      monospace;
+  }
+}
+
 /* Global custom scrollbar styles */
 /* WebKit (Chrome, Edge, Safari) */
 *::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
+
 *::-webkit-scrollbar-track {
   background: var(--muted);
 }
+
 *::-webkit-scrollbar-thumb {
   background-color: var(--border);
   border-radius: 9999px;
   border: 2px solid var(--muted);
 }
+
 *::-webkit-scrollbar-thumb:hover {
   background-color: var(--ring);
 }
@@ -273,6 +612,38 @@
     left: auto;
   }
 }
+
+/* /////////////////////////////////////////////////// */
+
+/* #wdr-tab-export::before,
+.wdr-toolbar-icon-export::before,
+.wdr-icon-export::before,
+.wdr-toolbar-icon-export,
+.wdr-icon-export {
+  content: "" !important;                
+  background-image: none !important;     
+  background: url('/capMan.svg') no-repeat center center !important;
+  background-size: contain !important;   
+  width: 36px !important;                
+  height: 36px !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  font-size: 0 !important;              
+  color: transparent !important;         
+}
+
+.wdr-toolbar-tab#wdr-tab-export,
+.wdr-toolbar-icon-export {
+  padding-top: 4px !important;
+}
+
+.wdr-toolbar-icon-export .wdr-svg-icon,
+.wdr-icon-export .wdr-svg-icon,
+#wdr-tab-export .wdr-svg-icon {
+  display: none !important;             
+} */
+
+/* /////////////////////////////////////////////// */
 
 /* Enhanced RTL spacing for Urdu text */
 [dir="rtl"] h1,

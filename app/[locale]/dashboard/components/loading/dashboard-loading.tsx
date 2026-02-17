@@ -12,12 +12,12 @@ export function MetricCardSkeleton({ className }: LoadingSkeletonProps) {
       className={`animate-pulse border-primary/20 dark:bg-black/30 dark:backdrop-blur-sm dark:border-white/10 ${className}`}
     >
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <div className="h-4 bg-primary/20 dark:bg-white/20 rounded w-20 animate-pulse"></div>
-        <div className="h-4 w-4 bg-primary/20 dark:bg-white/20 rounded animate-pulse"></div>
+        <div className="h-4 bg-primary/20 dark:bg-(--background)/20 rounded w-20 animate-pulse"></div>
+        <div className="h-4 w-4 bg-primary/20 dark:bg-(--background)/20 rounded animate-pulse"></div>
       </CardHeader>
       <CardContent>
-        <div className="h-8 bg-primary/20 dark:bg-white/20 rounded w-24 mb-2 animate-pulse"></div>
-        <div className="h-3 bg-primary/10 dark:bg-white/10 rounded w-32 animate-pulse"></div>
+        <div className="h-8 bg-primary/20 dark:bg-(--background)/20 rounded w-24 mb-2 animate-pulse"></div>
+        <div className="h-3 bg-primary/10 dark:bg-(--background)/10 rounded w-32 animate-pulse"></div>
       </CardContent>
     </Card>
   );
@@ -35,7 +35,7 @@ export function ChartCardSkeleton({ className }: LoadingSkeletonProps) {
       <CardContent>
         <div className="h-64 bg-primary/10 rounded animate-pulse flex items-center justify-center">
           <div className="text-center space-y-2">
-            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
+            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-8 animate-spin mx-auto"></div>
             <p className="text-sm text-muted-foreground">{t("charts.loading")}</p>
           </div>
         </div>
@@ -64,7 +64,7 @@ export function DataTableSkeleton({ className }: LoadingSkeletonProps) {
             ))}
           </div>
           <div className="text-center py-4">
-            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-8 animate-spin mx-auto mb-2"></div>
             <p className="text-sm text-muted-foreground">{t("table.loading")}</p>
           </div>
         </div>

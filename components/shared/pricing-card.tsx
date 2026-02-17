@@ -9,7 +9,7 @@ interface PricingCardProps {
 export function PricingCard({ plan }: PricingCardProps) {
   return (
     <div
-      className={`relative flex flex-col rounded-lg border transition-all duration-300 hover:shadow-lg ${
+      className={`relative flex flex-col rounded-8 border transition-all duration-300 hover:shadow-soft ${
         plan.isPopular
           ? "border-primary/30 bg-primary/5 ring-2 ring-primary/20 md:scale-105"
           : "border-border bg-background"
@@ -18,7 +18,7 @@ export function PricingCard({ plan }: PricingCardProps) {
       {/* Popular Badge */}
       {plan.isPopular && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-          <div className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
+          <div className="rounded-8 bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
             Most Popular
           </div>
         </div>

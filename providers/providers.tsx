@@ -1,5 +1,7 @@
 "use client";
-import { type PropsWithChildren, useMemo, useState, Suspense } from "react";
+import { type PropsWithChildren, useMemo, useState, Suspense, useEffect } from "react";
+import axios from "axios";
+import { getSubdomain } from "@/utils/tenant";
 import { Provider as ReduxProvider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -12,6 +14,18 @@ import GlobalLoadingOverlay from "@/components/shared/global-loading-overlay";
 import { Toaster } from "@/components/ui/sonner";
 import { ErrorProvider } from "@/contexts/error-context";
 import { ErrorBoundary } from "@/components/shared/error-boundary";
+
+// Global Axios Interceptor for Subdomain
+if (typeof window !== "undefined") {
+  axios.interceptors.request.use((config) => {
+    const subdomain = getSubdomain();
+    if (subdomain) {
+      config.headers["subdomain"] = subdomain;
+      console.log(subdomain, "subdomain");
+    }
+    return config;
+  });
+}
 
 export default function Providers({ children }: PropsWithChildren) {
   const [queryClient] = useState(() => new QueryClient());
@@ -26,7 +40,11 @@ export default function Providers({ children }: PropsWithChildren) {
         {" "}
         {/* loading={fallback} */}
         <QueryClientProvider client={queryClient}>
-          <ThemeProvider themes={["light", "dark", "ocean"]}>
+          <ThemeProvider
+            themes={["light", "dark", "ocean", "ceturo"]}
+            defaultTheme="ceturo"
+            enableSystem
+          >
             <GlobalLoadingProvider>
               <ErrorProvider maxErrors={10}>
                 <ErrorBoundary showDetails={process.env.NODE_ENV === "development"}>

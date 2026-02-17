@@ -3,6 +3,7 @@ import { useTranslations } from "next-intl";
 import { DataTable } from "./data-table";
 import { User, Product, Order, TableColumn } from "../../types";
 import { Badge } from "@/components/ui/badge";
+import StatusBadge from "@/components/shared/StatusBadge";
 import { UsersIcon, BagIcon, UserCheckIcon } from "@/lib/icons";
 import Heading from "@/components/shared/heading";
 
@@ -206,25 +207,6 @@ export function DataSection({ data, isLoading = false, table, description }: Dat
     },
   ];
 
-  const getStatusBadge = (status: string) => {
-    const statusColors = {
-      active: "bg-green-100 text-green-800",
-      inactive: "bg-red-100 text-red-800",
-      pending: "bg-yellow-100 text-yellow-800",
-      completed: "bg-green-100 text-green-800",
-      processing: "bg-blue-100 text-blue-800",
-      cancelled: "bg-red-100 text-red-800",
-    };
-
-    return (
-      <Badge
-        className={statusColors[status as keyof typeof statusColors] || "bg-gray-100 text-gray-800"}
-      >
-        {status}
-      </Badge>
-    );
-  };
-
   const userColumns: TableColumn<User>[] = [
     { key: "name", label: t("table.headers.name"), sortable: true },
     { key: "email", label: t("table.headers.email"), sortable: true },
@@ -232,7 +214,7 @@ export function DataSection({ data, isLoading = false, table, description }: Dat
       key: "status",
       label: t("table.headers.status"),
       sortable: true,
-      render: (status: string) => getStatusBadge(status),
+      render: (status: string) => <StatusBadge status={status} />,
     },
     { key: "role", label: t("table.headers.role"), sortable: true },
     { key: "createdAt", label: t("table.headers.createdAt"), sortable: true },
@@ -259,7 +241,7 @@ export function DataSection({ data, isLoading = false, table, description }: Dat
       key: "status",
       label: t("table.headers.status"),
       sortable: true,
-      render: (status: string) => getStatusBadge(status),
+      render: (status: string) => <StatusBadge status={status} />,
     },
   ];
 
@@ -276,7 +258,7 @@ export function DataSection({ data, isLoading = false, table, description }: Dat
       key: "status",
       label: t("table.headers.status"),
       sortable: true,
-      render: (status: string) => getStatusBadge(status),
+      render: (status: string) => <StatusBadge status={status} />,
     },
     { key: "date", label: t("table.headers.date"), sortable: true },
   ];

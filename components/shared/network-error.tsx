@@ -120,11 +120,11 @@ function NetworkDiagnostics() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "success":
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return <CheckCircle className="h-4 w-4 text-(--success)" />;
       case "failed":
-        return <XCircle className="h-4 w-4 text-red-500" />;
+        return <XCircle className="h-4 w-4 text-(--destructive)" />;
       default:
-        return <RefreshIcon className="h-4 w-4 animate-spin text-blue-500" />;
+        return <RefreshIcon className="h-4 w-4 animate-spin text-(--primary)" />;
     }
   };
 
@@ -256,7 +256,7 @@ export default function NetworkErrorPage({
       <div className="w-full max-w-2xl space-y-6">
         {/* Error Icon and Title */}
         <div className="text-center space-y-4">
-          <div className="mx-auto w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center">
+          <div className="mx-auto w-16 h-16 rounded-8 bg-destructive/10 flex items-center justify-center">
             <WifiOff className="h-8 w-8 text-destructive" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight">{getErrorTitle()}</h1>

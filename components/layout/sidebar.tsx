@@ -63,14 +63,14 @@ export function Sidebar({ className }: SidebarProps) {
       >
         {!isCollapsed && (
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-md bg-primary" />
+            <div className="w-8 h-8 rounded-8 bg-primary" />
             <span className={cn("font-semibold text-md", isRTL ? "mt-1" : "text-left")}>
               {t("navigationLabel")}
             </span>
           </div>
         )}
 
-        {isCollapsed && <div className="w-8 h-8 rounded-md bg-primary mx-auto" />}
+        {isCollapsed && <div className="w-8 h-8 rounded-8 bg-primary mx-auto" />}
 
         {/* Overlay chevron aligned to Next Boiler header border */}
         <Button
@@ -78,8 +78,8 @@ export function Sidebar({ className }: SidebarProps) {
           size="icon"
           onClick={toggleSidebar}
           className={cn(
-            "absolute -end-4 -bottom-1/2 -translate-y-1/2 h-9 w-9 p-0 rounded-full",
-            "border border-border/60 bg-background shadow-md ring-1 ring-border/50 hover:bg-accent/60 z-9999"
+            "absolute -end-4 -bottom-1/2 -translate-y-1/2 h-9 w-9 p-0 rounded-8",
+            "border border-border/60 bg-background shadow-soft ring-1 ring-border/50 hover:bg-accent/60 z-9999"
           )}
           aria-label={t(isCollapsed ? "expandLabel" : "collapseLabel")}
         >
@@ -102,11 +102,11 @@ export function Sidebar({ className }: SidebarProps) {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex rounded-lg text-sm font-medium transition-all",
+                "flex rounded-8 text-sm font-medium transition-all",
                 "hover:bg-accent hover:text-accent-foreground",
                 "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
                 {
-                  "bg-accent text-accent-foreground shadow-sm": isActive,
+                  "bg-accent text-accent-foreground shadow-soft": isActive,
                   "text-muted-foreground hover:text-foreground": !isActive,
                   // Collapsed styles
                   "justify-center p-3 w-12 h-12 mx-auto": isCollapsed,
@@ -138,7 +138,7 @@ export function Sidebar({ className }: SidebarProps) {
           </div>
         ) : (
           <div className="flex justify-center">
-            <div className="w-6 h-1 bg-muted rounded-full" />
+            <div className="w-6 h-1 bg-muted rounded-8" />
           </div>
         )}
       </div>

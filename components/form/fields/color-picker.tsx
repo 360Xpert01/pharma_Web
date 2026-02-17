@@ -13,7 +13,7 @@ export const ColorField = ({ field }: { field: FormField }) => {
           <PopoverTrigger asChild>
             <Button variant="outline" className="w-full justify-start">
               <div
-                className="w-4 h-4 rounded-full mr-2 border"
+                className="w-4 h-4 rounded-8 mr-2 border"
                 style={{ backgroundColor: value || "#000000" }}
               />
               {value || "Select color"}

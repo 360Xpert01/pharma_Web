@@ -147,31 +147,31 @@ const SearchableSelectBase = ({
       <PopoverTrigger className={cn("w-full", className)} asChild>
         <div
           className={cn(
-            "relative flex min-h-[36px] w-full cursor-pointer items-center justify-between rounded-sm border bg-white p-2 dark:bg-gray-800",
-            invalid && "border-red-500"
+            "relative flex min-h-[36px] w-full cursor-pointer items-center justify-between rounded-8 border bg-(--background) p-2 dark:bg-(--gray-8)",
+            invalid && "border-(--destructive)"
           )}
         >
-          <span className="truncate pr-12 text-gray-700 dark:text-gray-300">{displayText}</span>
+          <span className="truncate pr-12 text-(--gray-7) dark:text-(--gray-3)">{displayText}</span>
           <div className="absolute right-2 flex items-center gap-1">
             {allowClear && value && (
               <CloseIcon
                 size={14}
-                className="cursor-pointer text-gray-400 transition-colors hover:text-red-500"
+                className="cursor-pointer text-(--gray-4) transition-colors hover:text-(--destructive)"
                 onClick={handleClear}
               />
             )}
-            <SearchInputIcon size={14} className="text-gray-400" />
+            <SearchInputIcon size={14} className="text-(--gray-4)" />
           </div>
         </div>
       </PopoverTrigger>
       <PopoverContent
-        className="w-[var(--radix-popover-trigger-width)] rounded-lg border bg-white p-0 shadow-md dark:border-gray-700 dark:bg-gray-900"
+        className="w-[var(--radix-popover-trigger-width)] rounded-8 border bg-(--background) p-0 shadow-soft dark:border-(--gray-7) dark:bg-(--gray-9)"
         align="start"
       >
         <Command className="w-full">
           {search && (
-            <div className="flex items-center border-b dark:border-gray-700">
-              <SearchInputIcon size={16} className="ml-2 text-gray-400" />
+            <div className="flex items-center border-b dark:border-(--gray-7)">
+              <SearchInputIcon size={16} className="ml-2 text-(--gray-4)" />
               <CommandInput
                 placeholder="Search..."
                 value={searchQuery}
@@ -182,14 +182,14 @@ const SearchableSelectBase = ({
           )}
           <CommandList className="max-h-60 overflow-y-auto">
             {isLoading && (
-              <div className="flex items-center justify-center p-4 text-gray-500 dark:text-gray-400">
+              <div className="flex items-center justify-center p-4 text-(--gray-5) dark:text-(--gray-4)">
                 <LoadingIcon className="animate-spin" />
               </div>
             )}
 
             {!isLoading && (
               <>
-                <CommandEmpty className="p-2 text-gray-500 dark:text-gray-400">
+                <CommandEmpty className="p-2 text-(--gray-5) dark:text-(--gray-4)">
                   No results found.
                 </CommandEmpty>
 
@@ -203,7 +203,7 @@ const SearchableSelectBase = ({
                       key={e[outputField]}
                       value={e[outputField]?.toString()}
                       onSelect={() => handleSelect(e[outputField])}
-                      className="!cursor-pointer rounded-md p-2"
+                      className="!cursor-pointer rounded-8 p-2"
                     >
                       {displayText}
                     </CommandItem>

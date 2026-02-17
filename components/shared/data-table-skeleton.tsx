@@ -16,7 +16,7 @@ type DataTableSkeletonProps = {
 export function DataTableSkeleton({ columnCount, rowCount = 10 }: DataTableSkeletonProps) {
   return (
     <div className="w-full space-y-3 overflow-auto">
-      <div className="rounded-md border">
+      <div className="rounded-8 border">
         <Table>
           <TableHeader>
             {Array.from({ length: 1 }).map((_, i) => (

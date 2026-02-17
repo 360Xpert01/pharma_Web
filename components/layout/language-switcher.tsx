@@ -48,7 +48,7 @@ export function LanguageSwitcher() {
           size="sm"
           className={cn(
             "h-9 w-9 p-0 hover:bg-accent/50 transition-colors",
-            "flex items-center justify-center rounded-md"
+            "flex items-center justify-center rounded-8"
           )}
           aria-label={`${t("currentLanguage")}: ${currentLocale.name}`}
           title={t("tooltip")}
@@ -65,7 +65,7 @@ export function LanguageSwitcher() {
             onClick={() => handleLocaleChange(loc.code)}
             className={cn(
               "flex items-center justify-between px-3 py-2 cursor-pointer",
-              "hover:bg-accent rounded-sm transition-colors",
+              "hover:bg-accent rounded-8 transition-colors",
               loc.dir === "rtl" && "text-right",
               locale === loc.code && "bg-accent/50"
             )}

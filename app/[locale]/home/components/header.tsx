@@ -28,8 +28,8 @@ export function Header() {
         // Full-width fixed header overlaying the hero; becomes solid on scroll
         "fixed top-0 left-0 right-0 z-40 w-full border-b transition-all",
         scrolled
-          ? "bg-background/95 supports-[backdrop-filter]:bg-background/80 backdrop-blur border-border/60 shadow-sm"
-          : "bg-transparent border-transparent text-white"
+          ? "bg-background/95 supports-[backdrop-filter]:bg-background/80 backdrop-blur border-border/60 shadow-soft"
+          : "bg-transparent border-transparent text-[var(--background)]"
       )}
     >
       <div className="w-full">
@@ -48,7 +48,7 @@ export function Header() {
                 "flex items-center gap-4",
                 !scrolled &&
                   // Force white icons/text for nested controls when over dark hero
-                  "[&_button]:!text-white [&_svg]:!text-white [&_span]:!text-white [&_a]:!text-white"
+                  "[&_button]:!text-[var(--background)] [&_svg]:!text-[var(--background)] [&_span]:!text-[var(--background)] [&_a]:!text-[var(--background)]"
               )}
             >
               <LanguageSwitcher />

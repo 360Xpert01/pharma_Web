@@ -45,37 +45,37 @@ export function PerformanceStats({ data, isLoading = false }: PerformanceStatsPr
     {
       value: performanceData.uptime,
       label: t("performance.uptime"),
-      color: "text-blue-600",
+      color: "text-(--primary)",
     },
     {
       value: performanceData.avgResponse,
       label: t("performance.avgResponse"),
-      color: "text-green-600",
+      color: "text-(--success)",
     },
     {
       value: performanceData.apiCalls,
       label: t("performance.apiCalls"),
-      color: "text-purple-600",
+      color: "text-(--secondary)",
     },
     {
       value: performanceData.dataTransfer,
       label: t("performance.dataTransfer"),
-      color: "text-orange-600",
+      color: "text-(--warning)",
     },
   ];
 
   return (
     <section>
       <div className="mb-6">
-        <h2 className="text-2xl font-bold">{t("performance.title")}</h2>
+        <h2 className="t-h2">{t("performance.title")}</h2>
       </div>
       <BaseGrid columns={{ sm: 1, md: 2, lg: 4 }}>
         {performanceStats.map((stat, index) => (
           <Card key={index}>
             <CardContent className="p-6">
               <div className="text-center">
-                <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
-                <p className="text-sm text-muted-foreground">{stat.label}</p>
+                <p className={`t-val ${stat.color}`}>{stat.value}</p>
+                <p className="t-md">{stat.label}</p>
               </div>
             </CardContent>
           </Card>

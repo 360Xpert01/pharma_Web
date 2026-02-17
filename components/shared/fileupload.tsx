@@ -28,17 +28,17 @@ export default function FileUpload({ onChange, value }: TFileUploadProps) {
   };
   return (
     <div className="flex items-center justify-center">
-      <div className="relative h-36 w-36 overflow-hidden rounded-full bg-gray-200 shadow-2xl">
+      <div className="relative h-36 w-36 overflow-hidden rounded-8 bg-(--gray-2) shadow-soft">
         {/* <LoaderOverlay isLoading={isLoading} /> */}
         <div {...getRootProps({ className: "dropzone cursor-pointer" })}>
           <input {...getInputProps()} disabled={isLoading} />
           {value && !!value.length ? (
             <ImagePreview file={value[0]} />
           ) : (
-            <UserIcon className="h-36 w-36 text-gray-100" />
+            <UserIcon className="h-36 w-36 text-(--gray-1)" />
           )}
 
-          <p className="absolute -bottom-5 left-1/2 flex w-full -translate-x-1/2 -translate-y-1/2 transform flex-col items-center justify-center bg-gray-300 bg-opacity-50 py-1 text-xs font-normal text-muted-foreground">
+          <p className="absolute -bottom-5 left-1/2 flex w-full -translate-x-1/2 -translate-y-1/2 transform flex-col items-center justify-center bg-(--gray-3) bg-opacity-50 py-1 text-xs font-normal text-muted-foreground">
             <CameraUploadIcon className="h-4 w-4 text-muted-foreground" />
             {isLoading ? "Uploading..." : "Add Image"}
           </p>
@@ -63,10 +63,6 @@ function ImagePreview({ file }: { file: File }) {
   }, [file]);
 
   return objectUrl ? (
-    <img
-      src={objectUrl}
-      alt="Preview"
-      className="absolute  h-full w-full rounded-full object-cover"
-    />
+    <img src={objectUrl} alt="Preview" className="absolute  h-full w-full rounded-8 object-cover" />
   ) : null;
 }

@@ -1,5 +1,6 @@
 # dependencies
 /node_modules
+package-lock.json
 
 # next.js
 /.next/
@@ -26,3 +27,5 @@ yarn-error.log*
 next-env.d.ts
 *storybook.log
 storybook-static
+
+package-lock.json

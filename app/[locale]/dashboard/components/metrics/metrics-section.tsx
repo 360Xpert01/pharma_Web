@@ -1,108 +1,82 @@
-"use client";
-
-import { MetricData } from "../../types";
-import {
-  Users,
-  DollarSign,
-  ShoppingCart,
-  Activity,
-  Eye,
-  Percent,
-  TrendingUp,
-  TrendingDown,
-} from "lucide-react";
-import { MetricCard } from "./metrics-card";
-import { BaseGrid } from "@/components/shared/base-grid";
-import { useTranslations } from "next-intl";
-import { MetricCardSkeleton } from "../loading/dashboard-loading";
+import { TrendingUp } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface MetricsSectionProps {
-  data?: MetricData;
-  isLoading?: boolean;
+  title: string;
+  value: string | number;
+  valueLabel: string;
+  subtitle: string;
+  detailLabel?: string;
+  detailValue?: string | number;
+  progress: number;
+  colorVariant?: "1" | "2" | "3" | "4";
+  className?: string;
 }
 
-export function MetricsSection({ data, isLoading = false }: MetricsSectionProps) {
-  const t = useTranslations("dashboard");
-  // Default mock data if none provided
-  const defaultData: MetricData = {
-    totalUsers: 12543,
-    activeSessions: 2341,
-    revenue: 45230.5,
-    conversionRate: 3.2,
-    orders: 1832,
-    growth: 12.5,
-    bounceRate: 34.2,
-    pageViews: 98765,
-  };
+const progressColorClasses = {
+  "1": "bg-[#0F72F4]",
+  "2": "bg-[#10B981]",
+  "3": "bg-[#06B6D4]",
+  "4": "bg-[#EF4444]",
+};
 
-  const metricsData = data || defaultData;
+const valueColorClasses = {
+  "1": "text-[#0F72F4]",
+  "2": "text-[#10B981]",
+  "3": "text-[#06B6D4]",
+  "4": "text-[#EF4444]",
+};
 
-  const metrics = [
-    {
-      title: t("metrics.totalUsers"),
-      value: metricsData.totalUsers,
-      change: 12.5,
-      changeType: "increase" as const,
-      icon: Users,
-      color: "info" as const,
-      description: t("metrics.descriptions.totalUsers"),
-    },
-    {
-      title: t("metrics.activeUsers"),
-      value: metricsData.activeSessions,
-      change: 8.2,
-      changeType: "increase" as const,
-      icon: Activity,
-      color: "success" as const,
-      description: t("metrics.descriptions.activeUsers"),
-    },
-    {
-      title: t("metrics.revenue"),
-      value: metricsData.revenue,
-      change: 15.3,
-      changeType: "increase" as const,
-      icon: DollarSign,
-      prefix: "$",
-      color: "success" as const,
-      description: t("metrics.descriptions.revenue"),
-    },
-    {
-      title: t("metrics.conversionRate"),
-      value: metricsData.conversionRate,
-      change: -2.1,
-      changeType: "decrease" as const,
-      icon: Percent,
-      suffix: "%",
-      color: "warning" as const,
-      description: t("metrics.descriptions.conversionRate"),
-    },
-  ];
-
+export function MetricsSection({
+  title,
+  value,
+  valueLabel,
+  subtitle,
+  detailLabel,
+  detailValue,
+  progress,
+  colorVariant = "1",
+  className,
+}: MetricsSectionProps) {
   return (
-    <section className="space-y-6">
-      {/* <div className="mb-8">
-        <h2 className="text-2xl font-bold tracking-tight">{t("sections.metrics")}</h2>
-        <p className="text-muted-foreground">{t("sections.metricsDescription")}</p>
-      </div> */}
-      <BaseGrid columns={{ sm: 1, md: 2, lg: 4 }}>
-        {isLoading
-          ? Array.from({ length: 8 }).map((_, index) => <MetricCardSkeleton key={index} />)
-          : metrics.map((metric, index) => (
-              <MetricCard
-                key={index}
-                title={metric.title}
-                value={metric.value}
-                change={metric.change}
-                changeType={metric.changeType}
-                icon={metric.icon}
-                prefix={metric.prefix}
-                suffix={metric.suffix}
-                description={metric.description}
-                color={metric.color}
-                fromLastMonthText={t("metrics.fromLastMonth")}
-              />
-            ))}
-      </BaseGrid>
-    </section>
+    <div
+      className={cn(
+        "bg-(--background) border border-(--gray-2) rounded-8 p-4 shadow-soft mt-8",
+        className
+      )}
+    >
+      {/* Title */}
+      <h3 className="text-md font-semibold text-(--dark) mb-3">{title}</h3>
+
+      {/* Value Section */}
+      <div className="mb-3">
+        <div className="flex items-baseline gap-2 mb-1">
+          <span className={cn("t-val-lg", valueColorClasses[colorVariant])}>{value}</span>
+          <span className="t-md text-(--gray-7)">{valueLabel}</span>
+        </div>
+
+        {/* Subtitle with detail on right */}
+        <div className="flex items-center justify-between">
+          <span className="t-sm text-(--gray-6)">{subtitle}</span>
+          {detailValue && (
+            <div className="flex items-center gap-1">
+              <span className="t-sm text-(--gray-9) font-medium">{detailValue}</span>
+              <TrendingUp className={cn("h-4 w-4", valueColorClasses[colorVariant])} />
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Progress Bar */}
+      <div className="relative w-full h-2 bg-(--gray-1) rounded-full overflow-hidden">
+        <div
+          className={cn(
+            "absolute inset-y-0 left-0 rounded-full transition-all",
+            progressColorClasses[colorVariant]
+          )}
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+    </div>
   );
 }

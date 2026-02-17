@@ -1,5 +1,7 @@
 import type React from "react";
 import type { Metadata } from "next";
+import { Poppins } from "next/font/google";
+
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { urduFont } from "@/lib/fonts";
@@ -7,13 +9,19 @@ import { Analytics } from "@vercel/analytics/next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import Providers from "@/providers/providers";
-import LoaderOverlay from "@/components/shared/loader-overlay";
-import { Suspense } from "react";
 import "../globals.css";
 
+// Poppins – Google se direct load
+const poppins = Poppins({
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+  variable: "--font-poppins",
+});
+
 export const metadata: Metadata = {
-  title: "NextJs",
-  description: "",
+  title: "Ceturo",
+  description: "Premium Pharma CRM Dashboard",
 };
 
 type Props = {
@@ -22,26 +30,26 @@ type Props = {
 };
 
 export default async function RootLayout({ children, params }: Props) {
-  const { locale } = await params;
-  // Load localized messages and fall back to an empty object on error to avoid client chunk failures
-  let messages: any = {};
+  const { locale } = await params; // ❗️ no await
+
+  let messages: Record<string, any> = {};
   try {
-    messages = await getMessages({ locale });
-  } catch (e) {
-    messages = {};
+    messages = (await getMessages({ locale })) ?? {};
+  } catch (error) {
+    console.warn("Translation messages failed to load:", error);
   }
 
   return (
-    <html lang={locale} suppressHydrationWarning>
-      <body>
+    <html
+      lang={locale}
+      suppressHydrationWarning
+      className={`${poppins.variable} ${GeistSans.variable} ${GeistMono.variable} ${urduFont.variable}`}
+    >
+      <body className="font-poppins antialiased  text-gray-900">
         <NextIntlClientProvider messages={messages}>
-          {/* <Suspense
-            fallback={<LoaderOverlay isLoading text="Next Boiler..." variant="default" size="lg" />}
-          > */}
           <Providers>{children}</Providers>
-          {/* </Suspense> */}
+          {/* <Analytics /> */}
         </NextIntlClientProvider>
-        {/* <Analytics /> */}
       </body>
     </html>
   );

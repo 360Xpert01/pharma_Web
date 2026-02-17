@@ -71,12 +71,9 @@ export function DynamicLayout({ children, className }: DynamicLayoutProps) {
 
   return (
     <div className="">
-      {/* Desktop Sidebar */}
-
-      {/* Right: Header + Content */}
       <Header />
       <div>
-        <div className={contentWrapperClasses}>
+        <div className="bg-(--gray-0) h-[100vh] ">
           <main className={actualContentClasses}>{children}</main>
           {/* {showFooter && <Footer className={cn({ relative: !config.footer.fixed })} />} */}
         </div>

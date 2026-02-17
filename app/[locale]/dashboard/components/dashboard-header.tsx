@@ -2,6 +2,8 @@
 import { Button } from "@/components/ui/button/button";
 import { RefreshCw, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
+import CalendarFilter from "@/components/dashboard/CalendarFilter";
+import { cn } from "@/lib/utils";
 
 interface DashboardHeaderProps {
   onRefresh?: () => void;
@@ -11,6 +13,13 @@ interface DashboardHeaderProps {
   description?: string;
   btnTrue?: boolean;
   btnAdd?: string;
+  btntextReq?: string;
+  btnReqquest?: boolean;
+  onSettingView?: () => void;
+  showCalendar?: boolean;
+  onDateChange?: (startDate: Date, endDate: Date) => void;
+  pulseAddBtn?: boolean;
+  onAddClick?: () => void;
 }
 
 export function DashboardHeader({
@@ -21,43 +30,53 @@ export function DashboardHeader({
   description,
   btnAdd,
   btnTrue,
+  btntextReq,
+  btnReqquest,
+  onSettingView,
+  showCalendar = false,
+  onDateChange,
+  pulseAddBtn,
+  onAddClick,
 }: DashboardHeaderProps) {
   const t = useTranslations("dashboard");
   const heading = title;
   return (
-    <div className="flex text-black flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
+    <div className="flex text-(--dark) flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
       {/* Heading */}
       <div className="flex-1">
-        <h1 className="text-3xl font-bold tracking-tight">{heading || "plans Management"}</h1>
-        <p className="text-muted-foreground">
+        <h1 className="t-h1 tracking-tight">{heading || "plans Management"}</h1>
+        <p className="t-md text-(--gray-5)">
           {description || "Unlock the potential of your candidates"}
         </p>
       </div>
 
-      {/* Action Buttons */}
+      {/* Right Side - Calendar and Action Buttons */}
       <div className="flex items-center justify-center gap-3 sm:justify-start sm:flex-shrink-0">
-        {/* <Button
-          variant="outline"
-          size="sm"
-          onClick={onRefresh}
-          disabled={isLoading}
-          title={t("tooltips.refresh")}
-          aria-label={t("tooltips.refresh")}
-        >
-          <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
-          {isLoading ? t("loading.refreshing") : t("actions.refresh")}
-        </Button> */}
+        {/* Calendar Filter - Only shown when showCalendar prop is true */}
+        {showCalendar && <CalendarFilter onDateChange={onDateChange} />}
+
+        {/* Action Buttons */}
         {!btnTrue && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onSettings}
+          <button
+            className="p-3 cursor-pointer bg-(--primary) hover:bg-(--primary-2) text-sm text-(--light) rounded-8 flex items-center"
+            onClick={onAddClick || onSettings}
             title={t("tooltips.settings")}
             aria-label={t("tooltips.settings")}
           >
-            <Plus className="h-4 w-4 mr-1" />
+            <Plus className={cn("h-4 w-4 mr-1", pulseAddBtn)} />
             {btnAdd || "add"}
-          </Button>
+          </button>
+        )}
+
+        {!btnReqquest && !btnTrue && btntextReq && (
+          <button
+            className="p-3 bg-(--primary) cursor-pointer hover:bg-(--primary-2) text-sm text-(--light) rounded-8 flex items-center"
+            onClick={onSettingView}
+            title={t("tooltips.settings")}
+            aria-label={t("tooltips.settings")}
+          >
+            {btntextReq || "add"}
+          </button>
         )}
       </div>
     </div>

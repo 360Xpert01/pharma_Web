@@ -75,7 +75,7 @@ export default function MobileHamburgerMenu({ className, onClose }: MobileHambur
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border/40 min-h-[65px]">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-md bg-primary" />
+            <div className="w-8 h-8 rounded-8 bg-primary" />
             <h2 className="font-semibold text-lg">Next Boiler</h2>
           </div>
 
@@ -102,11 +102,11 @@ export default function MobileHamburgerMenu({ className, onClose }: MobileHambur
                 href={item.href}
                 onClick={onClose}
                 className={cn(
-                  "flex items-center rounded-lg text-sm font-medium transition-all",
+                  "flex items-center rounded-8 text-sm font-medium transition-all",
                   "hover:bg-accent hover:text-accent-foreground",
                   "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
                   {
-                    "bg-accent text-accent-foreground shadow-sm": isActive,
+                    "bg-accent text-accent-foreground shadow-soft": isActive,
                     "text-muted-foreground hover:text-foreground": !isActive,
                     "justify-start gap-3 px-3 py-2.5": true,
                   }

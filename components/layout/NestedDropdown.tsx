@@ -33,7 +33,7 @@ export function NestedDropdown({ item, depth = 0, openDropdown, setOpenDropdown 
           onClick={toggle}
           className={`
             flex w-full items-center justify-between px-3 py-2 text-sm font-medium
-            text-gray-700 hover:bg-gray-50 rounded transition-colors
+            text-(--gray-7) hover:bg-(--gray-0) rounded transition-colors
             ${depth > 0 ? "pl-8" : ""}
           `}
         >
@@ -44,7 +44,7 @@ export function NestedDropdown({ item, depth = 0, openDropdown, setOpenDropdown 
         <Link
           href={item.href!}
           className={`
-            block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded transition-colors
+            block px-3 py-2 text-sm text-(--gray-7) hover:bg-(--gray-0) rounded transition-colors
             ${depth > 0 ? "pl-8" : ""}
           `}
         >
@@ -57,7 +57,7 @@ export function NestedDropdown({ item, depth = 0, openDropdown, setOpenDropdown 
         <div
           className={`
             ${depth === 0 ? "absolute top-full left-0 mt-1 w-56" : "left-full top-0 ml-1 w-56"}
-            bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50
+            bg-(--background) rounded-8 shadow-soft border border-(--gray-2) py-1 z-50
           `}
         >
           {item.children!.map((child, idx) => (
