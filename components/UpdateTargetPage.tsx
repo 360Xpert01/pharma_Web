@@ -10,11 +10,11 @@ import {
   resetTeamTargetProductsState,
 } from "@/store/slices/team/getTeamTargetProductsSlice";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { createTarget, resetCreateTargetState } from "@/store/slices/target/createTargetSlice";
+import { updateTarget, resetUpdateTargetState } from "@/store/slices/target/updateTargetSlice";
 import { getAllRoles } from "@/store/slices/role/getAllRolesSlice";
 import { getTeamUsers, resetTeamUsersState } from "@/store/slices/team/getTeamUsersSlice";
-import type { CreateTargetPayload } from "@/types/target";
-import { targetSchema } from "@/validations/targetValidation";
+import type { UpdateTargetPayload } from "@/types/target";
+import { updateTargetSchema } from "@/validations/targetValidation";
 import DefineTargetSection from "./DefineTargetSection";
 import toast from "react-hot-toast";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
@@ -42,11 +42,11 @@ export default function UpdateTargetPage() {
     (state) => state.teamUsers
   );
   const {
-    loading: createLoading,
-    success: createSuccess,
-    error: createError,
-    message: createMessage,
-  } = useAppSelector((state) => state.createTarget);
+    loading: updateLoading,
+    success: updateSuccess,
+    error: updateError,
+    message: updateMessage,
+  } = useAppSelector((state) => state.updateTarget);
   const {
     data: targetData,
     loading: targetLoading,
@@ -99,13 +99,11 @@ export default function UpdateTargetPage() {
   // Populate form when target data is fetched
   useEffect(() => {
     if (targetSuccess && targetData) {
-      const data = targetData.data || targetData;
-
       // Set team
-      if (data.teamId) setSelectedTeam(data.teamId);
+      if (targetData.teamId) setSelectedTeam(targetData.teamId);
 
-      // Handle allocations mapping
-      const allocations = data.allocations || [];
+      // Handle allocations mapping (if API returns allocations)
+      const allocations = (targetData as any).allocations || [];
       if (allocations.length > 0) {
         // Default to first sales rep if not selected
         const firstRep = allocations[0];
@@ -120,6 +118,29 @@ export default function UpdateTargetPage() {
               newSkuTargets[skuAlloc.productSkuId] = String(skuAlloc.targetValue || "0");
             }
           });
+        });
+        setSkuTargets(newSkuTargets);
+      } else if (targetData.targets && Array.isArray(targetData.targets)) {
+        // Handle targets array
+        const newSkuTargets: Record<string, string> = {};
+        targetData.targets.forEach((userTarget: any) => {
+          if (Array.isArray(userTarget.productTargets)) {
+            userTarget.productTargets.forEach((pt: any) => {
+              if (pt.productSkuId) {
+                newSkuTargets[pt.productSkuId] = String(pt.targetValue || "0");
+              }
+            });
+          }
+        });
+        setSkuTargets(newSkuTargets);
+      } else if (targetData.products && Array.isArray(targetData.products)) {
+        // Handle products array
+        const newSkuTargets: Record<string, string> = {};
+        targetData.products.forEach((product: any) => {
+          const skuId = product.productSkuId || product.id || product.skuId;
+          if (skuId) {
+            newSkuTargets[skuId] = String(product.targetValue || product.targetPackets || "0");
+          }
         });
         setSkuTargets(newSkuTargets);
       }
@@ -139,8 +160,8 @@ export default function UpdateTargetPage() {
         "november",
         "december",
       ];
-      const month = data.month || data.targetMonth;
-      const year = data.year || data.targetYear;
+      const month = targetData.month || targetData.targetMonth;
+      const year = targetData.year || targetData.targetYear;
       if (month && year) {
         const monthName =
           typeof month === "number" ? monthNames[month - 1] : String(month).toLowerCase();
@@ -168,34 +189,37 @@ export default function UpdateTargetPage() {
     }
   }, [selectedTeam, roles, dispatch]);
 
-  // Handle API success
+  // Handle Update success
   useEffect(() => {
-    if (createSuccess) {
-      toast.success(createMessage || "Target allocation updated successfully!");
-      dispatch(resetCreateTargetState());
+    if (updateSuccess) {
+      toast.success(updateMessage || "Target updated successfully!");
+      dispatch(resetUpdateTargetState());
       router.push(`/${locale}/dashboard/target-listview`);
     }
-  }, [createSuccess, createMessage, dispatch, router, locale]);
+  }, [updateSuccess, updateMessage, dispatch, router, locale]);
 
-  // Handle API error
+  // Handle Update error
   useEffect(() => {
-    if (createError) {
-      toast.error(`Error: ${createError}`);
-      dispatch(resetCreateTargetState());
+    if (updateError) {
+      toast.error(`Error: ${updateError}`);
+      dispatch(resetUpdateTargetState());
     }
-  }, [createError, dispatch]);
+  }, [updateError, dispatch]);
 
   // Read-only field values (populated when team/sales rep is selected)
   // Check if targetData has specific rep info before falling back to teamUsers
-  const currentRepFromAlloc = targetData?.data?.allocations?.find(
+  const currentRepFromAlloc = (targetData as any)?.allocations?.find(
     (a: any) => a.userId === selectedSalesRep
   );
   const currentRepFromUsers = teamUsers.find((u) => u.userId === selectedSalesRep);
 
   const teamMetadata = {
-    teamName: targetData?.data?.teamName || matchTeam?.name || "",
+    teamName: targetData?.teamName || matchTeam?.name || "",
     channelName:
-      targetData?.data?.channelName || teamTargetData?.channelName || matchTeam?.channelName || "",
+      (targetData as any)?.channelName ||
+      teamTargetData?.channelName ||
+      matchTeam?.channelName ||
+      "",
     areaManager:
       currentRepFromAlloc?.supervisorName || currentRepFromUsers?.supervisorName || "N/A",
     territory: currentRepFromAlloc?.territoryName || currentRepFromUsers?.territoryName || "N/A",
@@ -209,34 +233,17 @@ export default function UpdateTargetPage() {
   };
 
   const handleUpdateTarget = async () => {
-    const currentYear = new Date().getFullYear();
-    let month: number = 0;
-    let year: number = currentYear;
-
-    const monthNames = [
-      "january",
-      "february",
-      "march",
-      "april",
-      "may",
-      "june",
-      "july",
-      "august",
-      "september",
-      "october",
-      "november",
-      "december",
-    ];
-
-    if (targetMonth.includes("-")) {
-      const [mPart, yPart] = targetMonth.split("-");
-      const monthIdx = monthNames.indexOf(mPart.toLowerCase());
-      month = monthIdx !== -1 ? monthIdx + 1 : parseInt(mPart) || 0;
-      year = parseInt(yPart) || currentYear;
+    // Validate targetId exists
+    if (!targetId) {
+      toast.error("Target ID is missing. Cannot update.");
+      return;
     }
 
+    // Build update payload with ONLY targets (userId and productTargets with targetValue)
+    // The API expects: { targets: [{ userId, productTargets: [{ productSkuId, targetValue }] }] }
+
     if (!teamUsers || teamUsers.length === 0) {
-      toast.error("No team members found.");
+      toast.error("No team members found for the selected team.");
       return;
     }
 
@@ -250,28 +257,25 @@ export default function UpdateTargetPage() {
       ),
     }));
 
-    const payload: CreateTargetPayload = {
-      teamId: selectedTeam,
-      month: month,
-      year: year,
+    const updatePayload: UpdateTargetPayload = {
       targets,
     };
 
-    const validation = targetSchema.safeParse(payload);
-    if (!validation.success) {
-      const errors: Record<string, string> = {};
-      validation.error.errors.forEach((err) => {
-        const fieldName = err.path[0] as string;
-        if (fieldName === "teamId") errors.team = err.message;
-        if (fieldName === "month") errors.month = err.message;
-      });
-      setValidationErrors(errors);
+    // Validate update payload
+    const updateValidation = updateTargetSchema.safeParse(updatePayload);
+
+    if (!updateValidation.success) {
+      toast.error("Invalid target values. Please check your input.");
+      console.error("Validation errors:", updateValidation.error.errors);
       return;
     }
 
     setValidationErrors({});
+
+    console.log("Submitting update target payload:", updatePayload);
+
     try {
-      await dispatch(createTarget(payload)).unwrap();
+      await dispatch(updateTarget({ targetId, payload: updatePayload })).unwrap();
     } catch (err) {
       console.error("Failed to update target:", err);
     }
@@ -299,6 +303,7 @@ export default function UpdateTargetPage() {
             clearFieldError("month");
           }}
           errors={validationErrors}
+          isEditMode={true}
         />
 
         <DefineTargetSection
@@ -327,10 +332,10 @@ export default function UpdateTargetPage() {
             size="lg"
             rounded="full"
             className="px-8 shadow-soft"
-            disabled={createLoading || targetLoading || !selectedTeam || !targetMonth}
-            loading={createLoading || targetLoading}
+            disabled={updateLoading || targetLoading || !selectedTeam || !targetId}
+            loading={updateLoading || targetLoading}
           >
-            {createLoading ? "Updating..." : "Update Target"}
+            {updateLoading ? "Updating..." : "Update Target"}
           </Button>
         </div>
       </div>

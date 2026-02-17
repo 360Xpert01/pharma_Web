@@ -99,6 +99,7 @@ import territoryByIdReducer from "./slices/territory/getTerritoryByIdSlice";
 import createTerritoryReducer from "./slices/territory/createTerritorySlice";
 import updateTerritoryReducer from "./slices/territory/updateTerritorySlice";
 import deleteTerritoryReducer from "./slices/territory/deleteTerritorySlice";
+import updateTargetReducer from "./slices/target/updateTargetSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -187,6 +188,7 @@ const rootReducer = combineReducers({
   allocateUser: allocateUserReducer,
   targetList: targetListReducer,
   createTarget: createTargetReducer,
+  updateTarget: updateTargetReducer,
   allProductSkus: allProductSkusReducer,
   getAllocateUserById: getAllocateUserByIdReducer,
   updateAllocateUser: updateAllocateUserReducer,

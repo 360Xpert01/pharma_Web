@@ -11,6 +11,7 @@ interface BrickItem {
   latitude?: number;
   longitude?: number;
   brickCode?: string;
+  description?: string;
   createdAt?: string;
 }
 

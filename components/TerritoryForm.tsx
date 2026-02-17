@@ -15,7 +15,20 @@ import {
 } from "@/store/slices/territory";
 import { getBrickList } from "@/store/slices/brick/getBrickListSlice";
 import { toast } from "sonner";
-import { MapPin, Save, X } from "lucide-react";
+import { Button } from "@/components/ui/button/button";
+import { FormInput, FormTextarea, BrickSearch } from "@/components/form";
+import { Plus } from "lucide-react";
+
+import {
+  generatePrefix,
+  resetGeneratePrefixState,
+} from "@/store/slices/preFix/generatePrefixSlice";
+
+interface Brick {
+  id: string;
+  name: string;
+  brickCode?: string;
+}
 
 export default function TerritoryForm({ territoryId }: { territoryId?: string | null }) {
   const router = useRouter();
@@ -29,6 +42,9 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
   const { territory, loading: loadingTerritory } = useSelector(
     (state: RootState) => state.territoryById
   );
+  const { generatedPrefix, loading: prefixLoading } = useSelector(
+    (state: RootState) => state.generatePrefix
+  );
   const {
     success: createSuccess,
     loading: createLoading,
@@ -39,31 +55,28 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
     loading: updateLoading,
     message: updateMessage,
   } = useSelector((state: RootState) => state.updateTerritory);
-  const {
-    zones,
-    regions,
-    bricks,
-    loading: loadingBricks,
-  } = useSelector((state: RootState) => state.brickList);
+  const { bricks, loading: loadingBricks } = useSelector((state: RootState) => state.brickList);
 
   // Form state
   const [formData, setFormData] = useState({
     pulseCode: "",
-    name: "",
     description: "",
-    selectedBricks: [] as string[],
+    selectedBricks: [] as Brick[],
   });
 
-  // Fetch bricks on mount
+  // Fetch initial data
   useEffect(() => {
     dispatch(getBrickList());
-  }, [dispatch]);
 
-  // Fetch territory data if editing
-  useEffect(() => {
     if (isEditMode && idFromUrl) {
       dispatch(getTerritoryById(idFromUrl));
+    } else {
+      dispatch(generatePrefix({ entity: "Territory" }));
     }
+
+    return () => {
+      dispatch(resetGeneratePrefixState());
+    };
   }, [dispatch, isEditMode, idFromUrl]);
 
   // Populate form with territory data
@@ -71,9 +84,13 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
     if (territory && isEditMode) {
       setFormData({
         pulseCode: territory.pulseCode || "",
-        name: territory.name || "",
         description: territory.description || "",
-        selectedBricks: territory.bricks?.map((b) => b.id) || [],
+        selectedBricks:
+          territory.bricks?.map((b: any) => ({
+            id: b.id,
+            name: b.name,
+            brickCode: b.brickCode,
+          })) || [],
       });
     }
   }, [territory, isEditMode]);
@@ -83,6 +100,7 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
     if (createSuccess && createMessage) {
       toast.success("Success", { description: createMessage });
       dispatch(resetCreateTerritoryState());
+      dispatch(resetGeneratePrefixState());
       router.push("/dashboard/territory-Management");
     }
   }, [createSuccess, createMessage, dispatch, router]);
@@ -95,38 +113,21 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
     }
   }, [updateSuccess, updateMessage, dispatch, router]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleBrickToggle = (brickId: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      selectedBricks: prev.selectedBricks.includes(brickId)
-        ? prev.selectedBricks.filter((id) => id !== brickId)
-        : [...prev.selectedBricks, brickId],
-    }));
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    const currentPulseCode = isEditMode ? formData.pulseCode : generatedPrefix || "";
+
     // Validation
-    if (!formData.pulseCode.trim()) {
+    if (!currentPulseCode.trim()) {
       toast.error("Validation Error", { description: "Pulse Code is required" });
-      return;
-    }
-    if (!formData.name.trim()) {
-      toast.error("Validation Error", { description: "Territory Name is required" });
       return;
     }
 
     const payload: CreateTerritoryPayload = {
-      pulseCode: formData.pulseCode.trim(),
-      name: formData.name.trim(),
+      pulseCode: currentPulseCode.trim(),
       description: formData.description.trim(),
-      bricks: formData.selectedBricks,
+      bricks: formData.selectedBricks.map((b) => b.id),
     };
 
     if (isEditMode && idFromUrl) {
@@ -140,121 +141,73 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
     router.push("/dashboard/territory-Management");
   };
 
-  const isLoading = createLoading || updateLoading || (isEditMode && loadingTerritory);
+  const isLoading =
+    createLoading || updateLoading || (isEditMode && loadingTerritory) || prefixLoading;
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <div className="flex items-center gap-3 mb-6">
-          <MapPin className="h-6 w-6 text-primary" />
-          <h2 className="text-2xl font-bold text-gray-900">
-            {isEditMode ? "Edit Territory" : "Create New Territory"}
-          </h2>
+    <div className=" ">
+      <div className="p-4 space-y-6">
+        {/* Territory Details Section */}
+        <h2 className="t-h2">Territory Details</h2>
+
+        <div className="grid grid-cols-1 gap-6">
+          <FormInput
+            label="Pulse Code"
+            name="pulseCode"
+            value={isEditMode ? formData.pulseCode : generatedPrefix || ""}
+            onChange={() => {}}
+            placeholder={prefixLoading ? "Generating..." : "e.g., TER-001"}
+            required
+            readOnly
+            className="cursor-not-allowed max-w-sm"
+          />
+
+          <FormTextarea
+            label="Description"
+            name="description"
+            value={formData.description}
+            onChange={(value) => setFormData((prev) => ({ ...prev, description: value }))}
+            placeholder="Enter territory description..."
+            rows={3}
+          />
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Pulse Code */}
-          <div>
-            <label htmlFor="pulseCode" className="block text-sm font-medium text-gray-700 mb-2">
-              Pulse Code <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              id="pulseCode"
-              name="pulseCode"
-              value={formData.pulseCode}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="e.g., TER-001"
-              required
-            />
-          </div>
+        {/* Bricks Selection */}
+        <div className="max-w-full">
+          <BrickSearch
+            allBricks={bricks}
+            selectedBricks={formData.selectedBricks}
+            onBricksChange={(selected) =>
+              setFormData((prev) => ({ ...prev, selectedBricks: selected }))
+            }
+            loading={loadingBricks}
+          />
+        </div>
 
-          {/* Territory Name */}
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-              Territory Name <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="e.g., North Territory"
-              required
-            />
-          </div>
-
-          {/* Description */}
-          <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-              Description
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              rows={3}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-              placeholder="Enter territory description..."
-            />
-          </div>
-
-          {/* Bricks Selection */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Assign Bricks</label>
-            <div className="border border-gray-300 rounded-lg p-4 max-h-80 overflow-y-auto">
-              {loadingBricks ? (
-                <div className="text-center py-4 text-gray-500">Loading bricks...</div>
-              ) : bricks.length === 0 ? (
-                <div className="text-center py-4 text-gray-500">No bricks available</div>
-              ) : (
-                <div className="space-y-2">
-                  {bricks.map((brick) => (
-                    <label
-                      key={brick.id}
-                      className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded cursor-pointer"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={formData.selectedBricks.includes(brick.id)}
-                        onChange={() => handleBrickToggle(brick.id)}
-                        className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                      />
-                      <span className="text-sm text-gray-700">{brick.name}</span>
-                    </label>
-                  ))}
-                </div>
-              )}
-            </div>
-            <p className="text-xs text-gray-500 mt-2">
-              {formData.selectedBricks.length} brick(s) selected
-            </p>
-          </div>
-
-          {/* Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t">
-            <button
-              type="button"
-              onClick={handleCancel}
-              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2"
-            >
-              <X className="h-4 w-4" />
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-            >
-              <Save className="h-4 w-4" />
-              {isLoading ? "Saving..." : isEditMode ? "Update Territory" : "Create Territory"}
-            </button>
-          </div>
-        </form>
+        {/* Buttons */}
+        <div className="flex justify-end gap-4 pt-6">
+          <Button variant="outline" size="lg" rounded="default" onClick={handleCancel}>
+            Discard
+          </Button>
+          <Button
+            onClick={handleSubmit}
+            disabled={isLoading}
+            loading={isLoading}
+            variant="primary"
+            size="lg"
+            icon={Plus}
+            rounded="default"
+            className="shadow-soft"
+          >
+            {isLoading
+              ? isEditMode
+                ? "Updating..."
+                : "Creating..."
+              : isEditMode
+                ? "Update Territory"
+                : "Add Territory"}
+          </Button>
+        </div>
       </div>
     </div>
   );

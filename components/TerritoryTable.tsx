@@ -112,19 +112,12 @@ export default function TerritoryTable({
         header: "Pulse Code",
       },
       {
-        accessorKey: "name",
-        header: "Territory Name",
-        cell: ({ row }) => (
-          <div className="min-w-0">
-            <p className="text-[var(--primary)] font-medium truncate">{row.original.name}</p>
-          </div>
-        ),
-      },
-      {
         accessorKey: "description",
         header: "Description",
         cell: ({ row }) => (
-          <span className="text-[var(--muted-foreground)]">{row.original.description}</span>
+          <span className="text-[var(--muted-foreground)] line-clamp-1">
+            {row.original.description}
+          </span>
         ),
       },
       {
@@ -152,18 +145,6 @@ export default function TerritoryTable({
               title="Edit Territory"
             >
               <EditIcon />
-            </button>
-
-            {/* View Icon */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                router.push(`/dashboard/territory-details/${row.original.id}`);
-              }}
-              className="group hover:opacity-80 transition cursor-pointer"
-              title="View Details"
-            >
-              <EyeIcon />
             </button>
           </div>
         ),

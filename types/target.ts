@@ -63,3 +63,44 @@ export interface CreateTargetResponse {
   message: string;
   data?: any;
 }
+
+// Target Detail API Types
+export interface TargetDetailData {
+  id?: string;
+  targetId?: string;
+  teamId?: string;
+  team?: {
+    id: string;
+    name: string;
+  };
+  teamName?: string;
+  month?: number;
+  targetMonth?: number;
+  year?: number;
+  targetYear?: number;
+  targets?: UserTargetInput[];
+  products?: Array<{
+    productSkuId?: string;
+    id?: string;
+    skuId?: string;
+    targetValue?: number;
+    targetPackets?: number;
+  }>;
+}
+
+export interface TargetDetailResponse {
+  success: boolean;
+  message?: string;
+  data: TargetDetailData;
+}
+
+// Update Target API Types
+export interface UpdateTargetPayload {
+  targets: UserTargetInput[];
+}
+
+export interface UpdateTargetResponse {
+  success: boolean;
+  message: string;
+  data?: any;
+}

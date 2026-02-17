@@ -16,6 +16,7 @@ interface TargetConfigFormProps {
   onSalesRepChange?: (value: string) => void;
   onMonthChange: (value: string) => void;
   errors?: Record<string, string>;
+  isEditMode?: boolean; // New prop to disable team and month in edit mode
 }
 
 export default function TargetConfigForm({
@@ -31,6 +32,7 @@ export default function TargetConfigForm({
   onSalesRepChange,
   onMonthChange,
   errors = {},
+  isEditMode = false,
 }: TargetConfigFormProps) {
   const monthOptions = [
     { value: "january-2026", label: "January 2026" },
@@ -66,6 +68,7 @@ export default function TargetConfigForm({
             placeholder="e.g, Endo-Care North"
             required
             error={errors.team}
+            disabled={isEditMode}
           />
         </div>
 
@@ -83,6 +86,7 @@ export default function TargetConfigForm({
             }))}
             placeholder="Select Sales Rep"
             required
+            disabled={isEditMode}
           />
         </div>
 
@@ -96,6 +100,7 @@ export default function TargetConfigForm({
             placeholder="Select Month"
             required
             error={errors.month}
+            disabled={isEditMode}
           />
         </div>
       </div>
