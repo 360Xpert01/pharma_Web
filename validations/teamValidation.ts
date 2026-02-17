@@ -11,13 +11,8 @@ export const teamCreationSchema = z.object({
     .min(1, { message: "Team name is required" })
     .max(100, { message: "Team name cannot exceed 100 characters" }),
   status: z.enum(["active", "inactive"], { message: "Status is required" }),
-  callPoints: z
-    .array(
-      z.object({
-        id: z.string().min(1),
-        name: z.string().min(1),
-      })
-    )
+  callPointIds: z
+    .array(z.string().min(1))
     .min(1, { message: "At least one call point is required" }),
   channelId: z.string().min(1, { message: "Channel is required" }),
   productIds: z.array(z.string().min(1)).min(1, { message: "At least one product is required" }),
@@ -25,7 +20,7 @@ export const teamCreationSchema = z.object({
     .array(
       z.object({
         id: z.string().min(1, { message: "Sales rep id is required" }),
-        brickIds: z.array(z.string()),
+        territoryId: z.string().nullable().optional(),
       })
     )
     .min(1, { message: "At least one member is required" }),

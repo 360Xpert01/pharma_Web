@@ -14,8 +14,11 @@ import {
   getUserHierarchy,
   resetUserHierarchyState,
 } from "@/store/slices/employee/getUserHierarchySlice";
-import { getBrickList } from "@/store/slices/brick/getBrickListSlice";
-import type { BrickItem } from "@/store/slices/brick/getBrickListSlice";
+import {
+  getAllTerritories,
+  resetTerritoriesState,
+} from "@/store/slices/territory/getAllTerritoriesSlice";
+import type { TerritoryItem } from "@/store/slices/territory/types";
 import { createTeam, resetCreateTeamState } from "@/store/slices/team/createTeamSlice";
 import type { CreateTeamPayload } from "@/store/slices/team/createTeamSlice";
 import { teamCreationSchema } from "@/validations";
@@ -56,9 +59,9 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
   const { users: salesRepUsers, loading: usersLoading } = useAppSelector(
     (state) => state.usersByRole
   );
-  // Bricks selector
-  const { bricks: availableBricks, loading: bricksLoading } = useAppSelector(
-    (state) => state.brickList
+  // Territories selector
+  const { territories: availableTerritories, loading: territoriesLoading } = useAppSelector(
+    (state) => state.allTerritories
   );
 
   // Create team selector
@@ -99,10 +102,14 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
   const [mergedHierarchy, setMergedHierarchy] = useState<HierarchyNodeType[]>([]);
   const [hierarchyLoading, setHierarchyLoading] = useState(false);
 
-  // Brick assignment states
-  const [assignedBricks, setAssignedBricks] = useState<Map<string, BrickItem[]>>(new Map());
-  const [brickSearchQuery, setBrickSearchQuery] = useState("");
-  const [activeBrickSearchUserId, setActiveBrickSearchUserId] = useState<string | null>(null);
+  // Territory assignment states (single territory per user)
+  const [assignedTerritories, setAssignedTerritories] = useState<Map<string, TerritoryItem>>(
+    new Map()
+  );
+  const [territorySearchQuery, setTerritorySearchQuery] = useState("");
+  const [activeTerritorySearchUserId, setActiveTerritorySearchUserId] = useState<string | null>(
+    null
+  );
 
   // Validation errors state
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
@@ -137,14 +144,15 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
     // Fetch all roles to find Sales Representative roleId
     dispatch(getAllRoles());
 
-    // Fetch all bricks for assignment
-    dispatch(getBrickList());
+    // Fetch all territories for assignment
+    dispatch(getAllTerritories({ limit: 1000 }));
 
     return () => {
       dispatch(resetGeneratePrefixState());
       dispatch(resetUsersByRoleState());
       dispatch(resetUserHierarchyState());
       dispatch(resetCreateTeamState());
+      dispatch(resetTerritoriesState());
     };
   }, [dispatch]);
 
@@ -253,7 +261,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
       // Populate members
       if (teamUsers && teamUsers.length > 0) {
         const loadedMembers: SelectedMember[] = [];
-        const loadedBricks = new Map<string, BrickItem[]>();
+        const loadedTerritories = new Map<string, TerritoryItem>();
 
         teamUsers.forEach((teamUser) => {
           const user = teamUser.user;
@@ -273,30 +281,20 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
               // roleId not in SelectedMember interface
             });
 
-            // Map bricks
-            if (teamUser.brick && teamUser.brick.length > 0) {
-              loadedBricks.set(
-                user.id,
-                teamUser.brick.map(
-                  (b) =>
-                    ({
-                      id: b.id,
-                      name: b.name,
-                      // Missing fields from BrickItem, casting as we only have partial data
-                      parentId: "",
-                      brickCode: "",
-                      latitude: 0,
-                      longitude: 0,
-                      createdAt: "",
-                    }) as unknown as BrickItem
-                )
-              );
+            // Map territory (single territory, take first one if exists)
+            if (teamUser.territory && teamUser.territory.id) {
+              loadedTerritories.set(user.id, {
+                id: teamUser.territory.id,
+                name: teamUser.territory.name,
+                pulseCode: teamUser.territory.pulseCode || "",
+                description: teamUser.territory.description || "",
+              });
             }
           }
         });
 
         setSelectedMembers(loadedMembers);
-        setAssignedBricks(loadedBricks);
+        setAssignedTerritories(loadedTerritories);
 
         // Fetch hierarchy for existing members
         loadedMembers.forEach((m) => {
@@ -330,41 +328,34 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
     setMergedHierarchy(merged);
   }, [memberHierarchies]);
 
-  // Handle assigning a brick to a user
-  const handleAssignBrick = (userId: string, brick: BrickItem) => {
-    setAssignedBricks((prev) => {
+  // Handle assigning a territory to a user (single territory)
+  const handleAssignTerritory = (userId: string, territory: TerritoryItem) => {
+    setAssignedTerritories((prev) => {
       const newMap = new Map(prev);
-      const userBricks = newMap.get(userId) || [];
-      if (!userBricks.find((b) => b.id === brick.id)) {
-        newMap.set(userId, [...userBricks, brick]);
-      }
+      newMap.set(userId, territory); // Replace existing territory
       return newMap;
     });
   };
 
-  // Handle removing a brick from a user
-  const handleRemoveBrick = (userId: string, brickId: string) => {
-    setAssignedBricks((prev) => {
+  // Handle removing a territory from a user
+  const handleRemoveTerritory = (userId: string) => {
+    setAssignedTerritories((prev) => {
       const newMap = new Map(prev);
-      const userBricks = newMap.get(userId) || [];
-      newMap.set(
-        userId,
-        userBricks.filter((b) => b.id !== brickId)
-      );
+      newMap.delete(userId);
       return newMap;
     });
   };
 
-  // Handle brick search query change
-  const handleBrickSearchChange = (query: string) => {
-    setBrickSearchQuery(query);
+  // Handle territory search query change
+  const handleTerritorySearchChange = (query: string) => {
+    setTerritorySearchQuery(query);
   };
 
-  // Handle toggling brick search for a user
-  const handleToggleBrickSearch = (userId: string | null) => {
-    setActiveBrickSearchUserId(userId);
+  // Handle toggling territory search for a user
+  const handleToggleTerritorySearch = (userId: string | null) => {
+    setActiveTerritorySearchUserId(userId);
     if (userId === null) {
-      setBrickSearchQuery("");
+      setTerritorySearchQuery("");
     }
   };
 
@@ -381,7 +372,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
         newMap.delete(member.id);
         return newMap;
       });
-      setAssignedBricks((prev) => {
+      setAssignedTerritories((prev) => {
         const newMap = new Map(prev);
         newMap.delete(member.id);
         return newMap;
@@ -402,19 +393,11 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
   };
 
   const handleCreateSubmit = async () => {
-    // Build saleRepIds with their assigned bricks
+    // Build saleRepIds with their assigned territory
     const saleRepIds = selectedMembers.map((member) => ({
       id: member.id,
-      brickIds: (assignedBricks.get(member.id) || [])
-        .map((brick) => brick.id)
-        .filter((id) => id && typeof id === "string" && id.trim() !== ""),
+      territoryId: assignedTerritories.get(member.id)?.id || null,
     }));
-
-    // Map call point IDs to objects
-    const callPointObjects = selectedCallPoints.map((id) => {
-      const cp = callPoints.find((c) => c.id === id);
-      return { id, name: cp?.name || "" };
-    });
 
     // Prepare form data for validation
     const formData = {
@@ -422,7 +405,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
       legacyCode: generatedPrefix || "",
       name: teamName.trim(),
       status: status.toLowerCase() as "active" | "inactive",
-      callPoints: callPointObjects,
+      callPointIds: selectedCallPoints, // Send as array of IDs
       channelId: selectedChannelId,
       productIds: products.map((p) => p.id),
       saleRepIds,
@@ -469,22 +452,14 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
 
     const saleRepIds = selectedMembers.map((member) => ({
       id: member.id,
-      brickIds: (assignedBricks.get(member.id) || [])
-        .map((brick) => brick.id)
-        .filter((id) => id && typeof id === "string" && id.trim() !== ""),
+      territoryId: assignedTerritories.get(member.id)?.id || null,
     }));
-
-    // Map call point IDs to objects
-    const callPointObjects = selectedCallPoints.map((id) => {
-      const cp = callPoints.find((c) => c.id === id);
-      return { id, name: cp?.name || "" };
-    });
 
     const formData = {
       pulseCode: pulseCode || generatedPrefix || "", // Use existing for update
       name: teamName.trim(),
       status: status.toLowerCase() as "active" | "inactive",
-      callPoints: callPointObjects,
+      callPointIds: selectedCallPoints, // Send as array of IDs
       channelId: selectedChannelId,
       productIds: products.map((p) => p.id),
       saleRepIds,
@@ -516,8 +491,8 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
       // Map other fields as required by the update API
       productIds: products.map((p) => p.id), // Ensure productIds is sent
       // userIds: selectedMembers.map(m => m.id), // Removing simple userIds in favor of full structure
-      saleRepIds, // Send the full structure with bricks
-      callPoints: callPointObjects,
+      saleRepIds, // Send the full structure with territories
+      callPointIds: selectedCallPoints, // Send as array of IDs
     };
 
     dispatch(updateTeam(payload));
@@ -535,7 +510,8 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
       productsLoading,
       salesRepUsers,
       usersLoading,
-      availableBricks,
+      availableTerritories,
+      territoriesLoading,
       status,
       teamName,
       pulseCode,
@@ -546,9 +522,9 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
       selectedMembers,
       mergedHierarchy,
       hierarchyLoading,
-      assignedBricks,
-      brickSearchQuery,
-      activeBrickSearchUserId,
+      assignedTerritories,
+      territorySearchQuery,
+      activeTerritorySearchUserId,
       createTeamLoading,
       updateTeamLoading,
       teamLoading,
@@ -560,10 +536,10 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
       setSelectedCallPoints,
       setProducts,
       handleMembersChange,
-      handleAssignBrick,
-      handleRemoveBrick,
-      handleBrickSearchChange,
-      handleToggleBrickSearch,
+      handleAssignTerritory,
+      handleRemoveTerritory,
+      handleTerritorySearchChange,
+      handleToggleTerritorySearch,
       handleSubmit,
       clearFieldError,
       getErrorMessage,

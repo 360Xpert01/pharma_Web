@@ -4,9 +4,9 @@ import axios from "axios";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 // Types
-interface SaleRepBrick {
+interface SaleRepTerritory {
   id: string;
-  brickIds: string[];
+  territoryId?: string | null;
 }
 
 export interface CreateTeamPayload {
@@ -14,11 +14,10 @@ export interface CreateTeamPayload {
   legacyCode?: string;
   name: string;
   status: "active" | "inactive";
-  callPointId?: string; // Keep for backward compatibility
-  callPoints?: { id: string; name: string }[]; // New multi-select support with objects
+  callPointIds: string[]; // Array of call point IDs
   channelId: string;
   productIds: string[];
-  saleRepIds: SaleRepBrick[];
+  saleRepIds: SaleRepTerritory[];
 }
 
 interface CreatedTeam {

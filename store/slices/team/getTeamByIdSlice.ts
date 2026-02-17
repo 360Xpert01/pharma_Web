@@ -43,10 +43,12 @@ export interface TeamUser {
     name: string;
     role: string;
   };
-  brick: {
+  territory?: {
     id: string;
     name: string;
-  }[];
+    pulseCode?: string;
+    description?: string;
+  };
   createdAt?: string;
   updatedAt?: string;
 }
