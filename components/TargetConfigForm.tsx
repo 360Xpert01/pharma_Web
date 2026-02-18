@@ -11,7 +11,7 @@ interface TargetConfigFormProps {
   targetMonthValue?: string;
   areaManager?: string;
   channelName?: string;
-  territory?: string;
+  territoryPulseCode?: string;
   onTeamChange: (value: string) => void;
   onSalesRepChange?: (value: string) => void;
   onMonthChange: (value: string) => void;
@@ -27,7 +27,7 @@ export default function TargetConfigForm({
   targetMonthValue,
   areaManager = "N/A",
   channelName = "N/A",
-  territory = "N/A",
+  territoryPulseCode = "N/A",
   onTeamChange,
   onSalesRepChange,
   onMonthChange,
@@ -128,7 +128,7 @@ export default function TargetConfigForm({
         <FormInput
           label="Territory"
           name="territory"
-          value={territory}
+          value={territoryPulseCode}
           onChange={() => {}}
           placeholder="e.g. T1"
           readOnly

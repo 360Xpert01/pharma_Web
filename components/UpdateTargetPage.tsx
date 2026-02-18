@@ -222,7 +222,8 @@ export default function UpdateTargetPage() {
       "",
     areaManager:
       currentRepFromAlloc?.supervisorName || currentRepFromUsers?.supervisorName || "N/A",
-    territory: currentRepFromAlloc?.territoryName || currentRepFromUsers?.territoryName || "N/A",
+    territoryPulseCode:
+      currentRepFromAlloc?.territoryPulseCode || currentRepFromUsers?.territoryPulseCode || "N/A",
   };
 
   const handleSkuTargetChange = (skuId: string, value: string) => {
@@ -292,7 +293,7 @@ export default function UpdateTargetPage() {
           targetMonthValue={targetMonth}
           areaManager={teamMetadata.areaManager}
           channelName={teamMetadata.channelName}
-          territory={teamMetadata.territory}
+          territoryPulseCode={teamMetadata.territoryPulseCode}
           onTeamChange={(val) => {
             setSelectedTeam(val);
             clearFieldError("team");

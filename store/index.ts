@@ -100,6 +100,7 @@ import createTerritoryReducer from "./slices/territory/createTerritorySlice";
 import updateTerritoryReducer from "./slices/territory/updateTerritorySlice";
 import deleteTerritoryReducer from "./slices/territory/deleteTerritorySlice";
 import updateTargetReducer from "./slices/target/updateTargetSlice";
+import targetAllocationReducer from "./slices/target/targetAllocationSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -198,6 +199,7 @@ const rootReducer = combineReducers({
   createTerritory: createTerritoryReducer,
   updateTerritory: updateTerritoryReducer,
   deleteTerritory: deleteTerritoryReducer,
+  targetAllocation: targetAllocationReducer,
 });
 
 const persistConfig = {

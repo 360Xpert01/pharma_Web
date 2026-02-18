@@ -4,7 +4,14 @@ import axios from "axios";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 // Types
-interface TargetListItem {
+export interface Product {
+  id: string;
+  productName: string;
+  targetPackets: number;
+  achievementPercentage: number;
+}
+
+export interface TargetListItem {
   userId: string;
   username: string;
   profilePic: string | null;
@@ -14,12 +21,16 @@ interface TargetListItem {
   channelName: string;
   lineManagerId: string;
   lineManagerName: string;
+  territoryId: string | null;
+  territoryPulseCode: string | null;
   targetId: string;
   targetMonth: number;
   targetYear: number;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  products?: Product[];
+  tags?: string[];
 }
 
 interface GetTargetListResponse {

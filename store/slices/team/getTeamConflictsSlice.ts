@@ -5,7 +5,8 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 interface Territory {
   territoryId: string;
-  territoryName: string;
+  territoryPulseCode: string;
+  territoryName?: string;
   percentage: number;
 }
 
