@@ -11,7 +11,7 @@ interface EmployeeTarget {
   userId: string;
   username: string;
   tags?: string[];
-  products: Product[];
+  products?: Product[];
 }
 
 interface TargetExpandedRowProps {

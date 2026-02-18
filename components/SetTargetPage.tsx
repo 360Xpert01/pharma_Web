@@ -126,7 +126,7 @@ export default function SetTargetPage() {
     channelName: teamTargetData?.channelName || matchTeam?.channelName || "",
     callPoint: "No Callpoint available", // Not in target API
     areaManager: selectedRepData?.supervisorName || "Abdul Aziz Warisi",
-    territory: selectedRepData?.territoryName || "T1",
+    territoryPulseCode: selectedRepData?.territoryPulseCode || "N/A",
   };
 
   const handleSkuTargetChange = (skuId: string, value: string) => {
@@ -231,7 +231,7 @@ export default function SetTargetPage() {
           targetMonthValue={targetMonth}
           areaManager={teamMetadata.areaManager}
           channelName={teamMetadata.channelName}
-          territory={teamMetadata.territory}
+          territoryPulseCode={teamMetadata.territoryPulseCode}
           onTeamChange={(val) => {
             setSelectedTeam(val);
             clearFieldError("team");
