@@ -34,9 +34,8 @@ export const doctorSchema = z.object({
   locations: z
     .array(
       z.object({
-        city: z.string().min(1, { message: "City is required" }),
-        country: z.string().min(1, { message: "Country is required" }),
-        area: z.string().min(1, { message: "Area is required" }),
+        zone: z.string().min(1, { message: "Zone is required" }),
+        region: z.string().min(1, { message: "Region is required" }),
         bricks: z.string().min(1, { message: "Bricks is required" }),
         clinicName: z
           .string()

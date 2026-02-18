@@ -72,6 +72,15 @@ export default function RoleHierarchyWrapper() {
   }, [dispatch]);
 
   useEffect(() => {
+    const handleAddRoot = () => {
+      setAddingId("root");
+      dispatch(generatePrefix({ entity: "Role" }));
+    };
+    window.addEventListener("roles:add-root", handleAddRoot);
+    return () => window.removeEventListener("roles:add-root", handleAddRoot);
+  }, [dispatch]);
+
+  useEffect(() => {
     if (createSuccess) {
       toast.success(createMessage || "Role created successfully!");
       dispatch(resetRoleState());

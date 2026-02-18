@@ -51,6 +51,8 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
     partyLoading,
     bricks,
     bricksLoading,
+    zones,
+    regions,
     currentChannel,
     fieldConfig,
     organizationParties,
@@ -322,46 +324,34 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
                       updateLocation(location.id, "bricks", value);
                       clearFieldError(`locations.${index}.bricks`);
                     }}
-                    options={bricks.map((b) => ({
-                      value: b.id,
-                      label: b.name,
-                    }))}
+                    options={[
+                      { value: "", label: "Select Brick" },
+                      ...bricks.map((b) => ({
+                        value: b.id,
+                        label: b.name,
+                      })),
+                    ]}
                     required
                     loading={bricksLoading}
                     error={getErrorMessage(`locations.${index}.bricks`)}
                   />
 
                   <FormInput
-                    label="City"
-                    name={`city-${location.id}`}
-                    value={location.city}
+                    label="Region"
+                    name={`region-${location.id}`}
+                    value={regions.find((r) => r.id === location.region)?.name || ""}
                     onChange={() => {}}
                     placeholder="Auto-populated"
-                    required
                     readOnly
-                    error={getErrorMessage(`locations.${index}.city`)}
                   />
 
                   <FormInput
-                    label="Country"
-                    name={`country-${location.id}`}
-                    value={location.country}
+                    label="Zone"
+                    name={`zone-${location.id}`}
+                    value={zones.find((z) => z.id === location.zone)?.name || ""}
                     onChange={() => {}}
                     placeholder="Auto-populated"
-                    required
                     readOnly
-                    error={getErrorMessage(`locations.${index}.country`)}
-                  />
-
-                  <FormInput
-                    label="Area"
-                    name={`area-${location.id}`}
-                    value={location.area}
-                    onChange={() => {}}
-                    placeholder="Auto-populated"
-                    required
-                    readOnly
-                    error={getErrorMessage(`locations.${index}.area`)}
                   />
 
                   <FormInput
