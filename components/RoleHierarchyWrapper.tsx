@@ -1,53 +1,51 @@
 "use client";
 
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { RoleHierarchy } from "@/components/RoleHierarchy";
+import type { RoleLevel } from "@/components/RoleHierarchy";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllRoles } from "@/store/slices/role/getAllRolesSlice";
+import { createRole, resetRoleState } from "@/store/slices/role/addRole";
+import {
+  generatePrefix,
+  resetGeneratePrefixState,
+} from "@/store/slices/preFix/generatePrefixSlice";
+import toast from "react-hot-toast";
 
 // Helper function to build hierarchy from flat role list
 const buildRoleHierarchy = (roles: any[]) => {
-  // Transform roles into hierarchy structure
   const roleMap = new Map();
   const rootRoles: any[] = [];
 
-  // Determine role type based on hierarchy level
-  const getRoleType = (role: any, allRoles: any[]): any => {
-    // Count levels: root -> company, level 1 -> department, level 2 -> position, level 3+ -> role
+  const getRoleType = (role: any, allRoles: any[]): RoleLevel => {
     let level = 0;
     let currentRole = role;
-
     while (currentRole.parentRoleId) {
       level++;
       currentRole = allRoles.find((r) => r.id === currentRole.parentRoleId);
       if (!currentRole) break;
     }
-
     if (level === 0) return "company";
     if (level === 1) return "department";
     if (level === 2) return "position";
     return "role";
   };
 
-  // First pass: create map of all roles with proper types
   roles.forEach((role) => {
-    const roleType = getRoleType(role, roles);
     roleMap.set(role.id, {
       id: role.id,
       name: role.roleName,
       subtitle: role.pulseCode || role.legacyCode,
-      type: roleType,
-      responsibilities: "",
+      type: getRoleType(role, roles),
+      pulseCode: role.pulseCode,
       children: [],
     });
   });
 
-  // Second pass: build hierarchy
   roles.forEach((role) => {
     const roleNode = roleMap.get(role.id);
     if (role.parentRoleId && roleMap.has(role.parentRoleId)) {
-      const parent = roleMap.get(role.parentRoleId);
-      parent.children.push(roleNode);
+      roleMap.get(role.parentRoleId).children.push(roleNode);
     } else {
       rootRoles.push(roleNode);
     }
@@ -58,35 +56,76 @@ const buildRoleHierarchy = (roles: any[]) => {
 
 export default function RoleHierarchyWrapper() {
   const dispatch = useAppDispatch();
+  const [addingId, setAddingId] = useState<string | null>(null);
 
-  // Select state from Redux store
   const { loading, error, roles } = useAppSelector((state) => state.allRoles);
+  const {
+    loading: creating,
+    success: createSuccess,
+    message: createMessage,
+    error: createError,
+  } = useAppSelector((state) => state.addRole);
+  const { generatedPrefix } = useAppSelector((state) => state.generatePrefix);
 
-  // Fetch roles on mount
   useEffect(() => {
     dispatch(getAllRoles());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (createSuccess) {
+      toast.success(createMessage || "Role created successfully!");
+      dispatch(resetRoleState());
+      dispatch(getAllRoles());
+      setAddingId(null);
+    }
+    if (createError) {
+      toast.error(createError);
+      dispatch(resetRoleState());
+    }
+  }, [createSuccess, createMessage, createError, dispatch]);
+
   const handleAddChild = (parentId: string, childType: string) => {
-    console.log("Add child to:", parentId, "Type:", childType);
-    // TODO: Implement add child logic here
-    // dispatch(addRole({ parentId, childType }));
+    setAddingId(parentId);
+    dispatch(generatePrefix({ entity: "Role" }));
+  };
+
+  const handleCancelAdd = () => {
+    setAddingId(null);
+    dispatch(resetGeneratePrefixState());
+  };
+
+  const handleCreateChild = async (
+    parentId: string,
+    type: RoleLevel,
+    name: string,
+    pulseCode: string
+  ) => {
+    const finalPulseCode = pulseCode || generatedPrefix || "";
+    await dispatch(
+      createRole({
+        roleName: name,
+        pulseCode: finalPulseCode,
+        parentRoleId: parentId === "root" ? undefined : parentId,
+      })
+    );
   };
 
   const handleMoreOptions = (itemId: string, itemType: string) => {
     console.log("More options for:", itemId, "Type:", itemType);
-    // TODO: Implement more options logic here
-    // This could open a modal or dropdown with edit/delete options
   };
 
-  // Build hierarchy from flat roles list
   const hierarchyData = buildRoleHierarchy(roles);
 
   return (
-    <div className="shadow-soft">
+    <div className="shadow-soft bg-[var(--background)] rounded-8 p-6">
       <RoleHierarchy
         data={hierarchyData}
+        loading={loading || creating}
+        error={error}
+        addingId={addingId}
         onAddChild={handleAddChild}
+        onCancelAdd={handleCancelAdd}
+        onCreateChild={handleCreateChild}
         onMoreOptions={handleMoreOptions}
       />
     </div>
