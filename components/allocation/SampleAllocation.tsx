@@ -61,7 +61,7 @@ export default function SampleAllocation({
     onAddSample(item);
     setSearchQuery("");
     setShowDropdown(false);
-    setEditingId(String(item.id));
+    setEditingId(String(item.productSkuId));
   };
 
   // Auto-focus the quantity input when editingId changes
@@ -108,7 +108,7 @@ export default function SampleAllocation({
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-(--gray-4)" />
             <input
               type="text"
-              placeholder="Search Sample Name"
+              placeholder="Search Product Name"
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -139,7 +139,7 @@ export default function SampleAllocation({
               ) : (
                 availableItems.map((sample) => (
                   <div
-                    key={sample.id}
+                    key={sample.productSkuId}
                     onClick={() => handleSelectFromDropdown(sample)}
                     className="px-4 py-3 hover:bg-(--gray-0) cursor-pointer border-b border-(--gray-1) last:border-b-0"
                   >
@@ -203,7 +203,7 @@ export default function SampleAllocation({
                   ) : (
                     <div className="flex items-center gap-3">
                       <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-6">
-                        <span className="text-xs font-medium text-(--gray-5)">QTY:</span>
+                        <span className="text-xs font-medium text-(--gray-5)">QTY</span>
                         <span className="text-sm font-bold text-(--gray-9)">{item.quantity}</span>
                       </div>
                       <button

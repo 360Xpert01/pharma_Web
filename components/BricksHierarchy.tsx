@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   ChevronDown,
   ChevronRight,
@@ -67,22 +67,23 @@ const BrickNode: React.FC<BrickNodeProps> = ({
   onCancelEdit,
   onUpdate,
 }) => {
-  const [newName, setNewName] = useState(item.name || "");
-  const [newDescription, setNewDescription] = useState(item.description || "");
+  const [newName, setNewName] = useState("");
+  const [newDescription, setNewDescription] = useState("");
 
   const hasChildren = item.children && item.children.length > 0;
   const isAddingToThis = addingId === item.id;
   const isEditingThis = editingId === item.id;
 
-  // Sync state when entering edit mode
-  React.useEffect(() => {
+  useEffect(() => {
     if (isEditingThis) {
       setNewName(item.name);
       setNewDescription(item.description || "");
+    } else if (isAddingToThis) {
+      setNewName("");
+      setNewDescription("");
     }
-  }, [isEditingThis, item.name, item.description]);
+  }, [isEditingThis, isAddingToThis, item.name, item.description]);
 
-  // For dynamic type support, we determine next type based on CHILD_TYPE_MAP
   const childType = CHILD_TYPE_MAP[item.type];
   const canHaveChildren = childType !== null;
 
@@ -412,6 +413,8 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
   onUpdate,
 }) => {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+  const [rootAddName, setRootAddName] = useState("");
+  const [rootAddDescription, setRootAddDescription] = useState("");
 
   const toggleExpand = (id: string) => {
     setExpandedIds((prev) => {
@@ -567,17 +570,21 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
                   autoFocus
                   type="text"
                   placeholder="Enter Zone Name"
+                  value={rootAddName}
+                  onChange={(e) => setRootAddName(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
-                      const descriptionInput = (e.target as HTMLInputElement)
-                        .nextElementSibling as HTMLInputElement;
-                      onCreateChild?.(
-                        "root",
-                        "zone",
-                        (e.target as HTMLInputElement).value,
-                        descriptionInput?.value || ""
-                      );
+                      if (rootAddName.trim()) {
+                        onCreateChild?.(
+                          "root",
+                          "zone",
+                          rootAddName.trim(),
+                          rootAddDescription.trim()
+                        );
+                        setRootAddName("");
+                        setRootAddDescription("");
+                      }
                     }
                     if (e.key === "Escape") {
                       e.preventDefault();
@@ -589,17 +596,21 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
                 <input
                   type="text"
                   placeholder="Enter Description"
+                  value={rootAddDescription}
+                  onChange={(e) => setRootAddDescription(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
-                      const nameInput = (e.target as HTMLInputElement)
-                        .previousElementSibling as HTMLInputElement;
-                      onCreateChild?.(
-                        "root",
-                        "zone",
-                        nameInput?.value || "",
-                        (e.target as HTMLInputElement).value
-                      );
+                      if (rootAddName.trim()) {
+                        onCreateChild?.(
+                          "root",
+                          "zone",
+                          rootAddName.trim(),
+                          rootAddDescription.trim()
+                        );
+                        setRootAddName("");
+                        setRootAddDescription("");
+                      }
                     }
                     if (e.key === "Escape") {
                       e.preventDefault();
@@ -616,6 +627,25 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
                   className="px-3 py-1.5 text-sm text-[var(--gray-5)] hover:text-[var(--gray-7)] font-medium cursor-pointer"
                 >
                   Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (rootAddName.trim()) {
+                      onCreateChild?.(
+                        "root",
+                        "zone",
+                        rootAddName.trim(),
+                        rootAddDescription.trim()
+                      );
+                      setRootAddName("");
+                      setRootAddDescription("");
+                    }
+                  }}
+                  disabled={!rootAddName.trim()}
+                  className="px-4 py-1.5 text-sm bg-[var(--primary)] text-[var(--light)] rounded-8 font-medium hover:bg-[var(--primary)]/90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  Create
                 </button>
               </div>
             </div>
