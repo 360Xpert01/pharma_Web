@@ -131,7 +131,9 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
     };
 
     if (isEditMode && idFromUrl) {
-      dispatch(updateTerritory({ id: idFromUrl, ...payload }));
+      // Omit pulseCode for updates as per backend requirement
+      const { pulseCode, ...updatePayload } = payload;
+      dispatch(updateTerritory({ id: idFromUrl, ...(updatePayload as any) }));
     } else {
       dispatch(createTerritory(payload));
     }

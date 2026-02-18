@@ -58,8 +58,11 @@ export interface CreateTerritoryPayload {
   bricks: string[]; // Array of brick IDs
 }
 
-export interface UpdateTerritoryPayload extends CreateTerritoryPayload {
+export interface UpdateTerritoryPayload {
   id: string;
+  name?: string;
+  description: string;
+  bricks: string[]; // Array of brick IDs
 }
 
 // API Request Params

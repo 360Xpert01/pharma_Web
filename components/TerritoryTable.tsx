@@ -120,15 +120,15 @@ export default function TerritoryTable({
           </span>
         ),
       },
-      {
-        accessorKey: "bricks",
-        header: "Bricks",
-        cell: ({ row }) => (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-            {row.original.bricks} brick(s)
-          </span>
-        ),
-      },
+      // {
+      //   accessorKey: "bricks",
+      //   header: "Bricks",
+      //   cell: ({ row }) => (
+      //     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+      //       {row.original.bricks} brick(s)
+      //     </span>
+      //   ),
+      // },
       {
         id: "expand",
         header: "",
