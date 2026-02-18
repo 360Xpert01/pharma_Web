@@ -303,7 +303,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({
                 className="absolute border-t-2 border-dashed border-[var(--gray-3)]"
                 style={{ left: "-24px", top: "36px", width: "24px" }}
               />
-              <div className="flex items-center gap-3 border border-[var(--primary)] rounded-8 p-4 bg-[var(--background)] shadow-soft animate-in slide-in-from-left-2 duration-200">
+              <div className="flex items-center gap-3 border bocorder-[var(--primary)] rounded-8 p-4 bg-[var(--background)] shadow-soft animate-in slide-in-from-left-2 duration-200">
                 <div
                   className={cn(
                     "w-10 h-10 rounded-8 flex items-center justify-center",

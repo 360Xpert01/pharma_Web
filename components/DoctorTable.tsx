@@ -210,8 +210,8 @@ export default function DoctorsTable({
     if (fieldConfig.locations) {
       cols.push({
         header: "Location",
-        accessorKey: "city",
-        cell: ({ row }) => <span>{row.original?.locations?.[0]?.city || "N/A"}</span>,
+        accessorKey: "region_description",
+        cell: ({ row }) => <span>{row.original?.locations?.[0]?.region_description || "N/A"}</span>,
       });
     }
 
