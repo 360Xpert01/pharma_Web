@@ -7,7 +7,7 @@ export default function RegionInfoCard({ partyData }: any) {
   const location = partyData?.locations?.[0];
 
   return (
-    <div className="w-full bg-white shadow-soft rounded-[24px] p-10 border border-gray-1">
+    <div className="w-full bg-white shadow-soft rounded-8 p-10 border border-gray-1">
       {/* Card Title - Centered as per image_ca38ba */}
       <h3 className="text-[22px] font-bold text-[#334155] mb-10 text-center tracking-tight">
         Region Information

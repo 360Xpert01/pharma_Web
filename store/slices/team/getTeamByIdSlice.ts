@@ -42,6 +42,11 @@ export interface TeamUser {
     id: string;
     name: string;
     role: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    pulseCode?: string;
+    profilePicture?: string;
   };
   territory?: {
     id: string;
