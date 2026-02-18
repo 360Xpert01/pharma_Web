@@ -1,32 +1,40 @@
-name: SSH to Remote Server
+name: Deploy Pharma Web
 
 on:
   push:
     branches:
       - develop
-  workflow_dispatch:  # Change this to the branch you want to trigger on
+  #workflow_dispatch:  # Change this to the branch you want to trigger on
 
 jobs:
-  ssh:
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on: self-hosted
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
-    - name: Set up SSH
+    - name: Deploying Locally
       run: |
-        sudo apt-get update
-        sudo apt-get install -y sshpass
-        mkdir -p ~/.ssh
-        chmod 700 ~/.ssh
+          # The runner is already at the destination. 
+          # We just move to the app folder and run the script.
+          cd /home/ubuntu/pharma_Web
+          bash deploy.sh
+    
 
-    - name: Add SSH Host Key
-      run: |
-        ssh-keyscan -H 178.18.250.150 >> ~/.ssh/known_hosts || { echo "Failed to add host key"; exit 1; }
+    # - name: Set up SSH
+    #   run: |
+    #     sudo apt-get update
+    #     sudo apt-get install -y sshpass
+    #     mkdir -p ~/.ssh
+    #     chmod 700 ~/.ssh
 
-    - name: Run Remote Script
-      env:
-        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-      run: |
-        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no ubuntu@178.18.250.150 "bash /home/ubuntu/pharma_Web/deploy.sh" || { echo "SSH command failed"; exit 1; }
+    # - name: Add SSH Host Key
+    #   run: |
+    #     ssh-keyscan -H 178.18.250.150 >> ~/.ssh/known_hosts || { echo "Failed to add host key"; exit 1; }
+
+    # - name: Run Remote Script
+    #   env:
+    #     SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+    #   run: |
+    #     sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no ubuntu@178.18.250.150 "bash /home/ubuntu/pharma_Web/deploy.sh" || { echo "SSH command failed"; exit 1; }
