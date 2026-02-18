@@ -27,10 +27,15 @@ export default function DoctorProfileCard({ partyData }: any) {
       <h2 className="text-3xl font-bold text-center text-gray-9 mb-2">
         {doctorDetails?.party_name}
       </h2>
+      {doctorDetails?.email && (
+        <h2 className="text-1xl font-semibold text-center text-gray-9 mb-2">
+          {doctorDetails?.email}
+        </h2>
+      )}
 
       {/* Specialty */}
-      <p className="text-base font-thin text-center mb-6">
-        {doctorDetails?.attributes?.specialization || "N/A"}
+      <p className="text-base font-semibold text-center mb-6">
+        {doctorDetails?.pulsecode || "N/A"}
       </p>
 
       {/* Employee ID Badge */}

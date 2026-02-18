@@ -21,7 +21,13 @@ interface Team {
   users: { id: string; profilePicture?: string }[];
 }
 
-export default function CampaignsTable({ searchTerm }: { searchTerm: string }) {
+export default function CampaignsTable({
+  searchTerm,
+  filters,
+}: {
+  searchTerm: string;
+  filters?: { status?: string; channelId?: string };
+}) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { teams, loading, error, pagination } = useAppSelector((state) => state.allTeams);
@@ -35,11 +41,20 @@ export default function CampaignsTable({ searchTerm }: { searchTerm: string }) {
     dispatch(
       getAllTeams({
         search: searchTerm,
+        isActive: filters?.status,
+        channelId: filters?.channelId,
         page: paginationState.pageIndex + 1,
         limit: paginationState.pageSize,
       })
     );
-  }, [dispatch, searchTerm, paginationState.pageIndex, paginationState.pageSize]);
+  }, [
+    dispatch,
+    searchTerm,
+    filters?.status,
+    filters?.channelId,
+    paginationState.pageIndex,
+    paginationState.pageSize,
+  ]);
 
   const handlePaginationChange = (page: number, pageSize: number) => {
     setPaginationState({ pageIndex: page - 1, pageSize });
@@ -49,6 +64,8 @@ export default function CampaignsTable({ searchTerm }: { searchTerm: string }) {
     dispatch(
       getAllTeams({
         search: searchTerm,
+        isActive: filters?.status,
+        channelId: filters?.channelId,
         page: paginationState.pageIndex + 1,
         limit: paginationState.pageSize,
       })

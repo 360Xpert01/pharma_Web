@@ -62,6 +62,8 @@ interface GetAllTeamsParams {
   page?: number;
   limit?: number;
   search?: string;
+  isActive?: string;
+  channelId?: string;
 }
 
 export const getAllTeams = createAsyncThunk<
@@ -81,6 +83,8 @@ export const getAllTeams = createAsyncThunk<
         page: params?.page || 1,
         limit: params?.limit || 10,
         search: params?.search || "",
+        ...(params?.isActive && { isActive: params.isActive }),
+        ...(params?.channelId && { channelId: params.channelId }),
       },
       headers: {
         "Content-Type": "application/json",

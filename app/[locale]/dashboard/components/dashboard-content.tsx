@@ -199,6 +199,10 @@ export function DashboardContent({
   const [giveawayFilters, setGiveawayFilters] = useState<{
     status?: string;
   }>({});
+  const [teamFilters, setTeamFilters] = useState<{
+    status?: string;
+    channelId?: string;
+  }>({});
 
   // State for Allocation Table Filters
   const [allocationFilters, setAllocationFilters] = useState<{
@@ -385,8 +389,14 @@ export function DashboardContent({
 
         {campTabel && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading={campHeading} filterT={filterT} onSearch={setSearchTerm} />
-            <CampaignsTable searchTerm={searchTerm} />
+            <TableHeader
+              campHeading={campHeading}
+              filterT={filterT}
+              onSearch={setSearchTerm}
+              showTeamFilters={true}
+              onApplyFilters={setTeamFilters}
+            />
+            <CampaignsTable searchTerm={searchTerm} filters={teamFilters} />
           </div>
         )}
 

@@ -70,4 +70,5 @@ export interface GetTerritoriesParams {
   page?: number;
   limit?: number;
   search?: string;
+  notassigned?: boolean;
 }

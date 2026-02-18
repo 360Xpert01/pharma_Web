@@ -15,6 +15,7 @@ interface TableFilterProps {
   showEmployeeFilters?: boolean;
   showProductFilters?: boolean;
   showGiveawayFilters?: boolean;
+  showTeamFilters?: boolean;
   isAllocate?: boolean;
   channelId?: string;
   onApply?: () => void;
@@ -27,6 +28,7 @@ interface TableFilterProps {
     categoryId?: string;
     status?: string;
     employeeId?: string;
+    channelId?: string;
   }) => void;
   onClear?: () => void;
 }
@@ -36,6 +38,7 @@ export default function TableFilter({
   showEmployeeFilters = false,
   showProductFilters = false,
   showGiveawayFilters = false,
+  showTeamFilters = false,
   isAllocate = false,
   channelId,
   onApply,
@@ -57,6 +60,7 @@ export default function TableFilter({
   const [selectedProductStatus, setSelectedProductStatus] = useState("");
   const [selectedGiveawayStatus, setSelectedGiveawayStatus] = useState("");
   const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
+  const [selectedChannel, setSelectedChannel] = useState("");
 
   // Redux state for filters
   const { specializations } = useAppSelector((state) => state.allSpecializations);
@@ -72,7 +76,7 @@ export default function TableFilter({
   const isDoctorChannel = (currentChannel?.name?.toLowerCase() ?? "").includes("doctor");
 
   useEffect(() => {
-    if (showDoctorFilters && isFilterOpen) {
+    if ((showDoctorFilters || showTeamFilters) && isFilterOpen) {
       dispatch(getAllSpecializations());
       dispatch(getAllSegments());
       if (channels.length === 0) {
@@ -283,10 +287,33 @@ export default function TableFilter({
                   />
                 </div>
               </>
+            ) : showTeamFilters ? (
+              <>
+                {/* Channel Filter for Teams */}
+                <div>
+                  <FormSelect
+                    label="Channel"
+                    name="channelId"
+                    value={selectedChannel}
+                    onChange={setSelectedChannel}
+                    options={[
+                      ...channels.map((ch) => ({
+                        value: ch.id,
+                        label: ch.name,
+                      })),
+                    ]}
+                    placeholder="Select Channel"
+                    className="mb-0"
+                  />
+                </div>
+              </>
             ) : null}
 
-            {/* Status Filter (Common for Doctor, Employee, and Product) */}
-            {(showDoctorFilters || showEmployeeFilters || showProductFilters) && (
+            {/* Status Filter (Common for Doctor, Employee, Product, and Team) */}
+            {(showDoctorFilters ||
+              showEmployeeFilters ||
+              showProductFilters ||
+              showTeamFilters) && (
               <div>
                 <FormSelect
                   label="Status"
@@ -294,8 +321,8 @@ export default function TableFilter({
                   value={showProductFilters ? selectedProductStatus : selectedStatus}
                   onChange={showProductFilters ? setSelectedProductStatus : setSelectedStatus}
                   options={[
-                    { value: "active", label: "Active" },
-                    { value: "inactive", label: "Inactive" },
+                    { value: "true", label: "Active" },
+                    { value: "false", label: "Inactive" },
                     ...(showEmployeeFilters
                       ? [
                           { value: "pending", label: "Pending" },
@@ -313,7 +340,8 @@ export default function TableFilter({
               !showEmployeeFilters &&
               !showProductFilters &&
               !showGiveawayFilters &&
-              !isAllocate && (
+              !isAllocate &&
+              !showTeamFilters && (
                 /* Date Range */
                 <div>
                   <FormSelect
@@ -352,6 +380,7 @@ export default function TableFilter({
                   setSelectedProductStatus("");
                   setSelectedGiveawayStatus("");
                   setSelectedEmployeeId("");
+                  setSelectedChannel("");
                   // Trigger filter update with empty values
                   if (onApplyFilters) {
                     onApplyFilters({
@@ -363,6 +392,7 @@ export default function TableFilter({
                       categoryId: "",
                       status: "",
                       employeeId: "",
+                      channelId: "",
                     });
                   }
                   onClear?.();
@@ -394,6 +424,7 @@ export default function TableFilter({
                           ? selectedGiveawayStatus
                           : selectedStatus,
                       employeeId: selectedEmployeeId,
+                      channelId: selectedChannel,
                     });
                   }
                   onApply?.();

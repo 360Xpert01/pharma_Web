@@ -39,13 +39,16 @@ export default function DoctorDetail() {
         <DoctorInfoCard partyData={partyData} />
       </div>
 
-      {/* Right - Stats & Charts */}
       <div className="col-span-9 flex flex-col gap-6">
         <DoctorStatsCard />
 
-        <div className="grid grid-cols-2 gap-6">
-          <ByBrands height={300} />
-          <ProductPreDoctor />
+        <div className="flex gap-6 w-[100%] h-[59vh] mt-1 ">
+          <div className="w-[50%]">
+            <ByBrands height={300} />
+          </div>
+          <div className="w-[50%]">
+            <ProductPreDoctor />
+          </div>
         </div>
       </div>
 
