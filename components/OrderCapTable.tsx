@@ -153,7 +153,7 @@ export default function BookingTable() {
             height={40}
             className="w-10 h-10 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
             onError={(e) => {
-              e.currentTarget.src = "/girlPic.svg";
+              e.currentTarget.src = "/girlPic.png";
             }}
           />
           <div className="min-w-0 flex-1">

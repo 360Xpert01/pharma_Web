@@ -112,7 +112,7 @@ const tableData: DcrRecord[] = [
   },
 ];
 
-const DEFAULT_AVATAR = "/girlPic.svg";
+const DEFAULT_AVATAR = "/girlPic.png";
 
 export default function DcrTable() {
   // Simulate loading and error states (replace with actual API call state)

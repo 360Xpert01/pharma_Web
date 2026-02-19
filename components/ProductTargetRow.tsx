@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import ProductImage from "@/components/shared/ProductImage";
 
 export interface SKU {
   id: string;
@@ -30,15 +31,13 @@ export default function ProductTargetRow({
       {/* Product Branding */}
       <div className="flex flex-col items-center w-32 shrink-0">
         <div className="w-24 h-24 bg-(--gray-0) rounded-8 flex items-center justify-center overflow-hidden mb-3 border border-(--gray-1)">
-          {product.profilePicture ? (
-            <img
-              src={product.profilePicture}
-              alt={product.name}
-              className="w-full h-full object-contain"
-            />
-          ) : (
-            <div className="text-(--gray-3) text-full">💊</div>
-          )}
+          <ProductImage
+            src={product.profilePicture}
+            alt={product.name}
+            width={96}
+            height={96}
+            className="w-full h-full object-contain"
+          />
         </div>
         <span className="t-h4 text-center text-(--gray-9) font-bold">{product.name}</span>
       </div>

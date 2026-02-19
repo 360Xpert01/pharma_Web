@@ -101,7 +101,7 @@ const requestData: RequestItem[] = [
   },
 ];
 
-const DEFAULT_AVATAR = "/girlPic.svg"; // fallback
+const DEFAULT_AVATAR = "/girlPic.png"; // fallback
 
 export default function DoctorRequestTable() {
   // Simulate loading and error states (replace with actual API call state)

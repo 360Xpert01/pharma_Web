@@ -13,6 +13,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import RoleResponsibilitiesDropdown from "@/components/RoleResponsibilitiesDropdown";
 
 export type RoleLevel = "company" | "department" | "position" | "role";
 
@@ -33,6 +34,14 @@ const CHILD_TYPE_MAP: Record<RoleLevel, RoleLevel | null> = {
   role: null,
 };
 
+// Maps hierarchy depth/type to the default role responsibility
+const ROLE_LEVEL_TO_RESPONSIBILITY: Record<RoleLevel, string> = {
+  company: "Admin",
+  department: "C-Suite",
+  position: "Manager",
+  role: "Sales Rep",
+};
+
 interface RoleNodeProps {
   item: RoleItem;
   level: number;
@@ -42,9 +51,45 @@ interface RoleNodeProps {
   onToggleExpand: (id: string) => void;
   onAddChild?: (parentId: string, childType: RoleLevel) => void;
   onCancelAdd?: () => void;
-  onCreateChild?: (parentId: string, type: RoleLevel, name: string, pulseCode: string) => void;
+  onCreateChild?: (
+    parentId: string,
+    type: RoleLevel,
+    name: string,
+    pulseCode: string,
+    responsibilities?: string
+  ) => void;
   onMoreOptions?: (itemId: string, itemType: RoleLevel) => void;
 }
+
+const getTypeIcon = (type: RoleLevel) => {
+  switch (type) {
+    case "company":
+      return Globe;
+    case "department":
+      return Building2;
+    case "position":
+      return Users;
+    case "role":
+      return User;
+    default:
+      return User;
+  }
+};
+
+const getTypeStyles = (type: RoleLevel) => {
+  switch (type) {
+    case "company":
+      return "bg-[var(--chart-4)] text-[var(--light)]";
+    case "department":
+      return "bg-[var(--primary)] text-[var(--light)]";
+    case "position":
+      return "bg-[var(--warning)] text-[var(--light)]";
+    case "role":
+      return "bg-[var(--success)] text-[var(--light)]";
+    default:
+      return "bg-[var(--primary)] text-[var(--light)]";
+  }
+};
 
 const RoleNode: React.FC<RoleNodeProps> = ({
   item,
@@ -58,19 +103,22 @@ const RoleNode: React.FC<RoleNodeProps> = ({
   onCreateChild,
   onMoreOptions,
 }) => {
-  const [newName, setNewName] = useState("");
-  const [newPulseCode, setNewPulseCode] = useState("");
-
   const hasChildren = item.children && item.children.length > 0;
   const isAddingToThis = addingId === item.id;
   const childType = CHILD_TYPE_MAP[item.type];
   const canHaveChildren = childType !== null;
 
+  const [newName, setNewName] = useState("");
+  // Pre-fill from depth: the child being created gets a default responsibility
+  const [newResponsibilities, setNewResponsibilities] = useState(
+    childType ? ROLE_LEVEL_TO_RESPONSIBILITY[childType] : ""
+  );
+
   const handleCreate = () => {
     if (newName.trim()) {
-      onCreateChild?.(item.id, childType!, newName.trim(), newPulseCode.trim());
+      onCreateChild?.(item.id, childType!, newName.trim(), "", newResponsibilities || undefined);
       setNewName("");
-      setNewPulseCode("");
+      setNewResponsibilities("");
     }
   };
 
@@ -82,36 +130,6 @@ const RoleNode: React.FC<RoleNodeProps> = ({
     if (e.key === "Escape") {
       e.preventDefault();
       onCancelAdd?.();
-    }
-  };
-
-  const getTypeIcon = (type: RoleLevel) => {
-    switch (type) {
-      case "company":
-        return Globe;
-      case "department":
-        return Building2;
-      case "position":
-        return Users;
-      case "role":
-        return User;
-      default:
-        return User;
-    }
-  };
-
-  const getTypeStyles = (type: RoleLevel) => {
-    switch (type) {
-      case "company":
-        return "bg-[var(--chart-4)] text-[var(--light)]";
-      case "department":
-        return "bg-[var(--primary)] text-[var(--light)]";
-      case "position":
-        return "bg-[var(--warning)] text-[var(--light)]";
-      case "role":
-        return "bg-[var(--success)] text-[var(--light)]";
-      default:
-        return "bg-[var(--primary)] text-[var(--light)]";
     }
   };
 
@@ -143,6 +161,7 @@ const RoleNode: React.FC<RoleNodeProps> = ({
         />
       )}
 
+      {/* ── Existing Node View Row ── */}
       <div className="flex items-center gap-3 group border border-[var(--gray-2)] rounded-8 p-4 bg-[var(--background)] hover:bg-[var(--gray-0)] transition-colors">
         <div className="flex items-center">
           {hasChildren ? (
@@ -176,13 +195,22 @@ const RoleNode: React.FC<RoleNodeProps> = ({
             <span className="font-bold text-(--gray-9) truncate" title={item.name}>
               {item.name}
             </span>
-            <span className="text-xs text-(--gray-5) capitalize flex-shrink-0">{item.type}</span>
+            <span className="text-xs text-(--gray-5) capitalize flex-shrink-0">({item.type})</span>
           </div>
           {item.subtitle && (
             <span className="text-xs text-(--gray-4) truncate" title={item.subtitle}>
               {item.subtitle}
             </span>
           )}
+        </div>
+
+        {/* Dropdown shown on every existing node – defaults from depth */}
+        <div className="flex-shrink-0">
+          <RoleResponsibilitiesDropdown
+            value={item.responsibilities || ROLE_LEVEL_TO_RESPONSIBILITY[item.type]}
+            onChange={() => {}}
+            readOnly
+          />
         </div>
 
         <div className="flex items-center gap-2">
@@ -210,6 +238,7 @@ const RoleNode: React.FC<RoleNodeProps> = ({
         </div>
       </div>
 
+      {/* ── Children + Inline Create ── */}
       {isExpanded && (
         <div className="relative mt-4 space-y-4">
           {isAddingToThis && (
@@ -232,23 +261,21 @@ const RoleNode: React.FC<RoleNodeProps> = ({
                   {childType &&
                     React.createElement(getTypeIcon(childType), { className: "w-5 h-5" })}
                 </div>
-                <div className="flex-1 flex flex-col gap-1">
+                <div className="flex-1 min-w-0">
                   <input
                     autoFocus
                     type="text"
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder={`Enter ${childType} Name`}
+                    placeholder="Enter Tree Name"
                     className="w-full bg-transparent border-none outline-none text-[var(--gray-9)] font-semibold placeholder:text-[var(--gray-4)]"
                   />
-                  <input
-                    type="text"
-                    value={newPulseCode}
-                    onChange={(e) => setNewPulseCode(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Pulse Code (Auto-generates if empty)"
-                    className="w-full bg-transparent border-none outline-none text-[var(--gray-5)] text-sm placeholder:text-[var(--gray-3)]"
+                </div>
+                <div className="flex-shrink-0">
+                  <RoleResponsibilitiesDropdown
+                    value={newResponsibilities}
+                    onChange={setNewResponsibilities}
                   />
                 </div>
                 <div className="flex items-center gap-2">
@@ -294,13 +321,99 @@ const RoleNode: React.FC<RoleNodeProps> = ({
   );
 };
 
+// ── Root-level add row ──
+const RootAddRow: React.FC<{
+  onCreateChild?: (
+    parentId: string,
+    type: RoleLevel,
+    name: string,
+    pulseCode: string,
+    responsibilities?: string
+  ) => void;
+  onCancelAdd?: () => void;
+}> = ({ onCreateChild, onCancelAdd }) => {
+  const [rootName, setRootName] = useState("");
+  // Root level = company = Admin by default
+  const [rootResponsibilities, setRootResponsibilities] = useState("Admin");
+
+  return (
+    <div className="flex items-center gap-3 border border-[var(--primary)] rounded-8 p-4 bg-[var(--background)] shadow-soft">
+      <div className="w-10 h-10 rounded-8 flex items-center justify-center bg-[var(--chart-4)] text-[var(--light)]">
+        <Globe className="w-5 h-5" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <input
+          autoFocus
+          value={rootName}
+          onChange={(e) => setRootName(e.target.value)}
+          placeholder="Enter Tree Name"
+          className="w-full outline-none font-semibold bg-transparent placeholder:text-[var(--gray-4)]"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && rootName.trim()) {
+              onCreateChild?.(
+                "root",
+                "company",
+                rootName.trim(),
+                "",
+                rootResponsibilities || undefined
+              );
+            }
+            if (e.key === "Escape") {
+              onCancelAdd?.();
+            }
+          }}
+        />
+      </div>
+      <div className="flex-shrink-0">
+        <RoleResponsibilitiesDropdown
+          value={rootResponsibilities}
+          onChange={setRootResponsibilities}
+        />
+      </div>
+      <div className="flex items-center gap-2">
+        <button
+          onClick={onCancelAdd}
+          className="px-3 py-1.5 text-sm text-[var(--gray-5)] hover:text-[var(--gray-7)] font-medium cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            if (rootName.trim()) {
+              onCreateChild?.(
+                "root",
+                "company",
+                rootName.trim(),
+                "",
+                rootResponsibilities || undefined
+              );
+            }
+          }}
+          disabled={!rootName.trim()}
+          className="px-4 py-1.5 text-sm bg-[var(--primary)] text-[var(--light)] rounded-8 font-medium hover:bg-[var(--primary)]/90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+        >
+          Create
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// ── Main Hierarchy Component ──
 interface RoleHierarchyProps {
   data: RoleItem[];
   loading?: boolean;
   error?: string | null;
   onAddChild?: (parentId: string, childType: RoleLevel) => void;
   onCancelAdd?: () => void;
-  onCreateChild?: (parentId: string, type: RoleLevel, name: string, pulseCode: string) => void;
+  onCreateChild?: (
+    parentId: string,
+    type: RoleLevel,
+    name: string,
+    pulseCode: string,
+    responsibilities?: string
+  ) => void;
   onMoreOptions?: (itemId: string, itemType: RoleLevel) => void;
   addingId?: string | null;
 }
@@ -371,27 +484,7 @@ export const RoleHierarchy: React.FC<RoleHierarchyProps> = ({
     <div className="w-full bg-[var(--background)] rounded-8">
       <div className="space-y-4">
         {addingId === "root" && (
-          <div className="flex items-center gap-3 border border-[var(--primary)] rounded-8 p-4 bg-[var(--background)] shadow-soft">
-            <div className="w-10 h-10 rounded-8 flex items-center justify-center bg-[var(--chart-4)] text-[var(--light)]">
-              <Globe className="w-5 h-5" />
-            </div>
-            <div className="flex-1 flex flex-col gap-1">
-              <input
-                autoFocus
-                placeholder="Enter Company Name"
-                className="w-full outline-none font-semibold"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    const name = (e.target as HTMLInputElement).value;
-                    if (name.trim()) onCreateChild?.("root", "company", name.trim(), "");
-                  }
-                }}
-              />
-            </div>
-            <button onClick={onCancelAdd} className="text-[var(--gray-5)]">
-              Cancel
-            </button>
-          </div>
+          <RootAddRow onCreateChild={onCreateChild} onCancelAdd={onCancelAdd} />
         )}
         {data.map((item) => (
           <RoleNode

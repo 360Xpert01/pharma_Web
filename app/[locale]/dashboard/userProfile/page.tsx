@@ -22,7 +22,7 @@ export default function DashboardPage() {
 //         name="Mohammad Amir"
 //         email="samikhan099@gmail.com"
 //         phone="+92 312 283 8270"
-//         photoUrl="/girlPic.svg" // optional
+//         photoUrl="/girlPic.png" // optional
 //         campaign="Diabetics"
 //         requestedMonth="September"
 //         channel="Doctors"

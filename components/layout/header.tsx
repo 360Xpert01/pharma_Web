@@ -532,7 +532,7 @@ const Navbar = () => {
               >
                 <div className="w-8 h-8 bg-(--gray-2) rounded-8 flex items-center justify-center">
                   <Image
-                    src="/girlPic.svg"
+                    src="/girlPic.png"
                     alt="Profile"
                     width={60}
                     height={60}
@@ -553,7 +553,7 @@ const Navbar = () => {
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 bg-(--gray-2) rounded-8 flex items-center justify-center">
                         <Image
-                          src="/girlPic.svg"
+                          src="/girlPic.png"
                           alt="Profile"
                           width={60}
                           height={60}

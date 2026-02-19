@@ -71,7 +71,7 @@ export default function PlanRequestHeader({
       {/* <div className="flex space-x-1 mt-5">
         {avatars.map((src, i) => (
           <Avatar key={i} className="h-12 w-12 border-2 border-(--light)">
-            <AvatarImage src="/girlPic.svg" />
+            <AvatarImage src="/girlPic.png" />
             <AvatarFallback>U</AvatarFallback>
           </Avatar>
         ))}

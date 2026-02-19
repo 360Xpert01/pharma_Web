@@ -8,6 +8,7 @@ import {
   resetGetGiveawayByIdState,
 } from "@/store/slices/giveaway/getGiveawayByIdSlice";
 import Image from "next/image";
+import ProductImage from "@/components/shared/ProductImage";
 import { ArrowLeft, Edit2 } from "lucide-react";
 
 export default function GiveawayDetail() {
@@ -98,19 +99,13 @@ export default function GiveawayDetail() {
         <div className="col-span-4">
           <div className="bg-[var(--background)] rounded-12 p-6 shadow-soft border border-[var(--gray-2)]">
             <div className="aspect-square rounded-8 overflow-hidden ring-2 ring-[var(--gray-2)] bg-[var(--gray-1)]">
-              {giveaway.imageUrl ? (
-                <Image
-                  src={giveaway.imageUrl}
-                  alt={giveaway.name}
-                  width={400}
-                  height={400}
-                  className="object-cover w-full h-full"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-[var(--gray-5)] text-lg">No Image</span>
-                </div>
-              )}
+              <ProductImage
+                src={giveaway.imageUrl}
+                alt={giveaway.name}
+                width={400}
+                height={400}
+                className="object-cover w-full h-full"
+              />
             </div>
           </div>
         </div>

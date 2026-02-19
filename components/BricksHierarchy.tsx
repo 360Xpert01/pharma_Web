@@ -207,7 +207,9 @@ const BrickNode: React.FC<BrickNodeProps> = ({
             <span className="font-bold text-(--gray-9) truncate" title={item.name}>
               {item.name}
             </span>
-            <span className="text-xs text-(--gray-5) capitalize flex-shrink-0">{item.type}</span>
+            <span className="text-xs text-(--gray-5) flex-shrink-0">
+              ({item.type.charAt(0).toUpperCase() + item.type.slice(1)})
+            </span>
           </div>
           {item.description && (
             <span className="text-xs text-(--gray-4) truncate" title={item.description}>
