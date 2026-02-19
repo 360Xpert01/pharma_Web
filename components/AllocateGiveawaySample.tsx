@@ -225,11 +225,25 @@ export default function AddAllocateGivewaySample({
 
   // Handler functions
   const handleDeleteGiveaway = (id: string) => {
-    setSelectedGiveaways((prev) => prev.filter((item) => item.id !== id));
+    if (isEditMode) {
+      // Set quantity to 0 so it's included in the API payload for deletion
+      setSelectedGiveaways((prev) =>
+        prev.map((item) => (item.id === id ? { ...item, quantity: 0 } : item))
+      );
+    } else {
+      setSelectedGiveaways((prev) => prev.filter((item) => item.id !== id));
+    }
   };
 
   const handleDeleteSample = (id: string) => {
-    setSelectedSamples((prev) => prev.filter((item) => item.id !== id));
+    if (isEditMode) {
+      // Set quantity to 0 so it's included in the API payload for deletion
+      setSelectedSamples((prev) =>
+        prev.map((item) => (item.id === id ? { ...item, quantity: 0 } : item))
+      );
+    } else {
+      setSelectedSamples((prev) => prev.filter((item) => item.id !== id));
+    }
   };
 
   const handleUpdateGiveawayQuantity = (id: string, quantity: number) => {
@@ -245,23 +259,35 @@ export default function AddAllocateGivewaySample({
   };
 
   const handleAddGiveaway = (giveaway: any) => {
-    if (!selectedGiveaways.find((g) => g.id === giveaway.id)) {
+    const existing = selectedGiveaways.find((g) => g.id === giveaway.id);
+    if (!existing) {
       setSelectedGiveaways((prev) => [
         ...prev,
         { id: giveaway.id, name: giveaway.name, quantity: 1 },
       ]);
+    } else if (existing.quantity === 0) {
+      // Re-add previously deleted item
+      setSelectedGiveaways((prev) =>
+        prev.map((item) => (item.id === giveaway.id ? { ...item, quantity: 1 } : item))
+      );
     } else {
       toast.error("This giveaway is already added");
     }
   };
 
   const handleAddSample = (sample: any) => {
-    if (!selectedSamples.find((s) => s.id === sample.productSkuId)) {
+    const existing = selectedSamples.find((s) => s.id === sample.productSkuId);
+    if (!existing) {
       const skuStr = typeof sample.sku === "object" ? sample.sku?.sku : sample.sku;
       setSelectedSamples((prev) => [
         ...prev,
         { id: sample.productSkuId, name: `${sample.productName} - ${skuStr}`, quantity: 1 },
       ]);
+    } else if (existing.quantity === 0) {
+      // Re-add previously deleted item
+      setSelectedSamples((prev) =>
+        prev.map((item) => (item.id === sample.productSkuId ? { ...item, quantity: 1 } : item))
+      );
     } else {
       toast.error("This sample is already added");
     }
@@ -426,9 +452,9 @@ export default function AddAllocateGivewaySample({
             {/* Select Giveaway Section */}
             <GiveawayAllocation
               allGiveaways={giveaways.filter(
-                (g) => !selectedGiveaways.find((sg) => sg.id === g.id)
+                (g) => !selectedGiveaways.find((sg) => sg.id === g.id && sg.quantity > 0)
               )}
-              selectedGiveaways={selectedGiveaways}
+              selectedGiveaways={selectedGiveaways.filter((g) => g.quantity > 0)}
               onAddGiveaway={handleAddGiveaway}
               onRemoveGiveaway={handleDeleteGiveaway}
               onUpdateQuantity={handleUpdateGiveawayQuantity}
@@ -438,9 +464,9 @@ export default function AddAllocateGivewaySample({
             {/* Select Sample Section */}
             <SampleAllocation
               allSamples={productSkus.filter(
-                (s) => !selectedSamples.find((ss) => ss.id === s.productSkuId)
+                (s) => !selectedSamples.find((ss) => ss.id === s.productSkuId && ss.quantity > 0)
               )}
-              selectedSamples={selectedSamples}
+              selectedSamples={selectedSamples.filter((s) => s.quantity > 0)}
               onAddSample={handleAddSample}
               onRemoveSample={handleDeleteSample}
               onUpdateQuantity={handleUpdateSampleQuantity}
