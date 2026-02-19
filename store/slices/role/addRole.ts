@@ -9,6 +9,7 @@ interface CreateRolePayload {
   roleName: string;
   pulseCode: string;
   parentRoleId?: string;
+  responsibilities?: string;
 }
 
 interface CreateRoleResponse {

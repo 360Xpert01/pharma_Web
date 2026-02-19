@@ -83,7 +83,7 @@ export default function TargetListView() {
       cell: ({ row }) => (
         <div className="flex items-center gap-3 min-w-0">
           <Image
-            src={row.original.profilePic || "/girlPic.svg"}
+            src={row.original.profilePic || "/girlPic.png"}
             alt={row.original.username}
             width={40}
             height={40}

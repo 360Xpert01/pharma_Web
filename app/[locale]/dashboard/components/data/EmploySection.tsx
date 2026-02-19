@@ -93,7 +93,7 @@ export default function SalesTeamTable({
         supervisor: supervisor ? `${supervisor.firstName} ${supervisor.lastName}` : "N/A",
         team: teamName,
         roleBy: u.role?.roleName || "N/A",
-        profilePicture: u.profilePicture || "/girlPic.svg",
+        profilePicture: u.profilePicture || "/girlPic.png",
       };
     });
   }, [users]);

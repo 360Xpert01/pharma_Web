@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import ProductImage from "@/components/shared/ProductImage";
 import { useRouter } from "next/navigation";
 import { ColumnDef } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
@@ -105,19 +106,13 @@ export default function MedicineTable({
       accessorKey: "imageUrl",
       cell: ({ row }) => (
         <div className="w-12 h-12 rounded-8 overflow-hidden ring-2 ring-[var(--gray-2)]">
-          {row.original.imageUrl ? (
-            <Image
-              src={row.original.imageUrl}
-              alt={row.original.name}
-              width={48}
-              height={48}
-              className="object-cover w-full h-full"
-            />
-          ) : (
-            <div className="w-full h-full bg-[var(--gray-2)] flex items-center justify-center">
-              <span className="text-xs text-[var(--gray-5)]">No Image</span>
-            </div>
-          )}
+          <ProductImage
+            src={row.original.imageUrl}
+            alt={row.original.name}
+            width={48}
+            height={48}
+            className="object-cover w-full h-full"
+          />
         </div>
       ),
     },

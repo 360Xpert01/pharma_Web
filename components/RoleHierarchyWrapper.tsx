@@ -107,7 +107,8 @@ export default function RoleHierarchyWrapper() {
     parentId: string,
     type: RoleLevel,
     name: string,
-    pulseCode: string
+    pulseCode: string,
+    responsibilities?: string
   ) => {
     const finalPulseCode = pulseCode || generatedPrefix || "";
     await dispatch(
@@ -115,6 +116,7 @@ export default function RoleHierarchyWrapper() {
         roleName: name,
         pulseCode: finalPulseCode,
         parentRoleId: parentId === "root" ? undefined : parentId,
+        responsibilities,
       })
     );
   };

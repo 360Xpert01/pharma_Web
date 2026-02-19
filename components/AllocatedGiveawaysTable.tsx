@@ -88,7 +88,7 @@ export default function AllocatedGiveawaysTable({
       cell: ({ row }) => (
         <div className="flex items-center gap-3 cursor-pointer group">
           <Image
-            src={row.original.profilePicture || "/girlPic.svg"}
+            src={row.original.profilePicture || "/girlPic.png"}
             alt={row.original.employeeName}
             width={36}
             height={36}
