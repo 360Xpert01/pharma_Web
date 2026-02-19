@@ -76,7 +76,12 @@ export default function SalesTeamTable({
   // ================= DATA =================
   const data = useMemo<TeamMember[]>(() => {
     return users.map((u) => {
-      const supervisor = users.find((x) => x.id === u.supervisorId);
+      // Build supervisor name from the nested supervisor object
+      const supervisorName = u.supervisor
+        ? [u.supervisor.firstName, u.supervisor.middleName, u.supervisor.lastName]
+            .filter(Boolean)
+            .join(" ")
+        : "N/A";
       // Combine name parts, filtering out empty values
       const nameParts = [u.firstName, u.middleName, u.lastName].filter(Boolean);
       const fullName = nameParts.length > 0 ? nameParts.join(" ") : "N/A";
@@ -90,7 +95,7 @@ export default function SalesTeamTable({
         email: u.email,
         phone: u.mobileNumber || "N/A",
         role: u.pulseCode,
-        supervisor: supervisor ? `${supervisor.firstName} ${supervisor.lastName}` : "N/A",
+        supervisor: supervisorName,
         team: teamName,
         roleBy: u.role?.roleName || "N/A",
         profilePicture: u.profilePicture || "/girlPic.png",

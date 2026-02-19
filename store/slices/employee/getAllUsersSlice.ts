@@ -26,6 +26,12 @@ interface UserItem {
     id: string;
     name: string;
   }>;
+  supervisor?: {
+    id: string;
+    firstName: string;
+    middleName?: string | null;
+    lastName: string;
+  };
 }
 
 interface GetUsersResponse {

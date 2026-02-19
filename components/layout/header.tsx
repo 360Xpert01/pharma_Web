@@ -67,6 +67,7 @@ const Navbar = () => {
       label: "Accounts",
       items: channels
         .filter((channel) => channel.isActive)
+        .sort((a, b) => a.pulseCode.localeCompare(b.pulseCode))
         .map((channel) => ({
           label: channel.name,
           href: `/dashboard/${channel.name
