@@ -10,7 +10,7 @@ export const mockManagers: Manager[] = [
         id: "rep3",
         name: "Danish Kumar",
         role: "Sales Representative",
-        avatar: "/capMan.svg",
+        avatar: "/girlPic.png",
         productTags: ["L40", "L42", "L48"], // No conflicts within this manager's team
         products: [
           {
@@ -35,7 +35,7 @@ export const mockManagers: Manager[] = [
         id: "rep4",
         name: "Majid Hussain",
         role: "Sales Representative",
-        avatar: "/capMan.svg",
+        avatar: "/girlPic.png",
         productTags: ["L43", "L52", "874"], // L43 conflicts with rep6
         products: [
           {
@@ -60,7 +60,7 @@ export const mockManagers: Manager[] = [
         id: "rep5",
         name: "Danish Kumar",
         role: "Sales Representative",
-        avatar: "/capMan.svg",
+        avatar: "/girlPic.png",
         productTags: ["L57", "L60"], // No conflicts
         products: [
           {
@@ -83,7 +83,7 @@ export const mockManagers: Manager[] = [
         id: "rep1",
         name: "Danish Kumar",
         role: "Sales Representative",
-        avatar: "/capMan.svg",
+        avatar: "/girlPic.png",
         productTags: ["L40", "L42", "L48", "L57"], // L40, L48 shared with Majid - potential conflict
         products: [
           {
@@ -108,7 +108,7 @@ export const mockManagers: Manager[] = [
         id: "rep2",
         name: "Majid Hussain",
         role: "Sales Representative",
-        avatar: "/capMan.svg",
+        avatar: "/girlPic.png",
         productTags: ["L40", "L48", "L43", "L52", "874"], // L40, L48 shared with Danish - potential conflict
         products: [
           {

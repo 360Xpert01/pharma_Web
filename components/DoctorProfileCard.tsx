@@ -7,7 +7,7 @@ export default function DoctorProfileCard({ partyData }: any) {
     name: "Dr. Sarah Mitchelll",
     specialty: "Cardiologist",
     empId: "PLS_EMP- 000124",
-    profileImage: "/capMan.svg",
+    profileImage: "/girlPic.png",
   };
 
   const doctorDetails = partyData || {};

@@ -38,7 +38,7 @@ const UserProfile: FC<UserProfileProps> = ({ candidate, productData }) => {
       {/* Profile Image */}
       <div className="relative w-36 h-36 rounded-8 overflow-hidden mb-4">
         <Image
-          src={profilePicture || "/capMan.svg"}
+          src={profilePicture || "/girlPic.png"}
           alt={name}
           width={128}
           height={128}

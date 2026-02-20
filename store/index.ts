@@ -49,6 +49,7 @@ import createBrickReducer from "./slices/brick/createBrickSlice";
 import updateBrickReducer from "./slices/brick/updateBrickSlice";
 import allProductCategoriesReducer from "./slices/productCategory/getAllProductCategoriesSlice";
 import createProductCategoryReducer from "./slices/productCategory/createProductCategorySlice";
+import updateProductCategoryReducer from "./slices/productCategory/updateProductCategorySlice";
 import allSpecializationsReducer from "./slices/specialization/getAllSpecializationsSlice";
 import createSpecializationReducer from "./slices/specialization/createSpecializationSlice";
 import updateDoctorSpecializationReducer from "./slices/specialization/updateDoctorSpecializationSlice";
@@ -142,6 +143,7 @@ const rootReducer = combineReducers({
   updateBrick: updateBrickReducer,
   allProductCategories: allProductCategoriesReducer,
   createProductCategory: createProductCategoryReducer,
+  updateProductCategory: updateProductCategoryReducer,
   allSpecializations: allSpecializationsReducer,
   createSpecialization: createSpecializationReducer,
   updateDoctorSpecialization: updateDoctorSpecializationReducer,

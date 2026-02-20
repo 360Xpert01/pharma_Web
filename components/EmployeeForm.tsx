@@ -108,7 +108,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
 
     // Fetch roles, users, teams, and territories for dropdowns
     dispatch(getAllRoles());
-    dispatch(getAllUsers());
+    dispatch(getAllUsers({ limit: 10000 })); // Fetch more users to increase chances of finding supervisors
     dispatch(getTeamAll());
     dispatch(getAllTerritories({ notassigned: true })); // Fetch unassigned territories without pagination
 
@@ -163,10 +163,21 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
       setFullAddress(employeeData.fullAddress || "");
       setLegacyCode(employeeData.empLegacyCode || "");
       setPulseCode(employeeData.pulseCode || "");
-      setSelectedRoleId(employeeData.roleId || "");
-      setSelectedSupervisorId(employeeData.supervisorId || "");
-      setSelectedTeamId(employeeData.teamId || "");
-      setSelectedTerritoryId(employeeData.territoryId || "");
+      setSelectedRoleId(employeeData.roleId || employeeData.role?.id || "");
+
+      // Mapping Line Manager (Supervisor)
+      setSelectedSupervisorId(employeeData.supervisorId || employeeData.supervisor?.id || "");
+
+      // Mapping Team (Pick the first team if teamId is missing)
+      const teamId =
+        employeeData.teamId ||
+        (employeeData.teams && employeeData.teams.length > 0 ? employeeData.teams[0].id : "");
+      setSelectedTeamId(teamId || "");
+
+      // Mapping Territory (Brick)
+      const territoryId = employeeData.territoryId || employeeData.brickId || "";
+      setSelectedTerritoryId(territoryId || "");
+
       setJoiningDate(
         (employeeData.joiningDate ? employeeData.joiningDate.split("T")[0] : "") || ""
       );
@@ -234,6 +245,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
       supervisorId: selectedSupervisorId,
       teamId: selectedTeamId,
       territoryId: selectedTerritoryId,
+      brickId: selectedTerritoryId, // Sending both for compatibility as per user request
       joiningDate,
       enableMobileAccess: enableMobileAccess === "Enable",
       mobileView,
@@ -302,6 +314,9 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
     if (validatedData.profilePicture) payload.profilePicture = validatedData.profilePicture;
     if (validatedData.dob) payload.dob = validatedData.dob;
     if (validatedData.supervisorId) payload.supervisorId = validatedData.supervisorId;
+    if (validatedData.teamId) payload.teamId = validatedData.teamId;
+    if (validatedData.territoryId) payload.territoryId = validatedData.territoryId;
+    if (validatedData.brickId) payload.brickId = validatedData.brickId;
     if (validatedData.verifiedDevices) payload.verifiedDevices = validatedData.verifiedDevices;
 
     // Add status field (convert to lowercase for API)
@@ -553,10 +568,28 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                       setSelectedTeamId(value);
                       clearFieldError("teamId");
                     }}
-                    options={teams.map((t) => ({
-                      value: t.id,
-                      label: t.name,
-                    }))}
+                    options={(() => {
+                      const teamOptions = teams.map((t) => ({
+                        value: t.id,
+                        label: t.name,
+                      }));
+
+                      // In update mode, ensure current team is present
+                      if (
+                        isUpdateMode &&
+                        selectedTeamId &&
+                        !teamOptions.find((opt) => opt.value === selectedTeamId)
+                      ) {
+                        const currentTeam = employeeData?.teams?.find(
+                          (t) => t.id === selectedTeamId
+                        );
+                        teamOptions.push({
+                          value: selectedTeamId,
+                          label: currentTeam?.name || "Current Team",
+                        });
+                      }
+                      return teamOptions;
+                    })()}
                     placeholder="Select Team"
                     loading={teamsLoading}
                     error={getErrorMessage("teamId")}
@@ -593,14 +626,31 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                     options={(() => {
                       const selectedRole = roles.find((r) => r.id === selectedRoleId);
                       const parentRoleId = selectedRole?.parentRoleId;
+
+                      // Filter users by parent role
                       const filteredUsers = parentRoleId
                         ? users.filter((user) => user.roleId === parentRoleId)
                         : [];
 
-                      return filteredUsers.map((user) => ({
+                      // Map to options
+                      const userOptions = filteredUsers.map((user) => ({
                         value: user.id,
                         label: `${user.firstName} ${user.lastName} ${user.pulseCode ? `(${user.pulseCode})` : ""}`,
                       }));
+
+                      // In update mode, ensure current supervisor is present in options even if not in filtered list
+                      if (
+                        isUpdateMode &&
+                        employeeData?.supervisor &&
+                        !userOptions.find((opt) => opt.value === employeeData.supervisor?.id)
+                      ) {
+                        userOptions.push({
+                          value: employeeData.supervisor.id,
+                          label: `${employeeData.supervisor.firstName} ${employeeData.supervisor.lastName} (Current)`,
+                        });
+                      }
+
+                      return userOptions;
                     })()}
                     placeholder={
                       !selectedRoleId
@@ -635,13 +685,29 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                         setSelectedTerritoryId(value);
                         clearFieldError("territoryId");
                       }}
-                      options={territories.map((territory) => ({
-                        value: territory.id,
-                        label: territory.pulseCode,
-                      }))}
+                      options={(() => {
+                        const territoryOptions = territories.map((territory) => ({
+                          value: territory.id,
+                          label: territory.pulseCode,
+                        }));
+
+                        // In update mode, ensure current territory is present
+                        if (
+                          isUpdateMode &&
+                          selectedTerritoryId &&
+                          !territoryOptions.find((opt) => opt.value === selectedTerritoryId)
+                        ) {
+                          territoryOptions.push({
+                            value: selectedTerritoryId,
+                            label: employeeData?.pulseCode
+                              ? `Current (${selectedTerritoryId.slice(0, 8)})`
+                              : "Current Territory",
+                          });
+                        }
+                        return territoryOptions;
+                      })()}
                       placeholder="Select Territory"
                       loading={territoriesLoading}
-                      required
                       error={getErrorMessage("territoryId")}
                     />
                   )}

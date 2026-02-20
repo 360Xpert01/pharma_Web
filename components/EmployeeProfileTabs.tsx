@@ -67,7 +67,7 @@ export default function EmployeeProfileTabs({ candidate }: { candidate?: any }) 
               email: user.email,
               phone: user.mobileNumber || "N/A",
               pulseCode: user.pulseCode,
-              profilePicture: user.profilePicture || "/capMan.svg",
+              profilePicture: user.profilePicture || "/girlPic.png",
               fullAddress: user.fullAddress || "N/A",
               dob: user.dob || "N/A",
             }}

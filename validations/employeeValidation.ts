@@ -82,6 +82,7 @@ export const employeeRegistrationSchema = z.object({
   verifiedDevices: z.array(z.string()).optional(),
 
   territoryId: z.string().optional().or(z.literal("")),
+  brickId: z.string().optional().or(z.literal("")),
   teamId: z.string().uuid({ message: "Invalid team selected" }).optional().or(z.literal("")),
   joiningDate: z
     .string()

@@ -4,13 +4,13 @@ import axios from "axios";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 // Types
-interface CreateProductCategoryPayload {
-  pulseCode: string;
+interface UpdateProductCategoryPayload {
+  id: string;
   productCategory: string;
   status: "active" | "inactive";
 }
 
-interface CreateProductCategoryResponse {
+interface UpdateProductCategoryResponse {
   success: boolean;
   message: string;
   data?: {
@@ -18,33 +18,31 @@ interface CreateProductCategoryResponse {
     productCategory: string;
     pulseCode: string;
     status: "active" | "inactive";
-    createdAt: string;
+    updatedAt: string;
   };
 }
 
-interface ProductCategoryState {
+interface UpdateProductCategoryState {
   loading: boolean;
   success: boolean;
   error: string | null;
   message: string | null;
-  createdProductCategory: any | null;
 }
 
 // Initial State
-const initialState: ProductCategoryState = {
+const initialState: UpdateProductCategoryState = {
   loading: false,
   success: false,
   error: null,
   message: null,
-  createdProductCategory: null,
 };
 
-// Async Thunk: Create Product Category (POST request)
-export const createProductCategory = createAsyncThunk<
-  CreateProductCategoryResponse,
-  CreateProductCategoryPayload,
+// Async Thunk: Update Product Category (PUT request)
+export const updateProductCategory = createAsyncThunk<
+  UpdateProductCategoryResponse,
+  UpdateProductCategoryPayload,
   { rejectValue: string }
->("productCategory/createProductCategory", async (payload, { rejectWithValue }) => {
+>("productCategory/updateProductCategory", async (payload, { rejectWithValue }) => {
   try {
     // Get token from localStorage
     const token = localStorage.getItem("userSession");
@@ -52,9 +50,11 @@ export const createProductCategory = createAsyncThunk<
       return rejectWithValue("No session found. Please login again.");
     }
 
-    const response = await axios.post<CreateProductCategoryResponse>(
-      `${baseUrl}api/v1/productCategory`,
-      payload,
+    const { id, ...updateData } = payload;
+
+    const response = await axios.put<UpdateProductCategoryResponse>(
+      `${baseUrl}api/v1/productCategory/${id}`,
+      updateData,
       {
         headers: {
           "Content-Type": "application/json",
@@ -69,43 +69,41 @@ export const createProductCategory = createAsyncThunk<
       error.response?.data?.message ||
       error.response?.data?.error ||
       error.message ||
-      "Failed to create product category. Please try again.";
+      "Failed to update product category. Please try again.";
 
     return rejectWithValue(errorMessage);
   }
 });
 
 // Slice
-const createProductCategorySlice = createSlice({
-  name: "createProductCategory",
+const updateProductCategorySlice = createSlice({
+  name: "updateProductCategory",
   initialState,
   reducers: {
-    resetProductCategoryState: (state) => {
+    resetUpdateProductCategoryState: (state) => {
       state.loading = false;
       state.success = false;
       state.error = null;
       state.message = null;
-      state.createdProductCategory = null;
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(createProductCategory.pending, (state) => {
+      .addCase(updateProductCategory.pending, (state) => {
         state.loading = true;
         state.success = false;
         state.error = null;
         state.message = null;
       })
       .addCase(
-        createProductCategory.fulfilled,
-        (state, action: PayloadAction<CreateProductCategoryResponse>) => {
+        updateProductCategory.fulfilled,
+        (state, action: PayloadAction<UpdateProductCategoryResponse>) => {
           state.loading = false;
           state.success = true;
-          state.message = action.payload.message || "Product category created successfully!";
-          state.createdProductCategory = action.payload.data || null;
+          state.message = action.payload.message || "Product category updated successfully!";
         }
       )
-      .addCase(createProductCategory.rejected, (state, action) => {
+      .addCase(updateProductCategory.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
         state.error = action.payload || "Something went wrong";
@@ -114,7 +112,7 @@ const createProductCategorySlice = createSlice({
 });
 
 // Export actions
-export const { resetProductCategoryState } = createProductCategorySlice.actions;
+export const { resetUpdateProductCategoryState } = updateProductCategorySlice.actions;
 
 // Export reducer
-export default createProductCategorySlice.reducer;
+export default updateProductCategorySlice.reducer;
