@@ -5,7 +5,12 @@ import { createPortal } from "react-dom";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export const ROLE_RESPONSIBILITIES = ["Admin", "C-Suite", "Manager", "Sales Rep"] as const;
+export const ROLE_RESPONSIBILITIES = [
+  "Administrator",
+  "C-Suite",
+  "Manager",
+  "Sales Representative",
+] as const;
 
 export type RoleResponsibility = (typeof ROLE_RESPONSIBILITIES)[number];
 
@@ -16,6 +21,21 @@ interface RoleResponsibilitiesDropdownProps {
   disabled?: boolean;
   readOnly?: boolean;
 }
+
+const getResponsibilityStyles = (val: string) => {
+  switch (val) {
+    case "Administrator":
+      return "bg-[#E0CCFF] text-[#6B21A8] border-[#D8B4FE]"; // Purple
+    case "C-Suite":
+      return "bg-[#D1FAE5] text-[#065F46] border-[#A7F3D0]"; // Green
+    case "Manager":
+      return "bg-[#FEE2E2] text-[#991B1B] border-[#FECACA]"; // Red/Pink
+    case "Sales Representative":
+      return "bg-[#FEF3C7] text-[#92400E] border-[#FDE68A]"; // Yellow
+    default:
+      return "bg-[var(--background)] border-[var(--gray-2)] text-[var(--gray-9)]";
+  }
+};
 
 const RoleResponsibilitiesDropdown: React.FC<RoleResponsibilitiesDropdownProps> = ({
   value,
@@ -83,24 +103,16 @@ const RoleResponsibilitiesDropdown: React.FC<RoleResponsibilitiesDropdownProps> 
         onClick={handleToggle}
         disabled={disabled}
         className={cn(
-          "flex items-center gap-2 px-4 py-2.5 border border-[var(--gray-2)] rounded-8 bg-[var(--background)] transition-all min-w-[220px] justify-between",
-          disabled || readOnly
-            ? "opacity-70 cursor-default"
-            : "hover:bg-[var(--gray-0)] cursor-pointer"
+          "flex items-center gap-2 px-4 py-2 border rounded-8 transition-all min-w-[220px] justify-between",
+          getResponsibilityStyles(value),
+          disabled || readOnly ? "opacity-70 cursor-default" : "cursor-pointer"
         )}
       >
-        <span
-          className={cn(
-            "text-sm truncate",
-            value ? "text-[var(--gray-9)] font-medium" : "text-[var(--gray-4)]"
-          )}
-        >
-          {value || placeholder}
-        </span>
+        <span className={cn("text-sm truncate font-medium")}>{value || placeholder}</span>
         {!readOnly && (
           <ChevronDown
             className={cn(
-              "w-4 h-4 text-[var(--gray-5)] flex-shrink-0 transition-transform duration-200",
+              "w-4 h-4 flex-shrink-0 transition-transform duration-200",
               isOpen && "rotate-180"
             )}
           />
