@@ -175,7 +175,8 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
       setSelectedTeamId(teamId || "");
 
       // Mapping Territory (Brick)
-      const territoryId = employeeData.territoryId || employeeData.brickId || "";
+      const territoryId =
+        employeeData.territoryId || employeeData.brickId || employeeData.territory?.id || "";
       setSelectedTerritoryId(territoryId || "");
 
       setJoiningDate(
@@ -699,9 +700,11 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                         ) {
                           territoryOptions.push({
                             value: selectedTerritoryId,
-                            label: employeeData?.pulseCode
-                              ? `Current (${selectedTerritoryId.slice(0, 8)})`
-                              : "Current Territory",
+                            label:
+                              employeeData?.territory?.pulseCode ||
+                              (selectedTerritoryId.startsWith("TER")
+                                ? selectedTerritoryId
+                                : `Current (${selectedTerritoryId.slice(0, 8)})`),
                           });
                         }
                         return territoryOptions;
