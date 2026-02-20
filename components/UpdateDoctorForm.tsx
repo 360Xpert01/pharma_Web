@@ -329,7 +329,7 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                   <FormSelect
                     label="Bricks"
                     name={`bricks-${location.id}`}
@@ -365,6 +365,30 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
                     value={zones.find((z) => z.id === location.zone)?.name || ""}
                     onChange={() => {}}
                     placeholder="Auto-populated"
+                    readOnly
+                  />
+
+                  <FormInput
+                    label="latitude"
+                    name={`latitude-${location.id}`}
+                    type="number"
+                    value={location.latitude?.toString() || ""}
+                    onChange={(value) => {
+                      updateLocation(location.id, "latitude", parseFloat(value) || 0);
+                    }}
+                    placeholder="e.g. 33.6844"
+                    readOnly
+                  />
+
+                  <FormInput
+                    label="longitude"
+                    name={`longitude-${location.id}`}
+                    type="number"
+                    value={location.longitude?.toString() || ""}
+                    onChange={(value) => {
+                      updateLocation(location.id, "longitude", parseFloat(value) || 0);
+                    }}
+                    placeholder="e.g. 73.0479"
                     readOnly
                   />
 

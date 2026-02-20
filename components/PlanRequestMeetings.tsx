@@ -35,7 +35,7 @@ export default function PlanRequestMeetings({
             <h4 className="t-label-b mb-3">{m.attributes?.specialization}</h4>
             <div className="flex items-start gap-4">
               <Avatar className="h-12 w-12 mt-1">
-                <AvatarImage src={m.image || "/capMan.svg"} />
+                <AvatarImage src={m.image || "/girlPic.png"} />
                 {/* <AvatarFallback>DR</AvatarFallback> */}
               </Avatar>
               <div className="flex  items-center w-[100%] justify-between text-sm">

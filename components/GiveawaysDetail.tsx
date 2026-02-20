@@ -58,7 +58,7 @@ export default function GiveawaysDetail() {
                 <div className="flex items-center gap-3 min-w-[140px]">
                   <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-gray-50 border border-gray-100">
                     <Image
-                      src={giveaway.imageUrl || "/capMan.svg"}
+                      src={giveaway.imageUrl || "/girlPic.png"}
                       alt={giveaway.name}
                       width={48}
                       height={48}

@@ -59,7 +59,7 @@ export default function SamplesDetail() {
                 <div className="flex items-center gap-3 min-w-[140px]">
                   <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
                     <Image
-                      src={sample.imageUrl || "/capMan.svg"}
+                      src={sample.imageUrl || "/girlPic.png"}
                       alt={sample.name}
                       width={48}
                       height={48}

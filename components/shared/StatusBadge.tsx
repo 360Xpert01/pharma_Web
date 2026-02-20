@@ -18,6 +18,7 @@ interface StatusBadgeProps {
   className?: string;
   variant?: "default" | "pill";
   label?: string; // Custom label to display instead of status
+  onClick?: () => void;
 }
 
 /**
@@ -39,6 +40,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
   className = "",
   variant = "pill",
   label,
+  onClick,
 }) => {
   const normalizedStatus = status.toLowerCase().replace(/\s+/g, "");
 
@@ -74,6 +76,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
     <span
       className={`px-5 py-2 t-sm font-medium ${radiusClass} ${colorClass} inline-flex items-center justify-center min-w-[100px] text-center ${className}`}
       style={{ borderRadius: variant === "pill" ? "9999px" : undefined }}
+      onClick={onClick}
     >
       {displayStatus}
     </span>
