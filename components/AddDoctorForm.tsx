@@ -151,7 +151,6 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
               clearFieldError("qualification");
             }}
             options={[
-              { value: "", label: "Select qualification" },
               ...qualifications.map((q) => ({
                 value: q.id,
                 label: q.name,
@@ -192,11 +191,12 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
               clearFieldError("segment");
             }}
             options={[
-              { value: "", label: "Select segment" },
-              ...segments.map((s) => ({
-                value: s.id,
-                label: s.name,
-              })),
+              ...segments
+                .filter((s) => s.status === "active")
+                .map((s) => ({
+                  value: s.id,
+                  label: s.name,
+                })),
             ]}
             placeholder="Select segment"
             loading={segmentsLoading}

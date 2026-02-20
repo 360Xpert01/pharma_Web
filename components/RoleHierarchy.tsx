@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ChevronDown,
   ChevronRight,
@@ -36,10 +36,24 @@ const CHILD_TYPE_MAP: Record<RoleLevel, RoleLevel | null> = {
 
 // Maps hierarchy depth/type to the default role responsibility
 const ROLE_LEVEL_TO_RESPONSIBILITY: Record<RoleLevel, string> = {
-  company: "Admin",
+  company: "Administrator",
   department: "C-Suite",
   position: "Manager",
-  role: "Sales Rep",
+  role: "Sales Representative",
+};
+
+// Helper to determine responsibility based on role name
+const getResponsibilityByName = (name: string, level: RoleLevel): string => {
+  const upperName = name.toUpperCase();
+  if (upperName.includes("ADMIN")) return "Administrator";
+  if (upperName.includes("CEO") || upperName.includes("CCO") || upperName.includes("CHIEF"))
+    return "C-Suite";
+  if (upperName.includes("REPRESENTATIVE") || upperName.includes("REP"))
+    return "Sales Representative";
+  if (upperName.includes("MANAGER") || upperName.includes("HEAD") || upperName.includes("DIRECTOR"))
+    return "Manager";
+
+  return ROLE_LEVEL_TO_RESPONSIBILITY[level];
 };
 
 interface RoleNodeProps {
@@ -113,6 +127,13 @@ const RoleNode: React.FC<RoleNodeProps> = ({
   const [newResponsibilities, setNewResponsibilities] = useState(
     childType ? ROLE_LEVEL_TO_RESPONSIBILITY[childType] : ""
   );
+
+  // Update responsibilities when name changes
+  useEffect(() => {
+    if (isAddingToThis && childType && newName.trim()) {
+      setNewResponsibilities(getResponsibilityByName(newName, childType));
+    }
+  }, [newName, isAddingToThis, childType]);
 
   const handleCreate = () => {
     if (newName.trim()) {
@@ -207,7 +228,7 @@ const RoleNode: React.FC<RoleNodeProps> = ({
         {/* Dropdown shown on every existing node – defaults from depth */}
         <div className="flex-shrink-0">
           <RoleResponsibilitiesDropdown
-            value={item.responsibilities || ROLE_LEVEL_TO_RESPONSIBILITY[item.type]}
+            value={item.responsibilities || getResponsibilityByName(item.name, item.type)}
             onChange={() => {}}
             readOnly
           />
@@ -333,8 +354,15 @@ const RootAddRow: React.FC<{
   onCancelAdd?: () => void;
 }> = ({ onCreateChild, onCancelAdd }) => {
   const [rootName, setRootName] = useState("");
-  // Root level = company = Admin by default
-  const [rootResponsibilities, setRootResponsibilities] = useState("Admin");
+  // Root level = company = Administrator by default
+  const [rootResponsibilities, setRootResponsibilities] = useState("Administrator");
+
+  // Update responsibilities when name changes
+  useEffect(() => {
+    if (rootName.trim()) {
+      setRootResponsibilities(getResponsibilityByName(rootName, "company"));
+    }
+  }, [rootName]);
 
   return (
     <div className="flex items-center gap-3 border border-[var(--primary)] rounded-8 p-4 bg-[var(--background)] shadow-soft">
