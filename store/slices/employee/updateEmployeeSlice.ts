@@ -19,6 +19,12 @@ interface UpdateEmployeePayload {
   profilePicture?: string; // Optional: URI format
   dob?: string; // Optional: YYYY-MM-DD format
   supervisorId?: string; // Optional: UUID format
+  teamId?: string; // Optional: UUID format
+  territoryId?: string; // Optional: UUID format
+  brickId?: string; // Optional: UUID format
+  joiningDate?: string; // Optional: YYYY-MM-DD format
+  enableMobileAccess?: boolean;
+  mobileView?: string;
   verifiedDevices?: string[]; // Optional: array of strings
   blockedDevices?: string[]; // Optional: array of strings
 }

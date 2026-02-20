@@ -4,11 +4,11 @@ import axios from "axios";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 // Types
-interface ProductCategory {
+export interface ProductCategory {
   id: string;
-  name: string;
+  productCategory: string;
   pulseCode: string;
-  isActive: boolean;
+  status: "active" | "inactive";
   createdAt: string;
   updatedAt: string;
 }
@@ -47,7 +47,7 @@ export const getAllProductCategories = createAsyncThunk<
     }
 
     const response = await axios.get<GetProductCategoriesResponse>(
-      `${baseUrl}api/v1/product-category/all`,
+      `${baseUrl}api/v1/productCategory`,
       {
         headers: {
           "Content-Type": "application/json",

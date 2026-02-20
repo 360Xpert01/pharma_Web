@@ -1,21 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
-
-const candidate = {
-  name: "Sami Kashan",
-  email: "samikashan099@gmail.com",
-  phone: "+92 312 283 8270",
-  reportingManager: "Hammad Afzal",
-  campaign: "Diabetics",
-  requestedMonth: "September",
-  channel: "Doctors",
-  totalCalls: 220,
-  status: "Under Review",
-};
-
 // Dynamic Call Data as Object (sub-json style)
 const monthlyCallData: Record<string, Record<number, number | null>> = {
   "2025-9": {
@@ -148,7 +134,12 @@ export default function PlanRequestCalendar({
       <div className="bg-(--background) rounded-8 shadow-soft p-6">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-6">
-            <Image width={100} height={100} src={scheduleDetail?.saleRepPicture} alt="Candidate" />
+            <Image
+              width={100}
+              height={100}
+              src={scheduleDetail?.saleRepPicture || "/girlPic.png"}
+              alt="Candidate"
+            />
             <div>
               <h2 className="t-h4">{scheduleDetail?.fullname}</h2>
               <p className="t-md">{scheduleDetail?.email}</p>

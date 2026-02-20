@@ -172,6 +172,8 @@ export function DashboardContent({
   const [selectedQualificationId, setSelectedQualificationId] = useState<string | null>(null);
   // State for distributor type editing
   const [selectedDistributorTypeId, setSelectedDistributorTypeId] = useState<string | null>(null);
+  // State for product category editing
+  const [selectedProductCategoryId, setSelectedProductCategoryId] = useState<string | null>(null);
 
   // State for Doctor Table Search
   const [searchTerm, setSearchTerm] = useState("");
@@ -268,6 +270,15 @@ export function DashboardContent({
 
   const handleDistributorTypeUpdateComplete = () => {
     setSelectedDistributorTypeId(null);
+  };
+
+  const handleEditProductCategory = (categoryId: string) => {
+    setSelectedProductCategoryId(categoryId);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleProductCategoryUpdateComplete = () => {
+    setSelectedProductCategoryId(null);
   };
 
   return (
@@ -611,10 +622,13 @@ export function DashboardContent({
 
         {productCategoriesTrue && (
           <div>
-            <ProductCategories />
+            <ProductCategories
+              updateId={selectedProductCategoryId}
+              onUpdateComplete={handleProductCategoryUpdateComplete}
+            />
             <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
               <TableHeader campHeading="Product Categories" filterT={filterT} />
-              <AllProductCategories />
+              <AllProductCategories onEditCategory={handleEditProductCategory} />
             </div>
           </div>
         )}
