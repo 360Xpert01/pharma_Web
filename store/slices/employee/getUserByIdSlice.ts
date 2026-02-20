@@ -49,6 +49,11 @@ interface UserData {
   enableMobileAccess?: boolean;
   mobileView?: string;
   totalCalls?: number;
+  territory?: {
+    id: string;
+    pulseCode: string;
+    description: string;
+  };
 }
 
 interface GetUserByIdResponse {

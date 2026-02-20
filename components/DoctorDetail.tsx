@@ -19,7 +19,6 @@ export default function DoctorDetail() {
   const { data: party, loading, error } = useSelector((state: RootState) => state.partyById);
 
   const partyData = party || {};
-  console.log(partyData, "party");
 
   useEffect(() => {
     if (id) {
@@ -33,16 +32,17 @@ export default function DoctorDetail() {
 
   return (
     <div className="grid grid-cols-12 gap-6">
-      {/* Left - Profile & Info */}
-      <div className="col-span-3 flex flex-col gap-6">
+      {/* Left - Profile & Info (Narrowed to col-span-2) */}
+      <div className="col-span-3 flex flex-col gap-8">
         <DoctorProfileCard partyData={partyData} />
         <DoctorInfoCard partyData={partyData} />
       </div>
 
+      {/* Right - Stats & Charts (Widened to col-span-10) */}
       <div className="col-span-9 flex flex-col gap-6">
         <DoctorStatsCard />
 
-        <div className="flex gap-6 w-[100%] h-[59vh] mt-1 ">
+        <div className="flex gap-6 w-[100%] h-[47vh] mt-1 ">
           <div className="w-[50%]">
             <ByBrands height={300} />
           </div>
