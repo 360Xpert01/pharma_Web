@@ -71,6 +71,8 @@ export default function TableFilter({
   const { users } = useAppSelector((state) => state.allUsers);
   const { categories } = useAppSelector((state) => state.productCategories);
 
+  const activeSegnmentlist = segments.filter((seg) => seg.status === "active");
+
   // Find current channel to check if it's "Doctor"
   const currentChannel = channels.find((ch) => ch.id === channelId);
   const isDoctorChannel = (currentChannel?.name?.toLowerCase() ?? "").includes("doctor");
@@ -142,7 +144,7 @@ export default function TableFilter({
                     value={selectedSegment}
                     onChange={setSelectedSegment}
                     options={[
-                      ...segments.map((seg) => ({
+                      ...activeSegnmentlist.map((seg) => ({
                         value: seg.id,
                         label: seg.name,
                       })),
@@ -161,7 +163,6 @@ export default function TableFilter({
                       value={selectedSpecialization}
                       onChange={setSelectedSpecialization}
                       options={[
-                        { value: "", label: "All Specializations" },
                         ...specializations.map((spec) => ({
                           value: spec.id,
                           label: spec.name,
@@ -323,12 +324,6 @@ export default function TableFilter({
                   options={[
                     { value: "true", label: "Active" },
                     { value: "false", label: "Inactive" },
-                    ...(showEmployeeFilters
-                      ? [
-                          { value: "pending", label: "Pending" },
-                          { value: "suspended", label: "Suspended" },
-                        ]
-                      : []),
                   ]}
                   placeholder="Select Status"
                   className="mb-0"

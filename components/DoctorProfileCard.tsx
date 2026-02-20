@@ -24,19 +24,33 @@ export default function DoctorProfileCard({ partyData }: any) {
       </div>
 
       {/* Doctor Name */}
-      <h2 className="text-3xl font-bold text-center text-gray-9 mb-2">
-        {doctorDetails?.party_name}
-      </h2>
+      <h2 className="text-3xl font-bold text-center text-gray-9 ">{doctorDetails?.party_name}</h2>
       {doctorDetails?.email && (
-        <h2 className="text-1xl font-semibold text-center text-gray-9 mb-2">
-          {doctorDetails?.email}
+        <h2 className="text-1xl  text-center text-gray-9 ">{doctorDetails?.email}</h2>
+      )}
+
+      {doctorDetails?.specialization_name && (
+        <h2 className="text-1xl  text-center text-gray-9 ">{doctorDetails?.specialization_name}</h2>
+      )}
+
+      {doctorDetails?.locations && (
+        <h2 className="text-1xl  text-center text-gray-9 ">{doctorDetails?.locations[0]?.city}</h2>
+      )}
+
+      {doctorDetails?.attributes?.specialization_name && (
+        <h2 className="text-1xl  text-center text-gray-9 ">
+          {doctorDetails?.attributes?.specialization_name}
+        </h2>
+      )}
+
+      {doctorDetails?.attributes?.qualification && (
+        <h2 className="text-1xl text-center text-gray-9">
+          {doctorDetails?.attributes?.qualification}
         </h2>
       )}
 
       {/* Specialty */}
-      <p className="text-base font-semibold text-center mb-6">
-        {doctorDetails?.pulsecode || "N/A"}
-      </p>
+      <p className="text-base  text-center mb-6">{doctorDetails?.pulsecode || "N/A"}</p>
 
       {/* Employee ID Badge */}
       <div className="bg-primary text-white text-sm px-6 py-2 rounded-8 font-semibold">
