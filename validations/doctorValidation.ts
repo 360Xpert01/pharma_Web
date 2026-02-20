@@ -49,8 +49,14 @@ export const doctorSchema = z.object({
           from: z.string().min(1, { message: "From time is required" }),
           to: z.string().min(1, { message: "To time is required" }),
         }),
-        latitude: z.number().optional(),
-        longitude: z.number().optional(),
+        latitude: z
+          .union([z.string(), z.number()])
+          .optional()
+          .transform((val) => (typeof val === "string" ? parseFloat(val) : val)),
+        longitude: z
+          .union([z.string(), z.number()])
+          .optional()
+          .transform((val) => (typeof val === "string" ? parseFloat(val) : val)),
       })
     )
     .min(1, { message: "At least one location is required" }),

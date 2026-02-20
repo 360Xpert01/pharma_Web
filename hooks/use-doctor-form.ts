@@ -30,8 +30,8 @@ export interface Location {
   clinicName: string;
   visitingDays: { from: string; to: string };
   visitingHours: { from: string; to: string };
-  latitude?: number;
-  longitude?: number;
+  latitude: string;
+  longitude: string;
 }
 
 export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
@@ -104,8 +104,8 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
       clinicName: "",
       visitingDays: { from: "", to: "" },
       visitingHours: { from: "", to: "" },
-      latitude: 0,
-      longitude: 0,
+      latitude: "0",
+      longitude: "0",
     },
   ]);
 
@@ -236,8 +236,8 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
             clinicName: clinicName,
             visitingDays,
             visitingHours,
-            latitude: loc.latitude || 0,
-            longitude: loc.longitude || 0,
+            latitude: loc.latitude?.toString() || "0",
+            longitude: loc.longitude?.toString() || "0",
           };
         });
         setLocations(mappedLocations);
@@ -307,8 +307,8 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
         clinicName: "",
         visitingDays: { from: "", to: "" },
         visitingHours: { from: "", to: "" },
-        latitude: 0,
-        longitude: 0,
+        latitude: "0",
+        longitude: "0",
       },
     ]);
   };
@@ -431,8 +431,8 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
           country: "Pakistan",
           geographicUnitId: loc.bricks,
           geographicUnitName: selectedBrick ? selectedBrick.name : "",
-          latitude: loc.latitude,
-          longitude: loc.longitude,
+          latitude: parseFloat(loc.latitude) || 0,
+          longitude: parseFloat(loc.longitude) || 0,
           schedules: [
             {
               scheduleType: "WEEKLY",

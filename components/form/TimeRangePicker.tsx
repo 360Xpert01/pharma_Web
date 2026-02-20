@@ -27,7 +27,16 @@ export default function TimeRangePicker({
 }: TimeRangePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const displayText = from && to ? `${from} - ${to}` : "Select time range";
+  const formatTo12Hour = (timeStr: string) => {
+    if (!timeStr) return "";
+    const [hours, minutes] = timeStr.split(":").map(Number);
+    const period = hours >= 12 ? "PM" : "AM";
+    const hours12 = hours % 12 || 12;
+    return `${hours12.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")} ${period}`;
+  };
+
+  const displayText =
+    from && to ? `${formatTo12Hour(from)} - ${formatTo12Hour(to)}` : "00:00 AM - 00:00 PM";
 
   return (
     <div className={className}>

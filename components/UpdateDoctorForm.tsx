@@ -371,25 +371,21 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
                   <FormInput
                     label="latitude"
                     name={`latitude-${location.id}`}
-                    type="number"
-                    value={location.latitude?.toString() || ""}
+                    value={location.latitude}
                     onChange={(value) => {
-                      updateLocation(location.id, "latitude", parseFloat(value) || 0);
+                      updateLocation(location.id, "latitude", value);
                     }}
                     placeholder="e.g. 33.6844"
-                    readOnly
                   />
 
                   <FormInput
                     label="longitude"
                     name={`longitude-${location.id}`}
-                    type="number"
-                    value={location.longitude?.toString() || ""}
+                    value={location.longitude}
                     onChange={(value) => {
-                      updateLocation(location.id, "longitude", parseFloat(value) || 0);
+                      updateLocation(location.id, "longitude", value);
                     }}
                     placeholder="e.g. 73.0479"
-                    readOnly
                   />
 
                   <FormInput
