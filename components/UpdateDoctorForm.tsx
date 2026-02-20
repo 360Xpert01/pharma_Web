@@ -158,7 +158,6 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
               clearFieldError("qualification");
             }}
             options={[
-              { value: "", label: "Select qualification" },
               ...qualifications.map((q) => ({
                 value: q.id,
                 label: q.name,
@@ -201,11 +200,12 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
               clearFieldError("segment");
             }}
             options={[
-              { value: "", label: "Select segment" },
-              ...segments.map((s) => ({
-                value: s.id,
-                label: s.name,
-              })),
+              ...segments
+                .filter((s) => s.status === "active")
+                .map((s) => ({
+                  value: s.id,
+                  label: s.name,
+                })),
             ]}
             placeholder="Select segment"
             required

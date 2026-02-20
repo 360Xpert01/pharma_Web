@@ -142,10 +142,12 @@ export default function TableFilter({
                     value={selectedSegment}
                     onChange={setSelectedSegment}
                     options={[
-                      ...segments.map((seg) => ({
-                        value: seg.id,
-                        label: seg.name,
-                      })),
+                      ...segments
+                        .filter((seg) => seg.status === "active")
+                        .map((seg) => ({
+                          value: seg.id,
+                          label: seg.name,
+                        })),
                     ]}
                     placeholder="Select Segment"
                     className="mb-0"
@@ -161,7 +163,6 @@ export default function TableFilter({
                       value={selectedSpecialization}
                       onChange={setSelectedSpecialization}
                       options={[
-                        { value: "", label: "All Specializations" },
                         ...specializations.map((spec) => ({
                           value: spec.id,
                           label: spec.name,
