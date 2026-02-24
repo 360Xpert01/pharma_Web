@@ -263,7 +263,7 @@ export default function AddDistributorTypesCard({
                 type="text"
                 value={isUpdateMode ? pulseCode : generatedPrefix || ""}
                 onChange={() => {}}
-                placeholder={prefixLoading ? "Generating..." : "DT_000001"}
+                placeholder={prefixLoading ? "Generating..." : "Auto-generated"}
                 readOnly
                 required
                 error={validationErrors.pulseCode}
@@ -276,7 +276,7 @@ export default function AddDistributorTypesCard({
                 type="text"
                 value={distributorTypeName}
                 onChange={handleDistributorTypeNameChange}
-                placeholder="e.g. Retail Pharmacy, Wholesale"
+                placeholder="Enter distributor type name"
                 required
                 error={validationErrors.name}
               />

@@ -31,7 +31,7 @@ export default function MemberSearch({
   selectedMembers,
   onMembersChange,
   loading = false,
-  placeholder = "Search sales representative",
+  placeholder = "Search sales representative...",
   label = "Assign Members",
   className = "",
   error = "",

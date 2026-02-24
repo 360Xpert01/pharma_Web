@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
+import ImageWithFallback from "@/components/shared/ImageWithFallback";
 import { ColumnDef } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
@@ -146,15 +146,13 @@ export default function BookingTable() {
       accessorKey: "name",
       cell: ({ row }) => (
         <div className="flex items-center gap-3">
-          <Image
+          <ImageWithFallback
             src={row.original.avatar}
             alt={row.original.name}
             width={40}
             height={40}
             className="w-10 h-10 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
-            onError={(e) => {
-              e.currentTarget.src = "/girlPic.png";
-            }}
+            fallbackSrc="/girlPic.png"
           />
           <div className="min-w-0 flex-1">
             <p className="t-td-b truncate">{row.original.name}</p>

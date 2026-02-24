@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import ProductImage from "@/components/shared/ProductImage";
+import ImageWithFallback from "@/components/shared/ImageWithFallback";
 
 export interface SKU {
   id: string;
@@ -31,12 +31,13 @@ export default function ProductTargetRow({
       {/* Product Branding */}
       <div className="flex flex-col items-center w-32 shrink-0">
         <div className="w-24 h-24 bg-(--gray-0) rounded-8 flex items-center justify-center overflow-hidden mb-3 border border-(--gray-1)">
-          <ProductImage
+          <ImageWithFallback
             src={product.profilePicture}
             alt={product.name}
             width={96}
             height={96}
             className="w-full h-full object-contain"
+            fallbackSrc="/images/MedicinePlaceholder.svg"
           />
         </div>
         <span className="t-h4 text-center text-(--gray-9) font-bold">{product.name}</span>
@@ -54,12 +55,12 @@ export default function ProductTargetRow({
               <div className="w-24 h-9 bg-(--background) rounded-8 border border-(--gray-2) flex items-center justify-between px-2 overflow-hidden focus-within:border-(--primary) transition-colors">
                 <input
                   type="text"
-                  placeholder="Target"
+                  placeholder="Enter target"
                   className="w-full h-full text-right t-sm font-bold text-(--gray-9) focus:outline-none placeholder:text-(--gray-3) placeholder:font-normal bg-transparent"
                   value={skuTargets[sku.id] || ""}
                   onChange={(e) => onSkuTargetChange(sku.id, e.target.value)}
                 />
-                <span className="ml-1 text-(--gray-5) select-none text-xs">%</span>
+                {/* <span className="ml-1 text-(--gray-5) select-none text-xs">%</span> */}
               </div>
             </div>
           ))}

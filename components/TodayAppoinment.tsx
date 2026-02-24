@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
-import Image from "next/image";
+import ImageWithFallback from "./shared/ImageWithFallback";
 import { DateRange, Range } from "react-date-range";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
@@ -194,12 +194,13 @@ export default function TodaysAppointments(params: { id: string }) {
                   {/* Doctor Info */}
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-8 overflow-hidden flex-shrink-0">
-                      <Image
-                        src={detail.profilepicture || "/default-avatar.jpg"}
+                      <ImageWithFallback
+                        src={detail.profilepicture}
                         alt={detail.fullname}
                         width={48}
                         height={48}
                         className="object-cover w-full h-full"
+                        fallbackSrc="/girlPic.png"
                       />
                     </div>
                     <div className="overflow-hidden">

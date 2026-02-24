@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getProductById, resetProductByIdState } from "@/store/slices/product/getProductByIdSlice";
 import Image from "next/image";
-import ProductImage from "@/components/shared/ProductImage";
+import ImageWithFallback from "@/components/shared/ImageWithFallback";
 import { ArrowLeft, Edit2 } from "lucide-react";
 import StatusBadge from "@/components/shared/StatusBadge";
 
@@ -98,12 +98,13 @@ export default function ProductDetail() {
           {/* Product Image */}
           <div className="bg-[var(--background)] rounded-12 p-6 shadow-soft border border-[var(--gray-2)]">
             <div className="aspect-square rounded-8 overflow-hidden ring-2 ring-[var(--gray-2)] bg-[var(--gray-1)]">
-              <ProductImage
+              <ImageWithFallback
                 src={product.imageUrl}
                 alt={product.name}
                 width={400}
                 height={400}
-                className="object-cover w-full h-full"
+                className="object-contain w-full h-full p-4"
+                fallbackSrc="/images/MedicinePlaceholder.svg"
               />
             </div>
           </div>

@@ -196,7 +196,7 @@ export default function AddNewRoleForm() {
                 type="text"
                 value={generatedPrefix || ""}
                 onChange={() => {}}
-                placeholder={prefixLoading ? "Generating..." : "ROLE_000001"}
+                placeholder={prefixLoading ? "Generating..." : "Auto-generated"}
                 readOnly
                 required
                 error={prefixError || ""}
@@ -210,7 +210,7 @@ export default function AddNewRoleForm() {
                 value={roleName}
                 required
                 onChange={setRoleName}
-                placeholder="e.g. Sr. Sales Manager"
+                placeholder="Enter role name"
                 error={validationErrors.roleName}
               />
             </div>

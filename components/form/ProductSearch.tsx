@@ -83,7 +83,7 @@ export default function ProductSearch({
                 // Delay to allow click on dropdown items
                 setTimeout(() => setShowSearchResults(false), 200);
               }}
-              placeholder={loading ? "Loading products..." : "Search Product Name"}
+              placeholder={loading ? "Loading products..." : "Search product name..."}
               disabled={loading}
               aria-invalid={hasError}
               className={`mt-1 w-full h-12 px-4 py-3 pl-12 border rounded-8 outline-none transition-all disabled:bg-(--gray-1) disabled:cursor-not-allowed ${

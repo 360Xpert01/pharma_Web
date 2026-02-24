@@ -62,7 +62,7 @@ export default function AddSampleForm() {
               type="text"
               value={sampleName}
               onChange={setSampleName}
-              placeholder="Panadol"
+              placeholder="Enter sample name"
             />
             <FormInput
               label="Brand Name"
@@ -70,7 +70,7 @@ export default function AddSampleForm() {
               type="text"
               value={brandName}
               onChange={setBrandName}
-              placeholder="324"
+              placeholder="Enter brand name"
             />
             <FormInput
               label="Strength"
@@ -78,7 +78,7 @@ export default function AddSampleForm() {
               type="text"
               value={strength}
               onChange={setStrength}
-              placeholder="e.g. 500 mg, 10 ml"
+              placeholder="Enter strength"
             />
           </div>
 
@@ -90,7 +90,7 @@ export default function AddSampleForm() {
               type="text"
               value={dosageForm}
               onChange={setDosageForm}
-              placeholder="Tablet, Capsule, Syrup, Injection, etc..."
+              placeholder="Enter dosage form"
             />
             <FormInput
               label="Sample QTY"
@@ -98,7 +98,7 @@ export default function AddSampleForm() {
               type="number"
               value={sampleQty}
               onChange={setSampleQty}
-              placeholder="220"
+              placeholder="Enter sample quantity"
             />
             <FormInput
               label="Threshold Value"
@@ -106,7 +106,7 @@ export default function AddSampleForm() {
               type="number"
               value={thresholdValue}
               onChange={setThresholdValue}
-              placeholder="25"
+              placeholder="Enter threshold value"
             />
           </div>
 
@@ -117,7 +117,7 @@ export default function AddSampleForm() {
               rows={4}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Pain reliever tablet"
+              placeholder="Enter description..."
               className="w-full px-4 py-3 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) focus:border-transparent outline-none transition resize-none"
             />
           </div>

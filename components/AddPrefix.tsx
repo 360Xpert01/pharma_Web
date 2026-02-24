@@ -166,7 +166,7 @@ export default function AddPrefixNameComponent() {
                       label: tableName.replace(/-/g, ""),
                     })) || []
                   }
-                  placeholder={loading ? "Loading tables" : "Select a table"}
+                  placeholder={loading ? "Loading tables" : "Select table"}
                   loading={loading}
                   required
                   error={validationErrors.entity}
@@ -187,7 +187,7 @@ export default function AddPrefixNameComponent() {
                     if (value.length > 5) return;
                     setPrefix(value);
                   }}
-                  placeholder="e.g. EMP, max 5 characters"
+                  placeholder="Enter prefix (e.g. EMP)"
                   required
                   error={validationErrors.code || validationError}
                   disabled={!selectedTable}
