@@ -7,32 +7,54 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://api.ceturo.com
 // ================== Types ==================
 export interface Party {
   id: string;
+  party_id?: string;
   name?: string;
   party_name?: string;
   type?: string;
+  party_type?: string;
   email?: string;
+  image?: string;
   phone?: string;
   phone_number?: string;
+  pulsecode?: string;
   channel_id?: string;
+  channel_name?: string;
   segmentId?: string;
+  segment_name?: string;
+  specializationId?: string;
+  specialization_name?: string;
+  description?: string;
   status?: string;
   parent?: string;
+  parent_id?: string | null;
+  party_parent_name?: string | null;
+
+  organization?: {
+    parent_id?: string | null;
+    party_parent_name?: string | null;
+  };
 
   attributes?: {
+    id?: string;
+    partyId?: string;
     pmdcNumber?: string;
     specialization?: string;
     qualification?: string;
     designation?: string;
     date_of_birth?: string;
     segment?: string;
+    legacyCode?: string;
     [key: string]: any;
   };
 
   locations?: Array<{
     id?: string;
     city?: string;
+    state?: string;
     country?: string;
     address?: string;
+    latitude?: number;
+    longitude?: number;
     brickId?: string;
     geographic_unit_id?: string | null;
     geographic_unit_name?: string | null;
@@ -48,6 +70,8 @@ export interface Party {
     [key: string]: any;
   }>;
 
+  created_at?: string;
+  updated_at?: string;
   createdAt?: string;
   updatedAt?: string;
 }

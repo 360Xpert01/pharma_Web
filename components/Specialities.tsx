@@ -258,7 +258,7 @@ export default function AddSpecialitiesCard({
                 type="text"
                 value={isUpdateMode ? pulseCode : generatedPrefix || ""}
                 onChange={() => {}}
-                placeholder={prefixLoading ? "Generating..." : "SP_000001"}
+                placeholder={prefixLoading ? "Generating..." : "Auto-generated"}
                 readOnly
                 required
                 error={validationErrors.pulseCode}
@@ -271,7 +271,7 @@ export default function AddSpecialitiesCard({
                 type="text"
                 value={specializationName}
                 onChange={handleSpecializationNameChange}
-                placeholder="e.g. Cardiology, Neurology, Orthopedics"
+                placeholder="Enter speciality name"
                 required
                 error={validationErrors.name}
               />

@@ -11,6 +11,7 @@ import {
   Users,
   User,
   Loader2,
+  Pencil,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import RoleResponsibilitiesDropdown from "@/components/RoleResponsibilitiesDropdown";
@@ -216,7 +217,6 @@ const RoleNode: React.FC<RoleNodeProps> = ({
             <span className="font-bold text-(--gray-9) truncate" title={item.name}>
               {item.name}
             </span>
-            <span className="text-xs text-(--gray-5) capitalize flex-shrink-0">({item.type})</span>
           </div>
           {item.subtitle && (
             <span className="text-xs text-(--gray-4) truncate" title={item.subtitle}>
@@ -251,10 +251,11 @@ const RoleNode: React.FC<RoleNodeProps> = ({
           )}
           <button
             type="button"
-            className="w-9 h-9 flex items-center justify-center hover:bg-[var(--gray-1)] rounded-8 transition-colors cursor-pointer"
+            className="w-8 h-8 flex items-center justify-center bg-(--primary) text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
             onClick={() => onMoreOptions?.(item.id, item.type)}
+            title="Edit"
           >
-            <MoreVertical className="w-4 h-4 text-[var(--gray-6)]" />
+            <Pencil className="w-4 h-4" />
           </button>
         </div>
       </div>

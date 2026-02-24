@@ -1,17 +1,19 @@
 "use client";
 
 import React from "react";
+import { Party } from "@/store/slices/party/partygetId";
+import ImageWithFallback from "./shared/ImageWithFallback";
 
-export default function DoctorProfileCard({ partyData }: any) {
+export default function DoctorProfileCard({ partyData }: { partyData: Party }) {
   const doctorDetails = partyData || {};
-  const profileImage = doctorDetails?.image || "/girlPic.png";
+  const profileImage = doctorDetails?.image;
   const location = doctorDetails?.locations?.[0];
   const address = location ? `${location.address}` : "Al Asif Karachi";
 
   const formatDate = (dateString: string) => {
     if (!dateString) return "N/A";
     try {
-      return new Date(dateString).toISOString();
+      return new Date(dateString).toISOString().split("T")[0]; // Just showing the date part for cleaner UI
     } catch (e) {
       return dateString;
     }
@@ -21,10 +23,13 @@ export default function DoctorProfileCard({ partyData }: any) {
     <div className="w-full bg-white rounded-8 py-4 shadow-soft border border-gray-1 flex flex-col items-center">
       {/* Profile Image - Scaled down for compact fit */}
       <div className="w-36 h-36 rounded-lg overflow-hidden mb-6 bg-gray-50 flex items-center justify-center border border-gray-100 shadow-sm relative">
-        <img
+        <ImageWithFallback
           src={profileImage}
           alt={doctorDetails?.party_name || "Doctor"}
+          width={144}
+          height={144}
           className="w-full h-full object-cover"
+          fallbackSrc="/girlPic.png"
         />
       </div>
 
@@ -36,9 +41,9 @@ export default function DoctorProfileCard({ partyData }: any) {
       {/* Email - Compact base */}
       <p
         className="text-[#475569] text-base mb-3 text-center truncate w-full px-2"
-        title={doctorDetails?.email || "rahimoooon@gmail.com"}
+        title={doctorDetails?.email || "No Email Provided"}
       >
-        {doctorDetails?.email || "rahimoooon@gmail.com"}
+        {doctorDetails?.email || "No Email Provided"}
       </p>
 
       {/* Address - Compact sm */}
@@ -46,19 +51,17 @@ export default function DoctorProfileCard({ partyData }: any) {
 
       {/* Phone Number - Compact lg */}
       <p className="text-[#475569] text-lg font-semibold mb-2 text-center tracking-wide">
-        ({doctorDetails?.phone_number || "03478125322"})
+        {doctorDetails?.phone_number ? `(${doctorDetails.phone_number})` : "N/A"}
       </p>
 
       {/* Date - Compact sm */}
       <p className="text-[#64748b] text-sm mb-8 text-center">
-        {doctorDetails?.created_at
-          ? formatDate(doctorDetails?.created_at)
-          : "2026-02-11T00:00:00.000Z"}
+        {doctorDetails?.created_at ? formatDate(doctorDetails.created_at) : "N/A"}
       </p>
 
       {/* Pulse Code Badge - Compact Pill */}
       <div className="bg-[#1d4ed8] text-white text-sm px-8 py-2.5 rounded-lg font-bold shadow-soft transition-all cursor-default uppercase tracking-wider">
-        {doctorDetails?.pulsecode || "EMP34"}
+        {doctorDetails?.pulsecode || "N/A"}
       </div>
     </div>
   );

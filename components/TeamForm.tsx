@@ -86,7 +86,11 @@ export default function TeamForm() {
               value={isUpdateMode ? pulseCode : generatedPrefix || ""}
               onChange={() => {}}
               placeholder={
-                isUpdateMode ? pulseCode || "N/A" : prefixLoading ? "Generating..." : "TEM_xxxxxx"
+                isUpdateMode
+                  ? pulseCode || "Auto-generated"
+                  : prefixLoading
+                    ? "Generating..."
+                    : "Auto-generated"
               }
               required
               readOnly
@@ -103,7 +107,7 @@ export default function TeamForm() {
                 setTeamName(value);
                 clearFieldError("name");
               }}
-              placeholder="e.g. High Blood Pressure"
+              placeholder="Enter team name"
               required
               error={getErrorMessage("name")}
             />
@@ -194,7 +198,7 @@ export default function TeamForm() {
               selectedMembers={selectedMembers}
               onMembersChange={handleMembersChange}
               loading={usersLoading}
-              placeholder="Search sales representative"
+              placeholder="Search member..."
               label=""
               error={getErrorMessage("saleRepIds")}
               onSearchChange={() => clearFieldError("saleRepIds")}

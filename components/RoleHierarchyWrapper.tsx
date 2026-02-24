@@ -6,6 +6,7 @@ import type { RoleLevel } from "@/components/RoleHierarchy";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllRoles } from "@/store/slices/role/getAllRolesSlice";
 import { createRole, resetRoleState } from "@/store/slices/role/addRole";
+import { getRoleById, resetRoleDetailState } from "@/store/slices/role/getRoleByIdSlice";
 import {
   generatePrefix,
   resetGeneratePrefixState,
@@ -123,6 +124,7 @@ export default function RoleHierarchyWrapper() {
 
   const handleMoreOptions = (itemId: string, itemType: string) => {
     console.log("More options for:", itemId, "Type:", itemType);
+    dispatch(getRoleById(itemId));
   };
 
   const hierarchyData = buildRoleHierarchy(roles);

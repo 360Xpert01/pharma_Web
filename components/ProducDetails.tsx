@@ -17,7 +17,6 @@ import { RootState } from "@/store";
 export default function ProductDetails({ candidate }: any) {
   const searchParams = useSearchParams();
   const productId = searchParams.get("id");
-  console.log(productId, "producasdasdatId");
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -30,19 +29,39 @@ export default function ProductDetails({ candidate }: any) {
     };
   }, [dispatch, productId]);
 
-  const productById = useSelector((state: RootState) => state.productById);
+  const {
+    product: productData,
+    loading,
+    error,
+  } = useSelector((state: RootState) => state.productById);
 
-  const productData = productById?.product || {};
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen text-destructive">
+        Error: {error}
+      </div>
+    );
+  }
+
+  if (!productData) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">No product details found.</div>
+    );
+  }
 
   // Default candidate data matched to picture image_107e81
   const defaultCandidate = {
-    name: "Daplyza",
-    description: "(Dapagliflozin)",
-    legacy: "000124",
-    status: "Active",
-    category: "SGLT2",
-    skuCount: "6",
-    formula: "Dapagliflozin",
+    name: productData.name,
+    description: productData.description,
+    pulseCode: productData.pulseCode,
   };
 
   return (
@@ -51,14 +70,14 @@ export default function ProductDetails({ candidate }: any) {
       <div className="flex flex-col lg:flex-row gap-6 w-full">
         {/* LEFT SIDEBAR: ~22% Width (as per image_107e81) */}
         <div className="w-full lg:w-[22%] space-y-6">
-          <UserProfile candidate={defaultCandidate} productData={productData} />{" "}
+          <UserProfile candidate={defaultCandidate} productData={productData} />
           {/* Product Image & Name */}
           <RegionInformation
-            status={productData?.status}
-            legacy={productData?.productFormula}
-            category={productData?.productCode}
-            skuCount={productData?.skuCount}
-            formula={productData?.productCategory}
+            status={productData.status}
+            legacy={productData.productCode}
+            category={productData.productCategory}
+            skuCount={productData.skuCount}
+            formula={productData.productFormula}
           />{" "}
           {/* Product Info Section */}
         </div>
@@ -81,7 +100,7 @@ export default function ProductDetails({ candidate }: any) {
       <div className="flex flex-col lg:flex-row gap-6 w-full">
         {/* Left: Team Table (40% width) */}
         <div className="w-full lg:w-[45%]">
-          <AssignedProductTeam /> {/* image_de88c3 design */}
+          <AssignedProductTeam teams={productData.teams} /> {/* image_de88c3 design */}
         </div>
         {/* Right: Territory Heatmap (60% width) */}
         <div className="w-full lg:w-[55%]">
@@ -91,7 +110,7 @@ export default function ProductDetails({ candidate }: any) {
 
       {/* Bottom Section 2: Product SKUs Bar Chart (Full Width) */}
       <div className="w-full">
-        <ProductSkuChart /> {/* image_106f63 rounded bar chart */}
+        <ProductSkuChart skus={productData.productSkus} /> {/* image_106f63 rounded bar chart */}
       </div>
     </div>
   );

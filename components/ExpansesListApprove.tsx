@@ -12,6 +12,7 @@ import ExpenseDetailsModal from "./ExpenseDetailsModal";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchWeeklyCallExpenses } from "@/store/slices/employeeProfile/weeklyCallExpensesSlice";
 import { useSearchParams } from "next/navigation";
+import ImageWithFallback from "./shared/ImageWithFallback";
 interface ExpenseItem {
   id: string;
   name: string;
@@ -164,12 +165,6 @@ export default function ExpenseApprovalList() {
     "dd MMM yyyy"
   )}`;
 
-  const handleApplyDateRange = () => {
-    setDataStart(format(selectionRange.startDate!, "yyyy-MM-dd"));
-    setDataEnd(format(selectionRange.endDate!, "yyyy-MM-dd"));
-    setShowCalendar(false);
-  };
-
   const handleCardClick = (expense: (typeof expenses)[0]) => {
     setSelectedExpense(expense); // sirf clicked wala expense save karo
     setShowModal(true);
@@ -254,12 +249,13 @@ export default function ExpenseApprovalList() {
                   <div className="flex items-center gap-4 w-[25%]">
                     <div className="relative">
                       <div className="w-14 h-14 rounded-8 overflow-hidden border-2 border-white shadow-soft">
-                        <Image
+                        <ImageWithFallback
                           src={item.profilepicture}
                           alt={item.name}
                           width={50}
                           height={50}
                           className="object-cover"
+                          fallbackSrc="/girlPic.png"
                         />
                       </div>
                     </div>

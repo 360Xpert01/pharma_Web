@@ -171,7 +171,7 @@ export default function ProductCategories({
                       : generatedPrefix || ""
                 }
                 onChange={() => {}}
-                placeholder="PC_000001"
+                placeholder="Auto-generated"
                 readOnly
                 required
               />
@@ -183,7 +183,7 @@ export default function ProductCategories({
                 type="text"
                 value={categoryName}
                 onChange={setCategoryName}
-                placeholder="e.g. Antibiotics"
+                placeholder="Enter category name"
                 required
               />
 

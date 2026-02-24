@@ -149,7 +149,7 @@ export default function TableFilter({
                           label: seg.name,
                         })),
                     ]}
-                    placeholder="Select Segment"
+                    placeholder="Select segment"
                     className="mb-0"
                   />
                 </div>
@@ -168,7 +168,7 @@ export default function TableFilter({
                           label: spec.name,
                         })),
                       ]}
-                      placeholder="Select Specialization"
+                      placeholder="Select specialization"
                       className="mb-0"
                     />
                   </div>
@@ -189,7 +189,7 @@ export default function TableFilter({
                         label: role.roleName,
                       })),
                     ]}
-                    placeholder="Select Role"
+                    placeholder="Select role"
                     className="mb-0"
                   />
                 </div>
@@ -207,7 +207,7 @@ export default function TableFilter({
                         label: team.name,
                       })),
                     ]}
-                    placeholder="Select Team"
+                    placeholder="Select team"
                     className="mb-0"
                   />
                 </div>
@@ -225,7 +225,7 @@ export default function TableFilter({
                         label: `${user.firstName} ${user.lastName}`,
                       })),
                     ]}
-                    placeholder="Select Supervisor"
+                    placeholder="Select supervisor"
                     className="mb-0"
                   />
                 </div>
@@ -245,7 +245,7 @@ export default function TableFilter({
                         label: cat.productCategory,
                       })),
                     ]}
-                    placeholder="Select Category"
+                    placeholder="Select category"
                     className="mb-0"
                   />
                 </div>
@@ -263,7 +263,7 @@ export default function TableFilter({
                       { value: "active", label: "Active" },
                       { value: "inactive", label: "Inactive" },
                     ]}
-                    placeholder="Select Status"
+                    placeholder="Select status"
                     className="mb-0"
                   />
                 </div>
@@ -283,7 +283,7 @@ export default function TableFilter({
                         label: `${user.firstName} ${user.lastName}`,
                       })),
                     ]}
-                    placeholder="Select Employee"
+                    placeholder="Select employee"
                     className="mb-0"
                   />
                 </div>
@@ -303,7 +303,7 @@ export default function TableFilter({
                         label: ch.name,
                       })),
                     ]}
-                    placeholder="Select Channel"
+                    placeholder="Select channel"
                     className="mb-0"
                   />
                 </div>
@@ -357,7 +357,7 @@ export default function TableFilter({
                       { value: "last_month", label: "Last Month" },
                       { value: "custom", label: "Custom Range" },
                     ]}
-                    placeholder="Select Date Range"
+                    placeholder="Select date range"
                     className="mb-0"
                   />
                 </div>

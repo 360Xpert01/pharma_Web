@@ -250,7 +250,7 @@ export default function AddDoctorSegmentsCard({
                 type="text"
                 value={isUpdateMode ? pulseCode : generatedPrefix || ""}
                 onChange={() => {}}
-                placeholder={prefixLoading ? "Generating..." : "SEG_000001"}
+                placeholder={prefixLoading ? "Generating..." : "Auto-generated"}
                 readOnly
                 required
                 error={validationErrors.pulseCode}
@@ -263,7 +263,7 @@ export default function AddDoctorSegmentsCard({
                 type="text"
                 value={segmentName}
                 onChange={handleSegmentNameChange}
-                placeholder="e.g. Segment A, Segment B, Segment C"
+                placeholder="Enter segment name"
                 required
                 error={validationErrors.name}
               />

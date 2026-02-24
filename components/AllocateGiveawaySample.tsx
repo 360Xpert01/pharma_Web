@@ -38,13 +38,19 @@ interface EmployeeData {
   id: string;
   email: string;
   firstName: string;
-  middleName?: string;
+  middleName?: string | null;
   lastName: string;
   pulseCode: string;
   roleId?: string;
   profilePicture?: string;
   role?: {
     roleName: string;
+  };
+  supervisor?: {
+    id: string;
+    firstName: string;
+    middleName?: string | null;
+    lastName: string;
   };
 }
 
@@ -125,6 +131,7 @@ export default function AddAllocateGivewaySample({
         roleId: fetchedUser.roleId,
         profilePicture: fetchedUser.profilePicture || undefined,
         role: fetchedUser.role,
+        supervisor: fetchedUser.supervisor,
       });
       setEmployeeSearch(`${fetchedUser.firstName} ${fetchedUser.lastName}`);
     }
@@ -220,6 +227,7 @@ export default function AddAllocateGivewaySample({
   const handleSelectEmployee = (employee: EmployeeData) => {
     setSelectedEmployee(employee);
     setEmployeeSearch(`${employee.firstName} ${employee.lastName}`);
+    console.log("selectedEmployee", employee);
     setShowEmployeeDropdown(false);
   };
 
@@ -446,7 +454,17 @@ export default function AddAllocateGivewaySample({
                 onChange={() => {}}
                 readOnly
               />
-              <FormInput label="Manager" name="manager" value="-" onChange={() => {}} readOnly />
+              <FormInput
+                label="Manager"
+                name="manager"
+                value={
+                  selectedEmployee.supervisor
+                    ? `${selectedEmployee.supervisor.firstName} ${selectedEmployee.supervisor.lastName}`
+                    : "N/A"
+                }
+                onChange={() => {}}
+                readOnly
+              />
             </div>
 
             {/* Select Giveaway Section */}
