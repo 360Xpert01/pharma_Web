@@ -6,7 +6,12 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 // Types
 interface ProductSku {
   sku: string;
-  quantity: number;
+}
+
+interface ProductTeam {
+  id: string;
+  name: string;
+  totalMemberCount: number;
 }
 
 export interface ProductDetail {
@@ -20,7 +25,9 @@ export interface ProductDetail {
   imageUrl: string | null;
   description: string;
   status: string;
+  skuCount: number;
   productSkus: ProductSku[];
+  teams: ProductTeam[];
   createdAt?: string;
   updatedAt?: string;
 }

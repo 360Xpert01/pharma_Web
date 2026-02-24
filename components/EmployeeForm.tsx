@@ -448,7 +448,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                       ? pulseCode || "N/A"
                       : prefixLoading
                         ? "Generating..."
-                        : "EMP_000152"
+                        : "Auto-generated"
                   }
                   readOnly
                 />
@@ -460,7 +460,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                     setLegacyCode(value);
                     clearFieldError("empLegacyCode");
                   }}
-                  placeholder="000152"
+                  placeholder="Enter legacy code"
                 />
               </div>
 
@@ -476,7 +476,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                     clearFieldError("middleName");
                     clearFieldError("lastName");
                   }}
-                  placeholder="Enter full name"
+                  placeholder="Enter employee name"
                   required
                   error={getErrorMessage("firstName") || getErrorMessage("lastName")}
                 />
@@ -489,7 +489,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                     setEmail(value);
                     clearFieldError("email");
                   }}
-                  placeholder="e.g. abc123@gmail.com"
+                  placeholder="Enter email address"
                   required
                   error={getErrorMessage("email")}
                 />
@@ -506,7 +506,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                     setPhoneNumber(value);
                     clearFieldError("mobileNumber");
                   }}
-                  placeholder="e.g. 923456789010"
+                  placeholder="Enter mobile number"
                   required
                   error={getErrorMessage("mobileNumber")}
                 />
@@ -532,7 +532,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                   setFullAddress(value);
                   clearFieldError("fullAddress");
                 }}
-                placeholder="e.g. B121, Block-2, Gulshan-e-Iqbal, Karachi, Pakistan"
+                placeholder="Enter full address"
                 required
                 error={getErrorMessage("fullAddress")}
               />
@@ -591,7 +591,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                       }
                       return teamOptions;
                     })()}
-                    placeholder="Select Team"
+                    placeholder="Select team"
                     loading={teamsLoading}
                     error={getErrorMessage("teamId")}
                   />
@@ -609,7 +609,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                       value: role.id,
                       label: role.roleName,
                     }))}
-                    placeholder="Select a role"
+                    placeholder="Select role"
                     loading={rolesLoading}
                     error={getErrorMessage("roleId")}
                   />
@@ -655,17 +655,16 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                     })()}
                     placeholder={
                       !selectedRoleId
-                        ? "Select a role first"
+                        ? "Select role first"
                         : (() => {
                             const selectedRole = roles.find((r) => r.id === selectedRoleId);
-                            if (!selectedRole?.parentRoleId)
-                              return "No supervisor required for this role";
+                            if (!selectedRole?.parentRoleId) return "No supervisor required";
                             const parentRole = roles.find(
                               (r) => r.id === selectedRole.parentRoleId
                             );
                             return parentRole
                               ? `Select ${parentRole.roleName}`
-                              : "Select a line manager";
+                              : "Select line manager";
                           })()
                     }
                     disabled={!selectedRoleId}
@@ -709,7 +708,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                         }
                         return territoryOptions;
                       })()}
-                      placeholder="Select Territory"
+                      placeholder="Select territory"
                       loading={territoriesLoading}
                       error={getErrorMessage("territoryId")}
                     />

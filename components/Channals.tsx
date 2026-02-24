@@ -180,7 +180,7 @@ export default function AddChannelsCard({
                   type="text"
                   value={isUpdateMode ? pulseCode : generatedPrefix || ""}
                   onChange={() => {}}
-                  placeholder={prefixLoading ? "Generating..." : "CH_000001"}
+                  placeholder={prefixLoading ? "Generating..." : "Auto-generated"}
                   readOnly
                 />
               )}
@@ -192,7 +192,7 @@ export default function AddChannelsCard({
                 type="text"
                 value={channelName}
                 onChange={setChannelName}
-                placeholder="e.g. Doctor Channel"
+                placeholder="Enter channel name"
                 required
               />
 
@@ -203,7 +203,7 @@ export default function AddChannelsCard({
                 type="text"
                 value={channelCode}
                 onChange={setChannelCode}
-                placeholder="e.g. KEY"
+                placeholder="Enter prefix"
                 required
               />
 

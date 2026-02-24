@@ -285,7 +285,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
                       : generatedPrefix || ""
                   }
                   onChange={() => {}}
-                  placeholder="PRD_001247"
+                  placeholder="Auto-generated"
                   required
                   readOnly
                   error={getErrorMessage("pulseCode")}
@@ -300,8 +300,8 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
                     setLegacyCode(value);
                     clearFieldError("productCode");
                   }}
-                  placeholder="001247"
-                  required
+                  placeholder="Enter product code"
+                  // required
                   error={getErrorMessage("productCode")}
                 />
               </div>
@@ -320,7 +320,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
                     value: cat.id,
                     label: cat.productCategory,
                   }))}
-                  placeholder="e.g. Antibiotics, Painkillers..."
+                  placeholder="Select product category"
                   required
                   loading={categoriesLoading}
                   error={getErrorMessage("productCategoryId")}
@@ -335,7 +335,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
                     setProductName(value);
                     clearFieldError("name");
                   }}
-                  placeholder="e.g. Panadol"
+                  placeholder="Enter product name"
                   required
                   error={getErrorMessage("name")}
                 />
@@ -349,8 +349,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
                     setChemicalFormula(value);
                     clearFieldError("productFormula");
                   }}
-                  placeholder="e.g. divalproex sodium"
-                  required
+                  placeholder="Enter product formula"
                   error={getErrorMessage("productFormula")}
                 />
               </div>
@@ -365,16 +364,14 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
                   setDescription(value);
                   clearFieldError("description");
                 }}
-                placeholder="e.g. Panadol"
-                required
+                placeholder="Enter product description..."
                 error={getErrorMessage("description")}
               />
 
               {/* Status Toggle */}
               <div className="flex flex-col gap-2">
-                <label className="t-label">
-                  Status <span className="text-(--destructive)">*</span>
-                </label>
+                <label className="t-label">Status</label>
+                {/* <span className="text-(--destructive)">*</span> */}
                 <StatusToggle status={status} onChange={(newStatus) => setStatus(newStatus)} />
               </div>
 
@@ -389,7 +386,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
                   <input
                     type="text"
                     id="sku-input"
-                    placeholder="e.g. Capsule 500Mg"
+                    placeholder="Enter SKU (e.g. Capsule 500mg)"
                     className="flex-1 px-3 py-3 border border-[var(--gray-3)] rounded-8 focus:ring-2 focus:ring-[var(--primary)] outline-none text-sm"
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && e.currentTarget.value.trim()) {

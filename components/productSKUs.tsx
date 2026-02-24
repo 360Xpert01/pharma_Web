@@ -13,16 +13,19 @@ import {
 } from "recharts";
 import { Calendar, ChevronDown } from "lucide-react";
 
-const data = [
-  { name: "25mg", value: 50000 },
-  { name: "35mg", value: 60000 },
-  { name: "20mg", value: 63000 },
-  { name: "15mg", value: 75000 },
-  { name: "30mg", value: 82000 },
-  { name: "10mg", value: 95000 },
-];
+interface ProductSku {
+  sku: string;
+}
 
-export default function ProductSkuChart() {
+interface ProductSkuChartProps {
+  skus?: ProductSku[];
+}
+
+export default function ProductSkuChart({ skus = [] }: ProductSkuChartProps) {
+  const chartData = skus.map((item) => ({
+    name: item.sku,
+    value: Math.floor(Math.random() * 50000) + 30000, // Placeholder value logic if API doesn't provide it
+  }));
   return (
     <div className="w-full bg-white rounded-[24px] shadow-sm border border-gray-100 p-8">
       {/* Header with Filters */}
@@ -55,7 +58,7 @@ export default function ProductSkuChart() {
       {/* Bar Chart Section */}
       <div className="h-[400px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+          <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#60A5FA" stopOpacity={1} />

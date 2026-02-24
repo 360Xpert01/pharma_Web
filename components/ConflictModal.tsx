@@ -203,7 +203,7 @@ export default function ConflictModal({ isOpen, onClose }: ConflictModalProps) {
                             <input
                               key={rep.id}
                               type="text"
-                              placeholder="Adjust Share (%)"
+                              placeholder="Enter share percentage"
                               defaultValue={rep.share}
                               className="px-4 py-2.5 bg-(--background) border border-(--gray-2) rounded-8 t-sm text-(--gray-9) placeholder:text-(--gray-5) focus:ring-2 focus:ring-(--primary) focus:border-(--primary) outline-none transition-all"
                             />

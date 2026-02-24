@@ -105,7 +105,7 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
               setPmdcNumber(val);
               clearFieldError("pmdcNumber");
             }}
-            placeholder="e.g. 12345-P"
+            placeholder="Enter PMDC number"
             error={getErrorMessage("pmdcNumber")}
           />
         )}
@@ -120,7 +120,7 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
               setUserName(val);
               clearFieldError("userName");
             }}
-            placeholder="e.g. john doe"
+            placeholder="Enter doc name"
             required
             error={getErrorMessage("userName")}
           />
@@ -136,7 +136,7 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
               setContactNumber(val);
               clearFieldError("contactNumber");
             }}
-            placeholder="e.g. +92345678910"
+            placeholder="Enter contact number"
             error={getErrorMessage("contactNumber")}
           />
         )}
@@ -175,7 +175,7 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
               value: spec.id,
               label: spec.name,
             }))}
-            placeholder="e.g. Cardiologist, Neurologist..."
+            placeholder="Select speciality"
             loading={specializationsLoading}
             error={getErrorMessage("specialization")}
           />
@@ -214,7 +214,7 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
               setDesignation(val);
               clearFieldError("designation");
             }}
-            placeholder="e.g. Senior Consultant"
+            placeholder="Enter designation"
             error={getErrorMessage("designation")}
           />
         )}
@@ -229,7 +229,7 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
               setEmail(val);
               clearFieldError("email");
             }}
-            placeholder="e.g. abc123@gmail.com"
+            placeholder="Enter email address"
             error={getErrorMessage("email")}
           />
         )}
@@ -244,7 +244,7 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
               setDateOfBirth(val);
               clearFieldError("dateOfBirth");
             }}
-            placeholder="e.g. 5/10/2001"
+            placeholder="Select date of birth"
             error={getErrorMessage("dateOfBirth")}
           />
         )}
@@ -361,7 +361,7 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
                     onChange={(value) => {
                       updateLocation(location.id, "latitude", value);
                     }}
-                    placeholder="e.g. 33.6844"
+                    placeholder="Enter latitude"
                   />
 
                   <FormInput
@@ -371,7 +371,7 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
                     onChange={(value) => {
                       updateLocation(location.id, "longitude", value);
                     }}
-                    placeholder="e.g. 73.0479"
+                    placeholder="Enter longitude"
                   />
 
                   <FormInput
@@ -383,7 +383,7 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
                       updateLocation(location.id, "clinicName", value);
                       clearFieldError(`locations.${index}.clinicName`);
                     }}
-                    placeholder="e.g. SA-25615-EETG"
+                    placeholder="Enter clinic name"
                     required
                     error={getErrorMessage(`locations.${index}.clinicName`)}
                   />

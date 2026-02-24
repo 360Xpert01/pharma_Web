@@ -158,7 +158,7 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
             name="pulseCode"
             value={isEditMode ? formData.pulseCode : generatedPrefix || ""}
             onChange={() => {}}
-            placeholder={prefixLoading ? "Generating..." : "e.g., TER-001"}
+            placeholder={prefixLoading ? "Generating..." : "Auto-generated"}
             required
             readOnly
             className="cursor-not-allowed max-w-sm"

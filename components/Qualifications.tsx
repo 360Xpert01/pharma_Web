@@ -257,7 +257,7 @@ export default function AddQualificationsCard({
                 type="text"
                 value={isUpdateMode ? pulseCode : generatedPrefix || ""}
                 onChange={() => {}}
-                placeholder={prefixLoading ? "Generating..." : "QF_000001"}
+                placeholder={prefixLoading ? "Generating..." : "Auto-generated"}
                 readOnly
                 required
                 error={validationErrors.pulseCode}
@@ -270,7 +270,7 @@ export default function AddQualificationsCard({
                 type="text"
                 value={qualificationName}
                 onChange={handleQualificationNameChange}
-                placeholder="e.g. MBBS, MD, MS, DNB"
+                placeholder="Enter qualification name"
                 required
                 error={validationErrors.name}
               />

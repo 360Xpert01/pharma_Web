@@ -79,7 +79,7 @@ export default function BrickSearch({
                 // Delay to allow click on dropdown items
                 setTimeout(() => setShowSearchResults(false), 200);
               }}
-              placeholder={loading ? "Loading bricks..." : "Search Brick Code/Name"}
+              placeholder={loading ? "Loading bricks..." : "Search brick code or name..."}
               disabled={loading}
               aria-invalid={hasError}
               className={`w-full h-12 px-4 py-3 pl-12 text-sm border rounded-8 outline-none transition-all disabled:bg-(--gray-1) disabled:cursor-not-allowed ${

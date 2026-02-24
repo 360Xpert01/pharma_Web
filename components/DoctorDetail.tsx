@@ -6,8 +6,7 @@ import TableHeader from "@/components/TableHeader";
 import ByBrands from "./ByBrands";
 import ProductPreDoctor from "./ProductPerDoctor";
 import { useParams } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { useAppDispatch, useAppSelector } from "@/store";
 import { useEffect } from "react";
 import { fetchPartyById } from "@/store/slices/party/partygetId";
 import { clearParty } from "@/store/slices/party/partygetId";
@@ -15,20 +14,42 @@ import { clearParty } from "@/store/slices/party/partygetId";
 export default function DoctorDetail() {
   const { id } = useParams();
 
-  const dispatch = useDispatch();
-  const { data: party, loading, error } = useSelector((state: RootState) => state.partyById);
+  const dispatch = useAppDispatch();
+  const { data: party, loading, error } = useAppSelector((state) => state.partyById);
 
   const partyData = party || {};
 
   useEffect(() => {
     if (id) {
-      dispatch(fetchPartyById(id));
+      dispatch(fetchPartyById(id as string));
     }
 
     return () => {
       dispatch(clearParty()); // cleanup when leaving page
     };
   }, [dispatch, id]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-[70vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[70vh] gap-4">
+        <p className="text-red-500 font-semibold">{error}</p>
+        <button
+          onClick={() => id && dispatch(fetchPartyById(id as string))}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-12 gap-6">
@@ -54,7 +75,6 @@ export default function DoctorDetail() {
 
       {/* Bottom - Plans Table */}
       <div className="col-span-12 bg-(--background) rounded-8 px-3 py-1 shadow-soft border border-gray-200">
-        {/* <TableHeader campHeading={"Plans"} filterT={false} /> */}
         <DoctordetailDrop id={id} />
       </div>
     </div>

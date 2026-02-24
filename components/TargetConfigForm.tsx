@@ -65,7 +65,7 @@ export default function TargetConfigForm({
             value={selectedTeam}
             onChange={onTeamChange}
             options={targetTeams?.map((team: any) => ({ value: team.id, label: team.name }))}
-            placeholder="e.g, Endo-Care North"
+            placeholder="Select team"
             required
             error={errors.team}
             disabled={isEditMode}
@@ -84,7 +84,7 @@ export default function TargetConfigForm({
                 ? `${user.firstName} ${user.lastName}`
                 : user.fullName || user.userName || user.email,
             }))}
-            placeholder="Select Sales Rep"
+            placeholder="Select sales rep"
             required
             disabled={isEditMode}
           />
@@ -97,7 +97,7 @@ export default function TargetConfigForm({
             value={targetMonthValue || ""}
             onChange={onMonthChange}
             options={monthOptions}
-            placeholder="Select Month"
+            placeholder="Select month"
             required
             error={errors.month}
             disabled={isEditMode}
@@ -112,7 +112,7 @@ export default function TargetConfigForm({
           name="areaManager"
           value={areaManager}
           onChange={() => {}}
-          placeholder="e.g. Abdul Aziz Warisi"
+          placeholder="N/A"
           readOnly
         />
 
@@ -121,7 +121,7 @@ export default function TargetConfigForm({
           name="channelName"
           value={channelName}
           onChange={() => {}}
-          placeholder="e.g. Chain Pharmacy"
+          placeholder="N/A"
           readOnly
         />
 
@@ -130,7 +130,7 @@ export default function TargetConfigForm({
           name="territory"
           value={territoryPulseCode}
           onChange={() => {}}
-          placeholder="e.g. T1"
+          placeholder="N/A"
           readOnly
         />
       </div>
