@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { FormSelect } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
+import { useRouter } from "next/navigation";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getTeamAll } from "@/store/slices/team/getTeamAllSlice";
@@ -19,6 +20,7 @@ import { toast } from "sonner";
 import { conflictResolutionSchema } from "@/validations/targetValidation";
 
 export default function TerritoryConflictsPage() {
+  const router = useRouter();
   const [selectedTeam, setSelectedTeam] = useState("");
   const dispatch = useAppDispatch();
   const { teams } = useAppSelector((state) => state.teamAll);
@@ -272,6 +274,7 @@ export default function TerritoryConflictsPage() {
             size="lg"
             rounded="full"
             className="px-8 border-(--primary) text-(--primary) hover:bg-(--primary-0) hover:text-(--primary)"
+            onClick={() => router.back()}
           >
             Discard
           </Button>

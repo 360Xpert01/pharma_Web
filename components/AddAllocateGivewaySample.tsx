@@ -338,7 +338,7 @@ export default function AddAllocateGivewaySample() {
         {/* Footer Actions */}
         <div className="flex justify-end gap-4 pt-6 mt-8">
           <button
-            onClick={handleDiscard}
+            onClick={() => router.back()}
             disabled={allocateLoading}
             className="px-8 py-3 border border-(--gray-3) text-(--gray-7) rounded-8 hover:bg-(--gray-0) transition cursor-pointer disabled:opacity-50"
           >
