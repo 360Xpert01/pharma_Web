@@ -4,8 +4,6 @@ import React, { useState, useEffect } from "react";
 import { Plus, Save } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { createGiveaway, resetGiveawayState } from "@/store/slices/giveaway/createGiveawaySlice";
-// You must implement these slices:
-// getGiveawayById, updateGiveaway, and updateGiveawaySlice in your store
 import {
   updateGiveaway,
   resetUpdateGiveawayState,

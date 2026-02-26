@@ -7,9 +7,6 @@ import ByBrands from "./ByBrands";
 import ProductPreDoctor from "./ProductPerDoctor";
 import { useParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { useEffect } from "react";
-import { fetchPartyById } from "@/store/slices/party/partygetId";
-import { clearParty } from "@/store/slices/party/partygetId";
 
 export default function DoctorDetail() {
   const { id } = useParams();
@@ -18,16 +15,6 @@ export default function DoctorDetail() {
   const { data: party, loading, error } = useAppSelector((state) => state.partyById);
 
   const partyData = party || {};
-
-  useEffect(() => {
-    if (id) {
-      dispatch(fetchPartyById(id as string));
-    }
-
-    return () => {
-      dispatch(clearParty()); // cleanup when leaving page
-    };
-  }, [dispatch, id]);
 
   if (loading) {
     return (
