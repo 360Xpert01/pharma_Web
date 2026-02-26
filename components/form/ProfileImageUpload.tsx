@@ -59,7 +59,7 @@ export default function ProfileImageUpload({
           </div>
         ) : imagePreview ? (
           <>
-            <Image src={imagePreview} alt="Profile" fill className="object-cover" />
+            <Image src={imagePreview} alt="Profile" fill className="object-contain bg-white" />
             <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity" />
             <Button
               size="icon-lg"

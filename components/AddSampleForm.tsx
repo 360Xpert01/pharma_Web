@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 import { ProfileImageUpload, FormInput } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
 
 export default function AddSampleForm() {
+  const router = useRouter();
   const [image, setImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [sampleName, setSampleName] = useState("");
@@ -31,15 +33,7 @@ export default function AddSampleForm() {
   };
 
   const handleDiscard = () => {
-    setImage(null);
-    setImageFile(null);
-    setSampleName("");
-    setBrandName("");
-    setStrength("");
-    setDosageForm("");
-    setSampleQty("");
-    setThresholdValue("");
-    setDescription("");
+    router.back();
   };
 
   return (

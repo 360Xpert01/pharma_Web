@@ -66,6 +66,7 @@ import UpdateGiveawayForm from "@/components/UpdateGiveaway";
 import GiveawayForm from "@/components/GivewayForm";
 import UpdateDoctorForm from "@/components/UpdateDoctorForm";
 import ProductDetails from "@/components/ProducDetails";
+import GiveawayDetail from "@/components/GiveawayDetail";
 import TerritoryConflictsPage from "@/components/TerritoryConflictsPage";
 import TerritoryTable from "@/components/TerritoryTable";
 import TerritoryForm from "@/components/TerritoryForm";
@@ -151,6 +152,7 @@ export function DashboardContent({
   partyId,
   channelId,
   productDetailBtn,
+  giveawayDetail,
   pulseAddBtn,
   territoryConflicts,
   territoryTable,
@@ -634,6 +636,8 @@ export function DashboardContent({
         )}
 
         {productDetailBtn && <ProductDetails candidate={candidate} />}
+
+        {giveawayDetail && <GiveawayDetail />}
 
         {doctorDetail && <DoctorDetail />}
 

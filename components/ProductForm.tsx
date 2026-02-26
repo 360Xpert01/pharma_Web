@@ -436,7 +436,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
 
               {/* FOOTER ACTIONS */}
               <div className="flex justify-end gap-4 pt-6">
-                <Button variant="outline" size="lg" rounded="full">
+                <Button variant="outline" size="lg" rounded="full" onClick={() => router.back()}>
                   Discard
                 </Button>
                 <Button
