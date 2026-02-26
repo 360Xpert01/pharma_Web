@@ -416,7 +416,7 @@ export default function AddNewRoleForm() {
 
         {/* Footer Buttons */}
         <div className="flex justify-end gap-4 pt-8">
-          <Button variant="outline" size="lg" rounded="full">
+          <Button variant="outline" size="lg" rounded="full" onClick={() => router.back()}>
             Discard
           </Button>
           <Button

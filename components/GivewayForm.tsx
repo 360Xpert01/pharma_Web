@@ -4,13 +4,14 @@ import React, { useState, useEffect } from "react";
 import { Plus, Save } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { createGiveaway, resetGiveawayState } from "@/store/slices/giveaway/createGiveawaySlice";
-// You must implement these slices:
-// getGiveawayById, updateGiveaway, and updateGiveawaySlice in your store
 import {
   updateGiveaway,
   resetUpdateGiveawayState,
 } from "@/store/slices/giveaway/updateGiveawaySlice";
-import { getGiveawayById } from "@/store/slices/giveaway/getGiveawayByIdSlice";
+import {
+  getGiveawayById,
+  resetGetGiveawayByIdState,
+} from "@/store/slices/giveaway/getGiveawayByIdSlice";
 import {
   generatePrefix,
   resetGeneratePrefixState,
@@ -83,12 +84,16 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
       dispatch(generatePrefix({ entity: "Giveaway" }));
     }
     if (mode === "update" && giveawayId) {
+      setImage(null);
       dispatch(getGiveawayById(giveawayId));
     }
     return () => {
       dispatch(resetGeneratePrefixState());
       dispatch(resetGiveawayState());
-      if (mode === "update") dispatch(resetUpdateGiveawayState());
+      if (mode === "update") {
+        dispatch(resetUpdateGiveawayState());
+        dispatch(resetGetGiveawayByIdState());
+      }
       dispatch(resetUploadState());
     };
   }, [mode, giveawayId, dispatch]);
@@ -209,15 +214,7 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
 
   // Discard/reset
   const handleDiscard = () => {
-    setName("");
-    setCategory("");
-    setProductName("");
-    setDescription("");
-    setUnits(1);
-    setLegacyCode("");
-    setImage(null);
-    setValidationErrors({});
-    if (mode === "add") setPulseCode("");
+    router.back();
   };
 
   return (

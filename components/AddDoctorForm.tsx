@@ -325,7 +325,6 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
                       clearFieldError(`locations.${index}.bricks`);
                     }}
                     options={[
-                      { value: "", label: "Select Brick" },
                       ...bricks.map((b) => ({
                         value: b.id,
                         label: b.name,

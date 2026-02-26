@@ -100,6 +100,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
   useEffect(() => {
     if (isUpdateMode && userId) {
       // Update mode: Fetch existing user data
+      setImagePreview(null);
       dispatch(getUserById(userId));
     } else if (!isUpdateMode) {
       // Add mode: Generate prefix

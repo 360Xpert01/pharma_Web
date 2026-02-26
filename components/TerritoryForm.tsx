@@ -140,7 +140,7 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
   };
 
   const handleCancel = () => {
-    router.push("/dashboard/territory-Management");
+    router.back();
   };
 
   const isLoading =

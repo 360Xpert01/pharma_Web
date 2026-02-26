@@ -14,10 +14,11 @@ import {
 import { HierarchyNode } from "@/components/HierarchyNode";
 import { useTeamForm } from "@/hooks/user-team-form";
 
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 
 export default function TeamForm() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const teamId = searchParams.get("id");
   const mode = searchParams.get("mode") === "update" ? "update" : "add";
 
@@ -241,7 +242,7 @@ export default function TeamForm() {
 
         {/* Buttons */}
         <div className="flex justify-end gap-4 pt-6">
-          <Button variant="outline" size="lg" rounded="default">
+          <Button variant="outline" size="lg" rounded="default" onClick={() => router.back()}>
             Discard
           </Button>
           <Button
