@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { salesProgress } from "../app/data/mockData";
+import { salesProgress } from "../data/mockData";
 
 export default function SaleAndCalls() {
   return (

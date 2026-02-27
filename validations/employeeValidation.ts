@@ -31,9 +31,10 @@ export const employeeRegistrationSchema = z.object({
 
   fullAddress: z
     .string()
-    .min(1, { message: "Full address is required" })
     .max(500, { message: "Full address cannot exceed 500 characters" })
-    .transform((val) => val.trim()),
+    .transform((val) => val.trim())
+    .optional()
+    .or(z.literal("")),
 
   roleId: z.string().uuid({ message: "Invalid role selected" }).optional().or(z.literal("")),
 

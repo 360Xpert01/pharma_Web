@@ -206,12 +206,12 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
 
   // Form submission handler
   const handleSubmit = async () => {
+    console.log("ProductForm: handleSubmit called");
     // Transform SKUs to match API structure
     const productSkus = skus
       .filter((sku) => sku.trim())
       .map((sku) => ({
         sku: sku.trim(),
-        quantity: 0,
       }));
 
     // Prepare payload strictly matching the requested schema
@@ -228,10 +228,13 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
       productSkus,
     };
 
+    console.log("ProductForm: formData prepared", formData);
+
     // Validate using Zod schema
     const validation = productSchema.safeParse(formData);
 
     if (!validation.success) {
+      console.log("ProductForm: Validation failed", validation.error.format());
       const errors: Record<string, string> = {};
       validation.error.errors.forEach((err: any) => {
         const fieldName = err.path[0] as string;
@@ -245,13 +248,18 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
       return;
     }
 
+    console.log("ProductForm: Validation successful", validation.data);
+
     // Clear previous errors
     setValidationErrors({});
 
     // Dispatch create or update action based on mode
     if (mode === "edit" && productId) {
-      dispatch(updateProduct({ id: productId, ...validation.data }));
+      console.log("ProductForm: Dispatching updateProduct with ID", productId);
+      const { pulseCode, ...updateData } = validation.data;
+      dispatch(updateProduct({ id: productId, ...updateData }));
     } else {
+      console.log("ProductForm: Dispatching createProduct");
       dispatch(createProduct(validation.data));
     }
   };
