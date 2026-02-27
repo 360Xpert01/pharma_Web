@@ -14,19 +14,13 @@ interface UpdateEmployeePayload {
   fullAddress?: string; // Optional: max 500 chars
   roleId?: string; // Optional: UUID format
   mobileNumber?: string; // Optional: 10-15 digits only (no special chars)
-  pulseCode?: string; // Optional: max 100 chars
   empLegacyCode?: string; // Optional: max 100 chars
   profilePicture?: string; // Optional: URI format
   dob?: string; // Optional: YYYY-MM-DD format
   supervisorId?: string; // Optional: UUID format
   teamId?: string; // Optional: UUID format
   territoryId?: string; // Optional: UUID format
-  brickId?: string; // Optional: UUID format
   joiningDate?: string; // Optional: YYYY-MM-DD format
-  enableMobileAccess?: boolean;
-  mobileView?: string;
-  verifiedDevices?: string[]; // Optional: array of strings
-  blockedDevices?: string[]; // Optional: array of strings
 }
 
 interface UpdateEmployeeResponse {

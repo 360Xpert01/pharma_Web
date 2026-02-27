@@ -6,20 +6,18 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 // Types
 interface ProductSku {
   sku: string;
-  quantity: number;
 }
 
 interface UpdateProductPayload {
   id: string; // Product ID for the URL
-  pulseCode: string;
-  productCode: string;
   name: string;
   productCategoryId: string;
-  productFormula: string;
+  productCode?: string;
+  productFormula?: string;
   imageUrl?: string | null;
-  description: string;
-  status: "active" | "inactive";
-  productSkus: ProductSku[];
+  description?: string;
+  status?: "active" | "inactive";
+  productSkus?: ProductSku[];
 }
 
 interface UpdatedProduct {
@@ -74,7 +72,6 @@ export const updateProduct = createAsyncThunk<
 
     // Transform payload to handle null/empty values
     const transformedPayload: any = {
-      pulseCode: productData.pulseCode,
       productCode: productData.productCode,
       name: productData.name,
       productCategoryId: productData.productCategoryId,

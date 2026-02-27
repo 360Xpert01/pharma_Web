@@ -298,28 +298,35 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
     if (validatedData.fullAddress) payload.fullAddress = validatedData.fullAddress;
     if (validatedData.roleId) payload.roleId = validatedData.roleId;
 
-    // New fields (bypassing validation for now or assuming schema will be updated)
-    if (selectedTeamId) payload.teamId = selectedTeamId;
-    if (selectedTerritoryId) payload.territoryId = selectedTerritoryId;
+    // Use selected values directly if they exist, otherwise fallback to validatedData
+    // Ensure they are not empty strings to avoid UUID validation errors
+    const finalTeamId = selectedTeamId || validatedData.teamId;
+    if (finalTeamId) payload.teamId = finalTeamId;
+
+    const finalTerritoryId = selectedTerritoryId || validatedData.territoryId;
+    if (finalTerritoryId) payload.territoryId = finalTerritoryId;
+
+    const finalSupervisorId = selectedSupervisorId || validatedData.supervisorId;
+    if (finalSupervisorId) payload.supervisorId = finalSupervisorId;
+
     if (joiningDate) payload.joiningDate = joiningDate;
-    payload.enableMobileAccess = enableMobileAccess === "Enable";
-    if (enableMobileAccess === "Enable") {
-      payload.mobileView = mobileView;
-    }
-
-    // pulseCode can only be set during registration, not during update
-    if (!isUpdateMode && validatedData.pulseCode) {
-      payload.pulseCode = validatedData.pulseCode;
-    }
-
     if (validatedData.empLegacyCode) payload.empLegacyCode = validatedData.empLegacyCode;
     if (validatedData.profilePicture) payload.profilePicture = validatedData.profilePicture;
     if (validatedData.dob) payload.dob = validatedData.dob;
-    if (validatedData.supervisorId) payload.supervisorId = validatedData.supervisorId;
-    if (validatedData.teamId) payload.teamId = validatedData.teamId;
-    if (validatedData.territoryId) payload.territoryId = validatedData.territoryId;
-    if (validatedData.brickId) payload.brickId = validatedData.brickId;
-    if (validatedData.verifiedDevices) payload.verifiedDevices = validatedData.verifiedDevices;
+
+    // fields for registration only
+    if (!isUpdateMode) {
+      payload.enableMobileAccess = enableMobileAccess === "Enable";
+      if (enableMobileAccess === "Enable") {
+        payload.mobileView = mobileView;
+      }
+      if (validatedData.verifiedDevices) payload.verifiedDevices = validatedData.verifiedDevices;
+      // pulseCode and brickId can only be set during registration, not during update
+      if (validatedData.pulseCode) {
+        payload.pulseCode = validatedData.pulseCode;
+      }
+      if (finalTerritoryId) payload.brickId = finalTerritoryId;
+    }
 
     // Add status field (convert to lowercase for API)
     if (isUpdateMode) {
@@ -534,7 +541,6 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                   clearFieldError("fullAddress");
                 }}
                 placeholder="Enter full address"
-                required
                 error={getErrorMessage("fullAddress")}
               />
 
