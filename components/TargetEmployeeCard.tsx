@@ -104,7 +104,7 @@ export default function TargetEmployeeCard({ target, month }: TargetEmployeeCard
         {/* Employee Profile - 16% */}
         <div className="w-[16%] flex items-center gap-3 min-w-0">
           <Image
-            src={target.profilePicture || "/girlPic.svg"}
+            src={target.profilePicture || "/girlPic.png"}
             alt={target.employeeName}
             width={40}
             height={40}

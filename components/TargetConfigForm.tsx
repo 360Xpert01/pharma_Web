@@ -11,11 +11,12 @@ interface TargetConfigFormProps {
   targetMonthValue?: string;
   areaManager?: string;
   channelName?: string;
-  territory?: string;
+  territoryPulseCode?: string;
   onTeamChange: (value: string) => void;
   onSalesRepChange?: (value: string) => void;
   onMonthChange: (value: string) => void;
   errors?: Record<string, string>;
+  isEditMode?: boolean; // New prop to disable team and month in edit mode
 }
 
 export default function TargetConfigForm({
@@ -26,11 +27,12 @@ export default function TargetConfigForm({
   targetMonthValue,
   areaManager = "N/A",
   channelName = "N/A",
-  territory = "N/A",
+  territoryPulseCode = "N/A",
   onTeamChange,
   onSalesRepChange,
   onMonthChange,
   errors = {},
+  isEditMode = false,
 }: TargetConfigFormProps) {
   const monthOptions = [
     { value: "january-2026", label: "January 2026" },
@@ -63,9 +65,10 @@ export default function TargetConfigForm({
             value={selectedTeam}
             onChange={onTeamChange}
             options={targetTeams?.map((team: any) => ({ value: team.id, label: team.name }))}
-            placeholder="e.g, Endo-Care North"
+            placeholder="Select team"
             required
             error={errors.team}
+            disabled={isEditMode}
           />
         </div>
 
@@ -81,8 +84,9 @@ export default function TargetConfigForm({
                 ? `${user.firstName} ${user.lastName}`
                 : user.fullName || user.userName || user.email,
             }))}
-            placeholder="Select Sales Rep"
+            placeholder="Select sales rep"
             required
+            disabled={isEditMode}
           />
         </div>
 
@@ -93,9 +97,10 @@ export default function TargetConfigForm({
             value={targetMonthValue || ""}
             onChange={onMonthChange}
             options={monthOptions}
-            placeholder="Select Month"
+            placeholder="Select month"
             required
             error={errors.month}
+            disabled={isEditMode}
           />
         </div>
       </div>
@@ -107,7 +112,7 @@ export default function TargetConfigForm({
           name="areaManager"
           value={areaManager}
           onChange={() => {}}
-          placeholder="e.g. Abdul Aziz Warisi"
+          placeholder="N/A"
           readOnly
         />
 
@@ -116,16 +121,16 @@ export default function TargetConfigForm({
           name="channelName"
           value={channelName}
           onChange={() => {}}
-          placeholder="e.g. Chain Pharmacy"
+          placeholder="N/A"
           readOnly
         />
 
         <FormInput
           label="Territory"
           name="territory"
-          value={territory}
+          value={territoryPulseCode}
           onChange={() => {}}
-          placeholder="e.g. T1"
+          placeholder="N/A"
           readOnly
         />
       </div>

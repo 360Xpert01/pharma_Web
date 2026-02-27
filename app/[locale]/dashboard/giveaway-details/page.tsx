@@ -23,7 +23,7 @@ export default function DashboardPage() {
         btnAdd={"Add New Giveaway"}
         settingsRoute={"/dashboard/Giveaway-Form"}
         hideMetrics={true}
-        productDetailBtn={true}
+        giveawayDetail={true}
         ActiveOn={true}
         showTabs={true}
       />

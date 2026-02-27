@@ -7,7 +7,7 @@
 export interface TerritoryItem {
   id: string;
   pulseCode: string;
-  name: string;
+  name?: string;
   description: string;
   bricks?: Array<{
     id: string;
@@ -53,13 +53,16 @@ export interface TerritoryDeleteResponse {
 // Create/Update Payload
 export interface CreateTerritoryPayload {
   pulseCode: string;
-  name: string;
+  name?: string;
   description: string;
   bricks: string[]; // Array of brick IDs
 }
 
-export interface UpdateTerritoryPayload extends CreateTerritoryPayload {
+export interface UpdateTerritoryPayload {
   id: string;
+  name?: string;
+  description: string;
+  bricks: string[]; // Array of brick IDs
 }
 
 // API Request Params
@@ -67,4 +70,5 @@ export interface GetTerritoriesParams {
   page?: number;
   limit?: number;
   search?: string;
+  notassigned?: boolean;
 }

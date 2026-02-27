@@ -104,7 +104,7 @@ export default function AddCallPointForm() {
                 type="text"
                 value={generatedPrefix || ""}
                 onChange={() => {}}
-                placeholder={prefixLoading ? "Generating..." : "CP_000001"}
+                placeholder={prefixLoading ? "Generating..." : "Auto-generated"}
                 readOnly
                 error={prefixError || ""}
               />
@@ -118,7 +118,7 @@ export default function AddCallPointForm() {
                 type="text"
                 value={locationTitle}
                 onChange={setLocationTitle}
-                placeholder="e.g 360Xpert Solution"
+                placeholder="Enter location title"
               />
             </div>
 
@@ -130,7 +130,7 @@ export default function AddCallPointForm() {
                 type="text"
                 value={latitude}
                 onChange={setLatitude}
-                placeholder="e.g 24.924371"
+                placeholder="Enter latitude"
               />
             </div>
 
@@ -142,7 +142,7 @@ export default function AddCallPointForm() {
                 type="text"
                 value={longitude}
                 onChange={setLongitude}
-                placeholder="e.g 67.084682"
+                placeholder="Enter longitude"
               />
             </div>
 

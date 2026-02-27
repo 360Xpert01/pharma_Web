@@ -25,7 +25,6 @@ const defaultFilters: FilterConfig[] = [
   {
     label: "Role",
     options: [
-      { label: "All Roles", value: "all" },
       { label: "Admin", value: "admin" },
       { label: "Manager", value: "manager" },
       { label: "Sales Rep", value: "sales_rep" },
@@ -36,7 +35,6 @@ const defaultFilters: FilterConfig[] = [
   {
     label: "Status",
     options: [
-      { label: "All Status", value: "all" },
       { label: "Active", value: "active" },
       { label: "Inactive", value: "inactive" },
       { label: "Pending", value: "pending" },

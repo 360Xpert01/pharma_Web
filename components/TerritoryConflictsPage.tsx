@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { FormSelect } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
+import { useRouter } from "next/navigation";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getTeamAll } from "@/store/slices/team/getTeamAllSlice";
@@ -10,15 +11,31 @@ import {
   getTeamConflicts,
   resetTeamConflictsState,
 } from "@/store/slices/team/getTeamConflictsSlice";
+import {
+  targetAllocation,
+  resetTargetAllocationState,
+} from "@/store/slices/target/targetAllocationSlice";
 import { useEffect } from "react";
+import { toast } from "sonner";
+import { conflictResolutionSchema } from "@/validations/targetValidation";
 
 export default function TerritoryConflictsPage() {
+  const router = useRouter();
   const [selectedTeam, setSelectedTeam] = useState("");
   const dispatch = useAppDispatch();
   const { teams } = useAppSelector((state) => state.teamAll);
   const { data: teamConflictData, loading: conflictLoading } = useAppSelector(
     (state) => state.teamConflicts
   );
+  const {
+    loading: resolveLoading,
+    success: resolveSuccess,
+    error: resolveError,
+    message: resolveMessage,
+  } = useAppSelector((state) => state.targetAllocation);
+
+  // Validation errors state
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     dispatch(getTeamAll());
@@ -32,6 +49,27 @@ export default function TerritoryConflictsPage() {
     }
   }, [selectedTeam, dispatch]);
 
+  // Handle resolve success
+  useEffect(() => {
+    if (resolveSuccess && resolveMessage) {
+      toast.success("Success", { description: resolveMessage });
+      dispatch(resetTargetAllocationState());
+      setValidationErrors({});
+      // Refresh conflicts
+      if (selectedTeam) {
+        dispatch(getTeamConflicts(selectedTeam));
+      }
+    }
+  }, [resolveSuccess, resolveMessage, dispatch, selectedTeam]);
+
+  // Handle resolve error
+  useEffect(() => {
+    if (resolveError) {
+      toast.error("Error", { description: resolveError });
+      dispatch(resetTargetAllocationState());
+    }
+  }, [resolveError, dispatch]);
+
   // Local state to manage input shares before saving
   const [localShares, setLocalShares] = useState<Record<string, Record<string, string>>>({});
 
@@ -43,6 +81,70 @@ export default function TerritoryConflictsPage() {
         [territoryId]: value,
       },
     }));
+    clearBrickError(brickId);
+  };
+  const getBrickTotalPercentage = (conflict: any) => {
+    const shares = localShares[conflict.brickId] || {};
+    let total = 0;
+    conflict.territories.forEach((t: any) => {
+      const value = shares[t.territoryId] ?? t.percentage;
+      total += parseFloat(value) || 0;
+    });
+    return total;
+  };
+
+  const getErrorMessage = (brickId: string) => validationErrors[brickId] || "";
+
+  const clearBrickError = (brickId: string) => {
+    if (validationErrors[brickId]) {
+      setValidationErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[brickId];
+        return newErrors;
+      });
+    }
+  };
+
+  const handleResolveConflicts = () => {
+    if (!selectedTeam || !teamConflictData) return;
+
+    const bricksPayload = teamConflictData.conflicts.map((conflict) => ({
+      brickId: conflict.brickId,
+      allocations: conflict.territories.map((t) => ({
+        territoryId: t.territoryId,
+        percentage: parseFloat(localShares[conflict.brickId]?.[t.territoryId] ?? t.percentage) || 0,
+      })),
+    }));
+
+    const payload = {
+      teamId: selectedTeam,
+      bricks: bricksPayload,
+    };
+
+    // Zod Validation
+    const validation = conflictResolutionSchema.safeParse(payload);
+
+    if (!validation.success) {
+      const errors: Record<string, string> = {};
+      validation.error.errors.forEach((err) => {
+        // err.path looks like ["bricks", 0, "allocations"] or ["bricks", 0]
+        if (err.path[0] === "bricks" && typeof err.path[1] === "number") {
+          const brickIndex = err.path[1];
+          const brickId = teamConflictData.conflicts[brickIndex].brickId;
+          if (!errors[brickId]) {
+            errors[brickId] = err.message;
+          }
+        } else if (err.path[0] === "teamId") {
+          errors.team = err.message;
+        }
+      });
+
+      setValidationErrors(errors);
+      return;
+    }
+
+    setValidationErrors({});
+    dispatch(targetAllocation(payload));
   };
 
   const conflicts = teamConflictData?.conflicts || [];
@@ -105,9 +207,9 @@ export default function TerritoryConflictsPage() {
                         {conflict.brickName}
                       </div>
                       <div
-                        className={`t-h1 font-bold ${conflict.isResolved ? "text-(--success)" : "text-(--destructive)"}`}
+                        className={`t-h1 font-bold ${getBrickTotalPercentage(conflict) === 100 ? "text-(--success)" : "text-(--destructive)"}`}
                       >
-                        {conflict.totalPercentage}%
+                        {getBrickTotalPercentage(conflict)}%
                       </div>
                     </div>
 
@@ -118,7 +220,9 @@ export default function TerritoryConflictsPage() {
                           key={t.territoryId}
                           className="bg-(--gray-0) border border-(--gray-1) rounded-8 p-4 flex items-center justify-between"
                         >
-                          <span className="font-medium text-(--gray-9)">{t.territoryName}</span>
+                          <span className="font-medium text-(--gray-9)">
+                            {t.territoryPulseCode}
+                          </span>
                           <div className="w-16 h-8 bg-white rounded-8 border border-(--gray-1) flex items-center justify-center px-1">
                             <input
                               type="text"
@@ -144,10 +248,15 @@ export default function TerritoryConflictsPage() {
                         </span>
                       </div>
                     ) : (
-                      <div className="bg-(--destructive-0) rounded-8 px-4 py-3 flex items-center gap-3">
+                      <div
+                        className={`rounded-8 px-4 py-3 flex items-center gap-3 ${getErrorMessage(conflict.brickId) ? "bg-(--destructive-0)" : "bg-(--destructive-0)"}`}
+                      >
                         <AlertCircle className="w-5 h-5 text-(--destructive)" />
                         <span className="font-medium text-xs text-(--destructive)">
-                          Conflicts in Sales Allocation
+                          {getErrorMessage(conflict.brickId) ||
+                            (getBrickTotalPercentage(conflict) === 0
+                              ? "Conflicts In Sales Allocation"
+                              : `Current Allocation: ${getBrickTotalPercentage(conflict)}% (Must be 100%)`)}
                         </span>
                       </div>
                     )}
@@ -165,10 +274,19 @@ export default function TerritoryConflictsPage() {
             size="lg"
             rounded="full"
             className="px-8 border-(--primary) text-(--primary) hover:bg-(--primary-0) hover:text-(--primary)"
+            onClick={() => router.back()}
           >
             Discard
           </Button>
-          <Button variant="primary" size="lg" rounded="full" className="px-10 shadow-soft">
+          <Button
+            variant="primary"
+            size="lg"
+            rounded="full"
+            className="px-10 shadow-soft"
+            onClick={handleResolveConflicts}
+            loading={resolveLoading}
+            disabled={resolveLoading || !selectedTeam || conflicts.length === 0}
+          >
             Resolve Conflicts
           </Button>
         </div>

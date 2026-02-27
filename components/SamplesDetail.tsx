@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 
 import { useAppDispatch } from "@/store";
+import ImageWithFallback from "./shared/ImageWithFallback";
 
 export default function SamplesDetail() {
   const searchParams = useSearchParams();
@@ -58,12 +59,13 @@ export default function SamplesDetail() {
                 {/* Left: Product Info */}
                 <div className="flex items-center gap-3 min-w-[140px]">
                   <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
-                    <Image
-                      src={sample.imageUrl || "/capMan.svg"}
+                    <ImageWithFallback
+                      src={sample.imageUrl}
                       alt={sample.name}
                       width={48}
                       height={48}
                       className="object-contain"
+                      fallbackSrc="/images/MedicinePlaceholder.svg"
                     />
                   </div>
                   <div className="overflow-hidden">

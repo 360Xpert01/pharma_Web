@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import ImageWithFallback from "@/components/shared/ImageWithFallback";
 import { useRouter } from "next/navigation";
 import { ColumnDef } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
@@ -105,19 +106,14 @@ export default function MedicineTable({
       accessorKey: "imageUrl",
       cell: ({ row }) => (
         <div className="w-12 h-12 rounded-8 overflow-hidden ring-2 ring-[var(--gray-2)]">
-          {row.original.imageUrl ? (
-            <Image
-              src={row.original.imageUrl}
-              alt={row.original.name}
-              width={48}
-              height={48}
-              className="object-cover w-full h-full"
-            />
-          ) : (
-            <div className="w-full h-full bg-[var(--gray-2)] flex items-center justify-center">
-              <span className="text-xs text-[var(--gray-5)]">No Image</span>
-            </div>
-          )}
+          <ImageWithFallback
+            src={row.original.imageUrl}
+            alt={row.original.name}
+            width={36}
+            height={36}
+            className="rounded-8 flex-shrink-0 object-contain w-9 h-9 border border-gray-100 p-0.5"
+            fallbackSrc="/images/MedicinePlaceholder.svg"
+          />
         </div>
       ),
     },

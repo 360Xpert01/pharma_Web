@@ -41,6 +41,7 @@ export interface PartyItem {
     date_of_birth?: string;
   };
   locations?: Array<{
+    region_description?: string;
     city?: string;
     address?: string;
     country?: string;

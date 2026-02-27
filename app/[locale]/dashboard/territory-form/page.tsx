@@ -11,6 +11,7 @@ export default function TerritoryFormPage() {
         hideHeader={true}
         hideMetrics={true}
         territoryForm={true}
+        btnTrue={true}
       />
     </div>
   );

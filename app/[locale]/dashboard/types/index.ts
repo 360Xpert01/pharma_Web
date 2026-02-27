@@ -185,6 +185,7 @@ export interface DashboardProps {
   partyId?: string | null;
   channelId?: string | null;
   productDetailBtn?: boolean;
+  giveawayDetail?: boolean;
   pulseAddBtn?: boolean;
   territoryConflicts?: boolean;
   territoryTable?: boolean;

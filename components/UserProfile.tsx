@@ -3,7 +3,7 @@ import Image from "next/image";
 import { FC } from "react";
 import { Edit, Plus, PencilLine } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button/button";
+import ImageWithFallback from "./shared/ImageWithFallback";
 
 interface Candidate {
   name: string;
@@ -33,16 +33,20 @@ const UserProfile: FC<UserProfileProps> = ({ candidate, productData }) => {
   const profilePicture = productData?.imageUrl || candidate.profilePicture;
   const Name = productData?.name || candidate.name;
 
+  const isProduct = !!productData;
+  const fallbackSrc = isProduct ? "/images/MedicinePlaceholder.svg" : "/girlPic.png";
+
   return (
     <div className="w-full bg-background rounded-8 px-6 py-8 shadow-soft border border-gray-1 flex flex-col items-center">
       {/* Profile Image */}
       <div className="relative w-36 h-36 rounded-8 overflow-hidden mb-4">
-        <Image
-          src={profilePicture || "/capMan.svg"}
+        <ImageWithFallback
+          src={profilePicture}
           alt={name}
           width={128}
           height={128}
-          className="object-cover w-full h-full"
+          className="object-contain w-full h-full p-2"
+          fallbackSrc={fallbackSrc}
         />
       </div>
 

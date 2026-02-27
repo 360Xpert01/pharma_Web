@@ -1,4 +1,4 @@
-import { mostSold } from "../app/data/mockData";
+import { mostSold } from "../data/mockData";
 
 interface MostSoldProductsProps {
   weight?: string | number;

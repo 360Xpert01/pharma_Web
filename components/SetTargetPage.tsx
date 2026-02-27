@@ -1,11 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import TargetConfigForm from "./TargetConfigForm";
-import ManagerSection, { Manager } from "./ManagerSection";
 import ConflictModal from "./ConflictModal";
 import { Button } from "@/components/ui/button/button";
-import { mockManagers } from "@/data/targetData";
 import { getTeamAll } from "@/store/slices/team/getTeamAllSlice";
 import {
   getTeamTargetProducts,
@@ -19,8 +17,7 @@ import type { CreateTargetPayload } from "@/types/target";
 import { targetSchema } from "@/validations/targetValidation";
 import DefineTargetSection from "./DefineTargetSection";
 import toast from "react-hot-toast";
-import { useRouter, useParams, useSearchParams } from "next/navigation";
-import { getTargetById, resetTargetByIdState } from "@/store/slices/target/getTargetByIdSlice";
+import { useRouter, useParams } from "next/navigation";
 
 export default function SetTargetPage() {
   // Form state
@@ -31,9 +28,6 @@ export default function SetTargetPage() {
   const router = useRouter();
   const params = useParams();
   const locale = params?.locale || "en";
-  const searchParams = useSearchParams();
-  const targetId = searchParams.get("targetId");
-
   // Redux selectors
   const { teams } = useAppSelector((state) => state.teamAll);
   const { data: teamTargetData, loading: teamTargetLoading } = useAppSelector(
@@ -49,24 +43,12 @@ export default function SetTargetPage() {
     error: createError,
     message: createMessage,
   } = useAppSelector((state) => state.createTarget);
-  const {
-    data: targetData,
-    loading: targetLoading,
-    success: targetSuccess,
-  } = useAppSelector((state) => state.targetById);
-
-  // Manager selection state (keeping for backward compatibility with UI)
-  const [selectedManager1, setSelectedManager1] = useState("manager1");
-  const [selectedManager2, setSelectedManager2] = useState("manager2");
 
   // New state for SKU targets: { [skuId: string]: string }
   const [skuTargets, setSkuTargets] = useState<Record<string, string>>({});
 
   // Validation errors state
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
-
-  // Helper function to get error message for a field
-  const getErrorMessage = (fieldName: string) => validationErrors[fieldName] || "";
 
   // Helper function to clear error for a specific field when user types
   const clearFieldError = (fieldName: string) => {
@@ -88,93 +70,11 @@ export default function SetTargetPage() {
   // Use the one that has products populated
   const products = teamTargetData?.products || [];
 
-  // Mock data imported from data file (keep for now if no real data)
-  const [managers, setManagers] = useState<Manager[]>(mockManagers);
-
   // Fetch teams and roles on mount
   useEffect(() => {
     dispatch(getTeamAll());
     dispatch(getAllRoles());
-
-    return () => {
-      dispatch(resetTargetByIdState());
-    };
   }, [dispatch]);
-
-  // Fetch target data if targetId is present
-  useEffect(() => {
-    if (targetId) {
-      dispatch(getTargetById(targetId));
-    }
-  }, [targetId, dispatch]);
-
-  // Populate form when target data is fetched
-  useEffect(() => {
-    if (targetSuccess && targetData) {
-      // Set team if available
-      if (targetData.teamId) {
-        setSelectedTeam(targetData.teamId);
-      } else if (targetData.team?.id) {
-        setSelectedTeam(targetData.team.id);
-      } else if (targetData.teamName) {
-        // Find team by name if ID is missing (not ideal but defensive)
-        const team = teams.find((t: any) => t.name === targetData.teamName);
-        if (team) setSelectedTeam(team.id);
-      }
-
-      // Format month and year back to the format expected by the form
-      const monthNames = [
-        "january",
-        "february",
-        "march",
-        "april",
-        "may",
-        "june",
-        "july",
-        "august",
-        "september",
-        "october",
-        "november",
-        "december",
-      ];
-
-      const month = targetData.month || targetData.targetMonth;
-      const year = targetData.year || targetData.targetYear;
-
-      if (month && year) {
-        const monthName =
-          typeof month === "number" ? monthNames[month - 1] : String(month).toLowerCase();
-        setTargetMonth(`${monthName}-${year}`);
-      }
-
-      // Map targets back to skuTargets state
-      const newSkuTargets: Record<string, string> = {};
-
-      // Case 1: Team-level targets (array of users)
-      if (Array.isArray(targetData.targets)) {
-        targetData.targets.forEach((userTarget: any) => {
-          if (Array.isArray(userTarget.productTargets)) {
-            userTarget.productTargets.forEach((pt: any) => {
-              if (pt.productSkuId) {
-                newSkuTargets[pt.productSkuId] = String(pt.targetValue || pt.targetPackets || "0");
-              }
-            });
-          }
-        });
-      }
-      // Case 2: Individual target (list of products directly)
-      else if (Array.isArray(targetData.products)) {
-        targetData.products.forEach((product: any) => {
-          const skuId = product.productSkuId || product.id || product.skuId;
-          if (skuId) {
-            newSkuTargets[skuId] = String(product.targetValue || product.targetPackets || "0");
-          }
-        });
-      }
-
-      setSkuTargets(newSkuTargets);
-    }
-  }, [targetSuccess, targetData, teams]);
 
   // Fetch team target products and users when team is selected
   useEffect(() => {
@@ -204,11 +104,10 @@ export default function SetTargetPage() {
   useEffect(() => {
     if (createSuccess) {
       toast.success(createMessage || "Target allocation created successfully!");
-      // Reset form
-      setManagers(mockManagers);
       dispatch(resetCreateTargetState());
+      router.push(`/${locale}/dashboard/target-listview`);
     }
-  }, [createSuccess, createMessage, dispatch]);
+  }, [createSuccess, createMessage, dispatch, router, locale]);
 
   // Handle API error
   useEffect(() => {
@@ -227,7 +126,7 @@ export default function SetTargetPage() {
     channelName: teamTargetData?.channelName || matchTeam?.channelName || "",
     callPoint: "No Callpoint available", // Not in target API
     areaManager: selectedRepData?.supervisorName || "Abdul Aziz Warisi",
-    territory: selectedRepData?.territoryName || "T1",
+    territoryPulseCode: selectedRepData?.territoryPulseCode || "N/A",
   };
 
   const handleSkuTargetChange = (skuId: string, value: string) => {
@@ -238,7 +137,6 @@ export default function SetTargetPage() {
   };
 
   const handleSetTarget = async () => {
-    // Parse month/year from targetMonth (assuming format like "january-2026", "2026-12", or month name)
     const currentYear = new Date().getFullYear();
     let month: number = 0;
     let year: number = currentYear;
@@ -317,7 +215,6 @@ export default function SetTargetPage() {
 
     try {
       await dispatch(createTarget(payload)).unwrap();
-      router.push(`/${locale}/dashboard/target-listview`);
     } catch (err) {
       console.error("Failed to create target:", err);
     }
@@ -334,7 +231,7 @@ export default function SetTargetPage() {
           targetMonthValue={targetMonth}
           areaManager={teamMetadata.areaManager}
           channelName={teamMetadata.channelName}
-          territory={teamMetadata.territory}
+          territoryPulseCode={teamMetadata.territoryPulseCode}
           onTeamChange={(val) => {
             setSelectedTeam(val);
             clearFieldError("team");
@@ -358,7 +255,14 @@ export default function SetTargetPage() {
 
         {/* Footer Action Buttons */}
         <div className="flex justify-end gap-4 pt-6">
-          <Button type="button" variant="outline" size="lg" rounded="full" className="px-6">
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            rounded="full"
+            className="px-6"
+            onClick={() => router.back()}
+          >
             Discard
           </Button>
           <Button
@@ -368,10 +272,10 @@ export default function SetTargetPage() {
             size="lg"
             rounded="full"
             className="px-8 shadow-soft"
-            disabled={createLoading || targetLoading || !selectedTeam || !targetMonth}
-            loading={createLoading || targetLoading}
+            disabled={createLoading || !selectedTeam || !targetMonth}
+            loading={createLoading}
           >
-            {createLoading ? "Submitting..." : targetId ? "Update Target" : "Set Target"}
+            {createLoading ? "Submitting..." : "Set Target"}
           </Button>
         </div>
       </div>

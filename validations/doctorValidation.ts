@@ -34,9 +34,8 @@ export const doctorSchema = z.object({
   locations: z
     .array(
       z.object({
-        city: z.string().min(1, { message: "City is required" }),
-        country: z.string().min(1, { message: "Country is required" }),
-        area: z.string().min(1, { message: "Area is required" }),
+        zone: z.string().min(1, { message: "Zone is required" }),
+        region: z.string().min(1, { message: "Region is required" }),
         bricks: z.string().min(1, { message: "Bricks is required" }),
         clinicName: z
           .string()
@@ -50,6 +49,14 @@ export const doctorSchema = z.object({
           from: z.string().min(1, { message: "From time is required" }),
           to: z.string().min(1, { message: "To time is required" }),
         }),
+        latitude: z
+          .union([z.string(), z.number()])
+          .optional()
+          .transform((val) => (typeof val === "string" ? parseFloat(val) : val)),
+        longitude: z
+          .union([z.string(), z.number()])
+          .optional()
+          .transform((val) => (typeof val === "string" ? parseFloat(val) : val)),
       })
     )
     .min(1, { message: "At least one location is required" }),

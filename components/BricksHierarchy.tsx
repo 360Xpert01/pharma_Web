@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   ChevronDown,
   ChevronRight,
@@ -10,6 +10,7 @@ import {
   Globe,
   Building2,
   Loader2,
+  Pencil,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { BrickItem } from "@/store/slices/brick/getBrickListSlice";
@@ -23,6 +24,7 @@ interface HierarchyNode {
   latitude?: number;
   longitude?: number;
   brickCode?: string;
+  description?: string;
   children?: HierarchyNode[];
 }
 
@@ -36,41 +38,86 @@ interface BrickNodeProps {
   item: HierarchyNode;
   level: number;
   addingId: string | null;
+  isExpanded: boolean;
+  expandedIds: Set<string>;
+  onToggleExpand: (id: string) => void;
   onAddChild?: (parentId: string, childType: GeoUnitType) => void;
   onCancelAdd?: () => void;
-  onCreateChild?: (parentId: string, type: GeoUnitType, name: string) => void;
+  onCreateChild?: (parentId: string, type: GeoUnitType, name: string, description: string) => void;
   onMoreOptions?: (itemId: string, itemType: GeoUnitType) => void;
+  editingId: string | null;
+  onEdit?: (itemId: string) => void;
+  onCancelEdit?: () => void;
+  onUpdate?: (id: string, type: GeoUnitType, name: string, description: string) => void;
 }
 
 const BrickNode: React.FC<BrickNodeProps> = ({
   item,
   level,
   addingId,
+  isExpanded,
+  expandedIds,
+  onToggleExpand,
   onAddChild,
   onCancelAdd,
   onCreateChild,
   onMoreOptions,
+  editingId,
+  onEdit,
+  onCancelEdit,
+  onUpdate,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
   const [newName, setNewName] = useState("");
+  const [newDescription, setNewDescription] = useState("");
 
   const hasChildren = item.children && item.children.length > 0;
   const isAddingToThis = addingId === item.id;
+  const isEditingThis = editingId === item.id;
 
-  // For dynamic type support, we determine next type based on CHILD_TYPE_MAP
+  useEffect(() => {
+    if (isEditingThis) {
+      setNewName(item.name);
+      setNewDescription(item.description || "");
+    } else if (isAddingToThis) {
+      setNewName("");
+      setNewDescription("");
+    }
+  }, [isEditingThis, isAddingToThis, item.name, item.description]);
+
   const childType = CHILD_TYPE_MAP[item.type];
   const canHaveChildren = childType !== null;
 
   const handleCreate = () => {
     if (newName.trim() && childType) {
-      onCreateChild?.(item.id, childType, newName.trim());
+      onCreateChild?.(item.id, childType, newName.trim(), newDescription.trim());
       setNewName("");
+      setNewDescription("");
+    }
+  };
+
+  const handleUpdate = () => {
+    if (newName.trim()) {
+      onUpdate?.(item.id, item.type, newName.trim(), newDescription.trim());
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") handleCreate();
-    if (e.key === "Escape") onCancelAdd?.();
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (isEditingThis) {
+        handleUpdate();
+      } else {
+        handleCreate();
+      }
+    }
+    if (e.key === "Escape") {
+      e.preventDefault();
+      if (isEditingThis) {
+        onCancelEdit?.();
+      } else {
+        onCancelAdd?.();
+      }
+    }
   };
 
   const getTypeIcon = (type: GeoUnitType) => {
@@ -131,8 +178,9 @@ const BrickNode: React.FC<BrickNodeProps> = ({
         <div className="flex items-center">
           {hasChildren ? (
             <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="w-6 h-6 flex items-center justify-center hover:bg-[var(--gray-2)] rounded transition-colors z-10 mr-2 cursor-pointer"
+              type="button"
+              onClick={() => onToggleExpand(item.id)}
+              className="w-6 h-6 flex items-center justify-center hover:bg-[var(--gray-2)] rounded-8 transition-colors z-10 mr-2 cursor-pointer"
             >
               {isExpanded ? (
                 <ChevronDown className="w-4 h-4 text-[var(--gray-6)]" />
@@ -155,34 +203,95 @@ const BrickNode: React.FC<BrickNodeProps> = ({
         </div>
 
         <div className="flex-1 min-w-0 flex flex-col">
-          <span className="font-bold text-(--gray-9) truncate" title={item.name}>
-            {item.name}
-          </span>
-          <span className="text-xs text-(--gray-5) capitalize">{item.type}</span>
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="font-bold text-(--gray-9) truncate" title={item.name}>
+              {item.name}
+            </span>
+            <span className="text-xs text-(--gray-5) flex-shrink-0">
+              ({item.type.charAt(0).toUpperCase() + item.type.slice(1)})
+            </span>
+          </div>
+          {item.description && (
+            <span className="text-xs text-(--gray-4) truncate" title={item.description}>
+              {item.description}
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
           {canHaveChildren && (
             <button
-              className="h-10 w-10 rounded-8 bg-[var(--primary)] hover:bg-[var(--primary)]/80 text-[var(--light)] border-none shadow-soft cursor-pointer flex items-center justify-center transition-colors"
-              onClick={() => {
-                setIsExpanded(true);
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (!isExpanded) onToggleExpand(item.id);
                 childType && onAddChild?.(item.id, childType);
               }}
-              title={`Add child`}
+              className="w-8 h-8 flex items-center justify-center bg-(--primary) text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
+              title={`Add ${childType}`}
             >
-              <Plus className="w-5 h-5" />
+              <Plus className="w-4 h-4" />
             </button>
           )}
-
           <button
-            className="w-9 h-9 flex items-center justify-center hover:bg-[var(--gray-1)] rounded-8 transition-colors cursor-pointer"
-            onClick={() => onMoreOptions?.(item.id, item.type)}
+            type="button"
+            className="w-8 h-8 flex items-center justify-center bg-(--primary) text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
+            onClick={() => onEdit?.(item.id)}
+            title="Edit"
           >
-            <MoreVertical className="w-4 h-4 text-[var(--gray-6)]" />
+            <Pencil className="w-4 h-4" />
           </button>
         </div>
       </div>
+
+      {isEditingThis && (
+        <div className="mt-2 flex items-center gap-3 border border-[var(--primary)] rounded-8 p-4 bg-[var(--background)] shadow-soft animate-in slide-in-from-top-2 duration-200">
+          <div
+            className={cn(
+              "w-10 h-10 rounded-8 flex items-center justify-center",
+              getTypeStyles(item.type)
+            )}
+          >
+            <Icon className="w-5 h-5" />
+          </div>
+          <div className="flex-1 flex flex-col gap-1">
+            <input
+              autoFocus
+              type="text"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={`Enter ${item.type} Name`}
+              className="w-full bg-transparent border-none outline-none text-[var(--gray-9)] font-semibold placeholder:text-[var(--gray-4)]"
+            />
+            <input
+              type="text"
+              value={newDescription}
+              onChange={(e) => setNewDescription(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Enter Description"
+              className="w-full bg-transparent border-none outline-none text-[var(--gray-5)] text-sm placeholder:text-[var(--gray-3)]"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={onCancelEdit}
+              className="px-3 py-1.5 text-sm text-[var(--gray-5)] hover:text-[var(--gray-7)] font-medium cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleUpdate}
+              disabled={!newName.trim()}
+              className="px-4 py-1.5 text-sm bg-[var(--primary)] text-[var(--light)] rounded-8 font-medium hover:bg-[var(--primary)]/90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            >
+              Update
+            </button>
+          </div>
+        </div>
+      )}
 
       {isExpanded && (
         <div className="relative mt-4 space-y-4">
@@ -196,7 +305,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({
                 className="absolute border-t-2 border-dashed border-[var(--gray-3)]"
                 style={{ left: "-24px", top: "36px", width: "24px" }}
               />
-              <div className="flex items-center gap-3 border border-[var(--primary)] rounded-8 p-4 bg-[var(--background)] shadow-soft animate-in slide-in-from-left-2 duration-200">
+              <div className="flex items-center gap-3 border bocorder-[var(--primary)] rounded-8 p-4 bg-[var(--background)] shadow-soft animate-in slide-in-from-left-2 duration-200">
                 <div
                   className={cn(
                     "w-10 h-10 rounded-8 flex items-center justify-center",
@@ -206,25 +315,35 @@ const BrickNode: React.FC<BrickNodeProps> = ({
                   {childType &&
                     React.createElement(getTypeIcon(childType), { className: "w-5 h-5" })}
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 flex flex-col gap-1">
                   <input
                     autoFocus
                     type="text"
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="Enter Tree Name"
+                    placeholder={`Enter ${childType === "brick" ? "Brick" : childType === "region" ? "Region" : "Zone"} Name`}
                     className="w-full bg-transparent border-none outline-none text-[var(--gray-9)] font-semibold placeholder:text-[var(--gray-4)]"
+                  />
+                  <input
+                    type="text"
+                    value={newDescription}
+                    onChange={(e) => setNewDescription(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Enter Description"
+                    className="w-full bg-transparent border-none outline-none text-[var(--gray-5)] text-sm placeholder:text-[var(--gray-3)]"
                   />
                 </div>
                 <div className="flex items-center gap-2">
                   <button
+                    type="button"
                     onClick={onCancelAdd}
                     className="px-3 py-1.5 text-sm text-[var(--gray-5)] hover:text-[var(--gray-7)] font-medium cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
+                    type="button"
                     onClick={handleCreate}
                     disabled={!newName.trim()}
                     className="px-4 py-1.5 text-sm bg-[var(--primary)] text-[var(--light)] rounded-8 font-medium hover:bg-[var(--primary)]/90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
@@ -243,10 +362,17 @@ const BrickNode: React.FC<BrickNodeProps> = ({
                 item={child}
                 level={level + 1}
                 addingId={addingId}
+                isExpanded={expandedIds.has(child.id)}
+                expandedIds={expandedIds}
+                onToggleExpand={onToggleExpand}
                 onAddChild={onAddChild}
                 onCancelAdd={onCancelAdd}
                 onCreateChild={onCreateChild}
                 onMoreOptions={onMoreOptions}
+                editingId={editingId}
+                onEdit={onEdit}
+                onCancelEdit={onCancelEdit}
+                onUpdate={onUpdate}
               />
             ))}
         </div>
@@ -263,9 +389,13 @@ interface BricksHierarchyProps {
   error?: string | null;
   onAddChild?: (parentId: string, childType: GeoUnitType) => void;
   onCancelAdd?: () => void;
-  onCreateChild?: (parentId: string, type: GeoUnitType, name: string) => void;
+  onCreateChild?: (parentId: string, type: GeoUnitType, name: string, description: string) => void;
   onMoreOptions?: (itemId: string, itemType: GeoUnitType) => void;
   addingId?: string | null;
+  editingId?: string | null;
+  onEdit?: (itemId: string) => void;
+  onCancelEdit?: () => void;
+  onUpdate?: (id: string, type: GeoUnitType, name: string, description: string) => void;
 }
 
 export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
@@ -279,7 +409,27 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
   onCreateChild,
   onMoreOptions,
   addingId = null,
+  editingId = null,
+  onEdit,
+  onCancelEdit,
+  onUpdate,
 }) => {
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+  const [rootAddName, setRootAddName] = useState("");
+  const [rootAddDescription, setRootAddDescription] = useState("");
+
+  const toggleExpand = (id: string) => {
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
   const hierarchyData = useMemo((): HierarchyNode[] => {
     // 1. Tag items and normalize they IDs/parentIds
     const allItems = [
@@ -325,6 +475,7 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
         id: id,
         name: item.name,
         type: type,
+        description: item.description,
         latitude: item.latitude,
         longitude: item.longitude,
         brickCode: item.brickCode,
@@ -416,25 +567,87 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
               <div className="w-10 h-10 rounded-8 flex items-center justify-center bg-[var(--chart-4)] text-[var(--light)]">
                 <Globe className="w-5 h-5" />
               </div>
-              <div className="flex-1">
+              <div className="flex-1 flex flex-col gap-1">
                 <input
                   autoFocus
                   type="text"
-                  placeholder="Enter Tree Name"
+                  placeholder="Enter Zone Name"
+                  value={rootAddName}
+                  onChange={(e) => setRootAddName(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter")
-                      onCreateChild?.("root", "zone", (e.target as HTMLInputElement).value);
-                    if (e.key === "Escape") onCancelAdd?.();
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      if (rootAddName.trim()) {
+                        onCreateChild?.(
+                          "root",
+                          "zone",
+                          rootAddName.trim(),
+                          rootAddDescription.trim()
+                        );
+                        setRootAddName("");
+                        setRootAddDescription("");
+                      }
+                    }
+                    if (e.key === "Escape") {
+                      e.preventDefault();
+                      onCancelAdd?.();
+                    }
                   }}
                   className="w-full bg-transparent border-none outline-none text-[var(--gray-9)] font-semibold placeholder:text-[var(--gray-4)]"
+                />
+                <input
+                  type="text"
+                  placeholder="Enter Description"
+                  value={rootAddDescription}
+                  onChange={(e) => setRootAddDescription(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      if (rootAddName.trim()) {
+                        onCreateChild?.(
+                          "root",
+                          "zone",
+                          rootAddName.trim(),
+                          rootAddDescription.trim()
+                        );
+                        setRootAddName("");
+                        setRootAddDescription("");
+                      }
+                    }
+                    if (e.key === "Escape") {
+                      e.preventDefault();
+                      onCancelAdd?.();
+                    }
+                  }}
+                  className="w-full bg-transparent border-none outline-none text-[var(--gray-5)] text-sm placeholder:text-[var(--gray-3)]"
                 />
               </div>
               <div className="flex items-center gap-2">
                 <button
+                  type="button"
                   onClick={onCancelAdd}
                   className="px-3 py-1.5 text-sm text-[var(--gray-5)] hover:text-[var(--gray-7)] font-medium cursor-pointer"
                 >
                   Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (rootAddName.trim()) {
+                      onCreateChild?.(
+                        "root",
+                        "zone",
+                        rootAddName.trim(),
+                        rootAddDescription.trim()
+                      );
+                      setRootAddName("");
+                      setRootAddDescription("");
+                    }
+                  }}
+                  disabled={!rootAddName.trim()}
+                  className="px-4 py-1.5 text-sm bg-[var(--primary)] text-[var(--light)] rounded-8 font-medium hover:bg-[var(--primary)]/90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  Create
                 </button>
               </div>
             </div>
@@ -446,10 +659,17 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
             item={item}
             level={0}
             addingId={addingId}
+            isExpanded={expandedIds.has(item.id)}
+            expandedIds={expandedIds}
+            onToggleExpand={toggleExpand}
             onAddChild={onAddChild}
             onCancelAdd={onCancelAdd}
             onCreateChild={onCreateChild}
             onMoreOptions={onMoreOptions}
+            editingId={editingId}
+            onEdit={onEdit}
+            onCancelEdit={onCancelEdit}
+            onUpdate={onUpdate}
           />
         ))}
       </div>

@@ -1,5 +1,5 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import { brandData } from "../app/data/mockData";
+import { brandData } from "../data/mockData";
 interface ByBrandsProps {
   height?: number | string;
 }

@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { fetchUserGiveawaysAllocation } from "@/store/slices/UserGiveaways/userGiveawaysSlice";
 import { RootState, useAppDispatch } from "@/store";
+import ImageWithFallback from "./shared/ImageWithFallback";
 
 export default function GiveawaysDetail() {
   const searchParams = useSearchParams();
@@ -57,12 +58,13 @@ export default function GiveawaysDetail() {
                 {/* Left: Giveaway Info */}
                 <div className="flex items-center gap-3 min-w-[140px]">
                   <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-gray-50 border border-gray-100">
-                    <Image
-                      src={giveaway.imageUrl || "/capMan.svg"}
+                    <ImageWithFallback
+                      src={giveaway.imageUrl}
                       alt={giveaway.name}
                       width={48}
                       height={48}
                       className="object-contain p-1"
+                      fallbackSrc="/images/MedicinePlaceholder.svg"
                     />
                   </div>
                   <div className="overflow-hidden">

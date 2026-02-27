@@ -17,6 +17,7 @@ interface UserData {
   empLegacyCode?: string | null;
   profilePicture?: string | null;
   dob?: string | null;
+  dateOfBirth?: string | null;
   supervisorId?: string;
   status?: string;
   created_at?: string;
@@ -29,19 +30,30 @@ interface UserData {
     id: string;
     firstName: string;
     lastName: string;
-    role: {
+    role?: {
       roleName: string;
     };
   };
   teams?: {
     id: string;
     name: string;
-    channel: {
+    channel?: {
       id: string;
       name: string;
     };
   }[];
+  teamId?: string;
+  territoryId?: string;
+  brickId?: string | null;
+  joiningDate?: string | null;
+  enableMobileAccess?: boolean;
+  mobileView?: string;
   totalCalls?: number;
+  territory?: {
+    id: string;
+    pulseCode: string;
+    description: string;
+  };
 }
 
 interface GetUserByIdResponse {

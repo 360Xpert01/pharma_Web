@@ -206,12 +206,12 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
 
   // Form submission handler
   const handleSubmit = async () => {
+    console.log("ProductForm: handleSubmit called");
     // Transform SKUs to match API structure
     const productSkus = skus
       .filter((sku) => sku.trim())
       .map((sku) => ({
         sku: sku.trim(),
-        quantity: 0,
       }));
 
     // Prepare payload strictly matching the requested schema
@@ -228,10 +228,13 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
       productSkus,
     };
 
+    console.log("ProductForm: formData prepared", formData);
+
     // Validate using Zod schema
     const validation = productSchema.safeParse(formData);
 
     if (!validation.success) {
+      console.log("ProductForm: Validation failed", validation.error.format());
       const errors: Record<string, string> = {};
       validation.error.errors.forEach((err: any) => {
         const fieldName = err.path[0] as string;
@@ -245,13 +248,18 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
       return;
     }
 
+    console.log("ProductForm: Validation successful", validation.data);
+
     // Clear previous errors
     setValidationErrors({});
 
     // Dispatch create or update action based on mode
     if (mode === "edit" && productId) {
-      dispatch(updateProduct({ id: productId, ...validation.data }));
+      console.log("ProductForm: Dispatching updateProduct with ID", productId);
+      const { pulseCode, ...updateData } = validation.data;
+      dispatch(updateProduct({ id: productId, ...updateData }));
     } else {
+      console.log("ProductForm: Dispatching createProduct");
       dispatch(createProduct(validation.data));
     }
   };
@@ -285,7 +293,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
                       : generatedPrefix || ""
                   }
                   onChange={() => {}}
-                  placeholder="PRD_001247"
+                  placeholder="Auto-generated"
                   required
                   readOnly
                   error={getErrorMessage("pulseCode")}
@@ -300,8 +308,8 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
                     setLegacyCode(value);
                     clearFieldError("productCode");
                   }}
-                  placeholder="001247"
-                  required
+                  placeholder="Enter product code"
+                  // required
                   error={getErrorMessage("productCode")}
                 />
               </div>
@@ -320,7 +328,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
                     value: cat.id,
                     label: cat.productCategory,
                   }))}
-                  placeholder="e.g. Antibiotics, Painkillers..."
+                  placeholder="Select product category"
                   required
                   loading={categoriesLoading}
                   error={getErrorMessage("productCategoryId")}
@@ -335,7 +343,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
                     setProductName(value);
                     clearFieldError("name");
                   }}
-                  placeholder="e.g. Panadol"
+                  placeholder="Enter product name"
                   required
                   error={getErrorMessage("name")}
                 />
@@ -349,8 +357,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
                     setChemicalFormula(value);
                     clearFieldError("productFormula");
                   }}
-                  placeholder="e.g. divalproex sodium"
-                  required
+                  placeholder="Enter product formula"
                   error={getErrorMessage("productFormula")}
                 />
               </div>
@@ -365,16 +372,14 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
                   setDescription(value);
                   clearFieldError("description");
                 }}
-                placeholder="e.g. Panadol"
-                required
+                placeholder="Enter product description..."
                 error={getErrorMessage("description")}
               />
 
               {/* Status Toggle */}
               <div className="flex flex-col gap-2">
-                <label className="t-label">
-                  Status <span className="text-(--destructive)">*</span>
-                </label>
+                <label className="t-label">Status</label>
+                {/* <span className="text-(--destructive)">*</span> */}
                 <StatusToggle status={status} onChange={(newStatus) => setStatus(newStatus)} />
               </div>
 
@@ -389,7 +394,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
                   <input
                     type="text"
                     id="sku-input"
-                    placeholder="e.g. Capsule 500Mg"
+                    placeholder="Enter SKU (e.g. Capsule 500mg)"
                     className="flex-1 px-3 py-3 border border-[var(--gray-3)] rounded-8 focus:ring-2 focus:ring-[var(--primary)] outline-none text-sm"
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && e.currentTarget.value.trim()) {
@@ -439,7 +444,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
 
               {/* FOOTER ACTIONS */}
               <div className="flex justify-end gap-4 pt-6">
-                <Button variant="outline" size="lg" rounded="full">
+                <Button variant="outline" size="lg" rounded="full" onClick={() => router.back()}>
                   Discard
                 </Button>
                 <Button

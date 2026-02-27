@@ -14,10 +14,11 @@ import {
 import { HierarchyNode } from "@/components/HierarchyNode";
 import { useTeamForm } from "@/hooks/user-team-form";
 
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 
 export default function TeamForm() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const teamId = searchParams.get("id");
   const mode = searchParams.get("mode") === "update" ? "update" : "add";
 
@@ -86,7 +87,11 @@ export default function TeamForm() {
               value={isUpdateMode ? pulseCode : generatedPrefix || ""}
               onChange={() => {}}
               placeholder={
-                isUpdateMode ? pulseCode || "N/A" : prefixLoading ? "Generating..." : "TEM_xxxxxx"
+                isUpdateMode
+                  ? pulseCode || "Auto-generated"
+                  : prefixLoading
+                    ? "Generating..."
+                    : "Auto-generated"
               }
               required
               readOnly
@@ -103,7 +108,7 @@ export default function TeamForm() {
                 setTeamName(value);
                 clearFieldError("name");
               }}
-              placeholder="e.g. High Blood Pressure"
+              placeholder="Enter team name"
               required
               error={getErrorMessage("name")}
             />
@@ -194,7 +199,7 @@ export default function TeamForm() {
               selectedMembers={selectedMembers}
               onMembersChange={handleMembersChange}
               loading={usersLoading}
-              placeholder="Search sales representative"
+              placeholder="Search member..."
               label=""
               error={getErrorMessage("saleRepIds")}
               onSearchChange={() => clearFieldError("saleRepIds")}
@@ -237,7 +242,7 @@ export default function TeamForm() {
 
         {/* Buttons */}
         <div className="flex justify-end gap-4 pt-6">
-          <Button variant="outline" size="lg" rounded="default">
+          <Button variant="outline" size="lg" rounded="default" onClick={() => router.back()}>
             Discard
           </Button>
           <Button

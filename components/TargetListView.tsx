@@ -7,37 +7,13 @@ import { ColumnDef } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { getTargetList, resetTargetListState } from "@/store/slices/target/getTargetListSlice";
+import {
+  getTargetList,
+  resetTargetListState,
+  type TargetListItem,
+} from "@/store/slices/target/getTargetListSlice";
 import EditIcon from "@/components/svgs/edit-icon";
 import TargetExpandedRow from "@/components/TargetExpandedRow";
-
-interface Product {
-  id: string;
-  productName: string;
-  targetPackets: number;
-  achievementPercentage: number;
-}
-
-interface TargetListItem {
-  userId: string;
-  username: string;
-  profilePic: string | null;
-  roleName: string;
-  teamName: string;
-  channelId: string;
-  channelName: string;
-  lineManagerId: string;
-  lineManagerName: string;
-  targetId: string;
-  targetMonth: number;
-  targetYear: number;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  territory?: string;
-  tags?: string[];
-  products: Product[];
-}
 
 // Helper function to get month name
 const getMonthName = (month: number): string => {
@@ -107,7 +83,7 @@ export default function TargetListView() {
       cell: ({ row }) => (
         <div className="flex items-center gap-3 min-w-0">
           <Image
-            src={row.original.profilePic || "/girlPic.svg"}
+            src={row.original.profilePic || "/girlPic.png"}
             alt={row.original.username}
             width={40}
             height={40}
@@ -144,10 +120,10 @@ export default function TargetListView() {
     },
     {
       header: "Territory",
-      accessorKey: "territory",
+      accessorKey: "territoryPulseCode",
       cell: ({ row }) => (
-        <div className="t-td-b truncate" title={row.original.territory || "N/A"}>
-          {row.original.territory || "N/A"}
+        <div className="t-td-b truncate" title={row.original.territoryPulseCode || "N/A"}>
+          {row.original.territoryPulseCode || "N/A"}
         </div>
       ),
     },

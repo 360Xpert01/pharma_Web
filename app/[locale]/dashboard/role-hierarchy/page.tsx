@@ -12,6 +12,10 @@ export default function RoleHierarchyPage() {
       hideMetrics={true}
       roleHierarchy={true}
       settingsRoute="role-hierarchy/settings"
+      pulseAddBtn={true}
+      onAddClick={() => {
+        window.dispatchEvent(new CustomEvent("roles:add-root"));
+      }}
     />
   );
 }

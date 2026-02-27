@@ -153,7 +153,7 @@ export default function AllocateUserForm() {
             value: user.id,
             label: `${user.firstName} ${user.lastName} (${user.email})`,
           }))}
-          placeholder="Select a user to allocate items..."
+          placeholder="Select user"
           required
           loading={usersLoading}
         />
@@ -170,7 +170,7 @@ export default function AllocateUserForm() {
               type="text"
               value={giveawaySearch}
               onChange={(e) => setGiveawaySearch(e.target.value)}
-              placeholder="Search and select giveaways..."
+              placeholder="Search giveaways..."
               className="w-full px-3 py-3 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) outline-none text-sm"
             />
             {giveawaySearch && filteredGiveaways.length > 0 && (
@@ -237,7 +237,7 @@ export default function AllocateUserForm() {
               type="text"
               value={sampleSearch}
               onChange={(e) => setSampleSearch(e.target.value)}
-              placeholder="Search and select product SKUs..."
+              placeholder="Search samples..."
               className="w-full px-3 py-3 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) outline-none text-sm"
             />
             {sampleSearch && filteredSamples.length > 0 && (

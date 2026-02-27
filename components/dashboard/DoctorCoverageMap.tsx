@@ -93,7 +93,6 @@ const doctorFilters: FilterConfig[] = [
   {
     label: "Specialty",
     options: [
-      { label: "All Specialties", value: "all" },
       { label: "Cardiologist", value: "cardiologist" },
       { label: "Neurologist", value: "neurologist" },
       { label: "Pediatrician", value: "pediatrician" },
@@ -104,7 +103,6 @@ const doctorFilters: FilterConfig[] = [
   {
     label: "Area",
     options: [
-      { label: "All Areas", value: "all" },
       { label: "Model Town", value: "model_town" },
       { label: "Gulberg", value: "gulberg" },
       { label: "DHA", value: "dha" },
@@ -114,7 +112,6 @@ const doctorFilters: FilterConfig[] = [
   {
     label: "Visit Status",
     options: [
-      { label: "All", value: "all" },
       { label: "Visited", value: "visited" },
       { label: "Not Visited", value: "not_visited" },
       { label: "Scheduled", value: "scheduled" },

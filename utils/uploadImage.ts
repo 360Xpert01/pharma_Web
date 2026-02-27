@@ -4,6 +4,9 @@
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://api.ceturo.com/";
 
+import { getToken } from "../lib/cookie/cookie";
+import { getSubdomain } from "./tenant";
+
 export interface UploadedFile {
   url: string;
   publicId: string;
@@ -41,17 +44,24 @@ export const uploadImageFile = async (file: File): Promise<UploadResponse> => {
   const data = new FormData();
   data.append("files", file); // API expects "files" field
 
-  const token = localStorage.getItem("userSession");
+  const token = getToken() || localStorage.getItem("userSession");
   if (!token) {
     console.error("uploadImageFile: No session found");
     throw new Error("No session found. Please login again.");
   }
 
+  const subdomain = getSubdomain();
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  if (subdomain) {
+    headers["subdomain"] = subdomain;
+  }
+
   const res = await fetch(`${baseUrl}api/v1/upload`, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers,
     body: data,
   });
 
@@ -97,17 +107,24 @@ export const uploadImage = async (image: {
 
   data.append("files", fileToUpload, image.fileName || "image.jpg");
 
-  const token = localStorage.getItem("userSession");
+  const token = getToken() || localStorage.getItem("userSession");
   if (!token) {
     console.error("uploadImage: No session found");
     throw new Error("No session found. Please login again.");
   }
 
+  const subdomain = getSubdomain();
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  if (subdomain) {
+    headers["subdomain"] = subdomain;
+  }
+
   const res = await fetch(`${baseUrl}api/v1/upload`, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers,
     body: data,
   });
 

@@ -10,6 +10,8 @@ import loginSlice from "./slices/auth/loginSlice";
 import verifyOtp from "./slices/auth/verifyOtp";
 import addRole from "./slices/role/addRole";
 import allRolesReducer from "./slices/role/getAllRolesSlice";
+import roleByIdReducer from "./slices/role/getRoleByIdSlice";
+import updateRoleReducer from "./slices/role/updateRoleSlice";
 import allPreFixTable from "./slices/preFix/allPreFixTable";
 import createPrefixReducer from "./slices/preFix/postPrefix";
 import allPrefixesReducer from "./slices/preFix/getAllPrefixesSlice";
@@ -46,8 +48,10 @@ import getTeamAllReducer from "./slices/team/getTeamAllSlice";
 import brickListReducer from "./slices/brick/getBrickListSlice";
 import brickByIdReducer from "./slices/brick/getBrickByIdSlice";
 import createBrickReducer from "./slices/brick/createBrickSlice";
+import updateBrickReducer from "./slices/brick/updateBrickSlice";
 import allProductCategoriesReducer from "./slices/productCategory/getAllProductCategoriesSlice";
 import createProductCategoryReducer from "./slices/productCategory/createProductCategorySlice";
+import updateProductCategoryReducer from "./slices/productCategory/updateProductCategorySlice";
 import allSpecializationsReducer from "./slices/specialization/getAllSpecializationsSlice";
 import createSpecializationReducer from "./slices/specialization/createSpecializationSlice";
 import updateDoctorSpecializationReducer from "./slices/specialization/updateDoctorSpecializationSlice";
@@ -99,6 +103,8 @@ import territoryByIdReducer from "./slices/territory/getTerritoryByIdSlice";
 import createTerritoryReducer from "./slices/territory/createTerritorySlice";
 import updateTerritoryReducer from "./slices/territory/updateTerritorySlice";
 import deleteTerritoryReducer from "./slices/territory/deleteTerritorySlice";
+import updateTargetReducer from "./slices/target/updateTargetSlice";
+import targetAllocationReducer from "./slices/target/targetAllocationSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -107,6 +113,8 @@ const rootReducer = combineReducers({
   verifyOtp: verifyOtp,
   addRole: addRole,
   allRoles: allRolesReducer,
+  roleById: roleByIdReducer,
+  updateRole: updateRoleReducer,
   allPreFixTable: allPreFixTable,
   createPrefix: createPrefixReducer,
   allPrefixes: allPrefixesReducer,
@@ -136,8 +144,10 @@ const rootReducer = combineReducers({
   brickList: brickListReducer,
   brickById: brickByIdReducer,
   createBrick: createBrickReducer,
+  updateBrick: updateBrickReducer,
   allProductCategories: allProductCategoriesReducer,
   createProductCategory: createProductCategoryReducer,
+  updateProductCategory: updateProductCategoryReducer,
   allSpecializations: allSpecializationsReducer,
   createSpecialization: createSpecializationReducer,
   updateDoctorSpecialization: updateDoctorSpecializationReducer,
@@ -187,6 +197,7 @@ const rootReducer = combineReducers({
   allocateUser: allocateUserReducer,
   targetList: targetListReducer,
   createTarget: createTargetReducer,
+  updateTarget: updateTargetReducer,
   allProductSkus: allProductSkusReducer,
   getAllocateUserById: getAllocateUserByIdReducer,
   updateAllocateUser: updateAllocateUserReducer,
@@ -196,6 +207,7 @@ const rootReducer = combineReducers({
   createTerritory: createTerritoryReducer,
   updateTerritory: updateTerritoryReducer,
   deleteTerritory: deleteTerritoryReducer,
+  targetAllocation: targetAllocationReducer,
 });
 
 const persistConfig = {

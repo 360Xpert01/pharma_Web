@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Image from "next/image";
+import ImageWithFallback from "@/components/shared/ImageWithFallback";
 import { useRouter } from "next/navigation";
 import { ColumnDef } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
@@ -87,12 +87,13 @@ export default function AllocatedGiveawaysTable({
       accessorKey: "employeeName",
       cell: ({ row }) => (
         <div className="flex items-center gap-3 cursor-pointer group">
-          <Image
-            src={row.original.profilePicture || "/girlPic.svg"}
+          <ImageWithFallback
+            src={row.original.profilePicture}
             alt={row.original.employeeName}
             width={36}
             height={36}
             className="rounded-8 flex-shrink-0 object-cover"
+            fallbackSrc="/girlPic.png"
           />
           <div className="min-w-0 flex-1">
             <p className="text-[var(--gray-9)] truncate font-medium text-sm">

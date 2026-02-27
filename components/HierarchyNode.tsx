@@ -109,7 +109,7 @@ export function HierarchyNode({
 
   // Filter territories by search query
   const filteredTerritories = (availableTerritories || []).filter((territory) =>
-    territory.name.toLowerCase().includes(territorySearchQuery.toLowerCase())
+    territory.pulseCode.toLowerCase().includes(territorySearchQuery.toLowerCase())
   );
 
   const handleAssignTerritoryClick = (e: React.MouseEvent) => {
@@ -168,7 +168,7 @@ export function HierarchyNode({
             {/* Assigned Territory Pill (Single) */}
             {userTerritory && (
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--primary)] text-[var(--primary-foreground)] text-sm font-medium rounded-8 whitespace-nowrap">
-                {userTerritory.name}
+                {userTerritory.pulseCode}
                 <Button
                   size="icon-sm"
                   variant="ghost"
@@ -225,9 +225,9 @@ export function HierarchyNode({
                           onClick={() => handleTerritorySelect(territory)}
                           className="p-3 hover:bg-[var(--muted)] cursor-pointer border-b border-[var(--gray-1)] last:border-0 transition-colors"
                         >
-                          <p className="font-medium text-[var(--gray-9)]">{territory.name}</p>
-                          {territory.pulseCode && (
-                            <p className="text-xs text-[var(--gray-5)]">{territory.pulseCode}</p>
+                          <p className="font-medium text-[var(--gray-9)]">{territory.pulseCode}</p>
+                          {territory.description && (
+                            <p className="text-xs text-[var(--gray-5)]">{territory.description}</p>
                           )}
                         </div>
                       ))

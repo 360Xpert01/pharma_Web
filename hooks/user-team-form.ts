@@ -145,7 +145,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
     dispatch(getAllRoles());
 
     // Fetch all territories for assignment
-    dispatch(getAllTerritories({ limit: 1000 }));
+    dispatch(getAllTerritories({ notassigned: true }));
 
     return () => {
       dispatch(resetGeneratePrefixState());
@@ -271,14 +271,16 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
             const firstName = nameParts[0] || "";
             const lastName = nameParts.slice(1).join(" ") || "";
 
+            // Look up the user in salesRepUsers to get the most complete data
+            const fullUserData = salesRepUsers.find((u) => u.id === user.id);
+
             loadedMembers.push({
               id: user.id,
-              firstName,
-              lastName,
-              email: "", // Not available in this specific part of response
-              pulseCode: "",
-              profilePicture: "",
-              // roleId not in SelectedMember interface
+              firstName: user.firstName || fullUserData?.firstName || firstName,
+              lastName: user.lastName || fullUserData?.lastName || lastName,
+              email: user.email || fullUserData?.email || "",
+              pulseCode: user.pulseCode || fullUserData?.pulseCode || "",
+              profilePicture: user.profilePicture || fullUserData?.profilePicture || "",
             });
 
             // Map territory (single territory, take first one if exists)

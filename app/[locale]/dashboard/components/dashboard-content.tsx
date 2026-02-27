@@ -66,6 +66,7 @@ import UpdateGiveawayForm from "@/components/UpdateGiveaway";
 import GiveawayForm from "@/components/GivewayForm";
 import UpdateDoctorForm from "@/components/UpdateDoctorForm";
 import ProductDetails from "@/components/ProducDetails";
+import GiveawayDetail from "@/components/GiveawayDetail";
 import TerritoryConflictsPage from "@/components/TerritoryConflictsPage";
 import TerritoryTable from "@/components/TerritoryTable";
 import TerritoryForm from "@/components/TerritoryForm";
@@ -151,6 +152,7 @@ export function DashboardContent({
   partyId,
   channelId,
   productDetailBtn,
+  giveawayDetail,
   pulseAddBtn,
   territoryConflicts,
   territoryTable,
@@ -172,6 +174,8 @@ export function DashboardContent({
   const [selectedQualificationId, setSelectedQualificationId] = useState<string | null>(null);
   // State for distributor type editing
   const [selectedDistributorTypeId, setSelectedDistributorTypeId] = useState<string | null>(null);
+  // State for product category editing
+  const [selectedProductCategoryId, setSelectedProductCategoryId] = useState<string | null>(null);
 
   // State for Doctor Table Search
   const [searchTerm, setSearchTerm] = useState("");
@@ -198,6 +202,10 @@ export function DashboardContent({
   // State for Giveaway Table Filters
   const [giveawayFilters, setGiveawayFilters] = useState<{
     status?: string;
+  }>({});
+  const [teamFilters, setTeamFilters] = useState<{
+    status?: string;
+    channelId?: string;
   }>({});
 
   // State for Allocation Table Filters
@@ -264,6 +272,15 @@ export function DashboardContent({
 
   const handleDistributorTypeUpdateComplete = () => {
     setSelectedDistributorTypeId(null);
+  };
+
+  const handleEditProductCategory = (categoryId: string) => {
+    setSelectedProductCategoryId(categoryId);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleProductCategoryUpdateComplete = () => {
+    setSelectedProductCategoryId(null);
   };
 
   return (
@@ -385,8 +402,14 @@ export function DashboardContent({
 
         {campTabel && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading={campHeading} filterT={filterT} onSearch={setSearchTerm} />
-            <CampaignsTable searchTerm={searchTerm} />
+            <TableHeader
+              campHeading={campHeading}
+              filterT={filterT}
+              onSearch={setSearchTerm}
+              showTeamFilters={true}
+              onApplyFilters={setTeamFilters}
+            />
+            <CampaignsTable searchTerm={searchTerm} filters={teamFilters} />
           </div>
         )}
 
@@ -601,15 +624,20 @@ export function DashboardContent({
 
         {productCategoriesTrue && (
           <div>
-            <ProductCategories />
+            <ProductCategories
+              updateId={selectedProductCategoryId}
+              onUpdateComplete={handleProductCategoryUpdateComplete}
+            />
             <div className="shadow-soft rounded-md p-3 mt-10 bg-[var(--background)]">
               <TableHeader campHeading="Product Categories" filterT={filterT} />
-              <AllProductCategories />
+              <AllProductCategories onEditCategory={handleEditProductCategory} />
             </div>
           </div>
         )}
 
         {productDetailBtn && <ProductDetails candidate={candidate} />}
+
+        {giveawayDetail && <GiveawayDetail />}
 
         {doctorDetail && <DoctorDetail />}
 

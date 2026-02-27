@@ -24,15 +24,14 @@ import { doctorSchema, organizationSchema } from "@/validations";
 
 export interface Location {
   id: string;
-  city: string;
-  country: string;
-  area: string;
+  zone: string;
+  region: string;
   bricks: string;
   clinicName: string;
   visitingDays: { from: string; to: string };
   visitingHours: { from: string; to: string };
-  latitude?: number;
-  longitude?: number;
+  latitude: string;
+  longitude: string;
 }
 
 export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
@@ -66,7 +65,7 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
   } = useAppSelector((state) => state.updateParty);
 
   const brickList = useAppSelector((state) => state.brickList);
-  const { bricks, loading: bricksLoading } = brickList;
+  const { bricks, regions, zones, loading: bricksLoading } = brickList;
   const { brick: selectedBrickDetails } = useAppSelector((state) => state.brickById);
 
   // Track which location is currently being updated by brick selection
@@ -99,15 +98,14 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
   const [locations, setLocations] = useState<Location[]>([
     {
       id: "1",
-      city: "",
-      country: "",
-      area: "",
+      zone: "",
+      region: "",
       bricks: "",
       clinicName: "",
       visitingDays: { from: "", to: "" },
       visitingHours: { from: "", to: "" },
-      latitude: 0,
-      longitude: 0,
+      latitude: "0",
+      longitude: "0",
     },
   ]);
 
@@ -211,104 +209,49 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
             to: schedule?.time_slots?.[0]?.end || "",
           };
 
+          const brickId = loc.geographic_unit_id || loc.brickId || "";
+          let zoneId = "";
+          let regionId = "";
+
+          // Derive zone and region if brickId exists and lists are loaded
+          if (brickId && bricks.length > 0) {
+            const brick = bricks.find((b) => b.id === brickId);
+            if (brick && brick.parentId) {
+              const region = regions.find((r) => r.id === brick.parentId);
+              if (region) {
+                regionId = region.id;
+                if (region.parentId) {
+                  const zone = zones.find((z) => z.id === region.parentId);
+                  if (zone) zoneId = zone.id;
+                }
+              }
+            }
+          }
+
           return {
             id: loc.id || (index + 1).toString(),
-            city: loc.city || "",
-            country: loc.country || "",
-            area: area,
-            bricks: loc.geographic_unit_id || loc.brickId || "",
+            zone: zoneId,
+            region: regionId,
+            bricks: brickId,
             clinicName: clinicName,
             visitingDays,
             visitingHours,
-            latitude: loc.latitude || 0,
-            longitude: loc.longitude || 0,
+            latitude: loc.latitude?.toString() || "0",
+            longitude: loc.longitude?.toString() || "0",
           };
         });
         setLocations(mappedLocations);
       }
     }
-  }, [fetchedParty, isUpdateMode, specializations, qualifications]);
+  }, [fetchedParty, isUpdateMode, specializations, qualifications, bricks, regions, zones]);
 
-  // Handle brick details population
+  // Brick details effect is no longer needed since we handle cascading in updateLocation
   useEffect(() => {
     if (selectedBrickDetails && updatingLocationId) {
-      const { areas, cities, provinces, regions, zones } = brickList;
-
-      const findParent = (parentId: string) => {
-        return (
-          zones.find((z: any) => z.id === parentId) ||
-          areas.find((a: any) => a.id === parentId) ||
-          cities.find((c: any) => c.id === parentId) ||
-          provinces.find((p: any) => p.id === parentId) ||
-          regions.find((r: any) => r.id === parentId)
-        );
-      };
-
-      let currentArea = "";
-      let currentCity = "";
-      let currentCountry = "";
-      let currentZone = "";
-
-      // Start from the brick's parent
-      let parent = findParent(selectedBrickDetails.parentId);
-
-      if (selectedBrickDetails.parentId === selectedBrickDetails.id) {
-        const brickInList = bricks.find((b: any) => b.id === selectedBrickDetails.id);
-        if (brickInList && brickInList.parentId !== brickInList.id) {
-          parent = findParent(brickInList.parentId);
-        }
-      }
-
-      // Traverse up the hierarchy to collect all parent information
-      let depth = 0;
-      const maxDepth = 10; // Increased to handle deeper hierarchies
-
-      while (parent && depth < maxDepth) {
-        const parentId = parent.id;
-        const parentName = parent.name;
-
-        // Identify what type of geographic unit this is
-        if (zones.some((z: any) => z.id === parentId)) {
-          currentZone = parentName;
-        } else if (areas.some((a: any) => a.id === parentId)) {
-          currentArea = parentName;
-        } else if (cities.some((c: any) => c.id === parentId)) {
-          currentCity = parentName;
-        } else if (provinces.some((p: any) => p.id === parentId)) {
-          // Province can act as a fallback for city if no city is found
-          if (!currentCity) {
-            currentCity = parentName;
-          }
-        } else if (regions.some((r: any) => r.id === parentId)) {
-          currentCountry = parentName;
-        }
-
-        // Move to the next parent
-        if (parent.parentId && parent.parentId !== parent.id) {
-          parent = findParent(parent.parentId);
-        } else {
-          break;
-        }
-        depth++;
-      }
-
-      // Update the location with the found values
-      setLocations((prev) =>
-        prev.map((loc) =>
-          loc.id === updatingLocationId
-            ? {
-                ...loc,
-                area: currentArea || currentZone || "",
-                city: currentCity || "",
-                country: currentCountry || "",
-              }
-            : loc
-        )
-      );
-      setUpdatingLocationId(null);
       dispatch(resetBrickByIdState());
+      setUpdatingLocationId(null);
     }
-  }, [selectedBrickDetails, updatingLocationId, dispatch, brickList, bricks]);
+  }, [selectedBrickDetails, updatingLocationId, dispatch]);
 
   // Auto-select the current channel
   useEffect(() => {
@@ -358,15 +301,14 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
       ...locations,
       {
         id: Date.now().toString(),
-        city: "",
-        country: "",
-        area: "",
+        zone: "",
+        region: "",
         bricks: "",
         clinicName: "",
         visitingDays: { from: "", to: "" },
         visitingHours: { from: "", to: "" },
-        latitude: 0,
-        longitude: 0,
+        latitude: "0",
+        longitude: "0",
       },
     ]);
   };
@@ -378,12 +320,33 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
   };
 
   const updateLocation = (id: string, field: keyof Location, value: any) => {
-    setLocations(locations.map((loc) => (loc.id === id ? { ...loc, [field]: value } : loc)));
+    setLocations(
+      locations.map((loc) => {
+        if (loc.id === id) {
+          const updatedLoc = { ...loc, [field]: value };
 
-    if (field === "bricks" && value) {
-      setUpdatingLocationId(id);
-      dispatch(getBrickById(value));
-    }
+          // Brick-first logic: select region and zone based on brick
+          if (field === "bricks" && value) {
+            const brick = bricks.find((b) => b.id === value);
+            if (brick && brick.parentId) {
+              const region = brickList.regions.find((r) => r.id === brick.parentId);
+              if (region) {
+                updatedLoc.region = region.id;
+                if (region.parentId) {
+                  const zone = brickList.zones.find((z) => z.id === region.parentId);
+                  if (zone) {
+                    updatedLoc.zone = zone.id;
+                  }
+                }
+              }
+            }
+          }
+
+          return updatedLoc;
+        }
+        return loc;
+      })
+    );
   };
 
   const handleSubmit = async () => {
@@ -454,20 +417,22 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
           timeSlots.push({ start: loc.visitingHours.from, end: loc.visitingHours.to });
         }
 
-        // Find selected brick to get its name for map location logic if needed,
-        // although here we primarily send the ID.
         const selectedBrick = bricks.find((b) => b.id === loc.bricks);
+        const selectedRegion = brickList.regions.find((r) => r.id === loc.region);
+        const selectedZone = brickList.zones.find((z) => z.id === loc.zone);
 
         return {
           locationType: "CLINIC",
-          address: `${loc.clinicName}, ${loc.area}, ${loc.city}`,
-          city: loc.city,
-          state: loc.city,
-          country: loc.country,
+          address: `${loc.clinicName}, ${selectedBrick?.name || ""}, ${
+            selectedRegion?.name || ""
+          }, ${selectedZone?.name || ""}`,
+          city: selectedRegion?.name || "",
+          state: selectedZone?.name || "",
+          country: "Pakistan",
           geographicUnitId: loc.bricks,
           geographicUnitName: selectedBrick ? selectedBrick.name : "",
-          latitude: loc.latitude,
-          longitude: loc.longitude,
+          latitude: parseFloat(loc.latitude) || 0,
+          longitude: parseFloat(loc.longitude) || 0,
           schedules: [
             {
               scheduleType: "WEEKLY",
@@ -527,6 +492,8 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
     partyLoading,
     bricks,
     bricksLoading,
+    zones: brickList.zones,
+    regions: brickList.regions,
     currentChannel,
     fieldConfig,
     organizationParties,

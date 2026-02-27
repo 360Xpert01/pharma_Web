@@ -6,8 +6,8 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 // Types
 interface CreateProductCategoryPayload {
   pulseCode: string;
-  name: string;
-  isActive: boolean;
+  productCategory: string;
+  status: "active" | "inactive";
 }
 
 interface CreateProductCategoryResponse {
@@ -15,9 +15,9 @@ interface CreateProductCategoryResponse {
   message: string;
   data?: {
     id: string;
-    name: string;
+    productCategory: string;
     pulseCode: string;
-    isActive: boolean;
+    status: "active" | "inactive";
     createdAt: string;
   };
 }
@@ -53,7 +53,7 @@ export const createProductCategory = createAsyncThunk<
     }
 
     const response = await axios.post<CreateProductCategoryResponse>(
-      `${baseUrl}api/v1/product-category/create`,
+      `${baseUrl}api/v1/productCategory`,
       payload,
       {
         headers: {

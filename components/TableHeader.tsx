@@ -16,6 +16,7 @@ interface UsersHeaderProps {
   showEmployeeFilters?: boolean;
   showProductFilters?: boolean;
   showGiveawayFilters?: boolean;
+  showTeamFilters?: boolean;
   isAllocate?: boolean;
   channelId?: string;
   onApplyFilters?: (filters: {
@@ -27,6 +28,7 @@ interface UsersHeaderProps {
     categoryId?: string;
     status?: string;
     employeeId?: string;
+    channelId?: string;
   }) => void;
 }
 
@@ -41,6 +43,7 @@ export default function UsersHeader({
   showEmployeeFilters = false,
   showProductFilters = false,
   showGiveawayFilters = false,
+  showTeamFilters = false,
   isAllocate = false,
   channelId,
   onApplyFilters,
@@ -69,7 +72,7 @@ export default function UsersHeader({
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--gray-9)] pointer-events-none" />
             <input
               type="text"
-              placeholder="Search users..."
+              placeholder="Search..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 pr-4 py-2.5 w-64 bg-[var(--gray-2)] text-[var(--gray-9)] rounded-8 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:bg-[var(--light)] transition-all duration-200"
@@ -82,6 +85,7 @@ export default function UsersHeader({
               showEmployeeFilters={showEmployeeFilters}
               showProductFilters={showProductFilters}
               showGiveawayFilters={showGiveawayFilters}
+              showTeamFilters={showTeamFilters}
               isAllocate={isAllocate}
               channelId={channelId}
               onApplyFilters={onApplyFilters}

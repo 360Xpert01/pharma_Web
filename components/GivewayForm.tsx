@@ -4,13 +4,14 @@ import React, { useState, useEffect } from "react";
 import { Plus, Save } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { createGiveaway, resetGiveawayState } from "@/store/slices/giveaway/createGiveawaySlice";
-// You must implement these slices:
-// getGiveawayById, updateGiveaway, and updateGiveawaySlice in your store
 import {
   updateGiveaway,
   resetUpdateGiveawayState,
 } from "@/store/slices/giveaway/updateGiveawaySlice";
-import { getGiveawayById } from "@/store/slices/giveaway/getGiveawayByIdSlice";
+import {
+  getGiveawayById,
+  resetGetGiveawayByIdState,
+} from "@/store/slices/giveaway/getGiveawayByIdSlice";
 import {
   generatePrefix,
   resetGeneratePrefixState,
@@ -83,12 +84,16 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
       dispatch(generatePrefix({ entity: "Giveaway" }));
     }
     if (mode === "update" && giveawayId) {
+      setImage(null);
       dispatch(getGiveawayById(giveawayId));
     }
     return () => {
       dispatch(resetGeneratePrefixState());
       dispatch(resetGiveawayState());
-      if (mode === "update") dispatch(resetUpdateGiveawayState());
+      if (mode === "update") {
+        dispatch(resetUpdateGiveawayState());
+        dispatch(resetGetGiveawayByIdState());
+      }
       dispatch(resetUploadState());
     };
   }, [mode, giveawayId, dispatch]);
@@ -209,15 +214,7 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
 
   // Discard/reset
   const handleDiscard = () => {
-    setName("");
-    setCategory("");
-    setProductName("");
-    setDescription("");
-    setUnits(1);
-    setLegacyCode("");
-    setImage(null);
-    setValidationErrors({});
-    if (mode === "add") setPulseCode("");
+    router.back();
   };
 
   return (
@@ -241,7 +238,7 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
               type="text"
               value={pulseCode}
               onChange={() => {}}
-              placeholder={prefixLoading ? "Generating..." : "GIV_000001"}
+              placeholder={prefixLoading ? "Generating..." : "Auto-generated"}
               readOnly
               error={prefixError || ""}
             />
@@ -251,7 +248,7 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
               type="text"
               value={legacyCode}
               onChange={setLegacyCode}
-              placeholder="Optional legacy code"
+              placeholder="Enter legacy code (optional)"
               error={validationErrors.legacyCode}
             />
           </div>
@@ -263,7 +260,7 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
               type="text"
               value={name}
               onChange={setName}
-              placeholder="e.g. Pen, Diary"
+              placeholder="Enter item name"
               required
               error={validationErrors.name}
             />
@@ -273,7 +270,7 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
               type="text"
               value={category}
               onChange={setCategory}
-              placeholder="Gift / Sample / Promotional Material"
+              placeholder="Enter category (e.g. Gift, Sample)"
               required
               error={validationErrors.category}
             />
@@ -286,7 +283,7 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
               type="text"
               value={productName}
               onChange={setProductName}
-              placeholder="Panadol"
+              placeholder="Enter product name (e.g. Panadol)"
               error={validationErrors.productName}
             />
             <FormInput
@@ -295,7 +292,7 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
               type="number"
               value={units.toString()}
               onChange={(val) => setUnits(parseInt(val) || 1)}
-              placeholder="1"
+              placeholder="Enter units"
               required
               error={validationErrors.units}
             />
@@ -307,7 +304,7 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
               rows={4}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Pain reliever tablet"
+              placeholder="Enter description..."
               className={`w-full px-5 py-3.5 border rounded-8 outline-none transition resize-none ${
                 validationErrors.description
                   ? "border-(--destructive) focus:ring-2 focus:ring-(--destructive)"

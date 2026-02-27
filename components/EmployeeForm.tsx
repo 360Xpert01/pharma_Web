@@ -100,6 +100,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
   useEffect(() => {
     if (isUpdateMode && userId) {
       // Update mode: Fetch existing user data
+      setImagePreview(null);
       dispatch(getUserById(userId));
     } else if (!isUpdateMode) {
       // Add mode: Generate prefix
@@ -108,9 +109,9 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
 
     // Fetch roles, users, teams, and territories for dropdowns
     dispatch(getAllRoles());
-    dispatch(getAllUsers());
+    dispatch(getAllUsers({ limit: 10000 })); // Fetch more users to increase chances of finding supervisors
     dispatch(getTeamAll());
-    dispatch(getAllTerritories({ limit: 1000 })); // Fetch all territories without pagination
+    dispatch(getAllTerritories({ notassigned: true })); // Fetch unassigned territories without pagination
 
     return () => {
       if (isUpdateMode) {
@@ -163,10 +164,22 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
       setFullAddress(employeeData.fullAddress || "");
       setLegacyCode(employeeData.empLegacyCode || "");
       setPulseCode(employeeData.pulseCode || "");
-      setSelectedRoleId(employeeData.roleId || "");
-      setSelectedSupervisorId(employeeData.supervisorId || "");
-      setSelectedTeamId(employeeData.teamId || "");
-      setSelectedTerritoryId(employeeData.territoryId || "");
+      setSelectedRoleId(employeeData.roleId || employeeData.role?.id || "");
+
+      // Mapping Line Manager (Supervisor)
+      setSelectedSupervisorId(employeeData.supervisorId || employeeData.supervisor?.id || "");
+
+      // Mapping Team (Pick the first team if teamId is missing)
+      const teamId =
+        employeeData.teamId ||
+        (employeeData.teams && employeeData.teams.length > 0 ? employeeData.teams[0].id : "");
+      setSelectedTeamId(teamId || "");
+
+      // Mapping Territory (Brick)
+      const territoryId =
+        employeeData.territoryId || employeeData.brickId || employeeData.territory?.id || "";
+      setSelectedTerritoryId(territoryId || "");
+
       setJoiningDate(
         (employeeData.joiningDate ? employeeData.joiningDate.split("T")[0] : "") || ""
       );
@@ -234,6 +247,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
       supervisorId: selectedSupervisorId,
       teamId: selectedTeamId,
       territoryId: selectedTerritoryId,
+      brickId: selectedTerritoryId, // Sending both for compatibility as per user request
       joiningDate,
       enableMobileAccess: enableMobileAccess === "Enable",
       mobileView,
@@ -284,25 +298,35 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
     if (validatedData.fullAddress) payload.fullAddress = validatedData.fullAddress;
     if (validatedData.roleId) payload.roleId = validatedData.roleId;
 
-    // New fields (bypassing validation for now or assuming schema will be updated)
-    if (selectedTeamId) payload.teamId = selectedTeamId;
-    if (selectedTerritoryId) payload.territoryId = selectedTerritoryId;
+    // Use selected values directly if they exist, otherwise fallback to validatedData
+    // Ensure they are not empty strings to avoid UUID validation errors
+    const finalTeamId = selectedTeamId || validatedData.teamId;
+    if (finalTeamId) payload.teamId = finalTeamId;
+
+    const finalTerritoryId = selectedTerritoryId || validatedData.territoryId;
+    if (finalTerritoryId) payload.territoryId = finalTerritoryId;
+
+    const finalSupervisorId = selectedSupervisorId || validatedData.supervisorId;
+    if (finalSupervisorId) payload.supervisorId = finalSupervisorId;
+
     if (joiningDate) payload.joiningDate = joiningDate;
-    payload.enableMobileAccess = enableMobileAccess === "Enable";
-    if (enableMobileAccess === "Enable") {
-      payload.mobileView = mobileView;
-    }
-
-    // pulseCode can only be set during registration, not during update
-    if (!isUpdateMode && validatedData.pulseCode) {
-      payload.pulseCode = validatedData.pulseCode;
-    }
-
     if (validatedData.empLegacyCode) payload.empLegacyCode = validatedData.empLegacyCode;
     if (validatedData.profilePicture) payload.profilePicture = validatedData.profilePicture;
     if (validatedData.dob) payload.dob = validatedData.dob;
-    if (validatedData.supervisorId) payload.supervisorId = validatedData.supervisorId;
-    if (validatedData.verifiedDevices) payload.verifiedDevices = validatedData.verifiedDevices;
+
+    // fields for registration only
+    if (!isUpdateMode) {
+      payload.enableMobileAccess = enableMobileAccess === "Enable";
+      if (enableMobileAccess === "Enable") {
+        payload.mobileView = mobileView;
+      }
+      if (validatedData.verifiedDevices) payload.verifiedDevices = validatedData.verifiedDevices;
+      // pulseCode and brickId can only be set during registration, not during update
+      if (validatedData.pulseCode) {
+        payload.pulseCode = validatedData.pulseCode;
+      }
+      if (finalTerritoryId) payload.brickId = finalTerritoryId;
+    }
 
     // Add status field (convert to lowercase for API)
     if (isUpdateMode) {
@@ -432,7 +456,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                       ? pulseCode || "N/A"
                       : prefixLoading
                         ? "Generating..."
-                        : "EMP_000152"
+                        : "Auto-generated"
                   }
                   readOnly
                 />
@@ -444,7 +468,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                     setLegacyCode(value);
                     clearFieldError("empLegacyCode");
                   }}
-                  placeholder="000152"
+                  placeholder="Enter legacy code"
                 />
               </div>
 
@@ -460,7 +484,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                     clearFieldError("middleName");
                     clearFieldError("lastName");
                   }}
-                  placeholder="Enter full name"
+                  placeholder="Enter employee name"
                   required
                   error={getErrorMessage("firstName") || getErrorMessage("lastName")}
                 />
@@ -473,7 +497,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                     setEmail(value);
                     clearFieldError("email");
                   }}
-                  placeholder="e.g. abc123@gmail.com"
+                  placeholder="Enter email address"
                   required
                   error={getErrorMessage("email")}
                 />
@@ -490,7 +514,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                     setPhoneNumber(value);
                     clearFieldError("mobileNumber");
                   }}
-                  placeholder="e.g. 923456789010"
+                  placeholder="Enter mobile number"
                   required
                   error={getErrorMessage("mobileNumber")}
                 />
@@ -516,8 +540,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                   setFullAddress(value);
                   clearFieldError("fullAddress");
                 }}
-                placeholder="e.g. B121, Block-2, Gulshan-e-Iqbal, Karachi, Pakistan"
-                required
+                placeholder="Enter full address"
                 error={getErrorMessage("fullAddress")}
               />
 
@@ -553,11 +576,29 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                       setSelectedTeamId(value);
                       clearFieldError("teamId");
                     }}
-                    options={teams.map((t) => ({
-                      value: t.id,
-                      label: t.name,
-                    }))}
-                    placeholder="Select Team"
+                    options={(() => {
+                      const teamOptions = teams.map((t) => ({
+                        value: t.id,
+                        label: t.name,
+                      }));
+
+                      // In update mode, ensure current team is present
+                      if (
+                        isUpdateMode &&
+                        selectedTeamId &&
+                        !teamOptions.find((opt) => opt.value === selectedTeamId)
+                      ) {
+                        const currentTeam = employeeData?.teams?.find(
+                          (t) => t.id === selectedTeamId
+                        );
+                        teamOptions.push({
+                          value: selectedTeamId,
+                          label: currentTeam?.name || "Current Team",
+                        });
+                      }
+                      return teamOptions;
+                    })()}
+                    placeholder="Select team"
                     loading={teamsLoading}
                     error={getErrorMessage("teamId")}
                   />
@@ -575,7 +616,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                       value: role.id,
                       label: role.roleName,
                     }))}
-                    placeholder="Select a role"
+                    placeholder="Select role"
                     loading={rolesLoading}
                     error={getErrorMessage("roleId")}
                   />
@@ -593,28 +634,44 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                     options={(() => {
                       const selectedRole = roles.find((r) => r.id === selectedRoleId);
                       const parentRoleId = selectedRole?.parentRoleId;
+
+                      // Filter users by parent role
                       const filteredUsers = parentRoleId
                         ? users.filter((user) => user.roleId === parentRoleId)
                         : [];
 
-                      return filteredUsers.map((user) => ({
+                      // Map to options
+                      const userOptions = filteredUsers.map((user) => ({
                         value: user.id,
                         label: `${user.firstName} ${user.lastName} ${user.pulseCode ? `(${user.pulseCode})` : ""}`,
                       }));
+
+                      // In update mode, ensure current supervisor is present in options even if not in filtered list
+                      if (
+                        isUpdateMode &&
+                        employeeData?.supervisor &&
+                        !userOptions.find((opt) => opt.value === employeeData.supervisor?.id)
+                      ) {
+                        userOptions.push({
+                          value: employeeData.supervisor.id,
+                          label: `${employeeData.supervisor.firstName} ${employeeData.supervisor.lastName} (Current)`,
+                        });
+                      }
+
+                      return userOptions;
                     })()}
                     placeholder={
                       !selectedRoleId
-                        ? "Select a role first"
+                        ? "Select role first"
                         : (() => {
                             const selectedRole = roles.find((r) => r.id === selectedRoleId);
-                            if (!selectedRole?.parentRoleId)
-                              return "No supervisor required for this role";
+                            if (!selectedRole?.parentRoleId) return "No supervisor required";
                             const parentRole = roles.find(
                               (r) => r.id === selectedRole.parentRoleId
                             );
                             return parentRole
                               ? `Select ${parentRole.roleName}`
-                              : "Select a line manager";
+                              : "Select line manager";
                           })()
                     }
                     disabled={!selectedRoleId}
@@ -635,13 +692,31 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                         setSelectedTerritoryId(value);
                         clearFieldError("territoryId");
                       }}
-                      options={territories.map((territory) => ({
-                        value: territory.id,
-                        label: territory.name,
-                      }))}
-                      placeholder="Select Territory"
+                      options={(() => {
+                        const territoryOptions = territories.map((territory) => ({
+                          value: territory.id,
+                          label: territory.pulseCode,
+                        }));
+
+                        // In update mode, ensure current territory is present
+                        if (
+                          isUpdateMode &&
+                          selectedTerritoryId &&
+                          !territoryOptions.find((opt) => opt.value === selectedTerritoryId)
+                        ) {
+                          territoryOptions.push({
+                            value: selectedTerritoryId,
+                            label:
+                              employeeData?.territory?.pulseCode ||
+                              (selectedTerritoryId.startsWith("TER")
+                                ? selectedTerritoryId
+                                : `Current (${selectedTerritoryId.slice(0, 8)})`),
+                          });
+                        }
+                        return territoryOptions;
+                      })()}
+                      placeholder="Select territory"
                       loading={territoriesLoading}
-                      required
                       error={getErrorMessage("territoryId")}
                     />
                   )}

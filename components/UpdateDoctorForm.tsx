@@ -58,6 +58,8 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
     partyLoading,
     bricks,
     bricksLoading,
+    zones,
+    regions,
     currentChannel,
     fieldConfig,
     organizationParties,
@@ -108,7 +110,7 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
               setPmdcNumber(val);
               clearFieldError("pmdcNumber");
             }}
-            placeholder="e.g. 12345-P"
+            placeholder="Enter PMDC number"
             required
             error={getErrorMessage("pmdcNumber")}
           />
@@ -124,7 +126,7 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
               setUserName(val);
               clearFieldError("userName");
             }}
-            placeholder="e.g. john doe"
+            placeholder="Enter doc name"
             required
             error={getErrorMessage("userName")}
           />
@@ -140,7 +142,7 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
               setContactNumber(val);
               clearFieldError("contactNumber");
             }}
-            placeholder="e.g. +92345678910"
+            placeholder="Enter contact number"
             required
             error={getErrorMessage("contactNumber")}
           />
@@ -156,7 +158,6 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
               clearFieldError("qualification");
             }}
             options={[
-              { value: "", label: "Select qualification" },
               ...qualifications.map((q) => ({
                 value: q.id,
                 label: q.name,
@@ -182,7 +183,7 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
               value: spec.id,
               label: spec.name,
             }))}
-            placeholder="e.g. Cardiologist, Neurologist..."
+            placeholder="Select speciality"
             required
             loading={specializationsLoading}
             error={getErrorMessage("specialization")}
@@ -199,11 +200,12 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
               clearFieldError("segment");
             }}
             options={[
-              { value: "", label: "Select segment" },
-              ...segments.map((s) => ({
-                value: s.id,
-                label: s.name,
-              })),
+              ...segments
+                .filter((s) => s.status === "active")
+                .map((s) => ({
+                  value: s.id,
+                  label: s.name,
+                })),
             ]}
             placeholder="Select segment"
             required
@@ -222,7 +224,7 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
               setDesignation(val);
               clearFieldError("designation");
             }}
-            placeholder="e.g. Senior Consultant"
+            placeholder="Enter designation"
             required
             error={getErrorMessage("designation")}
           />
@@ -238,7 +240,7 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
               setEmail(val);
               clearFieldError("email");
             }}
-            placeholder="e.g. abc123@gmail.com"
+            placeholder="Enter email address"
             required
             error={getErrorMessage("email")}
           />
@@ -254,7 +256,7 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
               setDateOfBirth(val);
               clearFieldError("dateOfBirth");
             }}
-            placeholder="e.g. 5/10/2001"
+            placeholder="Select date of birth"
             required
             error={getErrorMessage("dateOfBirth")}
           />
@@ -327,7 +329,7 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                   <FormSelect
                     label="Bricks"
                     name={`bricks-${location.id}`}
@@ -336,46 +338,53 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
                       updateLocation(location.id, "bricks", value);
                       clearFieldError(`locations.${index}.bricks`);
                     }}
-                    options={bricks.map((b) => ({
-                      value: b.id,
-                      label: b.name,
-                    }))}
+                    options={[
+                      ...bricks.map((b) => ({
+                        value: b.id,
+                        label: b.name,
+                      })),
+                    ]}
                     required
                     loading={bricksLoading}
                     error={getErrorMessage(`locations.${index}.bricks`)}
                   />
 
                   <FormInput
-                    label="City"
-                    name={`city-${location.id}`}
-                    value={location.city}
+                    label="Region"
+                    name={`region-${location.id}`}
+                    value={regions.find((r) => r.id === location.region)?.name || ""}
                     onChange={() => {}}
                     placeholder="Auto-populated"
-                    required
                     readOnly
-                    error={getErrorMessage(`locations.${index}.city`)}
                   />
 
                   <FormInput
-                    label="Country"
-                    name={`country-${location.id}`}
-                    value={location.country}
+                    label="Zone"
+                    name={`zone-${location.id}`}
+                    value={zones.find((z) => z.id === location.zone)?.name || ""}
                     onChange={() => {}}
                     placeholder="Auto-populated"
-                    required
                     readOnly
-                    error={getErrorMessage(`locations.${index}.country`)}
                   />
 
                   <FormInput
-                    label="Area"
-                    name={`area-${location.id}`}
-                    value={location.area}
-                    onChange={() => {}}
-                    placeholder="Auto-populated"
-                    required
-                    readOnly
-                    error={getErrorMessage(`locations.${index}.area`)}
+                    label="latitude"
+                    name={`latitude-${location.id}`}
+                    value={location.latitude}
+                    onChange={(value) => {
+                      updateLocation(location.id, "latitude", value);
+                    }}
+                    placeholder="Enter latitude"
+                  />
+
+                  <FormInput
+                    label="longitude"
+                    name={`longitude-${location.id}`}
+                    value={location.longitude}
+                    onChange={(value) => {
+                      updateLocation(location.id, "longitude", value);
+                    }}
+                    placeholder="Enter longitude"
                   />
 
                   <FormInput
@@ -387,7 +396,7 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
                       updateLocation(location.id, "clinicName", value);
                       clearFieldError(`locations.${index}.clinicName`);
                     }}
-                    placeholder="e.g. SA-25615-EETG"
+                    placeholder="Enter clinic name"
                     required
                     error={getErrorMessage(`locations.${index}.clinicName`)}
                   />
