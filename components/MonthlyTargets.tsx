@@ -1,5 +1,5 @@
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { monthlyTargets, monthlyData } from "../app/data/mockData";
+import { monthlyTargets, monthlyData } from "../data/mockData";
 
 export default function MonthlyTargets() {
   return (

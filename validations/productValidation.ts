@@ -18,7 +18,8 @@ export const productSchema = z
       .string()
       .url("Invalid image URL")
       .max(1000, "Image URL cannot exceed 1000 characters")
-      .optional(),
+      .optional()
+      .nullable(),
 
     description: z.string().max(2000, "Description cannot exceed 2000 characters").optional(),
 
@@ -28,7 +29,6 @@ export const productSchema = z
       .array(
         z.object({
           sku: z.string().max(100, "SKU name cannot exceed 100 characters"),
-          quantity: z.number().min(0).optional(),
         })
       )
       .min(1, "At least one SKU is required")

@@ -1,6 +1,6 @@
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { attendanceData } from "../app/data/mockData";
+import { attendanceData } from "../data/mockData";
 
 export default function MonthlyAttendance() {
   return (

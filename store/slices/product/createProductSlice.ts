@@ -6,19 +6,18 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 // Types
 interface ProductSku {
   sku: string;
-  quantity: number;
 }
 
 interface CreateProductPayload {
-  pulseCode: string;
-  productCode: string;
   name: string;
   productCategoryId: string;
-  productFormula: string;
+  pulseCode?: string;
+  productCode?: string;
+  productFormula?: string;
   imageUrl?: string | null;
-  description: string;
-  status: "active" | "inactive";
-  productSkus: ProductSku[];
+  description?: string;
+  status?: "active" | "inactive";
+  productSkus?: ProductSku[];
 }
 
 interface CreatedProduct {
