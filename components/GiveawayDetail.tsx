@@ -74,25 +74,6 @@ export default function GiveawayDetail() {
 
   return (
     <div className="space-y-6">
-      {/* Header with Back and Edit Buttons */}
-      <div className="flex items-center justify-between">
-        <button
-          onClick={() => router.push("/dashboard/giveaway-Management")}
-          className="flex items-center gap-2 text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          <span>Back to Giveaways</span>
-        </button>
-
-        <button
-          onClick={() => router.push(`/dashboard/UpdateGiveaway?id=${giveaway.id}`)}
-          className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white rounded-8 hover:opacity-90 transition"
-        >
-          <Edit2 className="w-4 h-4" />
-          <span>Edit Giveaway</span>
-        </button>
-      </div>
-
       {/* Main Content */}
       <div className="grid grid-cols-12 gap-6">
         {/* Left Column - Image */}
@@ -115,67 +96,59 @@ export default function GiveawayDetail() {
         <div className="col-span-8 space-y-6">
           {/* Basic Information */}
           <div className="bg-[var(--background)] rounded-12 p-6 shadow-soft border border-[var(--gray-2)]">
-            <h2 className="text-xl font-bold text-[var(--foreground)] mb-6">
-              Giveaway Information
-            </h2>
+            <h2 className="t-h2 text-[var(--black)] mb-6">Giveaway Information</h2>
 
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <label className="text-sm font-semibold text-[var(--muted-foreground)] block mb-2">
-                  Pulse Code
-                </label>
-                <p className="text-[var(--foreground)] font-medium">
-                  {giveaway.pulseCode || "N/A"}
-                </p>
+                <label className="t-sm text-[var(--subheading-color)] block mb-1">Pulse Code</label>
+                <p className="t-val-sm text-[var(--black)]">{giveaway.pulseCode || "N/A"}</p>
               </div>
 
               {giveaway.legacyCode && (
                 <div>
-                  <label className="text-sm font-semibold text-[var(--muted-foreground)] block mb-2">
+                  <label className="t-sm text-[var(--subheading-color)] block mb-1">
                     Legacy Code
                   </label>
-                  <p className="text-[var(--foreground)] font-medium">{giveaway.legacyCode}</p>
+                  <p className="t-val-sm text-[var(--black)]">{giveaway.legacyCode}</p>
                 </div>
               )}
 
               <div className="col-span-2">
-                <label className="text-sm font-semibold text-[var(--muted-foreground)] block mb-2">
+                <label className="t-sm text-[var(--subheading-color)] block mb-1">
                   Giveaway Name
                 </label>
-                <p className="text-[var(--foreground)] font-medium text-lg">{giveaway.name}</p>
+                <p className="t-h2 text-[var(--black)]">{giveaway.name}</p>
               </div>
 
               <div>
-                <label className="text-sm font-semibold text-[var(--muted-foreground)] block mb-2">
-                  Category
-                </label>
-                <span className="inline-flex items-center px-3 py-1.5 rounded-8 text-xs bg-[var(--primary)]/10 text-[var(--primary)]">
-                  {giveaway.category || "N/A"}
-                </span>
+                <label className="t-sm text-[var(--subheading-color)] block mb-1">Category</label>
+                <div>
+                  <span className="inline-flex items-center px-3 py-1.5 rounded-8 text-xs bg-[var(--primary)]/10 text-[var(--primary)] font-semibold">
+                    {giveaway.category || "N/A"}
+                  </span>
+                </div>
               </div>
 
               <div>
-                <label className="text-sm font-semibold text-[var(--muted-foreground)] block mb-2">
-                  Units
-                </label>
-                <p className="text-[var(--foreground)] font-medium">{giveaway.units || 0}</p>
+                <label className="t-sm text-[var(--subheading-color)] block mb-1">Units</label>
+                <p className="t-val-sm text-[var(--black)]">{giveaway.units || 0}</p>
               </div>
 
               {giveaway.productName && (
                 <div className="col-span-2">
-                  <label className="text-sm font-semibold text-[var(--muted-foreground)] block mb-2">
+                  <label className="t-sm text-[var(--subheading-color)] block mb-1">
                     Associated Product
                   </label>
-                  <p className="text-[var(--foreground)] font-medium">{giveaway.productName}</p>
+                  <p className="t-val-sm text-[var(--black)]">{giveaway.productName}</p>
                 </div>
               )}
 
               {giveaway.description && (
                 <div className="col-span-2">
-                  <label className="text-sm font-semibold text-[var(--muted-foreground)] block mb-2">
+                  <label className="t-sm text-[var(--subheading-color)] block mb-1">
                     Description
                   </label>
-                  <p className="text-[var(--foreground)]">{giveaway.description}</p>
+                  <p className="t-md text-[var(--black)]">{giveaway.description}</p>
                 </div>
               )}
             </div>
@@ -184,15 +157,15 @@ export default function GiveawayDetail() {
           {/* Timestamps */}
           {(giveaway.createdAt || giveaway.updatedAt) && (
             <div className="bg-[var(--background)] rounded-12 p-6 shadow-soft border border-[var(--gray-2)]">
-              <h3 className="text-lg font-bold text-[var(--foreground)] mb-4">Timestamps</h3>
+              <h3 className="t-h3 text-[var(--black)] mb-6">Timestamps</h3>
 
               <div className="grid grid-cols-2 gap-6">
                 {giveaway.createdAt && (
                   <div>
-                    <label className="text-sm font-semibold text-[var(--muted-foreground)] block mb-2">
+                    <label className="t-sm text-[var(--subheading-color)] block mb-1">
                       Created At
                     </label>
-                    <p className="text-[var(--foreground)]">
+                    <p className="t-md text-[var(--black)]">
                       {new Date(giveaway.createdAt).toLocaleString()}
                     </p>
                   </div>
@@ -200,10 +173,10 @@ export default function GiveawayDetail() {
 
                 {giveaway.updatedAt && (
                   <div>
-                    <label className="text-sm font-semibold text-[var(--muted-foreground)] block mb-2">
+                    <label className="t-sm text-[var(--subheading-color)] block mb-1">
                       Updated At
                     </label>
-                    <p className="text-[var(--foreground)]">
+                    <p className="t-md text-[var(--black)]">
                       {new Date(giveaway.updatedAt).toLocaleString()}
                     </p>
                   </div>
