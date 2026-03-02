@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { BasePaginationParams } from "@/types/api";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -48,10 +49,7 @@ const initialState: ProductsState = {
 };
 
 // Pagination Parameters Type
-interface PaginationParams {
-  page?: number;
-  limit?: number;
-  search?: string;
+interface PaginationParams extends BasePaginationParams {
   categoryId?: string;
   status?: string;
 }
@@ -70,16 +68,20 @@ export const getAllProducts = createAsyncThunk<
     }
 
     // Build query parameters
-    const page = params && typeof params === "object" ? params.page || 1 : 1;
-    const limit = params && typeof params === "object" ? params.limit || 20 : 20;
-    const search = params && typeof params === "object" ? params.search || "" : "";
-    const categoryId = params && typeof params === "object" ? params.categoryId || "" : "";
-    const status = params && typeof params === "object" ? params.status || "" : "";
+    const page = params?.page || 1;
+    const limit = params?.limit || 20;
+    const search = params?.search || "";
+    const categoryId = params?.categoryId || "";
+    const status = params?.status || "";
+    const sort = params?.sort || "";
+    const order = params?.order || "";
 
     // Build params object dynamically - only include non-empty values
     const queryParams: Record<string, any> = { page, limit, search };
     if (categoryId) queryParams.categoryId = categoryId;
     if (status) queryParams.status = status;
+    if (sort) queryParams.sort = sort;
+    if (order) queryParams.order = order;
 
     const response = await axios.get<GetProductsResponse>(`${baseUrl}api/v1/product`, {
       params: queryParams,

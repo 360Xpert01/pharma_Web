@@ -183,7 +183,7 @@ export default function CenturoTable<T>({
   if (loading) {
     return (
       <div className="w-full overflow-x-auto border border-(--gray-2) rounded-8 bg-(--background)">
-        <table className="w-full border-collapse">
+        <table className="w-full border-collapse table-fixed">
           <thead className="bg-(--gray-0) border-b border-(--gray-2)">
             <tr>
               {columnsWithDefaultSorting.map((_, index) => (
@@ -239,7 +239,7 @@ export default function CenturoTable<T>({
     <div className="w-full">
       {/* Table */}
       <div className="overflow-x-auto border border-(--gray-2) rounded-8 bg-(--background) mx-4">
-        <table className="w-full border-collapse">
+        <table className="w-full border-collapse table-fixed">
           <thead className="bg-(--gray-0) border-b border-(--gray-2)">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
@@ -250,9 +250,12 @@ export default function CenturoTable<T>({
                   return (
                     <th
                       key={header.id}
-                      className={`px-4 py-3 text-left t-th ${
+                      className={`px-4 py-3 text-left t-th overflow-hidden text-ellipsis whitespace-nowrap ${
                         canSort ? "cursor-pointer select-none" : ""
                       }`}
+                      style={{
+                        width: header.getSize() !== 150 ? `${header.getSize()}px` : undefined,
+                      }}
                     >
                       {canSort ? (
                         <div
@@ -262,17 +265,16 @@ export default function CenturoTable<T>({
                           <span>
                             {flexRender(header.column.columnDef.header, header.getContext())}
                           </span>
-                          <div className="flex flex-col">
-                            {!isSorted && (
+                          {/* Fixed-width icon slot so the layout never shifts */}
+                          <span className="w-4 h-4 flex-shrink-0 flex items-center justify-center">
+                            {isSorted === "asc" ? (
+                              <ArrowUp className="w-4 h-4 text-(--gray-6) transition-colors" />
+                            ) : isSorted === "desc" ? (
+                              <ArrowDown className="w-4 h-4 text-(--gray-6) transition-colors" />
+                            ) : (
                               <ArrowUpDown className="w-4 h-4 text-(--gray-4) group-hover:text-(--gray-6) transition-colors" />
                             )}
-                            {isSorted === "asc" && (
-                              <ArrowUp className="w-4 h-4 text-(--gray-4) group-hover:text-(--gray-6) transition-colors" />
-                            )}
-                            {isSorted === "desc" && (
-                              <ArrowDown className="w-4 h-4 text-(--gray-4) group-hover:text-(--gray-6) transition-colors" />
-                            )}
-                          </div>
+                          </span>
                         </div>
                       ) : (
                         flexRender(header.column.columnDef.header, header.getContext())
@@ -294,7 +296,7 @@ export default function CenturoTable<T>({
                   } ${row.getIsExpanded() ? "bg-(--gray-0)" : ""}`}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-4 py-3 t-td t-td-b">
+                    <td key={cell.id} className="px-4 py-3 t-td t-td-b overflow-hidden">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}
