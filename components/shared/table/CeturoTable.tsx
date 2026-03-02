@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -29,6 +29,8 @@ interface CenturoTableProps<T> {
   renderExpandedRow?: (row: T) => React.ReactNode;
   onRowClick?: (row: T) => void;
   sortingFns?: Record<string, SortingFn<T>>;
+  // Controlled sorting
+  sorting?: SortingState;
   // Server-side pagination props
   serverSidePagination?: boolean;
   serverSideSorting?: boolean;
@@ -83,6 +85,7 @@ export default function CenturoTable<T>({
   renderExpandedRow,
   onRowClick,
   sortingFns: customSortingFns,
+  sorting: controlledSorting,
   serverSidePagination = false,
   serverSideSorting = false,
   totalItems,
@@ -90,10 +93,21 @@ export default function CenturoTable<T>({
   onSortChange,
   PaginationComponent,
 }: CenturoTableProps<T>) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [internalSorting, setInternalSorting] = React.useState<SortingState>(
+    controlledSorting || []
+  );
   const [expanded, setExpanded] = React.useState<ExpandedState>({});
   const [currentPage, setCurrentPage] = React.useState(1);
   const [itemsPerPage, setItemsPerPage] = React.useState(pageSize);
+
+  // Sync internal sorting with controlled sorting prop
+  useEffect(() => {
+    if (controlledSorting !== undefined) {
+      setInternalSorting(controlledSorting);
+    }
+  }, [controlledSorting]);
+
+  const activeSorting = controlledSorting !== undefined ? controlledSorting : internalSorting;
 
   // Paginate data if pagination is enabled (client-side only)
   const paginatedData = React.useMemo(() => {
@@ -115,11 +129,13 @@ export default function CenturoTable<T>({
 
   const handleSortingChange = (updaterOrValue: any) => {
     const newSortingValue =
-      typeof updaterOrValue === "function" ? updaterOrValue(sorting) : updaterOrValue;
+      typeof updaterOrValue === "function" ? updaterOrValue(activeSorting) : updaterOrValue;
 
-    setSorting(newSortingValue);
+    if (controlledSorting === undefined) {
+      setInternalSorting(newSortingValue);
+    }
 
-    if (serverSideSorting && onSortChange) {
+    if (onSortChange) {
       onSortChange(newSortingValue);
     }
   };
@@ -128,7 +144,7 @@ export default function CenturoTable<T>({
     data: paginatedData,
     columns: columnsWithDefaultSorting,
     state: {
-      sorting: enableSorting ? sorting : [],
+      sorting: enableSorting ? activeSorting : [],
       expanded: enableExpanding ? expanded : {},
     },
     onSortingChange: enableSorting ? handleSortingChange : undefined,

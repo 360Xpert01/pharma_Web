@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { BasePaginationParams } from "@/types/api";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -58,10 +59,7 @@ const initialState: TeamsState = {
 };
 
 // Async Thunk: Get All Teams (GET /api/v1/team)
-interface GetAllTeamsParams {
-  page?: number;
-  limit?: number;
-  search?: string;
+interface GetAllTeamsParams extends BasePaginationParams {
   isActive?: string;
   channelId?: string;
 }
@@ -78,14 +76,18 @@ export const getAllTeams = createAsyncThunk<
       return rejectWithValue("No session found. Please login again.");
     }
 
+    const queryParams: any = {
+      page: params?.page || 1,
+      limit: params?.limit || 10,
+      search: params?.search || "",
+      sort: params?.sort || "pulseCode",
+      order: params?.order || "asc",
+    };
+    if (params?.isActive) queryParams.isActive = params.isActive;
+    if (params?.channelId) queryParams.channelId = params.channelId;
+
     const response = await axios.get(`${baseUrl}api/v1/team`, {
-      params: {
-        page: params?.page || 1,
-        limit: params?.limit || 10,
-        search: params?.search || "",
-        ...(params?.isActive && { isActive: params.isActive }),
-        ...(params?.channelId && { channelId: params.channelId }),
-      },
+      params: queryParams,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStr}`,
