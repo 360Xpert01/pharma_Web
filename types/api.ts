@@ -8,3 +8,11 @@ export type LoginResponse = {
   token: string;
   user: { id: string; email: string; role: "user" | "admin" };
 };
+
+export interface BasePaginationParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  sort?: string;
+  order?: "asc" | "desc";
+}

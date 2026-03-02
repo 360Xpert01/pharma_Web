@@ -31,8 +31,10 @@ interface CenturoTableProps<T> {
   sortingFns?: Record<string, SortingFn<T>>;
   // Server-side pagination props
   serverSidePagination?: boolean;
+  serverSideSorting?: boolean;
   totalItems?: number;
   onPaginationChange?: (page: number, pageSize: number) => void;
+  onSortChange?: (sorting: SortingState) => void;
   PaginationComponent?: React.ComponentType<{
     currentPage: number;
     totalItems: number;
@@ -82,8 +84,10 @@ export default function CenturoTable<T>({
   onRowClick,
   sortingFns: customSortingFns,
   serverSidePagination = false,
+  serverSideSorting = false,
   totalItems,
   onPaginationChange,
+  onSortChange,
   PaginationComponent,
 }: CenturoTableProps<T>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -105,9 +109,20 @@ export default function CenturoTable<T>({
       ...col,
       // If enableSorting is false at table level, disable sorting for all columns
       enableSorting: enableSorting && col.enableSorting !== false,
-      sortingFn: col.sortingFn || "alphanumeric", // Use alphanumeric as default
+      sortingFn: serverSideSorting ? undefined : col.sortingFn || "alphanumeric", // Don't use client-side sortingFn for server-side sorting
     }));
-  }, [columns, enableSorting]);
+  }, [columns, enableSorting, serverSideSorting]);
+
+  const handleSortingChange = (updaterOrValue: any) => {
+    const newSortingValue =
+      typeof updaterOrValue === "function" ? updaterOrValue(sorting) : updaterOrValue;
+
+    setSorting(newSortingValue);
+
+    if (serverSideSorting && onSortChange) {
+      onSortChange(newSortingValue);
+    }
+  };
 
   const table = useReactTable({
     data: paginatedData,
@@ -116,11 +131,12 @@ export default function CenturoTable<T>({
       sorting: enableSorting ? sorting : [],
       expanded: enableExpanding ? expanded : {},
     },
-    onSortingChange: enableSorting ? setSorting : undefined,
+    onSortingChange: enableSorting ? handleSortingChange : undefined,
     onExpandedChange: enableExpanding ? setExpanded : undefined,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: enableSorting ? getSortedRowModel() : undefined,
+    getSortedRowModel: enableSorting && !serverSideSorting ? getSortedRowModel() : undefined,
     getExpandedRowModel: enableExpanding ? getExpandedRowModel() : undefined,
+    manualSorting: serverSideSorting,
     sortingFns: {
       ...sortingFns,
       alphanumeric: alphanumericSorting,

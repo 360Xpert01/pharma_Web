@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { BasePaginationParams } from "@/types/api";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -26,6 +27,10 @@ interface UserItem {
     id: string;
     name: string;
   }>;
+  team?: {
+    id: string;
+    name: string;
+  };
   supervisor?: {
     id: string;
     firstName: string;
@@ -69,10 +74,7 @@ const initialState: UsersState = {
 };
 
 // Pagination Parameters Type
-interface PaginationParams {
-  page?: number;
-  limit?: number;
-  search?: string;
+interface PaginationParams extends BasePaginationParams {
   status?: string;
   roleId?: string;
   teamId?: string;
@@ -93,13 +95,15 @@ export const getAllUsers = createAsyncThunk<
     }
 
     // Build query parameters
-    const page = params && typeof params === "object" ? params.page || 1 : 1;
-    const limit = params && typeof params === "object" ? params.limit || 10 : 10;
-    const search = params && typeof params === "object" ? params.search || "" : "";
-    const status = params && typeof params === "object" ? params.status || "" : "";
-    const roleId = params && typeof params === "object" ? params.roleId || "" : "";
-    const teamId = params && typeof params === "object" ? params.teamId || "" : "";
-    const supervisorId = params && typeof params === "object" ? params.supervisorId || "" : "";
+    const page = params?.page || 1;
+    const limit = params?.limit || 10;
+    const search = params?.search || "";
+    const status = params?.status || "";
+    const roleId = params?.roleId || "";
+    const teamId = params?.teamId || "";
+    const supervisorId = params?.supervisorId || "";
+    const sort = params?.sort || "";
+    const order = params?.order || "";
 
     // Build query params object, only include filters if they have values
     const queryParams: any = { page, limit, search };
@@ -107,6 +111,11 @@ export const getAllUsers = createAsyncThunk<
     if (roleId) queryParams.roleId = roleId;
     if (teamId) queryParams.teamId = teamId;
     if (supervisorId) queryParams.supervisorId = supervisorId;
+    if (sort) queryParams.sort = sort;
+    if (order) queryParams.order = order;
+
+    console.log("getAllUsers: Fetching with params:", queryParams);
+    console.log("Sorting details - sort:", sort, "order:", order);
 
     const response = await axios.get<GetUsersResponse>(`${baseUrl}api/v1/users`, {
       params: queryParams,
