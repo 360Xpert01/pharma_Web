@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { BasePaginationParams } from "@/types/api";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://api.ceturo.com/";
 
@@ -56,9 +57,9 @@ const initialState: DistributorTypesState = {
 // Async Thunk: Get All DistributorTypes (GET /api/v1/distributor-type)
 export const getAllDistributorTypes = createAsyncThunk<
   GetDistributorTypesResponse,
-  void,
+  BasePaginationParams | void,
   { rejectValue: string }
->("distributorTypes/getAllDistributorTypes", async (_, { rejectWithValue }) => {
+>("distributorTypes/getAllDistributorTypes", async (params, { rejectWithValue }) => {
   try {
     // Get token from localStorage
     const sessionStr = localStorage.getItem("userSession");
@@ -66,9 +67,19 @@ export const getAllDistributorTypes = createAsyncThunk<
       return rejectWithValue("No session found. Please login again.");
     }
 
+    const queryParams: any = {};
+    if (params) {
+      if (params.sort) queryParams.sort = params.sort;
+      if (params.order) queryParams.order = params.order;
+      if (params.search) queryParams.search = params.search;
+      if (params.page) queryParams.page = params.page;
+      if (params.limit) queryParams.limit = params.limit;
+    }
+
     const response = await axios.get<GetDistributorTypesResponse>(
       `${baseUrl}api/v1/distributorType/all`,
       {
+        params: queryParams,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${sessionStr}`,

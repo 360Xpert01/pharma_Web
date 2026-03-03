@@ -37,6 +37,7 @@ export default function TerritoryTable({
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { territories, loading, error, pagination } = useAppSelector((s) => s.allTerritories);
+  const [sorting, setSorting] = useState<any[]>([{ id: "pulseCode", desc: false }]);
 
   // Merge external filters with internal state
   const filters = useMemo(() => externalFilters || {}, [externalFilters]);
@@ -48,13 +49,18 @@ export default function TerritoryTable({
     message: deleteMessage,
   } = useAppSelector((state) => state.deleteTerritory);
 
-  // Fetch territories on mount and when filters change
+  // Fetch territories on mount and when filters/sorting change
   useEffect(() => {
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
     dispatch(
       getAllTerritories({
         search: searchTerm,
         page: 1,
         limit: 10,
+        sort: sortField,
+        order: sortOrder as any,
         ...filters,
       })
     );
@@ -62,15 +68,20 @@ export default function TerritoryTable({
     return () => {
       dispatch(resetTerritoriesState());
     };
-  }, [dispatch, searchTerm, JSON.stringify(filters)]);
+  }, [dispatch, searchTerm, JSON.stringify(filters), sorting]);
 
   // Handle pagination changes
   const handlePaginationChange = (page: number, pageSize: number) => {
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
     dispatch(
       getAllTerritories({
         search: searchTerm,
         page,
         limit: pageSize,
+        sort: sortField,
+        order: sortOrder as any,
         ...filters,
       })
     );
@@ -98,7 +109,7 @@ export default function TerritoryTable({
     return territories.map((t) => ({
       id: t.id,
       pulseCode: t.pulseCode,
-      name: t.name,
+      name: t.name || "N/A",
       description: t.description || "N/A",
       bricks: t.bricks?.length || 0,
     }));
@@ -172,8 +183,11 @@ export default function TerritoryTable({
       enableExpanding={false}
       enablePagination={true}
       serverSidePagination={true}
+      serverSideSorting={true}
       totalItems={pagination?.total || 0}
       onPaginationChange={handlePaginationChange}
+      onSortChange={(newSorting) => setSorting(newSorting)}
+      sorting={sorting}
       pageSize={10}
       emptyMessage="No territories found"
       PaginationComponent={TablePagination}
