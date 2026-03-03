@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { BasePaginationParams } from "@/types/api";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -33,6 +34,12 @@ interface CallPointsState {
   success: boolean;
   error: string | null;
   callPoints: CallPointItem[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  } | null;
 }
 
 // Initial State
@@ -41,14 +48,15 @@ const initialState: CallPointsState = {
   success: false,
   error: null,
   callPoints: [],
+  pagination: null,
 };
 
 // Async Thunk: Get All Call Points (GET /api/v1/callPoint/all)
 export const getAllCallPoints = createAsyncThunk<
   GetCallPointsResponse,
-  void,
+  BasePaginationParams | void,
   { rejectValue: string }
->("callPoints/getAllCallPoints", async (_, { rejectWithValue }) => {
+>("callPoints/getAllCallPoints", async (params, { rejectWithValue }) => {
   try {
     // Get token from localStorage
     const sessionStr = localStorage.getItem("userSession");
@@ -56,7 +64,16 @@ export const getAllCallPoints = createAsyncThunk<
       return rejectWithValue("No session found. Please login again.");
     }
 
+    const queryParams: any = {
+      page: params?.page || 1,
+      limit: params?.limit || 10,
+      search: params?.search || "",
+      sort: params?.sort || "pulseCode",
+      order: params?.order || "asc",
+    };
+
     const response = await axios.get<GetCallPointsResponse>(`${baseUrl}api/v1/callPoint/all`, {
+      params: queryParams,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStr}`,
@@ -100,6 +117,7 @@ const getAllCallPointsSlice = createSlice({
           state.success = true;
           // Extract call points from nested data structure
           state.callPoints = action.payload.data.data || [];
+          state.pagination = action.payload.data.pagination || null;
         }
       )
       .addCase(getAllCallPoints.rejected, (state, action) => {
