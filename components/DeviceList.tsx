@@ -5,6 +5,7 @@ import { Smartphone, Trash2, CheckCircle, Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/index";
 import { getUserDevices } from "@/store/slices/device/getUserDevicesSlice";
+import { handleOtpRequest } from "@/store/slices/PendingRequest/handleOtpRequestsSlice";
 
 export default function DeviceList() {
   const searchParams = useSearchParams();
@@ -20,13 +21,11 @@ export default function DeviceList() {
   }, [dispatch, userId]);
 
   const approveDevice = (id: string) => {
-    // TODO: Implement API call to approve device
-    console.log("Approve device:", id);
+    dispatch(handleOtpRequest({ requestId: id, status: "approved" }));
   };
 
   const rejectDevice = (id: string) => {
-    // TODO: Implement API call to reject/delete device
-    console.log("Reject device:", id);
+    dispatch(handleOtpRequest({ requestId: id, status: "rejected" }));
   };
 
   const removeDevice = (id: string) => {
