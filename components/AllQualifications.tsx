@@ -27,17 +27,44 @@ interface AllQualificationsProps {
 
 export default function AllQualifications({ onEditQualification }: AllQualificationsProps) {
   const dispatch = useAppDispatch();
-  const { loading, error, qualifications } = useAppSelector((state) => state.allQualifications);
+  const { loading, error, qualifications, pagination } = useAppSelector(
+    (state) => state.allQualifications
+  );
   const [openId, setOpenId] = useState<string | null>(null);
+  const [sorting, setSorting] = useState<any[]>([]);
 
-  // Fetch qualifications on mount
+  // Fetch qualifications on mount and when sorting changes
   useEffect(() => {
-    dispatch(getAllQualifications());
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
+    dispatch(
+      getAllQualifications({
+        page: 1,
+        limit: 10,
+        sort: sortField,
+        order: sortOrder as any,
+      })
+    );
 
     return () => {
       dispatch(resetQualificationsState());
     };
-  }, [dispatch]);
+  }, [dispatch, sorting]);
+
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
+    dispatch(
+      getAllQualifications({
+        page,
+        limit: pageSize,
+        sort: sortField,
+        order: sortOrder as any,
+      })
+    );
+  };
 
   const handleRetry = () => {
     dispatch(getAllQualifications());
@@ -117,8 +144,13 @@ export default function AllQualifications({ onEditQualification }: AllQualificat
         loading={loading}
         error={error}
         onRetry={handleRetry}
-        enableSorting={false}
+        enableSorting={true}
+        serverSideSorting={true}
         enablePagination={true}
+        serverSidePagination={true}
+        totalItems={pagination?.total || qualifications?.length || 0}
+        onPaginationChange={handlePaginationChange}
+        onSortChange={(newSorting) => setSorting(newSorting)}
         pageSize={10}
         PaginationComponent={TablePagination}
         emptyMessage="No qualifications found"

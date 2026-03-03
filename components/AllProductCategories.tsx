@@ -28,15 +28,42 @@ export default function AllProductCategories({ onEditCategory }: AllProductCateg
     productCategories,
     loading: fetchingLoading,
     error: fetchError,
+    pagination,
   } = useAppSelector((state) => state.allProductCategories);
+  const [sorting, setSorting] = useState<any[]>([]);
 
-  // Initial load
+  // Initial load and when sorting changes
   useEffect(() => {
-    dispatch(getAllProductCategories());
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
+    dispatch(
+      getAllProductCategories({
+        page: 1,
+        limit: 10,
+        sort: sortField,
+        order: sortOrder as any,
+      })
+    );
+
     return () => {
       dispatch(resetProductCategoriesState());
     };
-  }, [dispatch]);
+  }, [dispatch, sorting]);
+
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
+    dispatch(
+      getAllProductCategories({
+        page,
+        limit: pageSize,
+        sort: sortField,
+        order: sortOrder as any,
+      })
+    );
+  };
 
   const handleEdit = (id: string) => {
     if (onEditCategory) {
@@ -100,7 +127,13 @@ export default function AllProductCategories({ onEditCategory }: AllProductCateg
         loading={fetchingLoading}
         error={fetchError}
         onRetry={() => dispatch(getAllProductCategories())}
+        enableSorting={true}
+        serverSideSorting={true}
         enablePagination={true}
+        serverSidePagination={true}
+        totalItems={pagination?.total || productCategories?.length || 0}
+        onPaginationChange={handlePaginationChange}
+        onSortChange={(newSorting) => setSorting(newSorting)}
         pageSize={10}
         PaginationComponent={TablePagination}
         emptyMessage="No product categories found"
