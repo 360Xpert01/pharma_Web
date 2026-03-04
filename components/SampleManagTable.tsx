@@ -12,7 +12,7 @@ import { formatDate } from "@/utils/formatDate";
 interface Product {
   id: string;
   pulseCode: string;
-  skuCount: string;
+  status: string;
   name: string;
   productCategory: string;
 }
@@ -100,11 +100,11 @@ export default function SampleManagTable({
       ),
     },
     {
-      header: "SKU Count",
-      accessorKey: "skuCount",
+      header: "Status",
+      accessorKey: "status",
       cell: ({ row }) => (
-        <div className="t-td-b truncate" title={row.original.skuCount || "N/A"}>
-          {row.original.skuCount || "N/A"}
+        <div className="t-td-b truncate" title={row.original.status || "N/A"}>
+          {row.original.status || "N/A"}
         </div>
       ),
     },
