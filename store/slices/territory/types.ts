@@ -1,3 +1,5 @@
+import { BasePaginationParams } from "@/types/api";
+
 /**
  * Territory Types
  * Types for territory API responses and state management
@@ -66,9 +68,6 @@ export interface UpdateTerritoryPayload {
 }
 
 // API Request Params
-export interface GetTerritoriesParams {
-  page?: number;
-  limit?: number;
-  search?: string;
+export interface GetTerritoriesParams extends BasePaginationParams {
   notassigned?: boolean;
 }

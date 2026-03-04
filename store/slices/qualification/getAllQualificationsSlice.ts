@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { BasePaginationParams } from "@/types/api";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://api.ceturo.com/";
 
@@ -22,6 +23,12 @@ interface QualificationsState {
   success: boolean;
   error: string | null;
   qualifications: QualificationItem[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  } | null;
 }
 
 // Initial State
@@ -30,14 +37,15 @@ const initialState: QualificationsState = {
   success: false,
   error: null,
   qualifications: [],
+  pagination: null,
 };
 
 // Async Thunk: Get All Qualifications (GET /api/v1/qualification/all)
 export const getAllQualifications = createAsyncThunk<
   GetQualificationsResponse,
-  void,
+  BasePaginationParams | void,
   { rejectValue: string }
->("qualifications/getAllQualifications", async (_, { rejectWithValue }) => {
+>("qualifications/getAllQualifications", async (params, { rejectWithValue }) => {
   try {
     // Get token from localStorage
     const sessionStr = localStorage.getItem("userSession");
@@ -45,7 +53,16 @@ export const getAllQualifications = createAsyncThunk<
       return rejectWithValue("No session found. Please login again.");
     }
 
+    const queryParams: any = {
+      page: params?.page || 1,
+      limit: params?.limit || 10,
+      search: params?.search || "",
+      sort: params?.sort || "pulseCode",
+      order: params?.order || "asc",
+    };
+
     const response = await axios.get<GetQualificationsResponse>(`${baseUrl}api/v1/qualification`, {
+      params: queryParams,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStr}`,
@@ -87,7 +104,8 @@ const getAllQualificationsSlice = createSlice({
         (state, action: PayloadAction<GetQualificationsResponse>) => {
           state.loading = false;
           state.success = true;
-          state.qualifications = action.payload.data;
+          state.qualifications = action.payload.data || [];
+          state.pagination = (action.payload as any).pagination || null;
         }
       )
       .addCase(getAllQualifications.rejected, (state, action) => {

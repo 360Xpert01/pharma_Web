@@ -32,12 +32,28 @@ export default function CampaignsTable({
   const dispatch = useAppDispatch();
   const { teams, loading, error, pagination } = useAppSelector((state) => state.allTeams);
 
+  const [sorting, setSorting] = useState<any[]>([{ id: "pulseCode", desc: false }]);
   const [paginationState, setPaginationState] = useState({
     pageIndex: 0,
     pageSize: 10,
   });
 
+  // Map UI column ids to actual DB column names on the Team table
+  const SORT_FIELD_MAP: Record<string, string> = {
+    pulseCode: "pulseCode",
+    name: "name",
+    channelName: "channelId",
+    isActive: "isActive",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    legacyCode: "legacyCode",
+  };
+
   useEffect(() => {
+    const rawSortField = sorting.length > 0 ? sorting[0].id : "pulseCode";
+    const sortField = SORT_FIELD_MAP[rawSortField] ?? "pulseCode";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "asc";
+
     dispatch(
       getAllTeams({
         search: searchTerm,
@@ -45,6 +61,8 @@ export default function CampaignsTable({
         channelId: filters?.channelId,
         page: paginationState.pageIndex + 1,
         limit: paginationState.pageSize,
+        sort: sortField,
+        order: sortOrder as any,
       })
     );
   }, [
@@ -54,6 +72,7 @@ export default function CampaignsTable({
     filters?.channelId,
     paginationState.pageIndex,
     paginationState.pageSize,
+    sorting,
   ]);
 
   const handlePaginationChange = (page: number, pageSize: number) => {
@@ -61,6 +80,10 @@ export default function CampaignsTable({
   };
 
   const handleRetry = () => {
+    const rawSortField = sorting.length > 0 ? sorting[0].id : "pulseCode";
+    const sortField = SORT_FIELD_MAP[rawSortField] ?? "pulseCode";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "asc";
+
     dispatch(
       getAllTeams({
         search: searchTerm,
@@ -68,12 +91,15 @@ export default function CampaignsTable({
         channelId: filters?.channelId,
         page: paginationState.pageIndex + 1,
         limit: paginationState.pageSize,
+        sort: sortField,
+        order: sortOrder as any,
       })
     );
   };
 
   const columns: ColumnDef<Team>[] = [
     {
+      id: "pulseCode",
       header: "ID",
       accessorKey: "pulseCode",
       cell: ({ row }) => (
@@ -83,6 +109,7 @@ export default function CampaignsTable({
       ),
     },
     {
+      id: "name",
       header: "Name",
       accessorKey: "name",
       cell: ({ row }) => (
@@ -92,6 +119,7 @@ export default function CampaignsTable({
       ),
     },
     {
+      id: "channelName",
       header: "Channel",
       accessorKey: "channelName",
       cell: ({ row }) => (
@@ -101,8 +129,10 @@ export default function CampaignsTable({
       ),
     },
     {
+      id: "callPoints",
       header: "Call Point",
       accessorKey: "callPoints",
+      enableSorting: true,
       cell: ({ row }) => {
         const callPoints = row.original.callPoints;
         if (!callPoints || callPoints.length === 0) return <span className="t-sm">N/A</span>;
@@ -114,8 +144,10 @@ export default function CampaignsTable({
       },
     },
     {
+      id: "users",
       header: "Assigned",
       accessorKey: "users",
+      enableSorting: false,
       cell: ({ row }) => {
         const users = row.original.users;
         if (!users || users.length === 0) return <span className="t-sm">N/A</span>;
@@ -146,6 +178,7 @@ export default function CampaignsTable({
       },
     },
     {
+      id: "isActive",
       header: "Status",
       accessorKey: "isActive",
       cell: ({ row }) => (
@@ -157,6 +190,7 @@ export default function CampaignsTable({
     {
       id: "actions",
       header: "",
+      enableSorting: false,
       cell: ({ row }) => (
         <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
           <button
@@ -190,6 +224,10 @@ export default function CampaignsTable({
         onRetry={handleRetry}
         enablePagination={true}
         serverSidePagination={true}
+        enableSorting={true}
+        serverSideSorting={true}
+        onSortChange={(newSorting) => setSorting(newSorting)}
+        sorting={sorting}
         totalItems={pagination?.total || 0}
         onPaginationChange={handlePaginationChange}
         pageSize={paginationState.pageSize}

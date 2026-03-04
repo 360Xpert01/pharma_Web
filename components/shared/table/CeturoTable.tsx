@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -29,10 +29,14 @@ interface CenturoTableProps<T> {
   renderExpandedRow?: (row: T) => React.ReactNode;
   onRowClick?: (row: T) => void;
   sortingFns?: Record<string, SortingFn<T>>;
+  // Controlled sorting
+  sorting?: SortingState;
   // Server-side pagination props
   serverSidePagination?: boolean;
+  serverSideSorting?: boolean;
   totalItems?: number;
   onPaginationChange?: (page: number, pageSize: number) => void;
+  onSortChange?: (sorting: SortingState) => void;
   PaginationComponent?: React.ComponentType<{
     currentPage: number;
     totalItems: number;
@@ -81,15 +85,29 @@ export default function CenturoTable<T>({
   renderExpandedRow,
   onRowClick,
   sortingFns: customSortingFns,
+  sorting: controlledSorting,
   serverSidePagination = false,
+  serverSideSorting = false,
   totalItems,
   onPaginationChange,
+  onSortChange,
   PaginationComponent,
 }: CenturoTableProps<T>) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [internalSorting, setInternalSorting] = React.useState<SortingState>(
+    controlledSorting || []
+  );
   const [expanded, setExpanded] = React.useState<ExpandedState>({});
   const [currentPage, setCurrentPage] = React.useState(1);
   const [itemsPerPage, setItemsPerPage] = React.useState(pageSize);
+
+  // Sync internal sorting with controlled sorting prop
+  useEffect(() => {
+    if (controlledSorting !== undefined) {
+      setInternalSorting(controlledSorting);
+    }
+  }, [controlledSorting]);
+
+  const activeSorting = controlledSorting !== undefined ? controlledSorting : internalSorting;
 
   // Paginate data if pagination is enabled (client-side only)
   const paginatedData = React.useMemo(() => {
@@ -105,22 +123,36 @@ export default function CenturoTable<T>({
       ...col,
       // If enableSorting is false at table level, disable sorting for all columns
       enableSorting: enableSorting && col.enableSorting !== false,
-      sortingFn: col.sortingFn || "alphanumeric", // Use alphanumeric as default
+      sortingFn: serverSideSorting ? undefined : col.sortingFn || "alphanumeric", // Don't use client-side sortingFn for server-side sorting
     }));
-  }, [columns, enableSorting]);
+  }, [columns, enableSorting, serverSideSorting]);
+
+  const handleSortingChange = (updaterOrValue: any) => {
+    const newSortingValue =
+      typeof updaterOrValue === "function" ? updaterOrValue(activeSorting) : updaterOrValue;
+
+    if (controlledSorting === undefined) {
+      setInternalSorting(newSortingValue);
+    }
+
+    if (onSortChange) {
+      onSortChange(newSortingValue);
+    }
+  };
 
   const table = useReactTable({
     data: paginatedData,
     columns: columnsWithDefaultSorting,
     state: {
-      sorting: enableSorting ? sorting : [],
+      sorting: enableSorting ? activeSorting : [],
       expanded: enableExpanding ? expanded : {},
     },
-    onSortingChange: enableSorting ? setSorting : undefined,
+    onSortingChange: enableSorting ? handleSortingChange : undefined,
     onExpandedChange: enableExpanding ? setExpanded : undefined,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: enableSorting ? getSortedRowModel() : undefined,
+    getSortedRowModel: enableSorting && !serverSideSorting ? getSortedRowModel() : undefined,
     getExpandedRowModel: enableExpanding ? getExpandedRowModel() : undefined,
+    manualSorting: serverSideSorting,
     sortingFns: {
       ...sortingFns,
       alphanumeric: alphanumericSorting,
@@ -151,7 +183,7 @@ export default function CenturoTable<T>({
   if (loading) {
     return (
       <div className="w-full overflow-x-auto border border-(--gray-2) rounded-8 bg-(--background)">
-        <table className="w-full border-collapse">
+        <table className="w-full border-collapse table-fixed">
           <thead className="bg-(--gray-0) border-b border-(--gray-2)">
             <tr>
               {columnsWithDefaultSorting.map((_, index) => (
@@ -207,7 +239,7 @@ export default function CenturoTable<T>({
     <div className="w-full">
       {/* Table */}
       <div className="overflow-x-auto border border-(--gray-2) rounded-8 bg-(--background) mx-4">
-        <table className="w-full border-collapse">
+        <table className="w-full border-collapse table-fixed">
           <thead className="bg-(--gray-0) border-b border-(--gray-2)">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
@@ -218,9 +250,12 @@ export default function CenturoTable<T>({
                   return (
                     <th
                       key={header.id}
-                      className={`px-4 py-3 text-left t-th ${
+                      className={`px-4 py-3 text-left t-th overflow-hidden text-ellipsis whitespace-nowrap ${
                         canSort ? "cursor-pointer select-none" : ""
                       }`}
+                      style={{
+                        width: header.getSize() !== 150 ? `${header.getSize()}px` : undefined,
+                      }}
                     >
                       {canSort ? (
                         <div
@@ -230,17 +265,16 @@ export default function CenturoTable<T>({
                           <span>
                             {flexRender(header.column.columnDef.header, header.getContext())}
                           </span>
-                          <div className="flex flex-col">
-                            {!isSorted && (
+                          {/* Fixed-width icon slot so the layout never shifts */}
+                          <span className="w-4 h-4 flex-shrink-0 flex items-center justify-center">
+                            {isSorted === "asc" ? (
+                              <ArrowUp className="w-4 h-4 text-(--gray-6) transition-colors" />
+                            ) : isSorted === "desc" ? (
+                              <ArrowDown className="w-4 h-4 text-(--gray-6) transition-colors" />
+                            ) : (
                               <ArrowUpDown className="w-4 h-4 text-(--gray-4) group-hover:text-(--gray-6) transition-colors" />
                             )}
-                            {isSorted === "asc" && (
-                              <ArrowUp className="w-4 h-4 text-(--gray-4) group-hover:text-(--gray-6) transition-colors" />
-                            )}
-                            {isSorted === "desc" && (
-                              <ArrowDown className="w-4 h-4 text-(--gray-4) group-hover:text-(--gray-6) transition-colors" />
-                            )}
-                          </div>
+                          </span>
                         </div>
                       ) : (
                         flexRender(header.column.columnDef.header, header.getContext())
@@ -262,7 +296,7 @@ export default function CenturoTable<T>({
                   } ${row.getIsExpanded() ? "bg-(--gray-0)" : ""}`}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-4 py-3 t-td t-td-b">
+                    <td key={cell.id} className="px-4 py-3 t-td t-td-b overflow-hidden">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}

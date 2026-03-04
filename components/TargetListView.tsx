@@ -38,29 +38,50 @@ export default function TargetListView() {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  const { targets, loading, error } = useAppSelector((state) => state.targetList);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [sorting, setSorting] = useState<any[]>([]);
+  const { targets, loading, error, total } = useAppSelector((state) => state.targetList);
 
-  // Fetch target list on mount
+  // Fetch target list on mount and when states change
   useEffect(() => {
-    dispatch(getTargetList());
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
+    dispatch(
+      getTargetList({
+        page: currentPage,
+        limit: itemsPerPage,
+        search: searchQuery,
+        sort: sortField,
+        order: sortOrder as any,
+      })
+    );
 
     return () => {
       dispatch(resetTargetListState());
     };
-  }, [dispatch]);
+  }, [dispatch, searchQuery, currentPage, itemsPerPage, sorting]);
 
   const handleRetry = () => {
-    dispatch(getTargetList());
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
+    dispatch(
+      getTargetList({
+        page: currentPage,
+        limit: itemsPerPage,
+        search: searchQuery,
+        sort: sortField,
+        order: sortOrder as any,
+      })
+    );
   };
 
-  const filteredTargets = useMemo(() => {
-    return targets.filter((target) => {
-      const matchesSearch =
-        target.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        target.teamName.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesSearch;
-    });
-  }, [searchQuery, targets]);
+  const handlePaginationChange = (page: number, size: number) => {
+    setCurrentPage(page);
+    setItemsPerPage(size);
+  };
 
   const handleViewDetails = (e: React.MouseEvent, targetId: string) => {
     e.stopPropagation();
@@ -169,13 +190,18 @@ export default function TargetListView() {
   return (
     <div className="w-full">
       <CenturoTable
-        data={filteredTargets}
+        data={targets || []}
         columns={columns}
         loading={loading}
         error={error}
         onRetry={handleRetry}
         enablePagination={true}
-        pageSize={10}
+        serverSidePagination={true}
+        serverSideSorting={true}
+        totalItems={total}
+        onPaginationChange={handlePaginationChange}
+        onSortChange={(newSorting) => setSorting(newSorting)}
+        pageSize={itemsPerPage}
         PaginationComponent={TablePagination}
         emptyMessage="No targets found"
         enableExpanding={true}

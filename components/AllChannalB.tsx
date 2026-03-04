@@ -17,13 +17,38 @@ interface AllChannalBProps {
 
 export default function ChannelsManager({ onEditChannel }: AllChannalBProps) {
   const dispatch = useAppDispatch();
-  const { channels, loading, error } = useAppSelector((state) => state.allChannels);
+  const { channels, loading, error, pagination } = useAppSelector((state) => state.allChannels);
   const [openId, setOpenId] = useState<string | null>(null);
+  const [sorting, setSorting] = useState<any[]>([]);
 
-  // Fetch channels on component mount
+  // Fetch channels on component mount and when sorting changes
   useEffect(() => {
-    dispatch(getAllChannels());
-  }, [dispatch]);
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
+    dispatch(
+      getAllChannels({
+        page: 1,
+        limit: 10,
+        sort: sortField,
+        order: sortOrder as any,
+      })
+    );
+  }, [dispatch, sorting]);
+
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
+    dispatch(
+      getAllChannels({
+        page,
+        limit: pageSize,
+        sort: sortField,
+        order: sortOrder as any,
+      })
+    );
+  };
 
   const toggleStatus = (id: string) => {
     // TODO: Implement API call to update channel status
@@ -111,8 +136,13 @@ export default function ChannelsManager({ onEditChannel }: AllChannalBProps) {
         loading={loading}
         error={error}
         onRetry={handleRetry}
-        enableSorting={false}
+        enableSorting={true}
+        serverSideSorting={true}
         enablePagination={true}
+        serverSidePagination={true}
+        totalItems={pagination?.total || channels?.length || 0}
+        onPaginationChange={handlePaginationChange}
+        onSortChange={(newSorting) => setSorting(newSorting)}
         pageSize={10}
         PaginationComponent={TablePagination}
         emptyMessage="No channels found"

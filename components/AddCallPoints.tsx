@@ -49,7 +49,7 @@ export default function AddCallPointForm() {
       setLongitude("");
 
       // Refresh call points list
-      dispatch(getAllCallPoints());
+      dispatch(getAllCallPoints({ pagination: true }));
 
       // Regenerate pulse code for next entry
       dispatch(generatePrefix({ entity: "CallPoint" }));

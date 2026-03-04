@@ -23,17 +23,44 @@ interface Specialization {
 
 export default function AllSpecializations() {
   const dispatch = useAppDispatch();
-  const { loading, error, specializations } = useAppSelector((state) => state.allSpecializations);
+  const { loading, error, specializations, pagination } = useAppSelector(
+    (state) => state.allSpecializations
+  );
   const [openId, setOpenId] = useState<string | null>(null);
+  const [sorting, setSorting] = useState<any[]>([]);
 
-  // Fetch specializations on mount
+  // Initial load and when sorting changes
   useEffect(() => {
-    dispatch(getAllSpecializations());
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
+    dispatch(
+      getAllSpecializations({
+        page: 1,
+        limit: 10,
+        sort: sortField,
+        order: sortOrder as any,
+      })
+    );
 
     return () => {
       dispatch(resetSpecializationsState());
     };
-  }, [dispatch]);
+  }, [dispatch, sorting]);
+
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
+    dispatch(
+      getAllSpecializations({
+        page,
+        limit: pageSize,
+        sort: sortField,
+        order: sortOrder as any,
+      })
+    );
+  };
 
   const handleRetry = () => {
     dispatch(getAllSpecializations());
@@ -102,13 +129,18 @@ export default function AllSpecializations() {
   return (
     <div className="w-full">
       <CenturoTable
-        data={specializations}
+        data={specializations || []}
         columns={columns}
         loading={loading}
         error={error}
         onRetry={handleRetry}
-        enableSorting={false}
+        enableSorting={true}
+        serverSideSorting={true}
         enablePagination={true}
+        serverSidePagination={true}
+        totalItems={pagination?.total || specializations?.length || 0}
+        onPaginationChange={handlePaginationChange}
+        onSortChange={(newSorting) => setSorting(newSorting)}
         pageSize={10}
         PaginationComponent={TablePagination}
         emptyMessage="No specializations found"

@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -20,8 +19,8 @@ interface TeamMember {
   id: string;
   name: string;
   email: string;
-  phone: string;
-  role: string;
+  mobileNumber: string;
+  pulseCode: string;
   supervisor: string;
   team: string;
   roleBy: string;
@@ -45,29 +44,40 @@ export default function SalesTeamTable({
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { users, loading, error, pagination } = useAppSelector((s) => s.allUsers);
+  const [sorting, setSorting] = useState<any[]>([]);
 
   // Merge external filters with internal state
   const filters = externalFilters || {};
 
-  // Fetch users on mount and when filters change
+  // Fetch users on mount and when filters/sorting change
   useEffect(() => {
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
     dispatch(
       getAllUsers({
         search: searchTerm,
         page: 1,
         limit: 10,
+        sort: sortField,
+        order: sortOrder as any,
         ...filters,
       })
     );
-  }, [dispatch, searchTerm, filters]);
+  }, [dispatch, searchTerm, filters, sorting]);
 
   // Handle pagination changes
   const handlePaginationChange = (page: number, pageSize: number) => {
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
     dispatch(
       getAllUsers({
         search: searchTerm,
         page,
         limit: pageSize,
+        sort: sortField,
+        order: sortOrder as any,
         ...filters,
       })
     );
@@ -86,15 +96,16 @@ export default function SalesTeamTable({
       const nameParts = [u.firstName, u.middleName, u.lastName].filter(Boolean);
       const fullName = nameParts.length > 0 ? nameParts.join(" ") : "N/A";
 
-      // Get first team name from teams array
-      const teamName = u.teams && u.teams.length > 0 ? u.teams[0].name : "N/A";
+      // Get team name from teams array or team object
+      const teamName =
+        (u.teams && u.teams.length > 0 ? u.teams[0].name : "") || u.team?.name || "N/A";
 
       return {
         id: u.id,
         name: fullName,
         email: u.email,
-        phone: u.mobileNumber || "N/A",
-        role: u.pulseCode,
+        mobileNumber: u.mobileNumber || "N/A",
+        pulseCode: u.pulseCode,
         supervisor: supervisorName,
         team: teamName,
         roleBy: u.role?.roleName || "N/A",
@@ -107,10 +118,11 @@ export default function SalesTeamTable({
   const columns = useMemo<ColumnDef<TeamMember>[]>(
     () => [
       {
-        accessorKey: "role",
+        accessorKey: "pulseCode",
         header: "ID",
       },
       {
+        id: "firstName",
         accessorKey: "name",
         header: "Name",
         cell: ({ row }) => (
@@ -143,14 +155,17 @@ export default function SalesTeamTable({
         ),
       },
       {
-        accessorKey: "phone",
+        id: "mobileNumber",
+        accessorKey: "mobileNumber",
         header: "Contact No #",
       },
       {
+        id: "supervisor.firstName",
         accessorKey: "supervisor",
         header: "Supervisor",
       },
       {
+        id: "teams.name",
         accessorKey: "team",
         header: "Team",
       },
@@ -216,8 +231,10 @@ export default function SalesTeamTable({
       enableExpanding={true}
       enablePagination={true}
       serverSidePagination={true}
+      serverSideSorting={true}
       totalItems={pagination?.total || 0}
       onPaginationChange={handlePaginationChange}
+      onSortChange={(newSorting) => setSorting(newSorting)}
       pageSize={10}
       emptyMessage="No employees found"
       renderExpandedRow={() => <SalesDashboard1 />}

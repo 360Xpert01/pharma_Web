@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ImageWithFallback from "@/components/shared/ImageWithFallback";
 import { useRouter } from "next/navigation";
 import { ColumnDef } from "@tanstack/react-table";
@@ -37,15 +37,37 @@ export default function AllocatedGiveawaysTable({
 
   const router = useRouter();
   const pageSize = 10;
+  const [sorting, setSorting] = useState<any[]>([]);
 
-  // Fetch allocation data on mount and when searchTerm or employeeId changes
+  // Fetch allocation data on mount and when states change
   useEffect(() => {
-    dispatch(getAllocationList({ search: searchTerm, page: 1, limit: pageSize, employeeId }));
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
 
-    // Refresh data when page becomes visible (e.g., after navigation back)
+    dispatch(
+      getAllocationList({
+        search: searchTerm,
+        page: 1,
+        limit: pageSize,
+        employeeId,
+        sort: sortField,
+        order: sortOrder as any,
+      })
+    );
+
+    // Refresh data when page becomes visible
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        dispatch(getAllocationList({ search: searchTerm, page: 1, limit: pageSize, employeeId }));
+        dispatch(
+          getAllocationList({
+            search: searchTerm,
+            page: 1,
+            limit: pageSize,
+            employeeId,
+            sort: sortField,
+            order: sortOrder as any,
+          })
+        );
       }
     };
 
@@ -55,14 +77,26 @@ export default function AllocatedGiveawaysTable({
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       dispatch(resetAllocationListState());
     };
-  }, [dispatch, searchTerm, employeeId]);
+  }, [dispatch, searchTerm, employeeId, sorting]);
 
   const handleRetry = () => {
     dispatch(getAllocationList({ search: searchTerm, page: 1, limit: pageSize, employeeId }));
   };
 
   const handlePageChange = (page: number, size: number) => {
-    dispatch(getAllocationList({ search: searchTerm, page, limit: size, employeeId }));
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
+    dispatch(
+      getAllocationList({
+        search: searchTerm,
+        page,
+        limit: size,
+        employeeId,
+        sort: sortField,
+        order: sortOrder as any,
+      })
+    );
   };
 
   const handleViewDetails = (userId: string) => {
@@ -160,10 +194,13 @@ export default function AllocatedGiveawaysTable({
         error={error}
         onRetry={handleRetry}
         enablePagination={true}
+        enableSorting={true}
         serverSidePagination={true}
+        serverSideSorting={true}
         totalItems={pagination?.total || 0}
         pageSize={pageSize}
         onPaginationChange={handlePageChange}
+        onSortChange={(newSorting) => setSorting(newSorting)}
         PaginationComponent={TablePagination}
         emptyMessage="No allocations found"
       />

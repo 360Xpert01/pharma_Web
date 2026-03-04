@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { BasePaginationParams } from "@/types/api";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -24,6 +25,12 @@ interface ProductCategoriesState {
   loading: boolean;
   success: boolean;
   error: string | null;
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  } | null;
 }
 
 // Initial State
@@ -32,23 +39,33 @@ const initialState: ProductCategoriesState = {
   loading: false,
   success: false,
   error: null,
+  pagination: null,
 };
 
 // Async Thunk: Get All Product Categories (GET request)
 export const getAllProductCategories = createAsyncThunk<
   GetProductCategoriesResponse,
-  void,
+  BasePaginationParams | void,
   { rejectValue: string }
->("productCategory/getAllProductCategories", async (_, { rejectWithValue }) => {
+>("productCategory/getAllProductCategories", async (params, { rejectWithValue }) => {
   try {
     const sessionStr = localStorage.getItem("userSession");
     if (!sessionStr) {
       return rejectWithValue("No session found. Please login again.");
     }
 
+    const queryParams: any = {
+      page: params?.page || 1,
+      limit: params?.limit || 10,
+      search: params?.search || "",
+      sort: params?.sort || "pulseCode",
+      order: params?.order || "asc",
+    };
+
     const response = await axios.get<GetProductCategoriesResponse>(
       `${baseUrl}api/v1/productCategory`,
       {
+        params: queryParams,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${sessionStr}`,
@@ -91,7 +108,8 @@ const getAllProductCategoriesSlice = createSlice({
         (state, action: PayloadAction<GetProductCategoriesResponse>) => {
           state.loading = false;
           state.success = true;
-          state.productCategories = action.payload.data;
+          state.productCategories = action.payload.data || [];
+          state.pagination = (action.payload as any).pagination || null;
         }
       )
       .addCase(getAllProductCategories.rejected, (state, action) => {

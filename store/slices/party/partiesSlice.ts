@@ -85,6 +85,8 @@ interface GetPartiesParams {
   segmentId?: string;
   specializationId?: string;
   status?: string;
+  sort?: string;
+  order?: "asc" | "desc";
 }
 
 interface GetPartiesResponse {
@@ -117,6 +119,8 @@ export const getPartiesByChannelType = createAsyncThunk<
     let segmentId = "";
     let specializationId = "";
     let status = "";
+    let sort = "";
+    let order = "";
 
     if (typeof params === "string") {
       channelTypeId = params;
@@ -128,12 +132,16 @@ export const getPartiesByChannelType = createAsyncThunk<
       segmentId = params.segmentId || "";
       specializationId = params.specializationId || "";
       status = params.status || "";
+      sort = params.sort || "";
+      order = (params.order as string) || "";
     }
 
     const queryParams: any = { channelTypeId, page, limit, search };
     if (segmentId) queryParams.segmentId = segmentId;
     if (specializationId) queryParams.specializationId = specializationId;
     if (status) queryParams.status = status;
+    if (sort) queryParams.sort = sort;
+    if (order) queryParams.order = order;
 
     const response = await axios.get<GetPartiesResponse>(`${baseUrl}api/v1/parties`, {
       params: queryParams,

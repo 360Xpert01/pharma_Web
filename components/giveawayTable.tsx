@@ -5,19 +5,12 @@ import { ColumnDef } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { getAllGiveaways } from "@/store/slices/giveaway/getAllGiveawaysSlice";
+import { getAllGiveaways, GiveawayItemDisplay } from "@/store/slices/giveaway/getAllGiveawaysSlice";
 import { useRouter } from "next/navigation";
 import EditIcon from "@/components/svgs/edit-icon";
 import EyeIcon from "@/components/svgs/eye-icon";
 
-interface Giveaway {
-  id: string;
-  pulseCode: string;
-  name: string;
-  category: string;
-  productName: string;
-  createdAt: string;
-}
+interface Giveaway extends GiveawayItemDisplay {}
 
 export default function GiveawayTable({
   searchTerm,
@@ -29,6 +22,7 @@ export default function GiveawayTable({
   const dispatch = useAppDispatch();
   const [openId, setOpenId] = useState<string | null>(null);
   const router = useRouter();
+  const [sorting, setSorting] = useState<any[]>([]);
 
   const [paginationState, setPaginationState] = useState({
     pageIndex: 0,
@@ -40,17 +34,22 @@ export default function GiveawayTable({
 
   console.log(giveaways, "giveaways");
 
-  // Fetch giveaways when searchTerm, filters, or pagination changes
+  // Fetch giveaways when searchTerm, filters, sorting or pagination changes
   useEffect(() => {
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
     dispatch(
       getAllGiveaways({
         search: searchTerm,
         page: paginationState.pageIndex + 1,
         limit: paginationState.pageSize,
         status: filters?.status,
+        sort: sortField,
+        order: sortOrder as any,
       })
     );
-  }, [dispatch, searchTerm, filters, paginationState.pageIndex, paginationState.pageSize]);
+  }, [dispatch, searchTerm, filters, paginationState.pageIndex, paginationState.pageSize, sorting]);
 
   const handlePaginationChange = (page: number, pageSize: number) => {
     setPaginationState({ pageIndex: page - 1, pageSize });
@@ -146,8 +145,10 @@ export default function GiveawayTable({
         onRetry={handleRetry}
         enablePagination={true}
         serverSidePagination={true}
+        serverSideSorting={true}
         totalItems={total || 0}
         onPaginationChange={handlePaginationChange}
+        onSortChange={(newSorting) => setSorting(newSorting)}
         pageSize={paginationState.pageSize}
         PaginationComponent={TablePagination}
         emptyMessage="No giveaways found"

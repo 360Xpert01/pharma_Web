@@ -1,13 +1,16 @@
 "use client";
 
+"use client";
+
 import React, { useEffect, useState } from "react";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, SortingState } from "@tanstack/react-table";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllRoles } from "@/store/slices/role/getAllRolesSlice";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import TableActionDropdown from "@/components/shared/table/TableActionDropdown";
 import StatusBadge from "@/components/shared/StatusBadge";
+import { useDebounce } from "use-debounce";
 
 interface Role {
   id: string;
@@ -18,14 +21,47 @@ interface Role {
   status: "active" | "inactive";
 }
 
-export default function RolesCardList() {
+interface UserRolesProps {
+  searchTerm?: string;
+  filters?: {
+    roleId?: string;
+    teamId?: string;
+    supervisorId?: string;
+    status?: string;
+  };
+}
+
+export default function RolesCardList({ searchTerm = "", filters }: UserRolesProps) {
   const dispatch = useAppDispatch();
-  const { roles, loading, error } = useAppSelector((state) => state.allRoles);
+  const { roles, loading, error, pagination } = useAppSelector((state) => state.allRoles);
   const [openId, setOpenId] = useState<string | null>(null);
 
+  // Server-side state
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
   useEffect(() => {
-    dispatch(getAllRoles());
-  }, [dispatch]);
+    const sort = sorting.length > 0 ? sorting[0].id : "pulseCode";
+    const order = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "asc";
+
+    dispatch(
+      getAllRoles({
+        page: currentPage,
+        limit: pageSize,
+        sort,
+        order,
+        search: searchTerm,
+        // If filters are added to the API, they can be spread here
+        ...filters,
+      })
+    );
+  }, [dispatch, sorting, currentPage, pageSize, searchTerm, filters]);
+
+  const handlePaginationChange = (page: number, size: number) => {
+    setCurrentPage(page);
+    setPageSize(size);
+  };
 
   // Map API data to component format
   const rolesData: Role[] = (roles || []).map((role) => ({
@@ -40,13 +76,26 @@ export default function RolesCardList() {
   }));
 
   const handleRetry = () => {
-    dispatch(getAllRoles());
+    const sort = sorting.length > 0 ? sorting[0].id : "pulseCode";
+    const order = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "asc";
+
+    dispatch(
+      getAllRoles({
+        page: currentPage,
+        limit: pageSize,
+        sort,
+        order,
+        search: searchTerm,
+        ...filters,
+      })
+    );
   };
 
   const columns: ColumnDef<Role>[] = [
     {
       header: "Role ID",
       accessorKey: "roleId",
+      id: "pulseCode", // Map to backend field for sorting
       cell: ({ row }) => (
         <div className="t-td-b truncate" title={row.original.roleId}>
           {row.original.roleId}
@@ -56,6 +105,7 @@ export default function RolesCardList() {
     {
       header: "Date",
       accessorKey: "created",
+      id: "createdAt", // Map to backend field for sorting
       cell: ({ row }) => (
         <div className="t-td truncate" title={row.original.created}>
           {row.original.created}
@@ -65,6 +115,7 @@ export default function RolesCardList() {
     {
       header: "Role Title",
       accessorKey: "title",
+      id: "roleName", // Map to backend field for sorting
       cell: ({ row }) => (
         <div className="t-td-b truncate" title={row.original.title}>
           {row.original.title}
@@ -74,6 +125,7 @@ export default function RolesCardList() {
     {
       header: "Permissions",
       accessorKey: "responsibilities",
+      id: "permissions", // Map to backend field for sorting
       cell: ({ row }) => (
         <div className="t-td-b truncate">{row.original.responsibilities} Responsibilities</div>
       ),
@@ -81,6 +133,7 @@ export default function RolesCardList() {
     {
       header: "Status",
       accessorKey: "status",
+      id: "status", // Map to backend field for sorting
       cell: ({ row }) => (
         <div className="flex items-center">
           <StatusBadge status={row.original.status} />
@@ -122,9 +175,16 @@ export default function RolesCardList() {
         error={error}
         onRetry={handleRetry}
         enablePagination={true}
-        pageSize={10}
+        pageSize={pageSize}
         PaginationComponent={TablePagination}
         emptyMessage="No roles found"
+        // Server-side props
+        serverSidePagination={true}
+        totalItems={pagination?.total || 0}
+        onPaginationChange={handlePaginationChange}
+        serverSideSorting={true}
+        onSortChange={setSorting}
+        sorting={sorting}
       />
     </div>
   );

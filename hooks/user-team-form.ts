@@ -136,7 +136,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
     dispatch(getAllChannels());
 
     // Fetch all call points for dropdown
-    dispatch(getAllCallPoints());
+    dispatch(getAllCallPoints({ pagination: false }));
 
     // Fetch all products for search
     dispatch(getAllProducts());

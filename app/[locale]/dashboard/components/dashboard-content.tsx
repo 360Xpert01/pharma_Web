@@ -213,6 +213,11 @@ export function DashboardContent({
     employeeId?: string;
   }>({});
 
+  // State for Roles Table Filters
+  const [roleFilters, setRoleFilters] = useState<{
+    status?: string;
+  }>({});
+
   const handleSettings = () => {
     if (settingsRoute) {
       router.push(settingsRoute);
@@ -486,8 +491,14 @@ export function DashboardContent({
 
         {sampleTable && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading={campHeading} filterT={filterT} />
-            <SampleManagTable />
+            <TableHeader
+              campHeading={campHeading}
+              filterT={filterT}
+              showProductFilters={true}
+              onSearch={setSearchTerm}
+              onApplyFilters={setProductFilters}
+            />
+            <SampleManagTable searchTerm={searchTerm} filters={productFilters} />
           </div>
         )}
 
@@ -533,8 +544,14 @@ export function DashboardContent({
 
         {UserRoleTable && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading={campHeading} filterT={filterT} />
-            <UserRoles />
+            <TableHeader
+              campHeading={campHeading}
+              filterT={filterT}
+              onSearch={setSearchTerm}
+              showEmployeeFilters={true} // Reusing employee filters for roles status
+              onApplyFilters={setRoleFilters}
+            />
+            <UserRoles searchTerm={searchTerm} filters={roleFilters} />
           </div>
         )}
 

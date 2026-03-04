@@ -27,17 +27,44 @@ interface AllDistributorTypesProps {
 
 export default function AllDistributorTypes({ onEditDistributorType }: AllDistributorTypesProps) {
   const dispatch = useAppDispatch();
-  const { loading, error, distributorTypes } = useAppSelector((state) => state.allDistributorTypes);
+  const { loading, error, distributorTypes, pagination } = useAppSelector(
+    (state) => state.allDistributorTypes
+  );
   const [openId, setOpenId] = useState<string | null>(null);
+  const [sorting, setSorting] = useState<any[]>([]);
 
-  // Fetch distributor types on mount
+  // Fetch distributor types on mount and when sorting changes
   useEffect(() => {
-    dispatch(getAllDistributorTypes());
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
+    dispatch(
+      getAllDistributorTypes({
+        page: 1,
+        limit: 10,
+        sort: sortField,
+        order: sortOrder as any,
+      })
+    );
 
     return () => {
       dispatch(resetDistributorTypesState());
     };
-  }, [dispatch]);
+  }, [dispatch, sorting]);
+
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
+    dispatch(
+      getAllDistributorTypes({
+        page,
+        limit: pageSize,
+        sort: sortField,
+        order: sortOrder as any,
+      })
+    );
+  };
 
   const handleRetry = () => {
     dispatch(getAllDistributorTypes());
@@ -117,8 +144,13 @@ export default function AllDistributorTypes({ onEditDistributorType }: AllDistri
         loading={loading}
         error={error}
         onRetry={handleRetry}
-        enableSorting={false}
+        enableSorting={true}
+        serverSideSorting={true}
         enablePagination={true}
+        serverSidePagination={true}
+        totalItems={pagination?.total || distributorTypes?.length || 0}
+        onPaginationChange={handlePaginationChange}
+        onSortChange={(newSorting) => setSorting(newSorting)}
         pageSize={10}
         PaginationComponent={TablePagination}
         emptyMessage="No distributor types found"

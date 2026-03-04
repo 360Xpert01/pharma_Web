@@ -82,7 +82,7 @@ export default function UpdateTargetPage() {
   // Fetch teams and roles on mount
   useEffect(() => {
     dispatch(getTeamAll());
-    dispatch(getAllRoles());
+    dispatch(getAllRoles({ limit: 1000 }));
 
     return () => {
       dispatch(resetTargetByIdState());

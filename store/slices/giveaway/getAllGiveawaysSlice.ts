@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { BasePaginationParams } from "@/types/api";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -79,10 +80,7 @@ const transformGiveaway = (item: GiveawayItem): GiveawayItemDisplay => ({
   description: item.description || "N/A",
 });
 
-interface PaginationParams {
-  page?: number;
-  limit?: number;
-  search?: string;
+interface PaginationParams extends BasePaginationParams {
   status?: string;
 }
 
@@ -99,15 +97,19 @@ export const getAllGiveaways = createAsyncThunk<
       return rejectWithValue("No session found. Please login again.");
     }
 
-    const page = params && typeof params === "object" ? params.page || 1 : 1;
-    const limit = params && typeof params === "object" ? params.limit || 10 : 10;
-    const search = params && typeof params === "object" ? params.search || "" : "";
-    const status = params && typeof params === "object" ? params.status || "" : "";
+    const page = params?.page || 1;
+    const limit = params?.limit || 10;
+    const search = params?.search || "";
+    const status = params?.status || "";
+    const sort = params?.sort || "";
+    const order = params?.order || "";
 
     // Build params object, only including non-empty values
     const queryParams: Record<string, any> = { page, limit };
     if (search) queryParams.search = search;
     if (status) queryParams.status = status;
+    if (sort) queryParams.sort = sort;
+    if (order) queryParams.order = order;
 
     const response = await axios.get<GetGiveawaysResponse>(`${baseUrl}api/v1/giveaway`, {
       params: queryParams,

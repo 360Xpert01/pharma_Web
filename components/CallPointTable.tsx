@@ -18,17 +18,40 @@ interface CallPoint {
 
 export default function CallPointsList() {
   const dispatch = useAppDispatch();
-  const { callPoints, loading, error } = useAppSelector((state) => state.allCallPoints);
-  const hasFetched = useRef(false);
+  const { callPoints, loading, error, pagination } = useAppSelector((state) => state.allCallPoints);
   const [openId, setOpenId] = useState<string | null>(null);
+  const [sorting, setSorting] = useState<any[]>([]);
 
-  // Fetch call points on component mount (prevent double call)
+  // Fetch call points on component mount and when sorting changes
   useEffect(() => {
-    if (!hasFetched.current) {
-      dispatch(getAllCallPoints());
-      hasFetched.current = true;
-    }
-  }, [dispatch]);
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
+    dispatch(
+      getAllCallPoints({
+        page: 1,
+        limit: 10,
+        sort: sortField,
+        order: sortOrder as any,
+        pagination: true,
+      })
+    );
+  }, [dispatch, sorting]);
+
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
+    dispatch(
+      getAllCallPoints({
+        page,
+        limit: pageSize,
+        sort: sortField,
+        order: sortOrder as any,
+        pagination: true,
+      })
+    );
+  };
 
   const handleRetry = () => {
     dispatch(getAllCallPoints());
@@ -105,7 +128,14 @@ export default function CallPointsList() {
         loading={loading}
         error={error}
         onRetry={handleRetry}
+        enableSorting={true}
+        serverSideSorting={true}
         enablePagination={true}
+        serverSidePagination={true}
+        totalItems={pagination?.total || callPoints?.length || 0}
+        onPaginationChange={handlePaginationChange}
+        onSortChange={(newSorting) => setSorting(newSorting)}
+        sorting={sorting}
         pageSize={10}
         PaginationComponent={TablePagination}
         emptyMessage="No call points found"
