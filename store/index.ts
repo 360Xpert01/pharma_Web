@@ -106,6 +106,7 @@ import updateTerritoryReducer from "./slices/territory/updateTerritorySlice";
 import deleteTerritoryReducer from "./slices/territory/deleteTerritorySlice";
 import updateTargetReducer from "./slices/target/updateTargetSlice";
 import targetAllocationReducer from "./slices/target/targetAllocationSlice";
+import deleteBrickReducer from "./slices/brick/deleteBrickSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -210,6 +211,7 @@ const rootReducer = combineReducers({
   updateTerritory: updateTerritoryReducer,
   deleteTerritory: deleteTerritoryReducer,
   targetAllocation: targetAllocationReducer,
+  deleteBrick: deleteBrickReducer,
 });
 
 const persistConfig = {

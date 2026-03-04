@@ -100,6 +100,7 @@ export default function RoleHierarchyWrapper() {
   useEffect(() => {
     if (createSuccess) {
       toast.success(createMessage || "Role created successfully!");
+      dispatch(getAllRoles());
       dispatch(resetRoleState());
       setAddingId(null);
     }
@@ -112,6 +113,7 @@ export default function RoleHierarchyWrapper() {
   useEffect(() => {
     if (updateSuccess) {
       toast.success(updateMessage || "Role updated successfully!");
+      dispatch(getAllRoles());
       dispatch(resetUpdateRoleState());
       setUpdatingId(null);
     }
@@ -124,6 +126,7 @@ export default function RoleHierarchyWrapper() {
   useEffect(() => {
     if (deleteSuccess) {
       toast.success(deleteMessage || "Role deleted successfully!");
+      dispatch(getAllRoles());
       dispatch(resetDeleteRoleState());
     }
     if (deleteError) {
