@@ -108,7 +108,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
     }
 
     // Fetch roles, users, teams, and territories for dropdowns
-    dispatch(getAllRoles());
+    dispatch(getAllRoles({ pagination: false }));
     dispatch(getAllUsers({ limit: 10000 })); // Fetch more users to increase chances of finding supervisors
     dispatch(getTeamAll());
     dispatch(getAllTerritories({ notassigned: true })); // Fetch unassigned territories without pagination

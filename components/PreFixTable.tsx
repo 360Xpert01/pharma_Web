@@ -15,11 +15,36 @@ interface PrefixItem {
 export default function PrefixListComponent() {
   const dispatch = useDispatch<any>();
 
-  useEffect(() => {
-    dispatch(getAllPrefixes());
-  }, [dispatch]);
+  const { prefixes, loading, error, pagination } = useSelector((state: any) => state.allPrefixes);
+  const [sorting, setSorting] = React.useState<any[]>([]);
 
-  const { prefixes, loading, error } = useSelector((state: any) => state.allPrefixes);
+  useEffect(() => {
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
+    dispatch(
+      getAllPrefixes({
+        page: 1,
+        limit: 10,
+        sort: sortField,
+        order: sortOrder as any,
+      })
+    );
+  }, [dispatch, sorting]);
+
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
+    dispatch(
+      getAllPrefixes({
+        page,
+        limit: pageSize,
+        sort: sortField,
+        order: sortOrder as any,
+      })
+    );
+  };
 
   const handleRetry = () => {
     dispatch(getAllPrefixes());
@@ -66,10 +91,13 @@ export default function PrefixListComponent() {
       <CenturoTable
         data={prefixes || []}
         columns={columns}
-        loading={loading}
-        error={error}
-        onRetry={handleRetry}
+        enableSorting={true}
+        serverSideSorting={true}
         enablePagination={true}
+        serverSidePagination={true}
+        totalItems={pagination?.total || prefixes?.length || 0}
+        onPaginationChange={handlePaginationChange}
+        onSortChange={(newSorting) => setSorting(newSorting)}
         pageSize={10}
         PaginationComponent={TablePagination}
         emptyMessage="No prefixes found"

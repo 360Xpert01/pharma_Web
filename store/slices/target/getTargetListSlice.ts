@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { BasePaginationParams } from "@/types/api";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -37,6 +38,9 @@ interface GetTargetListResponse {
   success: boolean;
   message?: string;
   data: TargetListItem[];
+  total?: number;
+  page?: number;
+  limit?: number;
 }
 
 interface TargetListState {
@@ -44,6 +48,9 @@ interface TargetListState {
   success: boolean;
   error: string | null;
   targets: TargetListItem[];
+  total: number;
+  page: number;
+  limit: number;
 }
 
 // Initial State
@@ -52,41 +59,54 @@ const initialState: TargetListState = {
   success: false,
   error: null,
   targets: [],
+  total: 0,
+  page: 1,
+  limit: 10,
 };
 
 // Async Thunk: Get Target List (GET /api/v1/targets/targetList)
-export const getTargetList = createAsyncThunk<GetTargetListResponse, void, { rejectValue: string }>(
-  "target/getTargetList",
-  async (_, { rejectWithValue }) => {
-    try {
-      // Get token from localStorage
-      const sessionStr = localStorage.getItem("userSession");
-      if (!sessionStr) {
-        return rejectWithValue("No session found. Please login again.");
-      }
-
-      const response = await axios.get<GetTargetListResponse>(
-        `${baseUrl}api/v1/targets/targetList`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${sessionStr}`,
-          },
-        }
-      );
-
-      return response.data;
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.response?.data?.error ||
-        error.message ||
-        "Failed to fetch target list. Please try again.";
-
-      return rejectWithValue(errorMessage);
+export const getTargetList = createAsyncThunk<
+  GetTargetListResponse,
+  BasePaginationParams | void,
+  { rejectValue: string }
+>("target/getTargetList", async (params, { rejectWithValue }) => {
+  try {
+    // Get token from localStorage
+    const sessionStr = localStorage.getItem("userSession");
+    if (!sessionStr) {
+      return rejectWithValue("No session found. Please login again.");
     }
+
+    // Build query parameters
+    const page = params?.page || 1;
+    const limit = params?.limit || 10;
+    const search = params?.search || "";
+    const sort = params?.sort || "";
+    const order = params?.order || "";
+
+    const queryParams: Record<string, any> = { page, limit, search };
+    if (sort) queryParams.sort = sort;
+    if (order) queryParams.order = order;
+
+    const response = await axios.get<GetTargetListResponse>(`${baseUrl}api/v1/targets/targetList`, {
+      params: queryParams,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStr}`,
+      },
+    });
+
+    return response.data;
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message ||
+      error.response?.data?.error ||
+      error.message ||
+      "Failed to fetch target list. Please try again.";
+
+    return rejectWithValue(errorMessage);
   }
-);
+});
 
 // Slice
 const getTargetListSlice = createSlice({
@@ -98,6 +118,9 @@ const getTargetListSlice = createSlice({
       state.success = false;
       state.error = null;
       state.targets = [];
+      state.total = 0;
+      state.page = 1;
+      state.limit = 10;
     },
   },
   extraReducers: (builder) => {
@@ -110,6 +133,9 @@ const getTargetListSlice = createSlice({
         state.loading = false;
         state.success = true;
         state.targets = action.payload.data;
+        state.total = action.payload.total || action.payload.data?.length || 0;
+        state.page = action.payload.page || 1;
+        state.limit = action.payload.limit || 10;
       })
       .addCase(getTargetList.rejected, (state, action) => {
         state.loading = false;

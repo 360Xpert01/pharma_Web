@@ -69,7 +69,7 @@ export default function RoleHierarchyWrapper() {
   const { generatedPrefix } = useAppSelector((state) => state.generatePrefix);
 
   useEffect(() => {
-    dispatch(getAllRoles());
+    dispatch(getAllRoles({ pagination: false }));
   }, [dispatch]);
 
   useEffect(() => {

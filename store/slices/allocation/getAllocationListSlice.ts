@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { BasePaginationParams } from "@/types/api";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -56,10 +57,7 @@ const initialState: AllocationState = {
 };
 
 // Pagination Parameters Type
-interface PaginationParams {
-  page?: number;
-  limit?: number;
-  search?: string;
+interface PaginationParams extends BasePaginationParams {
   employeeId?: string;
 }
 
@@ -76,14 +74,18 @@ export const getAllocationList = createAsyncThunk<
       return rejectWithValue("No session found. Please login again.");
     }
 
-    const page = params && typeof params === "object" ? params.page || 1 : 1;
-    const limit = params && typeof params === "object" ? params.limit || 10 : 10;
-    const search = params && typeof params === "object" ? params.search || "" : "";
-    const employeeId = params && typeof params === "object" ? params.employeeId || "" : "";
+    const page = params?.page || 1;
+    const limit = params?.limit || 10;
+    const search = params?.search || "";
+    const employeeId = params?.employeeId || "";
+    const sort = params?.sort || "";
+    const order = params?.order || "";
 
     // Build query params object, only include employeeId if it has a value
     const queryParams: any = { page, limit, search };
     if (employeeId) queryParams.employeeId = employeeId;
+    if (sort) queryParams.sort = sort;
+    if (order) queryParams.order = order;
 
     const response = await axios.get<GetAllocationResponse>(`${baseUrl}api/v1/users/allocate`, {
       params: queryParams,

@@ -70,6 +70,7 @@ export const getAllCallPoints = createAsyncThunk<
       search: params?.search || "",
       sort: params?.sort || "pulseCode",
       order: params?.order || "asc",
+      pagination: params?.pagination !== undefined ? params.pagination : true,
     };
 
     const response = await axios.get<GetCallPointsResponse>(`${baseUrl}api/v1/callPoint/all`, {

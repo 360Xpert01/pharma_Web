@@ -15,4 +15,5 @@ export interface BasePaginationParams {
   search?: string;
   sort?: string;
   order?: "asc" | "desc";
+  pagination?: boolean;
 }

@@ -12,23 +12,63 @@ import { formatDate } from "@/utils/formatDate";
 interface Product {
   id: string;
   pulseCode: string;
-  createdAt: string;
+  skuCount: string;
   name: string;
   productCategory: string;
 }
 
-export default function SampleManagTable() {
+export default function SampleManagTable({
+  searchTerm,
+  filters,
+}: {
+  searchTerm?: string;
+  filters?: { categoryId?: string; status?: string };
+}) {
   const [openId, setOpenId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [sorting, setSorting] = useState<any[]>([]);
   const dispatch = useDispatch<any>();
 
-  const { products, loading, error } = useSelector((state: any) => state.allProducts);
+  const { products, loading, error, total } = useSelector((state: any) => state.allProducts);
 
   useEffect(() => {
-    dispatch(getAllProducts());
-  }, [dispatch]);
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
+    dispatch(
+      getAllProducts({
+        page: currentPage,
+        limit: itemsPerPage,
+        search: searchTerm,
+        categoryId: filters?.categoryId,
+        status: filters?.status,
+        sort: sortField,
+        order: sortOrder as any,
+      })
+    );
+  }, [dispatch, searchTerm, filters, sorting, currentPage, itemsPerPage]);
 
   const handleRetry = () => {
-    dispatch(getAllProducts());
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
+    dispatch(
+      getAllProducts({
+        page: currentPage,
+        limit: itemsPerPage,
+        search: searchTerm,
+        categoryId: filters?.categoryId,
+        status: filters?.status,
+        sort: sortField,
+        order: sortOrder as any,
+      })
+    );
+  };
+
+  const handlePaginationChange = (page: number, size: number) => {
+    setCurrentPage(page);
+    setItemsPerPage(size);
   };
 
   const columns: ColumnDef<Product>[] = [
@@ -38,15 +78,6 @@ export default function SampleManagTable() {
       cell: ({ row }) => (
         <div className="t-td-b truncate" title={row.original.pulseCode || "N/A"}>
           {row.original.pulseCode || "N/A"}
-        </div>
-      ),
-    },
-    {
-      header: "Date",
-      accessorKey: "createdAt",
-      cell: ({ row }) => (
-        <div className="t-td-b truncate" title={formatDate(row.original.createdAt)}>
-          {formatDate(row.original.createdAt)}
         </div>
       ),
     },
@@ -65,6 +96,15 @@ export default function SampleManagTable() {
       cell: ({ row }) => (
         <div className="t-td-b truncate" title={row.original.productCategory || "N/A"}>
           {row.original.productCategory || "N/A"}
+        </div>
+      ),
+    },
+    {
+      header: "SKU Count",
+      accessorKey: "skuCount",
+      cell: ({ row }) => (
+        <div className="t-td-b truncate" title={row.original.skuCount || "N/A"}>
+          {row.original.skuCount || "N/A"}
         </div>
       ),
     },
@@ -107,7 +147,12 @@ export default function SampleManagTable() {
         error={error}
         onRetry={handleRetry}
         enablePagination={true}
-        pageSize={10}
+        serverSidePagination={true}
+        serverSideSorting={true}
+        totalItems={total}
+        onPaginationChange={handlePaginationChange}
+        onSortChange={(newSorting) => setSorting(newSorting)}
+        pageSize={itemsPerPage}
         PaginationComponent={TablePagination}
         emptyMessage="No products found"
       />

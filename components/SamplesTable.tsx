@@ -35,7 +35,7 @@ export default function SamplesTable({ id }: { id: string }) {
   const columns = useMemo<ColumnDef<PartySample>[]>(
     () => [
       {
-        accessorKey: "id",
+        accessorKey: "pulseCode",
         header: "ID",
         cell: ({ row }) => (
           <p className="font-medium text-(--gray-9)">{row.original?.pulseCode || "N/A"}</p>
@@ -47,12 +47,12 @@ export default function SamplesTable({ id }: { id: string }) {
         cell: ({ row }) => <p className="text-(--gray-5)">{row.original.date}</p>,
       },
       {
-        accessorKey: "name",
+        accessorKey: "product",
         header: "Product",
         cell: ({ row }) => <p className="font-medium text-(--gray-9)">{row.original?.product}</p>,
       },
       {
-        accessorKey: "type",
+        accessorKey: "sku",
         header: "SKU's",
         cell: ({ row }) => <p className="text-(--gray-5)">{row.original?.sku}</p>,
       },
@@ -76,6 +76,8 @@ export default function SamplesTable({ id }: { id: string }) {
         error={error}
         enableExpanding={false}
         enablePagination={true}
+        enableSorting={true}
+        serverSideSorting={true}
         pageSize={10}
         emptyMessage="No samples found"
         PaginationComponent={TablePagination}

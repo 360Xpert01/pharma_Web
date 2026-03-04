@@ -33,6 +33,7 @@ export default function CallPointsList() {
         limit: 10,
         sort: sortField,
         order: sortOrder as any,
+        pagination: true,
       })
     );
   }, [dispatch, sorting]);
@@ -47,6 +48,7 @@ export default function CallPointsList() {
         limit: pageSize,
         sort: sortField,
         order: sortOrder as any,
+        pagination: true,
       })
     );
   };
