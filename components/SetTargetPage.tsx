@@ -81,17 +81,25 @@ export default function SetTargetPage() {
     if (selectedTeam) {
       dispatch(getTeamTargetProducts(selectedTeam));
 
-      // Find the "Sales Representative" role to filter users
-      const salesRepRole = roles.find(
-        (r) => r.roleName === "Sales Representative" || r.pulseCode === "SR"
-      );
+      // Wait until roles are available before fetching team users
+      if (roles.length > 0) {
+        // Find the "Sales Representative" role to filter users
+        const salesRepRole = roles.find(
+          (r) => r.roleName === "Sales Representative" || r.pulseCode === "SR"
+        );
 
-      dispatch(
-        getTeamUsers({
-          teamId: selectedTeam,
-          roleId: salesRepRole?.id,
-        })
-      );
+        dispatch(
+          getTeamUsers({
+            teamId: selectedTeam,
+            roleId: salesRepRole?.id,
+          })
+        ).then((action: any) => {
+          // Auto-select "All Sales Reps" when a team is selected
+          if (action.payload?.success && action.payload?.data?.length > 0) {
+            setSelectedSalesRep("all");
+          }
+        });
+      }
     } else {
       dispatch(resetTeamTargetProductsState());
       dispatch(resetTeamUsersState());
@@ -176,7 +184,18 @@ export default function SetTargetPage() {
       return;
     }
 
-    const targets = teamUsers.map((user: any) => ({
+    // Filter users based on selection
+    const usersToTarget =
+      selectedSalesRep === "all" || !selectedSalesRep
+        ? teamUsers
+        : teamUsers.filter((user: any) => (user.userId || user.id) === selectedSalesRep);
+
+    if (usersToTarget.length === 0) {
+      toast.error("The selected sales representative was not found in this team.");
+      return;
+    }
+
+    const targets = usersToTarget.map((user: any) => ({
       userId: user.userId || user.id,
       productTargets: products.flatMap((product: any) =>
         product.skus.map((sku: any) => ({

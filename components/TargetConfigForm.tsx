@@ -78,15 +78,18 @@ export default function TargetConfigForm({
             name="salesRep"
             value={selectedSalesRep || ""}
             onChange={onSalesRepChange || (() => {})}
-            options={salesReps?.map((user: any) => ({
-              value: user.userId || user.id,
-              label: user.firstName
-                ? `${user.firstName} ${user.lastName}`
-                : user.fullName || user.userName || user.email,
-            }))}
+            options={[
+              { value: "all", label: "All Sales Reps" },
+              ...(salesReps?.map((user: any) => ({
+                value: user.userId || user.id,
+                label: user.firstName
+                  ? `${user.firstName} ${user.lastName}`
+                  : user.fullName || user.userName || user.email,
+              })) || []),
+            ]}
             placeholder="Select sales rep"
             required
-            disabled={isEditMode}
+            disabled={isEditMode || !selectedTeam}
           />
         </div>
 
