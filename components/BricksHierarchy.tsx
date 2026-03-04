@@ -6,6 +6,7 @@ import {
   ChevronRight,
   Plus,
   MoreVertical,
+  Trash2,
   MapPin,
   Globe,
   Building2,
@@ -14,6 +15,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { BrickItem } from "@/store/slices/brick/getBrickListSlice";
+import { deleteBrick } from "@/store/slices/brick/deleteBrickSlice";
+import { useDispatch } from "react-redux";
 
 type GeoUnitType = "zone" | "region" | "brick";
 
@@ -49,6 +52,7 @@ interface BrickNodeProps {
   onEdit?: (itemId: string) => void;
   onCancelEdit?: () => void;
   onUpdate?: (id: string, type: GeoUnitType, name: string, description: string) => void;
+  ondelete?: (id: string) => void;
 }
 
 const BrickNode: React.FC<BrickNodeProps> = ({
@@ -66,9 +70,11 @@ const BrickNode: React.FC<BrickNodeProps> = ({
   onEdit,
   onCancelEdit,
   onUpdate,
+  ondelete,
 }) => {
   const [newName, setNewName] = useState("");
   const [newDescription, setNewDescription] = useState("");
+  const dispatch = useDispatch();
 
   const hasChildren = item.children && item.children.length > 0;
   const isAddingToThis = addingId === item.id;
@@ -99,6 +105,10 @@ const BrickNode: React.FC<BrickNodeProps> = ({
     if (newName.trim()) {
       onUpdate?.(item.id, item.type, newName.trim(), newDescription.trim());
     }
+  };
+
+  const handleDelete = (id: string) => {
+    dispatch(deleteBrick(id));
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -233,6 +243,18 @@ const BrickNode: React.FC<BrickNodeProps> = ({
               <Plus className="w-4 h-4" />
             </button>
           )}
+
+          {!hasChildren && (
+            <button
+              type="button"
+              onClick={() => handleDelete(item.id)}
+              className="w-8 h-8 flex items-center justify-center bg-destructive text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
+              title="Delete"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          )}
+
           <button
             type="button"
             className="w-8 h-8 flex items-center justify-center bg-(--primary) text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
@@ -396,6 +418,7 @@ interface BricksHierarchyProps {
   onEdit?: (itemId: string) => void;
   onCancelEdit?: () => void;
   onUpdate?: (id: string, type: GeoUnitType, name: string, description: string) => void;
+  ondelete?: (id: string) => void;
 }
 
 export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
@@ -413,6 +436,7 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
   onEdit,
   onCancelEdit,
   onUpdate,
+  ondelete,
 }) => {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
   const [rootAddName, setRootAddName] = useState("");
@@ -670,6 +694,7 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
             onEdit={onEdit}
             onCancelEdit={onCancelEdit}
             onUpdate={onUpdate}
+            ondelete={ondelete}
           />
         ))}
       </div>
