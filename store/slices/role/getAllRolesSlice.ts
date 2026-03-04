@@ -1,6 +1,9 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { BasePaginationParams } from "@/types/api";
+import { createRole } from "./addRole";
+import { updateRole } from "./updateRoleSlice";
+import { deleteRole } from "./deleteRoleSlice";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -126,6 +129,27 @@ const getAllRolesSlice = createSlice({
         state.error = action.payload || "Failed to load roles";
         state.roles = [];
         state.pagination = null;
+      })
+      // Handle Local Updates
+      .addCase(createRole.fulfilled, (state, action) => {
+        if (action.payload.success && action.payload.data) {
+          state.roles.push(action.payload.data as any);
+        }
+      })
+      .addCase(updateRole.fulfilled, (state, action) => {
+        if (action.payload.success) {
+          const { id, payload } = action.meta.arg;
+          const roleIndex = state.roles.findIndex((role) => role.id === id);
+          if (roleIndex !== -1) {
+            state.roles[roleIndex] = { ...state.roles[roleIndex], ...payload };
+          }
+        }
+      })
+      .addCase(deleteRole.fulfilled, (state, action) => {
+        if (action.payload.success) {
+          const id = action.meta.arg;
+          state.roles = state.roles.filter((role) => role.id !== id);
+        }
       });
   },
 });

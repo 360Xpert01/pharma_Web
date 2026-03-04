@@ -6,6 +6,8 @@ import type { RoleLevel } from "@/components/RoleHierarchy";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllRoles } from "@/store/slices/role/getAllRolesSlice";
 import { createRole, resetRoleState } from "@/store/slices/role/addRole";
+import { updateRole, resetUpdateRoleState } from "@/store/slices/role/updateRoleSlice";
+import { deleteRole, resetDeleteRoleState } from "@/store/slices/role/deleteRoleSlice";
 import { getRoleById, resetRoleDetailState } from "@/store/slices/role/getRoleByIdSlice";
 import {
   generatePrefix,
@@ -39,6 +41,7 @@ const buildRoleHierarchy = (roles: any[]) => {
       subtitle: role.pulseCode || role.legacyCode,
       type: getRoleType(role, roles),
       pulseCode: role.pulseCode,
+      responsibilities: role.responsibilities,
       children: [],
     });
   });
@@ -58,6 +61,7 @@ const buildRoleHierarchy = (roles: any[]) => {
 export default function RoleHierarchyWrapper() {
   const dispatch = useAppDispatch();
   const [addingId, setAddingId] = useState<string | null>(null);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
 
   const { loading, error, roles } = useAppSelector((state) => state.allRoles);
   const {
@@ -66,6 +70,18 @@ export default function RoleHierarchyWrapper() {
     message: createMessage,
     error: createError,
   } = useAppSelector((state) => state.addRole);
+  const {
+    loading: updating,
+    success: updateSuccess,
+    message: updateMessage,
+    error: updateError,
+  } = useAppSelector((state) => state.updateRole);
+  const {
+    loading: deleting,
+    success: deleteSuccess,
+    message: deleteMessage,
+    error: deleteError,
+  } = useAppSelector((state) => state.deleteRole);
   const { generatedPrefix } = useAppSelector((state) => state.generatePrefix);
 
   useEffect(() => {
@@ -85,7 +101,6 @@ export default function RoleHierarchyWrapper() {
     if (createSuccess) {
       toast.success(createMessage || "Role created successfully!");
       dispatch(resetRoleState());
-      dispatch(getAllRoles());
       setAddingId(null);
     }
     if (createError) {
@@ -94,6 +109,29 @@ export default function RoleHierarchyWrapper() {
     }
   }, [createSuccess, createMessage, createError, dispatch]);
 
+  useEffect(() => {
+    if (updateSuccess) {
+      toast.success(updateMessage || "Role updated successfully!");
+      dispatch(resetUpdateRoleState());
+      setUpdatingId(null);
+    }
+    if (updateError) {
+      toast.error(updateError);
+      dispatch(resetUpdateRoleState());
+    }
+  }, [updateSuccess, updateMessage, updateError, dispatch]);
+
+  useEffect(() => {
+    if (deleteSuccess) {
+      toast.success(deleteMessage || "Role deleted successfully!");
+      dispatch(resetDeleteRoleState());
+    }
+    if (deleteError) {
+      toast.error(deleteError);
+      dispatch(resetDeleteRoleState());
+    }
+  }, [deleteSuccess, deleteMessage, deleteError, dispatch]);
+
   const handleAddChild = (parentId: string, childType: string) => {
     setAddingId(parentId);
     dispatch(generatePrefix({ entity: "Role" }));
@@ -101,6 +139,7 @@ export default function RoleHierarchyWrapper() {
 
   const handleCancelAdd = () => {
     setAddingId(null);
+    setUpdatingId(null);
     dispatch(resetGeneratePrefixState());
   };
 
@@ -122,6 +161,28 @@ export default function RoleHierarchyWrapper() {
     );
   };
 
+  const handleUpdateChild = async (id: string, name: string, responsibilities?: string) => {
+    await dispatch(
+      updateRole({
+        id,
+        payload: {
+          roleName: name,
+        },
+      })
+    );
+  };
+
+  const handleStartUpdate = (id: string) => {
+    setUpdatingId(id);
+    setAddingId(null);
+  };
+
+  const handleDeleteChild = async (id: string) => {
+    {
+      await dispatch(deleteRole(id));
+    }
+  };
+
   const handleMoreOptions = (itemId: string, itemType: string) => {
     console.log("More options for:", itemId, "Type:", itemType);
     dispatch(getRoleById(itemId));
@@ -133,13 +194,17 @@ export default function RoleHierarchyWrapper() {
     <div className="shadow-soft bg-[var(--background)] rounded-8 p-6">
       <RoleHierarchy
         data={hierarchyData}
-        loading={loading || creating}
+        loading={loading || creating || updating || deleting}
         error={error}
         addingId={addingId}
+        updatingId={updatingId}
         onAddChild={handleAddChild}
         onCancelAdd={handleCancelAdd}
         onCreateChild={handleCreateChild}
+        onUpdateChild={handleUpdateChild}
+        onDeleteChild={handleDeleteChild}
         onMoreOptions={handleMoreOptions}
+        onStartUpdate={handleStartUpdate}
       />
     </div>
   );

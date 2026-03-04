@@ -12,6 +12,7 @@ import {
   User,
   Loader2,
   Pencil,
+  Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import RoleResponsibilitiesDropdown from "@/components/RoleResponsibilitiesDropdown";
@@ -61,6 +62,7 @@ interface RoleNodeProps {
   item: RoleItem;
   level: number;
   addingId: string | null;
+  updatingId: string | null;
   isExpanded: boolean;
   expandedIds: Set<string>;
   onToggleExpand: (id: string) => void;
@@ -73,7 +75,10 @@ interface RoleNodeProps {
     pulseCode: string,
     responsibilities?: string
   ) => void;
+  onUpdateChild?: (id: string, name: string, responsibilities?: string) => void;
+  onDeleteChild?: (id: string) => void;
   onMoreOptions?: (itemId: string, itemType: RoleLevel) => void;
+  onStartUpdate?: (id: string) => void;
 }
 
 const getTypeIcon = (type: RoleLevel) => {
@@ -110,44 +115,64 @@ const RoleNode: React.FC<RoleNodeProps> = ({
   item,
   level,
   addingId,
+  updatingId,
   isExpanded,
   expandedIds,
   onToggleExpand,
   onAddChild,
   onCancelAdd,
   onCreateChild,
+  onUpdateChild,
+  onDeleteChild,
   onMoreOptions,
+  onStartUpdate,
 }) => {
   const hasChildren = item.children && item.children.length > 0;
   const isAddingToThis = addingId === item.id;
+  const isUpdatingThis = updatingId === item.id;
   const childType = CHILD_TYPE_MAP[item.type];
   const canHaveChildren = childType !== null;
 
   const [newName, setNewName] = useState("");
-  // Pre-fill from depth: the child being created gets a default responsibility
-  const [newResponsibilities, setNewResponsibilities] = useState(
-    childType ? ROLE_LEVEL_TO_RESPONSIBILITY[childType] : ""
-  );
+  const [newResponsibilities, setNewResponsibilities] = useState("");
+
+  // Pre-fill for update or add
+  useEffect(() => {
+    if (isUpdatingThis) {
+      setNewName(item.name);
+      setNewResponsibilities(
+        item.responsibilities || getResponsibilityByName(item.name, item.type)
+      );
+    } else if (isAddingToThis && childType) {
+      setNewName("");
+      setNewResponsibilities(ROLE_LEVEL_TO_RESPONSIBILITY[childType]);
+    }
+  }, [isUpdatingThis, isAddingToThis, item.name, item.responsibilities, item.type, childType]);
 
   // Update responsibilities when name changes
   useEffect(() => {
-    if (isAddingToThis && childType && newName.trim()) {
-      setNewResponsibilities(getResponsibilityByName(newName, childType));
+    if ((isAddingToThis && childType && newName.trim()) || (isUpdatingThis && newName.trim())) {
+      const typeForResp = isUpdatingThis ? item.type : childType!;
+      setNewResponsibilities(getResponsibilityByName(newName, typeForResp));
     }
-  }, [newName, isAddingToThis, childType]);
+  }, [newName, isAddingToThis, isUpdatingThis, childType, item.type]);
 
-  const handleCreate = () => {
+  const handleAction = () => {
     if (newName.trim()) {
-      onCreateChild?.(item.id, childType!, newName.trim(), "", newResponsibilities || undefined);
-      setNewName("");
-      setNewResponsibilities("");
+      if (isUpdatingThis) {
+        onUpdateChild?.(item.id, newName.trim(), newResponsibilities || undefined);
+      } else if (isAddingToThis && childType) {
+        onCreateChild?.(item.id, childType, newName.trim(), "", newResponsibilities || undefined);
+        setNewName("");
+        setNewResponsibilities("");
+      }
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      handleCreate();
+      handleAction();
     }
     if (e.key === "Escape") {
       e.preventDefault();
@@ -183,59 +208,103 @@ const RoleNode: React.FC<RoleNodeProps> = ({
         />
       )}
 
-      {/* ── Existing Node View Row ── */}
-      <div className="flex items-center gap-3 group border border-[var(--gray-2)] rounded-8 p-4 bg-[var(--background)] hover:bg-[var(--gray-0)] transition-colors">
-        <div className="flex items-center">
-          {hasChildren ? (
+      {/* ── Existing Node View Row OR Update Row ── */}
+      {isUpdatingThis ? (
+        <div className="flex items-center gap-3 border border-[var(--primary)] rounded-8 p-4 bg-[var(--background)] shadow-soft animate-in fade-in duration-200">
+          <div
+            className={cn(
+              "w-10 h-10 rounded-8 flex items-center justify-center",
+              getTypeStyles(item.type)
+            )}
+          >
+            <Icon className="w-5 h-5" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <input
+              autoFocus
+              type="text"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Enter Tree Name"
+              className="w-full bg-transparent border-none outline-none text-[var(--gray-9)] font-semibold placeholder:text-[var(--gray-4)]"
+            />
+          </div>
+          <div className="flex-shrink-0">
+            <RoleResponsibilitiesDropdown
+              value={newResponsibilities}
+              onChange={setNewResponsibilities}
+            />
+          </div>
+          <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={() => onToggleExpand(item.id)}
-              className="w-6 h-6 flex items-center justify-center hover:bg-[var(--gray-2)] rounded-8 transition-colors z-10 mr-2 cursor-pointer"
+              onClick={onCancelAdd}
+              className="px-3 py-1.5 text-sm text-[var(--gray-5)] hover:text-[var(--gray-7)] font-medium cursor-pointer"
             >
-              {isExpanded ? (
-                <ChevronDown className="w-4 h-4 text-[var(--gray-6)]" />
-              ) : (
-                <ChevronRight className="w-4 h-4 text-[var(--gray-6)]" />
-              )}
+              Cancel
             </button>
-          ) : (
-            <div className="w-6 mr-2" />
-          )}
-        </div>
-
-        <div
-          className={cn(
-            "w-10 h-10 rounded-8 flex items-center justify-center",
-            getTypeStyles(item.type)
-          )}
-        >
-          <Icon className="w-5 h-5" />
-        </div>
-
-        <div className="flex-1 min-w-0 flex flex-col">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="font-bold text-(--gray-9) truncate" title={item.name}>
-              {item.name}
-            </span>
+            <button
+              type="button"
+              onClick={handleAction}
+              disabled={!newName.trim()}
+              className="px-4 py-1.5 text-sm bg-[var(--primary)] text-[var(--light)] rounded-8 font-medium hover:bg-[var(--primary)]/90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            >
+              Update
+            </button>
           </div>
-          {item.subtitle && (
-            <span className="text-xs text-(--gray-4) truncate" title={item.subtitle}>
-              {item.subtitle}
-            </span>
-          )}
         </div>
+      ) : (
+        <div className="flex items-center gap-3 group border border-[var(--gray-2)] rounded-8 p-4 bg-[var(--background)] hover:bg-[var(--gray-0)] transition-colors">
+          <div className="flex items-center">
+            {hasChildren ? (
+              <button
+                type="button"
+                onClick={() => onToggleExpand(item.id)}
+                className="w-6 h-6 flex items-center justify-center hover:bg-[var(--gray-2)] rounded-8 transition-colors z-10 mr-2 cursor-pointer"
+              >
+                {isExpanded ? (
+                  <ChevronDown className="w-4 h-4 text-[var(--gray-6)]" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 text-[var(--gray-6)]" />
+                )}
+              </button>
+            ) : (
+              <div className="w-6 mr-2" />
+            )}
+          </div>
 
-        {/* Dropdown shown on every existing node – defaults from depth */}
-        <div className="flex-shrink-0">
-          <RoleResponsibilitiesDropdown
-            value={item.responsibilities || getResponsibilityByName(item.name, item.type)}
-            onChange={() => {}}
-            readOnly
-          />
-        </div>
+          <div
+            className={cn(
+              "w-10 h-10 rounded-8 flex items-center justify-center",
+              getTypeStyles(item.type)
+            )}
+          >
+            <Icon className="w-5 h-5" />
+          </div>
 
-        <div className="flex items-center gap-2">
-          {canHaveChildren && (
+          <div className="flex-1 min-w-0 flex flex-col">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="font-bold text-(--gray-9) truncate" title={item.name}>
+                {item.name}
+              </span>
+            </div>
+            {item.subtitle && (
+              <span className="text-xs text-(--gray-4) truncate" title={item.subtitle}>
+                {item.subtitle}
+              </span>
+            )}
+          </div>
+
+          <div className="flex-shrink-0">
+            <RoleResponsibilitiesDropdown
+              value={item.responsibilities || getResponsibilityByName(item.name, item.type)}
+              onChange={() => {}}
+              readOnly
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={(e) => {
@@ -248,17 +317,28 @@ const RoleNode: React.FC<RoleNodeProps> = ({
             >
               <Plus className="w-4 h-4" />
             </button>
-          )}
-          <button
-            type="button"
-            className="w-8 h-8 flex items-center justify-center bg-(--primary) text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
-            onClick={() => onMoreOptions?.(item.id, item.type)}
-            title="Edit"
-          >
-            <Pencil className="w-4 h-4" />
-          </button>
+
+            <button
+              type="button"
+              className="w-8 h-8 flex items-center justify-center bg-(--primary) text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
+              onClick={() => onStartUpdate?.(item.id)}
+              title="Edit"
+            >
+              <Pencil className="w-4 h-4" />
+            </button>
+            {!hasChildren && (
+              <button
+                type="button"
+                className="w-8 h-8 flex items-center justify-center bg-destructive text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
+                onClick={() => onDeleteChild?.(item.id)}
+                title="Delete"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* ── Children + Inline Create ── */}
       {isExpanded && (
@@ -310,7 +390,7 @@ const RoleNode: React.FC<RoleNodeProps> = ({
                   </button>
                   <button
                     type="button"
-                    onClick={handleCreate}
+                    onClick={handleAction}
                     disabled={!newName.trim()}
                     className="px-4 py-1.5 text-sm bg-[var(--primary)] text-[var(--light)] rounded-8 font-medium hover:bg-[var(--primary)]/90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   >
@@ -328,13 +408,17 @@ const RoleNode: React.FC<RoleNodeProps> = ({
                 item={child}
                 level={level + 1}
                 addingId={addingId}
+                updatingId={updatingId}
                 isExpanded={expandedIds.has(child.id)}
                 expandedIds={expandedIds}
                 onToggleExpand={onToggleExpand}
                 onAddChild={onAddChild}
                 onCancelAdd={onCancelAdd}
                 onCreateChild={onCreateChild}
+                onUpdateChild={onUpdateChild}
+                onDeleteChild={onDeleteChild}
                 onMoreOptions={onMoreOptions}
+                onStartUpdate={onStartUpdate}
               />
             ))}
         </div>
@@ -343,7 +427,6 @@ const RoleNode: React.FC<RoleNodeProps> = ({
   );
 };
 
-// ── Root-level add row ──
 const RootAddRow: React.FC<{
   onCreateChild?: (
     parentId: string,
@@ -355,10 +438,8 @@ const RootAddRow: React.FC<{
   onCancelAdd?: () => void;
 }> = ({ onCreateChild, onCancelAdd }) => {
   const [rootName, setRootName] = useState("");
-  // Root level = company = Administrator by default
   const [rootResponsibilities, setRootResponsibilities] = useState("Administrator");
 
-  // Update responsibilities when name changes
   useEffect(() => {
     if (rootName.trim()) {
       setRootResponsibilities(getResponsibilityByName(rootName, "company"));
@@ -429,7 +510,6 @@ const RootAddRow: React.FC<{
   );
 };
 
-// ── Main Hierarchy Component ──
 interface RoleHierarchyProps {
   data: RoleItem[];
   loading?: boolean;
@@ -443,8 +523,12 @@ interface RoleHierarchyProps {
     pulseCode: string,
     responsibilities?: string
   ) => void;
+  onUpdateChild?: (id: string, name: string, responsibilities?: string) => void;
+  onDeleteChild?: (id: string) => void;
   onMoreOptions?: (itemId: string, itemType: RoleLevel) => void;
   addingId?: string | null;
+  updatingId?: string | null;
+  onStartUpdate?: (id: string) => void;
 }
 
 export const RoleHierarchy: React.FC<RoleHierarchyProps> = ({
@@ -454,8 +538,12 @@ export const RoleHierarchy: React.FC<RoleHierarchyProps> = ({
   onAddChild,
   onCancelAdd,
   onCreateChild,
+  onUpdateChild,
+  onDeleteChild,
   onMoreOptions,
   addingId = null,
+  updatingId = null,
+  onStartUpdate,
 }) => {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
@@ -521,13 +609,17 @@ export const RoleHierarchy: React.FC<RoleHierarchyProps> = ({
             item={item}
             level={0}
             addingId={addingId}
+            updatingId={updatingId}
             isExpanded={expandedIds.has(item.id)}
             expandedIds={expandedIds}
             onToggleExpand={toggleExpand}
             onAddChild={onAddChild}
             onCancelAdd={onCancelAdd}
             onCreateChild={onCreateChild}
+            onUpdateChild={onUpdateChild}
+            onDeleteChild={onDeleteChild}
             onMoreOptions={onMoreOptions}
+            onStartUpdate={onStartUpdate}
           />
         ))}
       </div>

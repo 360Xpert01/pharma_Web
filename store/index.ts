@@ -12,6 +12,7 @@ import addRole from "./slices/role/addRole";
 import allRolesReducer from "./slices/role/getAllRolesSlice";
 import roleByIdReducer from "./slices/role/getRoleByIdSlice";
 import updateRoleReducer from "./slices/role/updateRoleSlice";
+import deleteRoleReducer from "./slices/role/deleteRoleSlice";
 import allPreFixTable from "./slices/preFix/allPreFixTable";
 import createPrefixReducer from "./slices/preFix/postPrefix";
 import allPrefixesReducer from "./slices/preFix/getAllPrefixesSlice";
@@ -115,6 +116,7 @@ const rootReducer = combineReducers({
   allRoles: allRolesReducer,
   roleById: roleByIdReducer,
   updateRole: updateRoleReducer,
+  deleteRole: deleteRoleReducer,
   allPreFixTable: allPreFixTable,
   createPrefix: createPrefixReducer,
   allPrefixes: allPrefixesReducer,
