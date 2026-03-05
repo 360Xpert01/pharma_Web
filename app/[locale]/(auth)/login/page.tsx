@@ -12,6 +12,7 @@ import { Button } from "../../../../components/ui/button/button";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
+  const [subDomain, setSubDomain] = useState("");
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [userNotFound, setUserNotFound] = useState(false);
@@ -45,6 +46,7 @@ export default function LoginScreen() {
     }
 
     try {
+      localStorage.setItem("tenantName", subDomain.toLowerCase());
       const result = await dispatch(requestOtp({ email: email.trim(), deviceId }));
       if (result.payload?.success) {
         setIsOtpSent(true);
@@ -177,7 +179,7 @@ export default function LoginScreen() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" && email.includes("@") && !loading) {
+                  if (e.key === "Enter" && email.includes("@") && subDomain.trim() && !loading) {
                     handleSendOTP();
                   }
                 }}
@@ -197,10 +199,28 @@ export default function LoginScreen() {
               </div>
             </div>
 
+            {/* Tenant Name Input */}
+            <div className="space-y-2">
+              <label className="t-label text-[var(--gray-9)]">Tenant Name</label>
+              <input
+                type="text"
+                value={subDomain}
+                maxLength={3}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/[^a-zA-Z]/g, "").toUpperCase();
+                  setSubDomain(val);
+                }}
+                placeholder="Enter tenant name"
+                disabled={loading}
+                className="w-full h-12 px-4 py-3 border border-[var(--gray-2)] rounded-8 outline-none transition-all focus:ring-2 focus:ring-[var(--primary-1)] focus:border-[var(--primary-1)] disabled:bg-[var(--gray-1)] disabled:cursor-not-allowed bg-white text-sm tracking-widest"
+              />
+              <div className="min-h-[20px]" />
+            </div>
+
             {/* Send OTP Button */}
             <button
               onClick={handleSendOTP}
-              disabled={loading || !email.includes("@")}
+              disabled={loading || !email.includes("@") || !subDomain.trim()}
               className="w-full h-12 cursor-pointer bg-gradient-to-r from-[var(--primary-gradient-start)] to-[var(--primary-gradient-end)] hover:from-[var(--primary-gradient-start-hover)] hover:to-[var(--primary-gradient-end-hover)] text-white font-semibold rounded-8 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Sending..." : "Send OTP"}
