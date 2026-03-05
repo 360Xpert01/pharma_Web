@@ -16,6 +16,7 @@ interface TableFilterProps {
   showProductFilters?: boolean;
   showGiveawayFilters?: boolean;
   showTeamFilters?: boolean;
+  showTargetFilters?: boolean;
   isAllocate?: boolean;
   channelId?: string;
   onApply?: () => void;
@@ -39,6 +40,7 @@ export default function TableFilter({
   showProductFilters = false,
   showGiveawayFilters = false,
   showTeamFilters = false,
+  showTargetFilters = false,
   isAllocate = false,
   channelId,
   onApply,
@@ -83,9 +85,10 @@ export default function TableFilter({
         dispatch(getAllChannels());
       }
     }
-    if (showEmployeeFilters && isFilterOpen) {
+    if ((showEmployeeFilters || showTargetFilters) && isFilterOpen) {
       dispatch(getAllRoles());
       dispatch(getTeamAll());
+      dispatch(getAllUsers({ page: 1, limit: 100 }));
     }
     if (showProductFilters && isFilterOpen) {
       dispatch(getProductCategories());
@@ -308,6 +311,66 @@ export default function TableFilter({
                   />
                 </div>
               </>
+            ) : showTargetFilters ? (
+              <>
+                {/* Employee Filter - Show only Sales Reps */}
+                <div>
+                  <FormSelect
+                    label="Employee (Sales Rep)"
+                    name="employeeId"
+                    value={selectedEmployeeId}
+                    onChange={setSelectedEmployeeId}
+                    options={[
+                      ...users
+                        .filter((user) =>
+                          (user.role?.roleName ?? "").toLowerCase().includes("sales representative")
+                        )
+                        .map((user) => ({
+                          value: user.id,
+                          label: `${user.firstName} ${user.lastName}`,
+                        })),
+                    ]}
+                    placeholder="Select sales rep"
+                    className="mb-0"
+                  />
+                </div>
+
+                {/* Team Filter */}
+                <div>
+                  <FormSelect
+                    label="Team"
+                    name="team"
+                    value={selectedTeam}
+                    onChange={setSelectedTeam}
+                    options={[
+                      ...teams.map((team) => ({
+                        value: team.id,
+                        label: team.name,
+                      })),
+                    ]}
+                    placeholder="Select team"
+                    className="mb-0"
+                  />
+                </div>
+
+                {/* Supervisor Filter */}
+                <div>
+                  <FormSelect
+                    label="Supervisor"
+                    name="supervisor"
+                    value={selectedSupervisor}
+                    onChange={setSelectedSupervisor}
+                    options={[
+                      ...users.map((user) => ({
+                        value: user.id,
+                        label: `${user.firstName} ${user.lastName}`,
+                      })),
+                    ]}
+                    placeholder="Select supervisor"
+                    className="mb-0"
+                  />
+                </div>
+              </>
             ) : null}
 
             {/* Status Filter (Common for Doctor, Employee, Product, and Team) */}
@@ -342,7 +405,8 @@ export default function TableFilter({
               !showProductFilters &&
               !showGiveawayFilters &&
               !isAllocate &&
-              !showTeamFilters && (
+              !showTeamFilters &&
+              !showTargetFilters && (
                 /* Date Range */
                 <div>
                   <FormSelect

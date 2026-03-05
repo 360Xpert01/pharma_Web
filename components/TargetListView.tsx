@@ -34,10 +34,19 @@ const getMonthName = (month: number): string => {
   return months[month - 1] || "";
 };
 
-export default function TargetListView() {
+export default function TargetListView({
+  searchTerm = "",
+  filters = {},
+}: {
+  searchTerm?: string;
+  filters?: {
+    employeeId?: string;
+    teamId?: string;
+    supervisorId?: string;
+  };
+}) {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sorting, setSorting] = useState<any[]>([]);
@@ -52,16 +61,19 @@ export default function TargetListView() {
       getTargetList({
         page: currentPage,
         limit: itemsPerPage,
-        search: searchQuery,
+        search: searchTerm,
         sort: sortField,
         order: sortOrder as any,
+        userId: filters.employeeId,
+        teamId: filters.teamId,
+        lineManagerId: filters.supervisorId,
       })
     );
 
     return () => {
       dispatch(resetTargetListState());
     };
-  }, [dispatch, searchQuery, currentPage, itemsPerPage, sorting]);
+  }, [dispatch, searchTerm, currentPage, itemsPerPage, sorting, filters]);
 
   const handleRetry = () => {
     const sortField = sorting.length > 0 ? sorting[0].id : "";
@@ -71,7 +83,7 @@ export default function TargetListView() {
       getTargetList({
         page: currentPage,
         limit: itemsPerPage,
-        search: searchQuery,
+        search: searchTerm,
         sort: sortField,
         order: sortOrder as any,
       })
