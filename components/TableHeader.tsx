@@ -17,6 +17,7 @@ interface UsersHeaderProps {
   showProductFilters?: boolean;
   showGiveawayFilters?: boolean;
   showTeamFilters?: boolean;
+  showTargetFilters?: boolean;
   isAllocate?: boolean;
   channelId?: string;
   onApplyFilters?: (filters: {
@@ -44,6 +45,7 @@ export default function UsersHeader({
   showProductFilters = false,
   showGiveawayFilters = false,
   showTeamFilters = false,
+  showTargetFilters = false,
   isAllocate = false,
   channelId,
   onApplyFilters,
@@ -86,6 +88,7 @@ export default function UsersHeader({
               showProductFilters={showProductFilters}
               showGiveawayFilters={showGiveawayFilters}
               showTeamFilters={showTeamFilters}
+              showTargetFilters={showTargetFilters}
               isAllocate={isAllocate}
               channelId={channelId}
               onApplyFilters={onApplyFilters}

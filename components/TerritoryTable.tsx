@@ -11,7 +11,6 @@ import {
 } from "@/store/slices/territory";
 import { toast } from "sonner";
 import EditIcon from "@/components/svgs/edit-icon";
-import EyeIcon from "@/components/svgs/eye-icon";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 

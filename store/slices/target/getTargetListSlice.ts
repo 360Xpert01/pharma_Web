@@ -38,9 +38,12 @@ interface GetTargetListResponse {
   success: boolean;
   message?: string;
   data: TargetListItem[];
-  total?: number;
-  page?: number;
-  limit?: number;
+  pagination?: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
 }
 
 interface TargetListState {
@@ -64,10 +67,16 @@ const initialState: TargetListState = {
   limit: 10,
 };
 
+interface TargetListParams extends BasePaginationParams {
+  userId?: string;
+  teamId?: string;
+  lineManagerId?: string;
+}
+
 // Async Thunk: Get Target List (GET /api/v1/targets/targetList)
 export const getTargetList = createAsyncThunk<
   GetTargetListResponse,
-  BasePaginationParams | void,
+  TargetListParams | void,
   { rejectValue: string }
 >("target/getTargetList", async (params, { rejectWithValue }) => {
   try {
@@ -83,10 +92,16 @@ export const getTargetList = createAsyncThunk<
     const search = params?.search || "";
     const sort = params?.sort || "";
     const order = params?.order || "";
+    const userId = params?.userId || "";
+    const teamId = params?.teamId || "";
+    const lineManagerId = params?.lineManagerId || "";
 
     const queryParams: Record<string, any> = { page, limit, search };
     if (sort) queryParams.sort = sort;
     if (order) queryParams.order = order;
+    if (userId) queryParams.userId = userId;
+    if (teamId) queryParams.teamId = teamId;
+    if (lineManagerId) queryParams.lineManagerId = lineManagerId;
 
     const response = await axios.get<GetTargetListResponse>(`${baseUrl}api/v1/targets/targetList`, {
       params: queryParams,
@@ -133,9 +148,9 @@ const getTargetListSlice = createSlice({
         state.loading = false;
         state.success = true;
         state.targets = action.payload.data;
-        state.total = action.payload.total || action.payload.data?.length || 0;
-        state.page = action.payload.page || 1;
-        state.limit = action.payload.limit || 10;
+        state.total = action.payload.pagination?.total || action.payload.data?.length || 0;
+        state.page = action.payload.pagination?.page || 1;
+        state.limit = action.payload.pagination?.limit || 10;
       })
       .addCase(getTargetList.rejected, (state, action) => {
         state.loading = false;

@@ -208,6 +208,13 @@ export function DashboardContent({
     channelId?: string;
   }>({});
 
+  // State for Target List Filters
+  const [targetFilters, setTargetFilters] = useState<{
+    employeeId?: string;
+    teamId?: string;
+    supervisorId?: string;
+  }>({});
+
   // State for Allocation Table Filters
   const [allocationFilters, setAllocationFilters] = useState<{
     employeeId?: string;
@@ -610,8 +617,14 @@ export function DashboardContent({
 
         {targetListView && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading="All Employees" filterT={filterT} />
-            <TargetListView />
+            <TableHeader
+              campHeading="All Employees"
+              filterT={true}
+              onSearch={setSearchTerm}
+              showTargetFilters={true}
+              onApplyFilters={setTargetFilters}
+            />
+            <TargetListView searchTerm={searchTerm} filters={targetFilters} />
           </div>
         )}
 

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { FormSelect } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getTeamAll } from "@/store/slices/team/getTeamAllSlice";
@@ -21,6 +21,8 @@ import { conflictResolutionSchema } from "@/validations/targetValidation";
 
 export default function TerritoryConflictsPage() {
   const router = useRouter();
+  const params = useParams();
+  const locale = params?.locale || "en";
   const [selectedTeam, setSelectedTeam] = useState("");
   const dispatch = useAppDispatch();
   const { teams } = useAppSelector((state) => state.teamAll);
@@ -55,7 +57,11 @@ export default function TerritoryConflictsPage() {
       toast.success("Success", { description: resolveMessage });
       dispatch(resetTargetAllocationState());
       setValidationErrors({});
-      // Refresh conflicts
+
+      // Redirect to target list view after success
+      router.push(`/${locale}/dashboard/target-listview`);
+
+      // Refresh conflicts (optional since we're redirecting, but kept for completeness)
       if (selectedTeam) {
         dispatch(getTeamConflicts(selectedTeam));
       }
@@ -240,7 +246,7 @@ export default function TerritoryConflictsPage() {
                     </div>
 
                     {/* Status Alert */}
-                    {conflict.isResolved ? (
+                    {conflict.isResolved || getBrickTotalPercentage(conflict) === 100 ? (
                       <div className="bg-(--success-0) rounded-8 px-4 py-3 flex items-center gap-3">
                         <CheckCircle2 className="w-5 h-5 text-(--success)" />
                         <span className="font-medium text-xs text-(--success)">
@@ -248,9 +254,7 @@ export default function TerritoryConflictsPage() {
                         </span>
                       </div>
                     ) : (
-                      <div
-                        className={`rounded-8 px-4 py-3 flex items-center gap-3 ${getErrorMessage(conflict.brickId) ? "bg-(--destructive-0)" : "bg-(--destructive-0)"}`}
-                      >
+                      <div className="bg-(--destructive-0) rounded-8 px-4 py-3 flex items-center gap-3">
                         <AlertCircle className="w-5 h-5 text-(--destructive)" />
                         <span className="font-medium text-xs text-(--destructive)">
                           {getErrorMessage(conflict.brickId) ||

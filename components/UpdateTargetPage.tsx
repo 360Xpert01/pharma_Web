@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import TargetConfigForm from "./TargetConfigForm";
 import ConflictModal from "./ConflictModal";
+import MonthRestrictionModal from "./MonthRestrictionModal";
 import { Button } from "@/components/ui/button/button";
 import { getTeamAll } from "@/store/slices/team/getTeamAllSlice";
 import {
@@ -59,6 +60,22 @@ export default function UpdateTargetPage() {
   // Validation errors state
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
+  // Determine if the target is read-only (current or previous months)
+  const isReadOnly = (() => {
+    if (!targetData) return false;
+    const month = targetData.month || targetData.targetMonth;
+    const year = targetData.year || targetData.targetYear;
+    if (!month || !year) return false;
+
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1; // 1-indexed
+
+    if (year < currentYear) return true;
+    if (year === currentYear && month <= currentMonth) return true;
+    return false;
+  })();
+
   // Helper function to clear error for a specific field when user types
   const clearFieldError = (fieldName: string) => {
     if (validationErrors[fieldName]) {
@@ -72,6 +89,9 @@ export default function UpdateTargetPage() {
 
   // Conflict Modal state
   const [isConflictModalOpen, setIsConflictModalOpen] = useState(false);
+
+  // Month Restriction Modal state
+  const [isMonthRestrictionModalOpen, setIsMonthRestrictionModalOpen] = useState(false);
 
   // Find selected team data
   const matchTeam = (teams as any[]).find((team: any) => team.id === selectedTeam);
@@ -240,6 +260,12 @@ export default function UpdateTargetPage() {
       return;
     }
 
+    // Restriction check: if current or previous month, show modal and abort
+    if (isReadOnly) {
+      setIsMonthRestrictionModalOpen(true);
+      return;
+    }
+
     // Build update payload with ONLY targets (userId and productTargets with targetValue)
     // The API expects: { targets: [{ userId, productTargets: [{ productSkuId, targetValue }] }] }
 
@@ -342,6 +368,11 @@ export default function UpdateTargetPage() {
       </div>
 
       <ConflictModal isOpen={isConflictModalOpen} onClose={() => setIsConflictModalOpen(false)} />
+
+      <MonthRestrictionModal
+        isOpen={isMonthRestrictionModalOpen}
+        onClose={() => setIsMonthRestrictionModalOpen(false)}
+      />
     </div>
   );
 }
