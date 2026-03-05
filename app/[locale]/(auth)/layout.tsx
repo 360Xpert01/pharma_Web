@@ -47,7 +47,7 @@ export default function AuthLayout({ children }: PropsWithChildren) {
           <div className="relative z-10 pb-4 min-[1200px]:pr-16 min-[1600px]:pr-30 flex items-center justify-end gap-2">
             <LoginLine />
             <div className="text-background text-xs whitespace-nowrap">
-              Pulse by CRM | © 2024 All Rights Reserved
+              Pulse by CRM | © 2026 All Rights Reserved
             </div>
           </div>
         </div>
