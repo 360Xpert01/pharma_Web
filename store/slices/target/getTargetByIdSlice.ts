@@ -21,16 +21,23 @@ const initialState: TargetByIdState = {
 // Async Thunk: Get Target By ID (GET /api/v1/targets/{id})
 export const getTargetById = createAsyncThunk<
   TargetDetailResponse,
-  string,
+  string | { targetId: string; userId?: string },
   { rejectValue: string }
->("target/getTargetById", async (id, { rejectWithValue }) => {
+>("target/getTargetById", async (arg, { rejectWithValue }) => {
   try {
     const token = localStorage.getItem("userSession");
     if (!token) {
       return rejectWithValue("No session found. Please login again.");
     }
 
-    const response = await axios.get<TargetDetailResponse>(`${baseUrl}api/v1/targets/${id}`, {
+    const { targetId, userId } =
+      typeof arg === "string" ? { targetId: arg, userId: undefined } : arg;
+    const url = new URL(`${baseUrl}api/v1/targets/${targetId}`);
+    if (userId) {
+      url.searchParams.append("userId", userId);
+    }
+
+    const response = await axios.get<TargetDetailResponse>(url.toString(), {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
