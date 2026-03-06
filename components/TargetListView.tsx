@@ -95,9 +95,9 @@ export default function TargetListView({
     setItemsPerPage(size);
   };
 
-  const handleViewDetails = (e: React.MouseEvent, targetId: string) => {
+  const handleViewDetails = (e: React.MouseEvent, targetId: string, userId: string) => {
     e.stopPropagation();
-    router.push(`/dashboard/SetTarget?targetId=${targetId}`);
+    router.push(`/dashboard/SetTarget?targetId=${targetId}&userId=${userId}`);
   };
 
   const columns: ColumnDef<TargetListItem>[] = [
@@ -187,7 +187,7 @@ export default function TargetListView({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              handleViewDetails(e, row.original.targetId);
+              handleViewDetails(e, row.original.targetId, row.original.userId);
             }}
             className="group hover:opacity-80 transition cursor-pointer"
             title="Edit Target"

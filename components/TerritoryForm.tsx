@@ -28,6 +28,7 @@ interface Brick {
   id: string;
   name: string;
   brickCode?: string;
+  description?: string;
 }
 
 export default function TerritoryForm({ territoryId }: { territoryId?: string | null }) {
@@ -81,19 +82,24 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
 
   // Populate form with territory data
   useEffect(() => {
-    if (territory && isEditMode) {
+    if (territory && isEditMode && bricks.length > 0) {
       setFormData({
         pulseCode: territory.pulseCode || "",
         description: territory.description || "",
         selectedBricks:
-          territory.bricks?.map((b: any) => ({
-            id: b.id,
-            name: b.name,
-            brickCode: b.brickCode,
-          })) || [],
+          territory.bricks?.map((b: any) => {
+            // Find full brick details from the bricks list
+            const fullBrick = bricks.find((brick) => brick.id === b.id);
+            return {
+              id: b.id,
+              name: fullBrick?.name || b.name,
+              brickCode: fullBrick?.brickCode || b.brickCode,
+              description: fullBrick?.description || b.description,
+            };
+          }) || [],
       });
     }
-  }, [territory, isEditMode]);
+  }, [territory, isEditMode, bricks]);
 
   // Handle success
   useEffect(() => {

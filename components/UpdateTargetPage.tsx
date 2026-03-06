@@ -32,6 +32,7 @@ export default function UpdateTargetPage() {
   const locale = params?.locale || "en";
   const searchParams = useSearchParams();
   const targetId = searchParams.get("targetId");
+  const userId = searchParams.get("userId");
 
   // Redux selectors
   const { teams } = useAppSelector((state) => state.teamAll);
@@ -104,17 +105,22 @@ export default function UpdateTargetPage() {
     dispatch(getTeamAll());
     dispatch(getAllRoles({ limit: 1000 }));
 
+    // Pre-set selectedSalesRep if userId is in query params
+    if (userId) {
+      setSelectedSalesRep(userId);
+    }
+
     return () => {
       dispatch(resetTargetByIdState());
     };
-  }, [dispatch]);
+  }, [dispatch, userId]);
 
   // Fetch target data if targetId is present
   useEffect(() => {
     if (targetId) {
-      dispatch(getTargetById(targetId));
+      dispatch(getTargetById({ targetId, userId: userId || undefined }));
     }
-  }, [targetId, dispatch]);
+  }, [targetId, userId, dispatch]);
 
   // Populate form when target data is fetched
   useEffect(() => {
@@ -122,47 +128,24 @@ export default function UpdateTargetPage() {
       // Set team
       if (targetData.teamId) setSelectedTeam(targetData.teamId);
 
-      // Handle allocations mapping (if API returns allocations)
-      const allocations = (targetData as any).allocations || [];
-      if (allocations.length > 0) {
-        // Default to first sales rep if not selected
-        const firstRep = allocations[0];
-        if (firstRep.userId) setSelectedSalesRep(firstRep.userId);
+      // Handle allocations mapping
+      const allocations = targetData.allocations || [];
+      if (allocations.length > 0 && userId) {
+        const selectedAlloc = allocations.find((a: any) => a.userId === userId);
 
-        // Map all targets back to skuTargets state (from all reps in the allocation)
-        const newSkuTargets: Record<string, string> = {};
-        allocations.forEach((alloc: any) => {
-          const skuAllocations = alloc.skuAllocations || alloc.productTargets || [];
+        if (selectedAlloc) {
+          setSelectedSalesRep(selectedAlloc.userId);
+
+          // Map targets for the selected rep back to skuTargets state
+          const newSkuTargets: Record<string, string> = {};
+          const skuAllocations = selectedAlloc.skuAllocations || [];
           skuAllocations.forEach((skuAlloc: any) => {
             if (skuAlloc.productSkuId) {
               newSkuTargets[skuAlloc.productSkuId] = String(skuAlloc.targetValue || "0");
             }
           });
-        });
-        setSkuTargets(newSkuTargets);
-      } else if (targetData.targets && Array.isArray(targetData.targets)) {
-        // Handle targets array
-        const newSkuTargets: Record<string, string> = {};
-        targetData.targets.forEach((userTarget: any) => {
-          if (Array.isArray(userTarget.productTargets)) {
-            userTarget.productTargets.forEach((pt: any) => {
-              if (pt.productSkuId) {
-                newSkuTargets[pt.productSkuId] = String(pt.targetValue || "0");
-              }
-            });
-          }
-        });
-        setSkuTargets(newSkuTargets);
-      } else if (targetData.products && Array.isArray(targetData.products)) {
-        // Handle products array
-        const newSkuTargets: Record<string, string> = {};
-        targetData.products.forEach((product: any) => {
-          const skuId = product.productSkuId || product.id || product.skuId;
-          if (skuId) {
-            newSkuTargets[skuId] = String(product.targetValue || product.targetPackets || "0");
-          }
-        });
-        setSkuTargets(newSkuTargets);
+          setSkuTargets(newSkuTargets);
+        }
       }
 
       // Format month and year
@@ -228,7 +211,7 @@ export default function UpdateTargetPage() {
 
   // Read-only field values (populated when team/sales rep is selected)
   // Check if targetData has specific rep info before falling back to teamUsers
-  const currentRepFromAlloc = (targetData as any)?.allocations?.find(
+  const currentRepFromAlloc = targetData?.allocations?.find(
     (a: any) => a.userId === selectedSalesRep
   );
   const currentRepFromUsers = teamUsers.find((u) => u.userId === selectedSalesRep);
@@ -236,10 +219,7 @@ export default function UpdateTargetPage() {
   const teamMetadata = {
     teamName: targetData?.teamName || matchTeam?.name || "",
     channelName:
-      (targetData as any)?.channelName ||
-      teamTargetData?.channelName ||
-      matchTeam?.channelName ||
-      "",
+      targetData?.channelName || teamTargetData?.channelName || matchTeam?.channelName || "",
     areaManager:
       currentRepFromAlloc?.supervisorName || currentRepFromUsers?.supervisorName || "N/A",
     territoryPulseCode:
@@ -274,15 +254,18 @@ export default function UpdateTargetPage() {
       return;
     }
 
-    const targets = teamUsers.map((user: any) => ({
-      userId: user.userId || user.id,
-      productTargets: products.flatMap((product: any) =>
-        product.skus.map((sku: any) => ({
-          productSkuId: sku.id,
-          targetValue: parseInt(skuTargets[sku.id] || "0") || 0,
-        }))
-      ),
-    }));
+    // Strictly update only the user specified in the query param
+    const targets = [
+      {
+        userId: userId!,
+        productTargets: products.flatMap((product: any) =>
+          product.skus.map((sku: any) => ({
+            productSkuId: sku.id,
+            targetValue: parseInt(skuTargets[sku.id] || "0") || 0,
+          }))
+        ),
+      },
+    ];
 
     const updatePayload: UpdateTargetPayload = {
       targets,
@@ -315,7 +298,7 @@ export default function UpdateTargetPage() {
           selectedTeam={selectedTeam}
           targetTeams={teams}
           selectedSalesRep={selectedSalesRep}
-          salesReps={teamUsers}
+          salesReps={userId ? teamUsers.filter((u) => u.userId === userId) : teamUsers}
           targetMonthValue={targetMonth}
           areaManager={teamMetadata.areaManager}
           channelName={teamMetadata.channelName}

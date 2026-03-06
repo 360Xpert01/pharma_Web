@@ -65,19 +65,37 @@ export interface CreateTargetResponse {
 }
 
 // Target Detail API Types
+export interface SkuAllocation {
+  productSkuId: string;
+  targetValue: number;
+}
+
+export interface Allocation {
+  userId: string;
+  username: string;
+  profilePic: string | null;
+  role: string;
+  territoryId: string;
+  territoryPulseCode: string;
+  supervisorId: string;
+  supervisorName: string;
+  supervisorEmail: string;
+  supervisorRole: string;
+  skuAllocations: SkuAllocation[];
+}
+
 export interface TargetDetailData {
   id?: string;
   targetId?: string;
   teamId?: string;
-  team?: {
-    id: string;
-    name: string;
-  };
   teamName?: string;
+  teamPulseCode?: string;
+  channelName?: string;
   month?: number;
   targetMonth?: number;
   year?: number;
   targetYear?: number;
+  allocations?: Allocation[];
   targets?: UserTargetInput[];
   products?: Array<{
     productSkuId?: string;

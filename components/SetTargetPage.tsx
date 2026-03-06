@@ -133,7 +133,7 @@ export default function SetTargetPage() {
     teamName: matchTeam?.name || "",
     channelName: teamTargetData?.channelName || matchTeam?.channelName || "",
     callPoint: "No Callpoint available", // Not in target API
-    areaManager: selectedRepData?.supervisorName || "Abdul Aziz Warisi",
+    areaManager: selectedRepData?.supervisorName || "N/A",
     territoryPulseCode: selectedRepData?.territoryPulseCode || "N/A",
   };
 

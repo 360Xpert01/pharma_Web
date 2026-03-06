@@ -8,6 +8,7 @@ interface Brick {
   id: string;
   name: string;
   brickCode?: string;
+  description?: string;
 }
 
 interface BrickSearchProps {
@@ -46,6 +47,7 @@ export default function BrickSearch({
       id: brick.id,
       name: brick.name,
       brickCode: brick.brickCode,
+      description: brick.description,
     };
 
     if (!selectedBricks.find((b) => b.id === newBrick.id)) {
@@ -118,7 +120,12 @@ export default function BrickSearch({
                 <div className="flex justify-between items-center text-sm">
                   <div>
                     <p className="font-bold text-(--gray-9)">{brick.brickCode || brick.name}</p>
-                    {brick.brickCode && <p className="text-xs text-(--gray-5)">{brick.name}</p>}
+                    <div className="flex flex-col gap-0.5">
+                      {brick.brickCode && <p className="text-xs text-(--gray-5)">{brick.name}</p>}
+                      {brick.description && (
+                        <p className="text-xs text-(--gray-4)">{brick.description}</p>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -137,9 +144,14 @@ export default function BrickSearch({
               key={brick.id}
               className="group inline-flex items-center gap-2 bg-(--primary) text-white px-4 py-1.5 rounded-8 hover:shadow-md transition-all cursor-default"
             >
-              <span className="text-sm font-bold leading-none">
-                {brick.brickCode || brick.name}
-              </span>
+              <div className="flex flex-col gap-1">
+                <span className="text-sm font-bold leading-none">
+                  {brick.brickCode || brick.name}
+                </span>
+                {brick.description && (
+                  <span className="text-[10px] opacity-80 leading-tight">{brick.description}</span>
+                )}
+              </div>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
