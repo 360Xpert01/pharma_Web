@@ -17,9 +17,10 @@ export const employeeRegistrationSchema = z.object({
 
   lastName: z
     .string()
-    .min(2, { message: "Last name must be at least 2 characters long" })
     .max(50, { message: "Last name cannot exceed 50 characters" })
-    .transform((val) => val.trim()),
+    .transform((val) => val.trim())
+    .optional()
+    .or(z.literal("")),
 
   mobileNumber: z
     .string()
