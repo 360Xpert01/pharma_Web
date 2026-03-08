@@ -109,7 +109,7 @@ export default function LoginScreen() {
         localStorage.setItem("userSession", loginData);
         document.cookie = `userSession=${JSON.stringify(loginData)}; path=/; max-age=86400`;
 
-        toast.success("Login Successful! Welcome back 🎉");
+        toast.success("Login Successful");
         router.push("/dashboard");
       } else {
         console.log("❌ OTP Verification Failed");
