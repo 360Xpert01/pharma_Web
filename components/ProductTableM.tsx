@@ -41,8 +41,8 @@ export default function MedicineTable({
 
   // Fetch products with filters/sorting
   useEffect(() => {
-    const sortField = sorting.length > 0 ? sorting[0].id : "";
-    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+    const sortField = sorting.length > 0 ? sorting[0].id : "pulseCode";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "desc";
 
     dispatch(
       getAllProducts({

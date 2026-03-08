@@ -28,7 +28,15 @@ export const productSchema = z
     productSkus: z
       .array(
         z.object({
-          sku: z.string().max(100, "SKU name cannot exceed 100 characters"),
+          pulseCode: z.string().max(255).optional(),
+          sku: z
+            .string()
+            .min(1, "SKU name is required")
+            .max(100, "SKU name cannot exceed 100 characters"),
+          productCode: z.string().max(255).optional(),
+          mrp: z.union([z.string(), z.number()]).optional(),
+          tp: z.union([z.string(), z.number()]).optional(),
+          nsp: z.union([z.string(), z.number()]).optional(),
         })
       )
       .min(1, "At least one SKU is required")

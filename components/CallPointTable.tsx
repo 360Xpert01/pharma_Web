@@ -24,8 +24,8 @@ export default function CallPointsList() {
 
   // Fetch call points on component mount and when sorting changes
   useEffect(() => {
-    const sortField = sorting.length > 0 ? sorting[0].id : "";
-    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+    const sortField = sorting.length > 0 ? sorting[0].id : "pulseCode";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "desc";
 
     dispatch(
       getAllCallPoints({
@@ -39,8 +39,8 @@ export default function CallPointsList() {
   }, [dispatch, sorting]);
 
   const handlePaginationChange = (page: number, pageSize: number) => {
-    const sortField = sorting.length > 0 ? sorting[0].id : "";
-    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+    const sortField = sorting.length > 0 ? sorting[0].id : "pulseCode";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "desc";
 
     dispatch(
       getAllCallPoints({

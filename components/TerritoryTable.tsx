@@ -36,7 +36,7 @@ export default function TerritoryTable({
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { territories, loading, error, pagination } = useAppSelector((s) => s.allTerritories);
-  const [sorting, setSorting] = useState<any[]>([{ id: "pulseCode", desc: false }]);
+  const [sorting, setSorting] = useState<any[]>([]);
 
   // Merge external filters with internal state
   const filters = useMemo(() => externalFilters || {}, [externalFilters]);
@@ -50,8 +50,8 @@ export default function TerritoryTable({
 
   // Fetch territories on mount and when filters/sorting change
   useEffect(() => {
-    const sortField = sorting.length > 0 ? sorting[0].id : "";
-    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+    const sortField = sorting.length > 0 ? sorting[0].id : "pulseCode";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "desc";
 
     dispatch(
       getAllTerritories({
@@ -71,8 +71,8 @@ export default function TerritoryTable({
 
   // Handle pagination changes
   const handlePaginationChange = (page: number, pageSize: number) => {
-    const sortField = sorting.length > 0 ? sorting[0].id : "";
-    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+    const sortField = sorting.length > 0 ? sorting[0].id : "pulseCode";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "desc";
 
     dispatch(
       getAllTerritories({

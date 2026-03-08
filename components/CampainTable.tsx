@@ -32,7 +32,7 @@ export default function CampaignsTable({
   const dispatch = useAppDispatch();
   const { teams, loading, error, pagination } = useAppSelector((state) => state.allTeams);
 
-  const [sorting, setSorting] = useState<any[]>([{ id: "pulseCode", desc: false }]);
+  const [sorting, setSorting] = useState<any[]>([]);
   const [paginationState, setPaginationState] = useState({
     pageIndex: 0,
     pageSize: 10,
@@ -52,7 +52,7 @@ export default function CampaignsTable({
   useEffect(() => {
     const rawSortField = sorting.length > 0 ? sorting[0].id : "pulseCode";
     const sortField = SORT_FIELD_MAP[rawSortField] ?? "pulseCode";
-    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "asc";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "desc";
 
     dispatch(
       getAllTeams({
@@ -82,7 +82,7 @@ export default function CampaignsTable({
   const handleRetry = () => {
     const rawSortField = sorting.length > 0 ? sorting[0].id : "pulseCode";
     const sortField = SORT_FIELD_MAP[rawSortField] ?? "pulseCode";
-    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "asc";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "desc";
 
     dispatch(
       getAllTeams({

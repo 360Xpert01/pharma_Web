@@ -93,9 +93,47 @@ export default function CenturoTable<T>({
   onSortChange,
   PaginationComponent,
 }: CenturoTableProps<T>) {
+  // Helper to find pulse code column and set default sorting
+  const defaultSorting: SortingState = React.useMemo(() => {
+    if (controlledSorting && controlledSorting.length > 0) return controlledSorting;
+
+    const pulseCodeColumn = columns.find((col) => {
+      const id = col.id;
+      const accessorKey = (col as any).accessorKey;
+      return (
+        id === "pulse_code" ||
+        id === "pulseCode" ||
+        accessorKey === "pulse_code" ||
+        accessorKey === "pulseCode"
+      );
+    });
+
+    if (pulseCodeColumn) {
+      const id = pulseCodeColumn.id;
+      const accessorKey = (pulseCodeColumn as any).accessorKey;
+      const columnId = id || (typeof accessorKey === "string" ? accessorKey : undefined);
+      if (columnId) {
+        return [{ id: columnId, desc: true }];
+      }
+    }
+    return [];
+  }, [columns, controlledSorting]);
+
   const [internalSorting, setInternalSorting] = React.useState<SortingState>(
-    controlledSorting || []
+    controlledSorting && controlledSorting.length > 0 ? controlledSorting : defaultSorting
   );
+
+  // Notify parent of the default sorting if it was applied and parent is empty
+  useEffect(() => {
+    if (
+      onSortChange &&
+      (!controlledSorting || controlledSorting.length === 0) &&
+      defaultSorting.length > 0
+    ) {
+      onSortChange(defaultSorting);
+    }
+  }, []); // Only on mount
+
   const [expanded, setExpanded] = React.useState<ExpandedState>({});
   const [currentPage, setCurrentPage] = React.useState(1);
   const [itemsPerPage, setItemsPerPage] = React.useState(pageSize);
@@ -107,7 +145,16 @@ export default function CenturoTable<T>({
     }
   }, [controlledSorting]);
 
-  const activeSorting = controlledSorting !== undefined ? controlledSorting : internalSorting;
+  const activeSorting =
+    controlledSorting !== undefined && controlledSorting.length > 0
+      ? controlledSorting
+      : controlledSorting !== undefined &&
+          controlledSorting.length === 0 &&
+          defaultSorting.length > 0
+        ? defaultSorting
+        : controlledSorting !== undefined
+          ? controlledSorting
+          : internalSorting;
 
   // Paginate data if pagination is enabled (client-side only)
   const paginatedData = React.useMemo(() => {
@@ -247,6 +294,15 @@ export default function CenturoTable<T>({
                   const canSort = header.column.getCanSort();
                   const isSorted = header.column.getIsSorted();
 
+                  // Detection for Pulse Code column to handle the "both arrows" default look
+                  const id = header.column.id;
+                  const accessorKey = (header.column.columnDef as any).accessorKey;
+                  const isPulseCode =
+                    id === "pulse_code" ||
+                    id === "pulseCode" ||
+                    accessorKey === "pulse_code" ||
+                    accessorKey === "pulseCode";
+
                   return (
                     <th
                       key={header.id}
@@ -269,10 +325,16 @@ export default function CenturoTable<T>({
                           <span className="w-4 h-4 flex-shrink-0 flex items-center justify-center">
                             {isSorted === "asc" ? (
                               <ArrowUp className="w-4 h-4 text-(--gray-6) transition-colors" />
-                            ) : isSorted === "desc" ? (
+                            ) : isSorted === "desc" && !isPulseCode ? (
                               <ArrowDown className="w-4 h-4 text-(--gray-6) transition-colors" />
                             ) : (
-                              <ArrowUpDown className="w-4 h-4 text-(--gray-4) group-hover:text-(--gray-6) transition-colors" />
+                              <ArrowUpDown
+                                className={`w-4 h-4 transition-colors ${
+                                  isSorted === "desc" && isPulseCode
+                                    ? "text-(--gray-4)" // Keep as default unsorted color
+                                    : "text-(--gray-4) group-hover:text-(--gray-6)"
+                                }`}
+                              />
                             )}
                           </span>
                         </div>

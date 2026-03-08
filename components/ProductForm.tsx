@@ -18,6 +18,10 @@ import { productSchema } from "@/validations";
 import ConflictModal from "./ConflictModal";
 import { ProfileImageUpload, FormInput, FormSelect, StatusToggle } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
+import AnimatedTabs from "@/components/shared/AnimatedTabs";
+import CenturoTable from "@/components/shared/table/CeturoTable";
+import { ColumnDef } from "@tanstack/react-table";
+import ProductSkuChart from "./productSKUs";
 
 interface ProductFormProps {
   mode?: "add" | "edit";
@@ -69,10 +73,111 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
   const [chemicalFormula, setChemicalFormula] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState<"Active" | "Inactive">("Active");
-  const [skus, setSkus] = useState<string[]>([""]);
+  const [skus, setSkus] = useState<any[]>([]);
+  const [skuInput, setSkuInput] = useState("");
   const [isConflictModalOpen, setIsConflictModalOpen] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [activeTab, setActiveTab] = useState<"Product SKUs">("Product SKUs");
+
+  const tabs = [{ id: "Product SKUs", label: "Product SKUs" }];
+
+  // Column definitions for CenturoTable
+  const skuColumns: ColumnDef<any>[] = [
+    {
+      accessorKey: "pulseCode",
+      header: "Pulse Code",
+      cell: ({ row }) => (
+        <input
+          type="text"
+          value={row.original.pulseCode}
+          onChange={(e) => updateSkuRow(row.index, "pulseCode", e.target.value)}
+          className="w-full px-2 py-1 bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded"
+          placeholder="Pulse Code"
+        />
+      ),
+    },
+    {
+      accessorKey: "sku",
+      header: "SKU Name",
+      cell: ({ row }) => (
+        <input
+          type="text"
+          value={row.original.sku}
+          onChange={(e) => updateSkuRow(row.index, "sku", e.target.value)}
+          className="w-full px-2 py-1 font-medium bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded"
+          placeholder="SKU Name"
+        />
+      ),
+    },
+    {
+      accessorKey: "productCode",
+      header: "Product Code",
+      cell: ({ row }) => (
+        <input
+          type="text"
+          value={row.original.productCode}
+          onChange={(e) => updateSkuRow(row.index, "productCode", e.target.value)}
+          className="w-full px-2 py-1 bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded"
+          placeholder="Code"
+        />
+      ),
+    },
+    {
+      accessorKey: "mrp",
+      header: "MRP",
+      cell: ({ row }) => (
+        <input
+          type="number"
+          value={row.original.mrp}
+          onChange={(e) => updateSkuRow(row.index, "mrp", e.target.value)}
+          className="w-full px-2 py-1 bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded"
+          placeholder="MRP"
+        />
+      ),
+    },
+    {
+      accessorKey: "tp",
+      header: "TP",
+      cell: ({ row }) => (
+        <input
+          type="number"
+          value={row.original.tp}
+          onChange={(e) => updateSkuRow(row.index, "tp", e.target.value)}
+          className="w-full px-2 py-1 bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded"
+          placeholder="TP"
+        />
+      ),
+    },
+    {
+      accessorKey: "nsp",
+      header: "NSP",
+      cell: ({ row }) => (
+        <input
+          type="number"
+          value={row.original.nsp}
+          onChange={(e) => updateSkuRow(row.index, "nsp", e.target.value)}
+          className="w-full px-2 py-1 bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded"
+          placeholder="NSP"
+        />
+      ),
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => (
+        <div className="text-right">
+          <button
+            onClick={() => removeSku(row.index)}
+            className="p-1 hover:text-(--destructive) transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      ),
+    },
+  ];
 
   // Fetch product categories and generate prefix on mount
   useEffect(() => {
@@ -107,7 +212,16 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
       setDescription(existingProduct.description || "");
       setStatus(existingProduct.status === "active" ? "Active" : "Inactive");
       setImage(existingProduct.imageUrl || null);
-      setSkus(existingProduct.productSkus?.map((sku) => sku.sku) || ["500mg", "750mg", "1000mg"]);
+      setSkus(
+        existingProduct.productSkus?.map((sku: any) => ({
+          pulseCode: sku.pulseCode || "",
+          sku: sku.sku || "",
+          productCode: sku.productCode || "",
+          mrp: sku.mrp || "",
+          tp: sku.tp || "",
+          nsp: sku.nsp || "",
+        })) || []
+      );
     }
   }, [mode, existingProduct]);
 
@@ -123,7 +237,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
       setCategoryId("");
       setChemicalFormula("");
       setDescription("");
-      setSkus(["Capsule 500mg"]);
+      setSkus([]);
       setImage(null);
 
       // Generate new prefix for next product (only in add mode)
@@ -174,12 +288,29 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
     }
   };
 
-  const addSkuField = () => setSkus([...skus, ""]);
-  const updateSku = (index: number, value: string) => {
+  const addSku = (value: string) => {
+    if (!value.trim()) return;
+    setSkus([
+      ...skus,
+      {
+        pulseCode: "",
+        sku: value.trim(),
+        productCode: "",
+        mrp: "",
+        tp: "",
+        nsp: "",
+      },
+    ]);
+    setSkuInput("");
+    clearFieldError("productSkus");
+  };
+
+  const updateSkuRow = (index: number, field: string, value: string) => {
     const updated = [...skus];
-    updated[index] = value;
+    updated[index] = { ...updated[index], [field]: value };
     setSkus(updated);
   };
+
   const removeSku = (index: number) => setSkus(skus.filter((_, i) => i !== index));
 
   // Helper functions for validation
@@ -208,11 +339,14 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
   const handleSubmit = async () => {
     console.log("ProductForm: handleSubmit called");
     // Transform SKUs to match API structure
-    const productSkus = skus
-      .filter((sku) => sku.trim())
-      .map((sku) => ({
-        sku: sku.trim(),
-      }));
+    const productSkus = skus.map((sku) => ({
+      pulseCode: sku.pulseCode || undefined,
+      sku: sku.sku.trim(),
+      productCode: sku.productCode || undefined,
+      mrp: sku.mrp ? Number(sku.mrp) : undefined,
+      tp: sku.tp ? Number(sku.tp) : undefined,
+      nsp: sku.nsp ? Number(sku.nsp) : undefined,
+    }));
 
     // Prepare payload strictly matching the requested schema
     const formData = {
@@ -267,7 +401,8 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
   return (
     <div className="">
       <div className="">
-        <div className="p-10 space-y-12">
+        <div className="p-10 space-y-8">
+          {/* TOP SECTION: Basic Information */}
           <div className="grid grid-cols-1 lg:grid-cols-[25%_75%] gap-12 pr-12">
             {/* Left: Image Upload */}
             <div className="space-y-4">
@@ -382,89 +517,85 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
                 {/* <span className="text-(--destructive)">*</span> */}
                 <StatusToggle status={status} onChange={(newStatus) => setStatus(newStatus)} />
               </div>
-
-              {/* SKU SECTION */}
-              <div>
-                <label className="block t-label mb-2">
-                  Add Product SKU's<span className="text-(--destructive)">*</span>
-                </label>
-
-                {/* Input + Button side by side */}
-                <div className="flex gap-3 w-[60%]">
-                  <input
-                    type="text"
-                    id="sku-input"
-                    placeholder="Enter SKU (e.g. Capsule 500mg)"
-                    className="flex-1 px-3 py-3 border border-[var(--gray-3)] rounded-8 focus:ring-2 focus:ring-[var(--primary)] outline-none text-sm"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && e.currentTarget.value.trim()) {
-                        setSkus([...skus, e.currentTarget.value.trim()]);
-                        e.currentTarget.value = "";
-                      }
-                    }}
-                  />
-                  <Button
-                    onClick={() => {
-                      const input = document.getElementById("sku-input") as HTMLInputElement;
-                      if (input && input.value.trim()) {
-                        setSkus([...skus, input.value.trim()]);
-                        input.value = "";
-                        clearFieldError("productSkus");
-                      }
-                    }}
-                    variant="primary"
-                    size="lg"
-                    icon={Plus}
-                    rounded="full"
-                  >
-                    Add Brand SKUs
-                  </Button>
-                </div>
-                {hasError("productSkus") && (
-                  <p className="mt-1 t-sm t-err">{getErrorMessage("productSkus")}</p>
-                )}
-
-                {/* SKU Chips Display */}
-                <div className="flex flex-wrap gap-2 mt-3">
-                  {skus
-                    .filter((s) => s.trim())
-                    .map((sku, index) => (
-                      <div
-                        key={index}
-                        className="px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-8 text-sm font-medium flex items-center gap-2 hover:bg-[var(--primary)]/90 transition"
-                      >
-                        {sku}
-                        <button onClick={() => removeSku(index)} className="cursor-pointer">
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-                    ))}
-                </div>
-              </div>
-
-              {/* FOOTER ACTIONS */}
-              <div className="flex justify-end gap-4 pt-6">
-                <Button variant="outline" size="lg" rounded="full" onClick={() => router.back()}>
-                  Discard
-                </Button>
-                <Button
-                  onClick={handleSubmit}
-                  disabled={(mode === "edit" ? updateLoading : productLoading) || uploadLoading}
-                  loading={(mode === "edit" ? updateLoading : productLoading) || uploadLoading}
-                  variant="primary"
-                  size="lg"
-                  icon={Plus}
-                  rounded="full"
-                  className="shadow-lg"
-                >
-                  {uploadLoading
-                    ? "Uploading..."
-                    : mode === "edit"
-                      ? "Update Product"
-                      : "Add Product"}
-                </Button>
-              </div>
             </div>
+          </div>
+
+          {/* MIDDLE SECTION: SKU Search Bar */}
+          <div className="space-y-4">
+            <label className="block t-label">
+              Add Product SKU<span className="text-(--destructive)">*</span>
+            </label>
+
+            <div className="flex gap-3 w-[60%]">
+              <input
+                type="text"
+                placeholder="Enter SKU (e.g. Capsule 500mg)"
+                value={skuInput}
+                onChange={(e) => setSkuInput(e.target.value)}
+                className="flex-1 px-3 py-3 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) outline-none text-sm"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addSku(skuInput);
+                  }
+                }}
+              />
+              <Button
+                onClick={() => addSku(skuInput)}
+                variant="primary"
+                size="lg"
+                icon={Plus}
+                rounded="full"
+              >
+                Add Product SKU
+              </Button>
+            </div>
+
+            {hasError("productSkus") && (
+              <p className="mt-1 t-sm t-err">{getErrorMessage("productSkus")}</p>
+            )}
+          </div>
+
+          {/* BOTTOM SECTION: Tabs Container */}
+          <div className="bg-background shadow-soft p-6 rounded-8 border border-(--gray-1)">
+            <div className="mb-6">
+              <AnimatedTabs
+                tabs={tabs}
+                activeTab={activeTab}
+                onTabChange={(id) => setActiveTab(id as any)}
+                variant="secondary"
+                size="md"
+              />
+            </div>
+
+            {activeTab === "Product SKUs" && (
+              <div className="w-full">
+                <CenturoTable
+                  data={skus}
+                  columns={skuColumns}
+                  emptyMessage="No SKUs added yet. Enter a name above to add one."
+                />
+              </div>
+            )}
+          </div>
+
+          {/* FOOTER ACTIONS */}
+          <div className="flex justify-end gap-4 pt-6">
+            <Button variant="outline" size="lg" rounded="full" onClick={() => router.back()}>
+              Discard
+            </Button>
+            <Button
+              onClick={handleSubmit}
+              disabled={(mode === "edit" ? updateLoading : productLoading) || uploadLoading}
+              loading={(mode === "edit" ? updateLoading : productLoading) || uploadLoading}
+              variant="primary"
+              size="lg"
+              icon={Plus}
+              rounded="full"
+              className="shadow-lg"
+            >
+              {uploadLoading ? "Uploading..." : mode === "edit" ? "Update Product" : "Add Product"}
+            </Button>
           </div>
         </div>
       </div>
