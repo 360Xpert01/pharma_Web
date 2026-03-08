@@ -9,7 +9,7 @@ import {
   resetTerritoriesState,
   resetDeleteTerritoryState,
 } from "@/store/slices/territory";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
 import EditIcon from "@/components/svgs/edit-icon";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
@@ -89,7 +89,7 @@ export default function TerritoryTable({
   // Handle delete success
   useEffect(() => {
     if (deleteSuccess && deleteMessage) {
-      toast.success("Success", { description: deleteMessage });
+      toast.success(deleteMessage);
       dispatch(resetDeleteTerritoryState());
       // Refresh the list
       dispatch(getAllTerritories({ page: 1, limit: 10, search: searchTerm }));
@@ -99,7 +99,6 @@ export default function TerritoryTable({
   // Handle errors
   useEffect(() => {
     if (deleteError) {
-      toast.error("Error", { description: deleteError });
     }
   }, [deleteError]);
 

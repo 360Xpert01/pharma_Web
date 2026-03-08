@@ -20,6 +20,7 @@ import {
   resetGeneratePrefixState,
 } from "@/store/slices/preFix/generatePrefixSlice";
 import { specializationCreationSchema } from "@/validations/specializationValidation";
+import toast from "react-hot-toast";
 
 interface SpecialitiesCardProps {
   updateId?: string | null;
@@ -203,7 +204,7 @@ export default function AddSpecialitiesCard({
     try {
       if (isUpdateMode && updateId) {
         // Update existing specialization - only send name and status
-        await dispatch(
+        const res = await dispatch(
           updateDoctorSpecialization({
             id: updateId,
             data: {
@@ -212,15 +213,23 @@ export default function AddSpecialitiesCard({
             },
           })
         ).unwrap();
+
+        if (res.success) {
+          toast.success("Update Specialization successfull");
+        }
       } else {
         // Create new specialization - send all fields including pulseCode
-        await dispatch(
+        const res = await dispatch(
           createSpecialization({
             name: specializationName.trim(),
             pulseCode: generatedPrefix!,
             status: status,
           })
         ).unwrap();
+
+        if (res.success) {
+          toast.success("Add Specialization successfull");
+        }
       }
     } catch (err: any) {
       console.error(`Failed to ${isUpdateMode ? "update" : "create"} specialization:`, err);

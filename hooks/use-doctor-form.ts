@@ -279,7 +279,6 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
       router.push(`/dashboard/${channelSlug}?id=${idForm || ""}`);
     }
     if (createError || updateError) {
-      toast.error(createError || updateError);
       dispatch(resetCreatePartyState());
       dispatch(resetUpdatePartyState());
       dispatch(resetPartyByIdState());
@@ -379,7 +378,7 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
         }
       });
       setValidationErrors(errors);
-      toast.error(validation.error.errors[0].message);
+
       return;
     }
 

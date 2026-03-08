@@ -41,7 +41,7 @@ export default function PlanRequestHeader({
         toast.success("Schedule accepted successfully!");
       })
       .catch(() => {
-        toast.error("Failed to accept schedule");
+        console.log("error ");
       });
   };
 
@@ -57,7 +57,7 @@ export default function PlanRequestHeader({
         toast.success("Schedule rejected");
       })
       .catch(() => {
-        toast.error("Failed to reject schedule");
+        console.log("error ");
       });
   };
 

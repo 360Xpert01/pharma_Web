@@ -14,6 +14,7 @@ import {
 } from "@/store/slices/preFix/generatePrefixSlice";
 import { segmentCreationSchema } from "@/validations/segmentValidation";
 import StatusToggle from "@/components/form/StatusToggle";
+import toast from "react-hot-toast";
 
 interface DoctorSegmentsCardProps {
   updateId?: string | null;
@@ -197,7 +198,7 @@ export default function AddDoctorSegmentsCard({
     try {
       if (isUpdateMode && updateId) {
         // Update existing segment - only send name and status
-        await dispatch(
+        const res = await dispatch(
           updateSegment({
             id: updateId,
             data: {
@@ -206,15 +207,23 @@ export default function AddDoctorSegmentsCard({
             },
           })
         ).unwrap();
+
+        if (res.success) {
+          toast.success("Update Segment successfull");
+        }
       } else {
         // Create new segment - send all fields including pulseCode
-        await dispatch(
+        const res = await dispatch(
           createSegment({
             name: segmentName.trim(),
             pulseCode: generatedPrefix!,
             status: status,
           })
         ).unwrap();
+
+        if (res.success) {
+          toast.success(res.message);
+        }
       }
     } catch (err: any) {
       console.error(`Failed to ${isUpdateMode ? "update" : "create"} segment:`, err);

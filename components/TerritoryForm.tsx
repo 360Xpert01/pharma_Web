@@ -14,7 +14,7 @@ import {
   type CreateTerritoryPayload,
 } from "@/store/slices/territory";
 import { getBrickList } from "@/store/slices/brick/getBrickListSlice";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button/button";
 import { FormInput, FormTextarea, BrickSearch } from "@/components/form";
 import { Plus } from "lucide-react";
@@ -104,7 +104,7 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
   // Handle success
   useEffect(() => {
     if (createSuccess && createMessage) {
-      toast.success("Success", { description: createMessage });
+      toast.success(createMessage);
       dispatch(resetCreateTerritoryState());
       dispatch(resetGeneratePrefixState());
       router.push("/dashboard/territory-Management");
@@ -113,7 +113,7 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
 
   useEffect(() => {
     if (updateSuccess && updateMessage) {
-      toast.success("Success", { description: updateMessage });
+      toast.success(updateMessage);
       dispatch(resetUpdateTerritoryState());
       router.push("/dashboard/territory-Management");
     }
@@ -126,7 +126,6 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
 
     // Validation
     if (!currentPulseCode.trim()) {
-      toast.error("Validation Error", { description: "Pulse Code is required" });
       return;
     }
 

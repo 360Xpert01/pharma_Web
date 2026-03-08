@@ -20,6 +20,7 @@ import {
   resetGeneratePrefixState,
 } from "@/store/slices/preFix/generatePrefixSlice";
 import { qualificationCreationSchema } from "@/validations/qualificationValidation";
+import toast from "react-hot-toast";
 
 interface QualificationsCardProps {
   updateId?: string | null;
@@ -198,7 +199,7 @@ export default function AddQualificationsCard({
     try {
       if (isUpdateMode && updateId) {
         // Update existing qualification - only send name and status
-        await dispatch(
+        const res = await dispatch(
           updateQualification({
             id: updateId,
             data: {
@@ -207,15 +208,23 @@ export default function AddQualificationsCard({
             },
           })
         ).unwrap();
+
+        if (res.success) {
+          toast.success("Update Qualification successfull");
+        }
       } else {
         // Create new qualification - send all fields including pulseCode
-        await dispatch(
+        const res = await dispatch(
           createQualification({
             name: qualificationName.trim(),
             pulseCode: generatedPrefix!,
             status,
           })
         ).unwrap();
+
+        if (res.success) {
+          toast.success(res.message);
+        }
       }
     } catch (err: any) {
       console.error(`Failed to ${isUpdateMode ? "update" : "create"} qualification:`, err);

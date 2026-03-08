@@ -147,7 +147,6 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
       if (statusCode === 409) {
         setIsConflictModalOpen(true);
       } else {
-        toast.error(errorMessage);
       }
     }
   }, [productError, updateError, productStatus, updateStatus]);
@@ -160,7 +159,6 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
     }
     if (uploadError) {
       console.error("AddProductForm: Upload error", uploadError);
-      toast.error(uploadError);
     }
   }, [uploadSuccess, uploadedFiles, uploadError]);
 
@@ -244,7 +242,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
       });
 
       setValidationErrors(errors);
-      toast.error(validation.error.errors[0].message);
+
       return;
     }
 
