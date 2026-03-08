@@ -34,9 +34,6 @@ export default function LoginScreen() {
       toast.success(message || "OTP sent successfully!");
       otpRefs.current[0]?.focus();
     }
-    if (error) {
-      toast.error(error);
-    }
   }, [success, error, message, isOtpSent]);
 
   const handleSendOTP = async () => {
@@ -54,7 +51,7 @@ export default function LoginScreen() {
         toast.success("OTP sent successfully!");
         otpRefs.current[0]?.focus();
       } else {
-        toast.error(result.payload || "Failed to send OTP");
+        toast.error("Failed to send OTP");
       }
 
       if (result.payload === "User not found") {
@@ -67,7 +64,7 @@ export default function LoginScreen() {
         setIsOtpSent(true);
       }
     } catch (error: any) {
-      toast.error(error.message || "Failed to send OTP");
+      toast.error("Failed to send OTP");
     }
   };
 
