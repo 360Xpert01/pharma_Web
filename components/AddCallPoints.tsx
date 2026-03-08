@@ -14,6 +14,7 @@ import {
 } from "@/store/slices/preFix/generatePrefixSlice";
 import { FormInput } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
+import toast from "react-hot-toast";
 
 export default function AddCallPointForm() {
   const dispatch = useAppDispatch();
@@ -61,7 +62,7 @@ export default function AddCallPointForm() {
     }
   }, [success, dispatch]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!locationTitle.trim() || !latitude.trim() || !longitude.trim()) {
       return;
     }
@@ -81,7 +82,16 @@ export default function AddCallPointForm() {
       isActive: true,
     };
 
-    dispatch(createCallPoint(callPointData));
+    try {
+      const result = await dispatch(createCallPoint(callPointData)).unwrap();
+
+      // Yahan result = thunk ka returned payload (success case)
+      toast.success("Call point created successfully!");
+      // Optional: reset form, navigate, etc.
+    } catch (rejectedValueOrError) {
+      // Yahan rejectedValueOrError = thunk ke rejectWithValue() se jo bheja tha
+      // toast.error(rejectedValueOrError?.message || "Something went wrong!");
+    }
   };
 
   return (

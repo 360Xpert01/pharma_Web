@@ -149,7 +149,7 @@ export default function AddNewRoleForm() {
 
       // Also show the first error as a toast for immediate feedback
       const firstError = validation.error.errors[0];
-      toast.error(firstError.message);
+
       return;
     }
 
@@ -173,7 +173,6 @@ export default function AddNewRoleForm() {
       dispatch(resetGeneratePrefixState());
       router.push("/dashboard/User-Role");
     } else {
-      toast.error(error || "Failed to create role");
     }
   };
 

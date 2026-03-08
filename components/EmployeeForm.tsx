@@ -135,7 +135,6 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
     }
     if (uploadError) {
       console.error("EmployeeForm: Upload error", uploadError);
-      toast.error(uploadError);
     }
   }, [uploadSuccess, uploadedFiles, uploadError]);
 
@@ -192,7 +191,6 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
   // Show error if fetching user fails
   useEffect(() => {
     if (isUpdateMode && fetchError) {
-      toast.error(fetchError);
     }
   }, [fetchError, isUpdateMode]);
 
@@ -215,7 +213,6 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
 
     // Validate userId for update mode
     if (isUpdateMode && !userId) {
-      toast.error("No user ID provided");
       return;
     }
 
@@ -266,7 +263,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
 
       // Also show the first error as a toast for immediate feedback
       const firstError = validation.error.errors[0];
-      toast.error(firstError.message);
+
       return;
     }
 
@@ -371,9 +368,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
         setValidationErrors({
           email: "Email Already Taken",
         });
-        toast.error("Email Already Taken");
       } else {
-        toast.error(errorMsg);
       }
     }
   };

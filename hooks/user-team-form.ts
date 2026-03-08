@@ -5,6 +5,7 @@ import {
   generatePrefix,
   resetGeneratePrefixState,
 } from "@/store/slices/preFix/generatePrefixSlice";
+import { toast } from "react-hot-toast";
 import { getAllChannels } from "@/store/slices/channel/getAllChannelsSlice";
 import { getAllCallPoints } from "@/store/slices/callPoint/getAllCallPointsSlice";
 import { getAllProducts } from "@/store/slices/product/getAllProductsSlice";
@@ -156,9 +157,9 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
     };
   }, [dispatch]);
 
-  // Handle create team success/error
   useEffect(() => {
     if (createTeamSuccess) {
+      toast.success("Team created successfully!");
       // Reset state and navigate to campaign-management
       dispatch(resetCreateTeamState());
       router.push("/en/dashboard/campaign-Management");
@@ -171,6 +172,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
   // Handle update team success/error
   useEffect(() => {
     if (updateTeamSuccess) {
+      toast.success("Team updated successfully!");
       dispatch(resetUpdateTeamState());
       dispatch(resetGetTeamByIdState());
       router.push("/en/dashboard/campaign-Management");

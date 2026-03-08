@@ -120,7 +120,6 @@ export default function SetTargetPage() {
   // Handle API error
   useEffect(() => {
     if (createError) {
-      toast.error(`Error: ${createError}`);
       dispatch(resetCreateTargetState());
     }
   }, [createError, dispatch]);
@@ -180,7 +179,6 @@ export default function SetTargetPage() {
 
     // Build allocation payload from team details and users
     if (!teamUsers || teamUsers.length === 0) {
-      toast.error("No team members found for the selected team.");
       return;
     }
 
@@ -191,7 +189,6 @@ export default function SetTargetPage() {
         : teamUsers.filter((user: any) => (user.userId || user.id) === selectedSalesRep);
 
     if (usersToTarget.length === 0) {
-      toast.error("The selected sales representative was not found in this team.");
       return;
     }
 

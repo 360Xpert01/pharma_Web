@@ -92,7 +92,6 @@ export default function ProductCategories({
       dispatch(generatePrefix({ entity: "ProductCategory" })); // Get next prefix
     }
     if (createError) {
-      toast.error(createError);
       dispatch(resetProductCategoryState());
     }
   }, [createSuccess, createError, dispatch]);
@@ -110,7 +109,6 @@ export default function ProductCategories({
       }
     }
     if (updateError) {
-      toast.error(updateError);
       dispatch(resetUpdateProductCategoryState());
     }
   }, [updateSuccess, updateError, dispatch, onUpdateComplete]);

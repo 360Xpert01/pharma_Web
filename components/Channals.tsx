@@ -13,6 +13,7 @@ import {
 import { FormInput } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
 import StatusToggle from "@/components/form/StatusToggle";
+import toast from "react-hot-toast";
 
 interface Channel {
   id: string;
@@ -118,7 +119,7 @@ export default function AddChannelsCard({
     try {
       if (isUpdateMode && updateId) {
         // Update existing channel - send name, code, legacyCode, and status
-        await dispatch(
+        const res = await dispatch(
           updateChannel({
             id: updateId,
             data: {
@@ -129,6 +130,10 @@ export default function AddChannelsCard({
             },
           })
         ).unwrap();
+
+        if (res.success) {
+          toast.success("Update Channel successfully");
+        }
       } else {
         // Create new channel - validate pulse code and send all fields
         if (!generatedPrefix) {
@@ -136,7 +141,7 @@ export default function AddChannelsCard({
           return;
         }
 
-        await dispatch(
+        const res = await dispatch(
           createChannel({
             name: channelName.trim(),
             pulseCode: generatedPrefix,
@@ -144,6 +149,10 @@ export default function AddChannelsCard({
             isActive: status === "active",
           })
         ).unwrap();
+
+        if (res.success) {
+          toast.success("Add Channel successfull");
+        }
       }
     } catch (err: any) {
       console.error(`Failed to ${isUpdateMode ? "update" : "create"} channel:`, err);

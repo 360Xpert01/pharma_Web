@@ -36,7 +36,6 @@ export default function BricksHierarchyWrapper() {
       dispatch(resetDeleteBrickState());
     }
     if (deleteError) {
-      toast.error(deleteError);
       dispatch(resetDeleteBrickState());
     }
   }, [deleteSuccess, deleteError, deleteMessage, dispatch]);
@@ -63,9 +62,7 @@ export default function BricksHierarchyWrapper() {
       toast.success(`${type} created successfully!`);
       setAddingId(null);
       dispatch(getBrickList());
-    } catch (err: any) {
-      toast.error(`Failed to create ${type}: ${err}`);
-    }
+    } catch (err: any) {}
   };
 
   const handleAddChild = (parentId: string, childType: string) => {
@@ -94,9 +91,7 @@ export default function BricksHierarchyWrapper() {
       toast.success(`${type} updated successfully!`);
       setEditingId(null);
       dispatch(getBrickList());
-    } catch (err: any) {
-      toast.error(`Failed to update ${type}: ${err}`);
-    }
+    } catch (err: any) {}
   };
 
   return (

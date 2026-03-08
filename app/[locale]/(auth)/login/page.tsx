@@ -53,6 +53,8 @@ export default function LoginScreen() {
         setUserNotFound(false);
         toast.success("OTP sent successfully!");
         otpRefs.current[0]?.focus();
+      } else {
+        toast.error(result.payload || "Failed to send OTP");
       }
 
       if (result.payload === "User not found") {
@@ -63,8 +65,6 @@ export default function LoginScreen() {
         setOtpSentState(true);
         setUserNotFound(false);
         setIsOtpSent(true);
-      } else {
-        toast.error(result.payload?.error?.message || "Failed to send OTP");
       }
     } catch (error: any) {
       toast.error(error.message || "Failed to send OTP");
@@ -119,12 +119,12 @@ export default function LoginScreen() {
         setInvalidOtp(true);
         const errorMsg =
           result.payload?.message || result.error?.message || "Invalid OTP. Please try again.";
-        toast.error(errorMsg);
+        // toast.error(errorMsg);
       }
     } catch (err: any) {
       console.error("❌ Error during OTP verification:", err);
       setInvalidOtp(true);
-      toast.error(err.message || "Invalid OTP. Please try again.");
+      // toast.error(err.message || "Invalid OTP. Please try again.");
     } finally {
       setIsVerifying(false);
     }

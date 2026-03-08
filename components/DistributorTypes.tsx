@@ -20,6 +20,7 @@ import {
   resetGeneratePrefixState,
 } from "@/store/slices/preFix/generatePrefixSlice";
 import { distributorTypeCreationSchema } from "@/validations/distributorTypeValidation";
+import toast from "react-hot-toast";
 
 interface DistributorTypesCardProps {
   updateId?: string | null;
@@ -202,7 +203,7 @@ export default function AddDistributorTypesCard({
     try {
       if (isUpdateMode && updateId) {
         // Update existing distributor type - only send name and status
-        await dispatch(
+        const res = await dispatch(
           updateDistributorType({
             id: updateId,
             data: {
@@ -211,15 +212,22 @@ export default function AddDistributorTypesCard({
             },
           })
         ).unwrap();
+        if (res.success) {
+          toast.success("Update Distributor successfull");
+        }
       } else {
         // Create new distributor type - send all fields including pulseCode
-        await dispatch(
+        const res = await dispatch(
           createDistributorType({
             name: distributorTypeName.trim(),
             pulseCode: generatedPrefix!,
             status,
           })
         ).unwrap();
+
+        if (res.success) {
+          toast.success("Add Distributor successfull");
+        }
       }
     } catch (err: any) {
       console.error(`Failed to ${isUpdateMode ? "update" : "create"} distributor type:`, err);

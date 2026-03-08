@@ -14,6 +14,7 @@ import GlobalLoadingOverlay from "@/components/shared/global-loading-overlay";
 import { Toaster } from "@/components/ui/sonner";
 import { ErrorProvider } from "@/contexts/error-context";
 import { ErrorBoundary } from "@/components/shared/error-boundary";
+import { Toaster as HotToaster } from "react-hot-toast";
 
 // Global Axios Interceptor for Subdomain
 if (typeof window !== "undefined") {
@@ -55,6 +56,7 @@ export default function Providers({ children }: PropsWithChildren) {
                       {children}
                       <GlobalLoadingOverlay />
                       <Toaster />
+                      <HotToaster position="top-right" />
                     </Suspense>
                   </LayoutProvider>
                 </ErrorBoundary>

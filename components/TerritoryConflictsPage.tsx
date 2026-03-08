@@ -16,7 +16,7 @@ import {
   resetTargetAllocationState,
 } from "@/store/slices/target/targetAllocationSlice";
 import { useEffect } from "react";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
 import { conflictResolutionSchema } from "@/validations/targetValidation";
 
 export default function TerritoryConflictsPage() {
@@ -54,7 +54,7 @@ export default function TerritoryConflictsPage() {
   // Handle resolve success
   useEffect(() => {
     if (resolveSuccess && resolveMessage) {
-      toast.success("Success", { description: resolveMessage });
+      toast.success(resolveMessage);
       dispatch(resetTargetAllocationState());
       setValidationErrors({});
 
@@ -71,7 +71,6 @@ export default function TerritoryConflictsPage() {
   // Handle resolve error
   useEffect(() => {
     if (resolveError) {
-      toast.error("Error", { description: resolveError });
       dispatch(resetTargetAllocationState());
     }
   }, [resolveError, dispatch]);

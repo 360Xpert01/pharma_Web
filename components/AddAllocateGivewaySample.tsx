@@ -89,7 +89,6 @@ export default function AddAllocateGivewaySample() {
   // Handle allocation error
   useEffect(() => {
     if (allocateError) {
-      toast.error(allocateError);
     }
   }, [allocateError]);
 
@@ -151,7 +150,6 @@ export default function AddAllocateGivewaySample() {
         { id: giveaway.id, name: giveaway.name, quantity: 1 },
       ]);
     } else {
-      toast.error("This giveaway is already added");
     }
   };
 
@@ -163,7 +161,6 @@ export default function AddAllocateGivewaySample() {
         { id: sample.productSkuId, name: `${sample.productName} - ${skuStr}`, quantity: 1 },
       ]);
     } else {
-      toast.error("This sample is already added");
     }
   };
 
@@ -177,11 +174,9 @@ export default function AddAllocateGivewaySample() {
 
   const handleAllocate = () => {
     if (!selectedEmployee) {
-      toast.error("Please select an employee");
       return;
     }
     if (selectedGiveaways.length === 0 && selectedSamples.length === 0) {
-      toast.error("Please select at least one giveaway or sample");
       return;
     }
 

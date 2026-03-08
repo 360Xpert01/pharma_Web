@@ -204,7 +204,6 @@ export default function UpdateTargetPage() {
   // Handle Update error
   useEffect(() => {
     if (updateError) {
-      toast.error(`Error: ${updateError}`);
       dispatch(resetUpdateTargetState());
     }
   }, [updateError, dispatch]);
@@ -236,7 +235,6 @@ export default function UpdateTargetPage() {
   const handleUpdateTarget = async () => {
     // Validate targetId exists
     if (!targetId) {
-      toast.error("Target ID is missing. Cannot update.");
       return;
     }
 
@@ -250,7 +248,6 @@ export default function UpdateTargetPage() {
     // The API expects: { targets: [{ userId, productTargets: [{ productSkuId, targetValue }] }] }
 
     if (!teamUsers || teamUsers.length === 0) {
-      toast.error("No team members found for the selected team.");
       return;
     }
 
@@ -275,7 +272,6 @@ export default function UpdateTargetPage() {
     const updateValidation = updateTargetSchema.safeParse(updatePayload);
 
     if (!updateValidation.success) {
-      toast.error("Invalid target values. Please check your input.");
       console.error("Validation errors:", updateValidation.error.errors);
       return;
     }
@@ -287,6 +283,7 @@ export default function UpdateTargetPage() {
     try {
       await dispatch(updateTarget({ targetId, payload: updatePayload })).unwrap();
     } catch (err) {
+      // toast.error(err || "err")
       console.error("Failed to update target:", err);
     }
   };

@@ -145,9 +145,15 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
         router.push("/dashboard/giveaway-Management");
       }, 2000);
     }
-    if (createError && mode === "add") toast.error(createError);
-    if (updateError && mode === "update") toast.error(updateError);
-    if (fetchError && mode === "update") toast.error(fetchError);
+    if (createError && mode === "add") {
+      toast.error(createError || "Failed to create giveaway");
+    }
+    if (updateError && mode === "update") {
+      toast.error(updateError || "Failed to update giveaway");
+    }
+    if (fetchError && mode === "update") {
+      toast.error(fetchError || "Failed to fetch giveaway");
+    }
   }, [
     createSuccess,
     updateSuccess,
@@ -167,7 +173,6 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
     }
     if (uploadError) {
       console.error("GiveawayForm: Upload error", uploadError);
-      toast.error(uploadError);
     }
   }, [uploadSuccess, uploadedFiles, uploadError]);
 
@@ -200,7 +205,7 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
         errors[err.path[0] as string] = err.message;
       });
       setValidationErrors(errors);
-      toast.error(validation.error.errors[0].message);
+
       return;
     }
     setValidationErrors({});
