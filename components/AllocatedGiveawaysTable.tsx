@@ -41,8 +41,8 @@ export default function AllocatedGiveawaysTable({
 
   // Fetch allocation data on mount and when states change
   useEffect(() => {
-    const sortField = sorting.length > 0 ? sorting[0].id : "";
-    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+    const sortField = sorting.length > 0 ? sorting[0].id : "pulseCode";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "desc";
 
     dispatch(
       getAllocationList({
@@ -58,14 +58,16 @@ export default function AllocatedGiveawaysTable({
     // Refresh data when page becomes visible
     const handleVisibilityChange = () => {
       if (!document.hidden) {
+        const currentSortField = sorting.length > 0 ? sorting[0].id : "pulseCode";
+        const currentSortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "desc";
         dispatch(
           getAllocationList({
             search: searchTerm,
             page: 1,
             limit: pageSize,
             employeeId,
-            sort: sortField,
-            order: sortOrder as any,
+            sort: currentSortField,
+            order: currentSortOrder as any,
           })
         );
       }
@@ -84,8 +86,8 @@ export default function AllocatedGiveawaysTable({
   };
 
   const handlePageChange = (page: number, size: number) => {
-    const sortField = sorting.length > 0 ? sorting[0].id : "";
-    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+    const sortField = sorting.length > 0 ? sorting[0].id : "pulseCode";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "desc";
 
     dispatch(
       getAllocationList({

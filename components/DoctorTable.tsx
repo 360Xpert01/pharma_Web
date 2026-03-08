@@ -34,7 +34,7 @@ export default function DoctorsTable({
     pageSize: 10,
   });
 
-  const [sorting, setSorting] = useState<any[]>([{ id: "party_name", desc: false }]);
+  const [sorting, setSorting] = useState<any[]>([]);
 
   // Maps UI column ids to actual DB column names for server-side sorting
   const SORT_FIELD_MAP: Record<string, string> = {
@@ -54,9 +54,9 @@ export default function DoctorsTable({
   };
 
   React.useEffect(() => {
-    const rawSortField = sorting.length > 0 ? sorting[0].id : "party_name";
-    const sortField = SORT_FIELD_MAP[rawSortField] ?? "party_name";
-    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "asc";
+    const rawSortField = sorting.length > 0 ? sorting[0].id : "pulse_code";
+    const sortField = SORT_FIELD_MAP[rawSortField] ?? "pulse_code";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "desc";
 
     dispatch(
       getPartiesByChannelType({

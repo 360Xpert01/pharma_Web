@@ -17,10 +17,9 @@ export const employeeRegistrationSchema = z.object({
 
   lastName: z
     .string()
+    .min(2, { message: "Last name must be at least 2 characters long" })
     .max(50, { message: "Last name cannot exceed 50 characters" })
-    .transform((val) => val.trim())
-    .optional()
-    .or(z.literal("")),
+    .transform((val) => val.trim()),
 
   mobileNumber: z
     .string()
@@ -40,15 +39,6 @@ export const employeeRegistrationSchema = z.object({
   roleId: z.string().uuid({ message: "Invalid role selected" }).optional().or(z.literal("")),
 
   roleName: z.string().optional(), // Used for conditional validation
-
-  // Optional fields
-  middleName: z
-    .string()
-    .min(2, { message: "Middle name must be at least 2 characters long" })
-    .max(50, { message: "Middle name cannot exceed 50 characters" })
-    .transform((val) => val.trim())
-    .optional()
-    .or(z.literal("")),
 
   pulseCode: z
     .string()

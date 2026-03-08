@@ -79,9 +79,9 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [activeTab, setActiveTab] = useState<"Brand SKUs">("Brand SKUs");
+  const [activeTab, setActiveTab] = useState<"Product SKUs">("Product SKUs");
 
-  const tabs = [{ id: "Brand SKUs", label: "Brand SKUs" }];
+  const tabs = [{ id: "Product SKUs", label: "Product SKUs" }];
 
   // Column definitions for CenturoTable
   const skuColumns: ColumnDef<any>[] = [
@@ -100,7 +100,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
     },
     {
       accessorKey: "sku",
-      header: "SKU Name *",
+      header: "SKU Name",
       cell: ({ row }) => (
         <input
           type="text"
@@ -523,7 +523,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
           {/* MIDDLE SECTION: SKU Search Bar */}
           <div className="space-y-4">
             <label className="block t-label">
-              Add Product SKU's<span className="text-(--destructive)">*</span>
+              Add Product SKU<span className="text-(--destructive)">*</span>
             </label>
 
             <div className="flex gap-3 w-[60%]">
@@ -547,7 +547,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
                 icon={Plus}
                 rounded="full"
               >
-                Add Brand SKUs
+                Add Product SKU
               </Button>
             </div>
 
@@ -568,31 +568,13 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
               />
             </div>
 
-            {activeTab === "Brand SKUs" && (
+            {activeTab === "Product SKUs" && (
               <div className="w-full">
                 <CenturoTable
                   data={skus}
                   columns={skuColumns}
                   emptyMessage="No SKUs added yet. Enter a name above to add one."
                 />
-              </div>
-            )}
-
-            {activeTab === "SKU Analytics" && (
-              <div className="w-full">
-                <ProductSkuChart skus={skus} />
-              </div>
-            )}
-
-            {activeTab === "Stock Details" && (
-              <div className="w-full py-12 text-center border-2 border-dashed border-(--gray-2) rounded-8">
-                <p className="t-mute">Stock details information will be displayed here.</p>
-              </div>
-            )}
-
-            {activeTab === "Pricing Details" && (
-              <div className="w-full py-12 text-center border-2 border-dashed border-(--gray-2) rounded-8">
-                <p className="t-mute">Pricing details information will be displayed here.</p>
               </div>
             )}
           </div>
