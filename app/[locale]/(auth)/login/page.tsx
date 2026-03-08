@@ -51,7 +51,7 @@ export default function LoginScreen() {
         toast.success("OTP sent successfully!");
         otpRefs.current[0]?.focus();
       } else {
-        toast.error("Failed to send OTP");
+        toast.error(result.payload || "Failed to send OTP");
       }
 
       if (result.payload === "User not found") {
@@ -109,7 +109,7 @@ export default function LoginScreen() {
         localStorage.setItem("userSession", loginData);
         document.cookie = `userSession=${JSON.stringify(loginData)}; path=/; max-age=86400`;
 
-        toast.success("Login Successful! Welcome back 🎉");
+        toast.success("Login Successful");
         router.push("/dashboard");
       } else {
         console.log("❌ OTP Verification Failed");
