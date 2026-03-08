@@ -51,7 +51,7 @@ export default function LoginScreen() {
         toast.success("OTP sent successfully!");
         otpRefs.current[0]?.focus();
       } else {
-        toast.error("Failed to send OTP");
+        toast.error(result.payload || "Failed to send OTP");
       }
 
       if (result.payload === "User not found") {
