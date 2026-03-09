@@ -143,7 +143,7 @@ export default function TeamForm() {
               value={selectedCallPoints}
               onChange={(value) => {
                 setSelectedCallPoints(value);
-                clearFieldError("callPoints");
+                clearFieldError("callPointIds");
               }}
               options={(Array.isArray(callPoints) ? callPoints : []).map((callPoint) => ({
                 value: callPoint.id,
@@ -152,7 +152,7 @@ export default function TeamForm() {
               placeholder="Select Call Points"
               required
               loading={callPointsLoading}
-              error={getErrorMessage("callPoints")}
+              error={getErrorMessage("callPointIds")}
             />
           </div>
         </div>
