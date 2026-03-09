@@ -87,78 +87,132 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
   const skuColumns: ColumnDef<any>[] = [
     {
       accessorKey: "pulseCode",
-      header: "Pulse Code",
+      header: () => (
+        <span>
+          Pulse Code<span className="text-(--destructive)">*</span>
+        </span>
+      ),
       cell: ({ row }) => (
         <input
           type="text"
           value={row.original.pulseCode}
-          onChange={(e) => updateSkuRow(row.index, "pulseCode", e.target.value)}
-          className="w-full px-2 py-1 bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded"
+          onChange={(e) => {
+            updateSkuRow(row.index, "pulseCode", e.target.value);
+            clearFieldError(`productSkus.${row.index}.pulseCode`);
+          }}
+          className={`w-full px-2 py-1 bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded ${
+            hasSkuError(row.index, "pulseCode") ? "ring-1 ring-(--destructive)" : ""
+          }`}
           placeholder="Pulse Code"
         />
       ),
     },
     {
       accessorKey: "sku",
-      header: "SKU Name",
+      header: () => (
+        <span>
+          SKU Name<span className="text-(--destructive)">*</span>
+        </span>
+      ),
       cell: ({ row }) => (
         <input
           type="text"
           value={row.original.sku}
-          onChange={(e) => updateSkuRow(row.index, "sku", e.target.value)}
-          className="w-full px-2 py-1 font-medium bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded"
+          onChange={(e) => {
+            updateSkuRow(row.index, "sku", e.target.value);
+            clearFieldError(`productSkus.${row.index}.sku`);
+          }}
+          className={`w-full px-2 py-1 font-medium bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded ${
+            hasSkuError(row.index, "sku") ? "ring-1 ring-(--destructive)" : ""
+          }`}
           placeholder="SKU Name"
         />
       ),
     },
     {
       accessorKey: "productCode",
-      header: "Product Code",
+      header: () => (
+        <span>
+          Product SKU Code<span className="text-(--destructive)">*</span>
+        </span>
+      ),
       cell: ({ row }) => (
         <input
           type="text"
           value={row.original.productCode}
-          onChange={(e) => updateSkuRow(row.index, "productCode", e.target.value)}
-          className="w-full px-2 py-1 bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded"
+          onChange={(e) => {
+            updateSkuRow(row.index, "productCode", e.target.value);
+            clearFieldError(`productSkus.${row.index}.productCode`);
+          }}
+          className={`w-full px-2 py-1 bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded ${
+            hasSkuError(row.index, "productCode") ? "ring-1 ring-(--destructive)" : ""
+          }`}
           placeholder="Code"
         />
       ),
     },
     {
       accessorKey: "mrp",
-      header: "MRP",
+      header: () => (
+        <span>
+          MRP<span className="text-(--destructive)">*</span>
+        </span>
+      ),
       cell: ({ row }) => (
         <input
           type="number"
           value={row.original.mrp}
-          onChange={(e) => updateSkuRow(row.index, "mrp", e.target.value)}
-          className="w-full px-2 py-1 bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded"
+          onChange={(e) => {
+            updateSkuRow(row.index, "mrp", e.target.value);
+            clearFieldError(`productSkus.${row.index}.mrp`);
+          }}
+          className={`w-full px-2 py-1 bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded ${
+            hasSkuError(row.index, "mrp") ? "ring-1 ring-(--destructive)" : ""
+          }`}
           placeholder="MRP"
         />
       ),
     },
     {
       accessorKey: "tp",
-      header: "TP",
+      header: () => (
+        <span>
+          TP<span className="text-(--destructive)">*</span>
+        </span>
+      ),
       cell: ({ row }) => (
         <input
           type="number"
           value={row.original.tp}
-          onChange={(e) => updateSkuRow(row.index, "tp", e.target.value)}
-          className="w-full px-2 py-1 bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded"
+          onChange={(e) => {
+            updateSkuRow(row.index, "tp", e.target.value);
+            clearFieldError(`productSkus.${row.index}.tp`);
+          }}
+          className={`w-full px-2 py-1 bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded ${
+            hasSkuError(row.index, "tp") ? "ring-1 ring-(--destructive)" : ""
+          }`}
           placeholder="TP"
         />
       ),
     },
     {
       accessorKey: "nsp",
-      header: "NSP",
+      header: () => (
+        <span>
+          NSP<span className="text-(--destructive)">*</span>
+        </span>
+      ),
       cell: ({ row }) => (
         <input
           type="number"
           value={row.original.nsp}
-          onChange={(e) => updateSkuRow(row.index, "nsp", e.target.value)}
-          className="w-full px-2 py-1 bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded"
+          onChange={(e) => {
+            updateSkuRow(row.index, "nsp", e.target.value);
+            clearFieldError(`productSkus.${row.index}.nsp`);
+          }}
+          className={`w-full px-2 py-1 bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded ${
+            hasSkuError(row.index, "nsp") ? "ring-1 ring-(--destructive)" : ""
+          }`}
           placeholder="NSP"
         />
       ),
@@ -314,6 +368,11 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
   // Helper functions for validation
   const getErrorMessage = (fieldName: string) => validationErrors[fieldName] || "";
   const hasError = (fieldName: string) => !!validationErrors[fieldName];
+
+  const getSkuErrorMessage = (index: number, field: string) =>
+    validationErrors[`productSkus.${index}.${field}`] || "";
+  const hasSkuError = (index: number, field: string) =>
+    !!validationErrors[`productSkus.${index}.${field}`];
   const clearFieldError = (fieldName: string) => {
     if (validationErrors[fieldName]) {
       setValidationErrors((prev) => {
@@ -369,7 +428,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
       console.log("ProductForm: Validation failed", validation.error.format());
       const errors: Record<string, string> = {};
       validation.error.errors.forEach((err: any) => {
-        const fieldName = err.path[0] as string;
+        const fieldName = err.path.join(".");
         if (!errors[fieldName]) {
           errors[fieldName] = err.message;
         }
@@ -442,7 +501,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
                     clearFieldError("productCode");
                   }}
                   placeholder="Enter product code"
-                  // required
+                  required
                   error={getErrorMessage("productCode")}
                 />
               </div>

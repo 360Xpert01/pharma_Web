@@ -9,7 +9,10 @@ export const productSchema = z
 
     pulseCode: z.string().max(255, "Pulse code cannot exceed 255 characters").optional(),
 
-    productCode: z.string().max(255, "Product code cannot exceed 255 characters").optional(),
+    productCode: z
+      .string()
+      .min(1, "Product code is required")
+      .max(255, "Product code cannot exceed 255 characters"),
 
     productCategoryId: z.string().uuid("Invalid category ID format"),
     productFormula: z.string().max(255, "Product formula cannot exceed 255 characters").optional(),
@@ -28,19 +31,30 @@ export const productSchema = z
     productSkus: z
       .array(
         z.object({
-          pulseCode: z.string().max(255).optional(),
+          pulseCode: z
+            .string()
+            .min(1, "Pulse code is required")
+            .max(255, "Pulse code cannot exceed 255 characters"),
           sku: z
             .string()
             .min(1, "SKU name is required")
             .max(100, "SKU name cannot exceed 100 characters"),
-          productCode: z.string().max(255).optional(),
-          mrp: z.union([z.string(), z.number()]).optional(),
-          tp: z.union([z.string(), z.number()]).optional(),
-          nsp: z.union([z.string(), z.number()]).optional(),
+          productCode: z
+            .string()
+            .min(1, "Product code is required")
+            .max(255, "Product code cannot exceed 255 characters"),
+          mrp: z.coerce
+            .number({ invalid_type_error: "MRP must be a number" })
+            .positive("MRP must be greater than 0"),
+          tp: z.coerce
+            .number({ invalid_type_error: "TP must be a number" })
+            .positive("TP must be greater than 0"),
+          nsp: z.coerce
+            .number({ invalid_type_error: "NSP must be a number" })
+            .positive("NSP must be greater than 0"),
         })
       )
-      .min(1, "At least one SKU is required")
-      .optional(),
+      .min(1, "At least one SKU is required"),
   })
   .strict();
 
