@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Plus, Loader2, X } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
@@ -83,155 +83,268 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
 
   const tabs = [{ id: "Product SKUs", label: "Product SKUs" }];
 
-  // Column definitions for CenturoTable
-  const skuColumns: ColumnDef<any>[] = [
-    {
-      accessorKey: "pulseCode",
-      header: () => (
-        <span>
-          Pulse Code<span className="text-(--destructive)">*</span>
-        </span>
-      ),
-      cell: ({ row }) => (
-        <input
-          type="text"
-          value={row.original.pulseCode}
-          onChange={(e) => {
-            updateSkuRow(row.index, "pulseCode", e.target.value);
-            clearFieldError(`productSkus.${row.index}.pulseCode`);
-          }}
-          className={`w-full px-2 py-1 bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded ${
-            hasSkuError(row.index, "pulseCode") ? "ring-1 ring-(--destructive)" : ""
-          }`}
-          placeholder="Pulse Code"
-        />
-      ),
-    },
-    {
-      accessorKey: "sku",
-      header: () => (
-        <span>
-          SKU Name<span className="text-(--destructive)">*</span>
-        </span>
-      ),
-      cell: ({ row }) => (
-        <input
-          type="text"
-          value={row.original.sku}
-          onChange={(e) => {
-            updateSkuRow(row.index, "sku", e.target.value);
-            clearFieldError(`productSkus.${row.index}.sku`);
-          }}
-          className={`w-full px-2 py-1 font-medium bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded ${
-            hasSkuError(row.index, "sku") ? "ring-1 ring-(--destructive)" : ""
-          }`}
-          placeholder="SKU Name"
-        />
-      ),
-    },
-    {
-      accessorKey: "productCode",
-      header: () => (
-        <span>
-          Product SKU Code<span className="text-(--destructive)">*</span>
-        </span>
-      ),
-      cell: ({ row }) => (
-        <input
-          type="text"
-          value={row.original.productCode}
-          onChange={(e) => {
-            updateSkuRow(row.index, "productCode", e.target.value);
-            clearFieldError(`productSkus.${row.index}.productCode`);
-          }}
-          className={`w-full px-2 py-1 bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded ${
-            hasSkuError(row.index, "productCode") ? "ring-1 ring-(--destructive)" : ""
-          }`}
-          placeholder="Code"
-        />
-      ),
-    },
-    {
-      accessorKey: "mrp",
-      header: () => (
-        <span>
-          MRP<span className="text-(--destructive)">*</span>
-        </span>
-      ),
-      cell: ({ row }) => (
-        <input
-          type="number"
-          value={row.original.mrp}
-          onChange={(e) => {
-            updateSkuRow(row.index, "mrp", e.target.value);
-            clearFieldError(`productSkus.${row.index}.mrp`);
-          }}
-          className={`w-full px-2 py-1 bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded ${
-            hasSkuError(row.index, "mrp") ? "ring-1 ring-(--destructive)" : ""
-          }`}
-          placeholder="MRP"
-        />
-      ),
-    },
-    {
-      accessorKey: "tp",
-      header: () => (
-        <span>
-          TP<span className="text-(--destructive)">*</span>
-        </span>
-      ),
-      cell: ({ row }) => (
-        <input
-          type="number"
-          value={row.original.tp}
-          onChange={(e) => {
-            updateSkuRow(row.index, "tp", e.target.value);
-            clearFieldError(`productSkus.${row.index}.tp`);
-          }}
-          className={`w-full px-2 py-1 bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded ${
-            hasSkuError(row.index, "tp") ? "ring-1 ring-(--destructive)" : ""
-          }`}
-          placeholder="TP"
-        />
-      ),
-    },
-    {
-      accessorKey: "nsp",
-      header: () => (
-        <span>
-          NSP<span className="text-(--destructive)">*</span>
-        </span>
-      ),
-      cell: ({ row }) => (
-        <input
-          type="number"
-          value={row.original.nsp}
-          onChange={(e) => {
-            updateSkuRow(row.index, "nsp", e.target.value);
-            clearFieldError(`productSkus.${row.index}.nsp`);
-          }}
-          className={`w-full px-2 py-1 bg-transparent border-none outline-none focus:ring-1 focus:ring-(--primary) rounded ${
-            hasSkuError(row.index, "nsp") ? "ring-1 ring-(--destructive)" : ""
-          }`}
-          placeholder="NSP"
-        />
-      ),
-    },
-    {
-      id: "actions",
-      header: "",
-      cell: ({ row }) => (
-        <div className="text-right">
-          <button
-            onClick={() => removeSku(row.index)}
-            className="p-1 hover:text-(--destructive) transition-colors"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-      ),
-    },
-  ];
+  // Memoize validation helpers to keep column definitions stable
+  const getSkuErrorMessage = useCallback(
+    (index: number, field: string) => validationErrors[`productSkus.${index}.${field}`] || "",
+    [validationErrors]
+  );
+
+  const hasSkuError = useCallback(
+    (index: number, field: string) => !!validationErrors[`productSkus.${index}.${field}`],
+    [validationErrors]
+  );
+
+  const clearFieldError = useCallback((fieldName: string) => {
+    setValidationErrors((prev) => {
+      if (!prev[fieldName]) return prev;
+      const newErrors = { ...prev };
+      delete newErrors[fieldName];
+      return newErrors;
+    });
+  }, []);
+
+  const updateSkuRow = useCallback((index: number, field: string, value: string) => {
+    setSkus((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], [field]: value };
+      return updated;
+    });
+  }, []);
+
+  const removeSku = useCallback((index: number) => {
+    setSkus((prev) => prev.filter((_, i) => i !== index));
+  }, []);
+
+  // Generic validation helpers
+  const getErrorMessage = (fieldName: string) => validationErrors[fieldName] || "";
+  const hasError = (fieldName: string) => !!validationErrors[fieldName];
+
+  // Column definitions for CenturoTable - Memoized to prevent focus loss
+  const skuColumns = useMemo<ColumnDef<any>[]>(
+    () => [
+      {
+        accessorKey: "pulseCode",
+        header: () => (
+          <span>
+            Pulse Code<span className="text-(--destructive)">*</span>
+          </span>
+        ),
+        cell: ({ row }) => (
+          <input
+            type="text"
+            value={row.original.pulseCode || "TO BE GENERATED"}
+            onChange={() => {}}
+            readOnly
+            className={`w-full px-3 py-2 border border-(--gray-3) outline-none rounded-8 text-sm transition-all cursor-not-allowed ${
+              mode === "edit" ? "bg-white text-(--gray-9)" : "bg-(--gray-1) text-(--gray-5)"
+            }`}
+            placeholder="Auto-generated"
+          />
+        ),
+      },
+      {
+        accessorKey: "sku",
+        header: () => (
+          <span>
+            SKU Name<span className="text-(--destructive)">*</span>
+          </span>
+        ),
+        cell: ({ row }) => (
+          <div className="flex flex-col gap-1">
+            <input
+              type="text"
+              value={row.original.sku}
+              onChange={(e) => {
+                updateSkuRow(row.index, "sku", e.target.value);
+                clearFieldError(`productSkus.${row.index}.sku`);
+              }}
+              className={`w-full px-3 py-2 font-medium bg-white border border-(--gray-3) outline-none focus:ring-2 focus:ring-(--primary) rounded-8 text-sm transition-all ${
+                hasSkuError(row.index, "sku")
+                  ? "border-(--destructive) focus:ring-(--destructive)"
+                  : ""
+              }`}
+              placeholder="SKU Name"
+            />
+            {hasSkuError(row.index, "sku") && (
+              <span className="text-[10px] text-(--destructive) leading-none px-1">
+                {getSkuErrorMessage(row.index, "sku")}
+              </span>
+            )}
+          </div>
+        ),
+      },
+      {
+        accessorKey: "skuCode",
+        header: () => (
+          <span>
+            SKU Code<span className="text-(--destructive)">*</span>
+          </span>
+        ),
+        cell: ({ row }) => (
+          <div className="flex flex-col gap-1">
+            <input
+              type="text"
+              value={row.original.skuCode}
+              onChange={(e) => {
+                updateSkuRow(row.index, "skuCode", e.target.value);
+                clearFieldError(`productSkus.${row.index}.skuCode`);
+              }}
+              className={`w-full px-3 py-2 bg-white border border-(--gray-3) outline-none focus:ring-2 focus:ring-(--primary) rounded-8 text-sm transition-all ${
+                hasSkuError(row.index, "skuCode")
+                  ? "border-(--destructive) focus:ring-(--destructive)"
+                  : ""
+              }`}
+              placeholder="Code"
+            />
+            {hasSkuError(row.index, "skuCode") && (
+              <span className="text-[10px] text-(--destructive) leading-none px-1">
+                {getSkuErrorMessage(row.index, "skuCode")}
+              </span>
+            )}
+          </div>
+        ),
+      },
+      {
+        accessorKey: "market_selling_price",
+        header: () => (
+          <span>
+            Market Selling Price<span className="text-(--destructive)">*</span>
+          </span>
+        ),
+        cell: ({ row }) => (
+          <div className="flex flex-col gap-1">
+            <input
+              type="number"
+              value={row.original.market_selling_price}
+              onChange={(e) => {
+                updateSkuRow(row.index, "market_selling_price", e.target.value);
+                clearFieldError(`productSkus.${row.index}.market_selling_price`);
+              }}
+              className={`w-full px-3 py-2 bg-white border border-(--gray-3) outline-none focus:ring-2 focus:ring-(--primary) rounded-8 text-sm transition-all ${
+                hasSkuError(row.index, "market_selling_price")
+                  ? "border-(--destructive) focus:ring-(--destructive)"
+                  : ""
+              }`}
+              placeholder="Price"
+            />
+            {hasSkuError(row.index, "market_selling_price") && (
+              <span className="text-[10px] text-(--destructive) leading-none px-1">
+                {getSkuErrorMessage(row.index, "market_selling_price")}
+              </span>
+            )}
+          </div>
+        ),
+      },
+      {
+        accessorKey: "trade_price",
+        header: () => (
+          <span>
+            Trade Price<span className="text-(--destructive)">*</span>
+          </span>
+        ),
+        cell: ({ row }) => (
+          <div className="flex flex-col gap-1">
+            <input
+              type="number"
+              value={row.original.trade_price}
+              onChange={(e) => {
+                updateSkuRow(row.index, "trade_price", e.target.value);
+                clearFieldError(`productSkus.${row.index}.trade_price`);
+              }}
+              className={`w-full px-3 py-2 bg-white border border-(--gray-3) outline-none focus:ring-2 focus:ring-(--primary) rounded-8 text-sm transition-all ${
+                hasSkuError(row.index, "trade_price")
+                  ? "border-(--destructive) focus:ring-(--destructive)"
+                  : ""
+              }`}
+              placeholder="Price"
+            />
+            {hasSkuError(row.index, "trade_price") && (
+              <span className="text-[10px] text-(--destructive) leading-none px-1">
+                {getSkuErrorMessage(row.index, "trade_price")}
+              </span>
+            )}
+          </div>
+        ),
+      },
+      {
+        accessorKey: "net_selling_price",
+        header: () => (
+          <span>
+            Net Selling Price<span className="text-(--destructive)">*</span>
+          </span>
+        ),
+        cell: ({ row }) => (
+          <div className="flex flex-col gap-1">
+            <input
+              type="number"
+              value={row.original.net_selling_price}
+              onChange={(e) => {
+                updateSkuRow(row.index, "net_selling_price", e.target.value);
+                clearFieldError(`productSkus.${row.index}.net_selling_price`);
+              }}
+              className={`w-full px-3 py-2 bg-white border border-(--gray-3) outline-none focus:ring-2 focus:ring-(--primary) rounded-8 text-sm transition-all ${
+                hasSkuError(row.index, "net_selling_price")
+                  ? "border-(--destructive) focus:ring-(--destructive)"
+                  : ""
+              }`}
+              placeholder="Price"
+            />
+            {hasSkuError(row.index, "net_selling_price") && (
+              <span className="text-[10px] text-(--destructive) leading-none px-1">
+                {getSkuErrorMessage(row.index, "net_selling_price")}
+              </span>
+            )}
+          </div>
+        ),
+      },
+      {
+        accessorKey: "quantity",
+        header: () => (
+          <span>
+            Quantity<span className="text-(--destructive)">*</span>
+          </span>
+        ),
+        cell: ({ row }) => (
+          <div className="flex flex-col gap-1">
+            <input
+              type="number"
+              value={row.original.quantity}
+              onChange={(e) => {
+                updateSkuRow(row.index, "quantity", e.target.value);
+                clearFieldError(`productSkus.${row.index}.quantity`);
+              }}
+              className={`w-full px-3 py-2 bg-white border border-(--gray-3) outline-none focus:ring-2 focus:ring-(--primary) rounded-8 text-sm transition-all ${
+                hasSkuError(row.index, "quantity")
+                  ? "border-(--destructive) focus:ring-(--destructive)"
+                  : ""
+              }`}
+              placeholder="Qty"
+            />
+            {hasSkuError(row.index, "quantity") && (
+              <span className="text-[10px] text-(--destructive) leading-none px-1">
+                {getSkuErrorMessage(row.index, "quantity")}
+              </span>
+            )}
+          </div>
+        ),
+      },
+      {
+        id: "actions",
+        header: "",
+        cell: ({ row }) => (
+          <div className="text-right">
+            <button
+              onClick={() => removeSku(row.index)}
+              className="p-1 hover:text-(--destructive) transition-colors"
+            >
+              <X className="w-4 h-4 cursor-pointer" />
+            </button>
+          </div>
+        ),
+      },
+    ],
+    [updateSkuRow, clearFieldError, hasSkuError, removeSku]
+  );
 
   // Fetch product categories and generate prefix on mount
   useEffect(() => {
@@ -268,12 +381,13 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
       setImage(existingProduct.imageUrl || null);
       setSkus(
         existingProduct.productSkus?.map((sku: any) => ({
-          pulseCode: sku.pulseCode || "",
           sku: sku.sku || "",
-          productCode: sku.productCode || "",
-          mrp: sku.mrp || "",
-          tp: sku.tp || "",
-          nsp: sku.nsp || "",
+          pulseCode: sku.pulseCode || "",
+          skuCode: sku.skuCode || "",
+          market_selling_price: sku.market_selling_price || "",
+          trade_price: sku.trade_price || "",
+          net_selling_price: sku.net_selling_price || "",
+          quantity: sku.quantity || "",
         })) || []
       );
     }
@@ -345,42 +459,16 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
     setSkus([
       ...skus,
       {
-        pulseCode: "",
         sku: value.trim(),
-        productCode: "",
-        mrp: "",
-        tp: "",
-        nsp: "",
+        skuCode: "",
+        market_selling_price: "",
+        trade_price: "",
+        net_selling_price: "",
+        quantity: "",
       },
     ]);
     setSkuInput("");
     clearFieldError("productSkus");
-  };
-
-  const updateSkuRow = (index: number, field: string, value: string) => {
-    const updated = [...skus];
-    updated[index] = { ...updated[index], [field]: value };
-    setSkus(updated);
-  };
-
-  const removeSku = (index: number) => setSkus(skus.filter((_, i) => i !== index));
-
-  // Helper functions for validation
-  const getErrorMessage = (fieldName: string) => validationErrors[fieldName] || "";
-  const hasError = (fieldName: string) => !!validationErrors[fieldName];
-
-  const getSkuErrorMessage = (index: number, field: string) =>
-    validationErrors[`productSkus.${index}.${field}`] || "";
-  const hasSkuError = (index: number, field: string) =>
-    !!validationErrors[`productSkus.${index}.${field}`];
-  const clearFieldError = (fieldName: string) => {
-    if (validationErrors[fieldName]) {
-      setValidationErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[fieldName];
-        return newErrors;
-      });
-    }
   };
 
   const getInputClasses = (fieldName: string) => {
@@ -397,12 +485,12 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
     console.log("ProductForm: handleSubmit called");
     // Transform SKUs to match API structure
     const productSkus = skus.map((sku) => ({
-      pulseCode: sku.pulseCode || undefined,
       sku: sku.sku.trim(),
-      productCode: sku.productCode || undefined,
-      mrp: sku.mrp ? Number(sku.mrp) : undefined,
-      tp: sku.tp ? Number(sku.tp) : undefined,
-      nsp: sku.nsp ? Number(sku.nsp) : undefined,
+      skuCode: sku.skuCode.trim(),
+      market_selling_price: sku.market_selling_price ? Number(sku.market_selling_price) : 0,
+      trade_price: sku.trade_price ? Number(sku.trade_price) : 0,
+      net_selling_price: sku.net_selling_price ? Number(sku.net_selling_price) : 0,
+      quantity: sku.quantity ? Number(sku.quantity) : 0,
     }));
 
     // Prepare payload strictly matching the requested schema
@@ -480,9 +568,9 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
                   name="pulseCode"
                   type="text"
                   value={
-                    mode === "edit" && existingProduct?.pulseCode
-                      ? existingProduct.pulseCode
-                      : generatedPrefix || ""
+                    mode === "edit"
+                      ? existingProduct?.pulseCode || ""
+                      : generatedPrefix || "TO BE GENERATED"
                   }
                   onChange={() => {}}
                   placeholder="Auto-generated"
@@ -577,63 +665,58 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
             </div>
           </div>
 
-          {/* MIDDLE SECTION: SKU Search Bar */}
-          <div className="space-y-4">
-            <label className="block t-label">
-              Add Product SKU<span className="text-(--destructive)">*</span>
-            </label>
-
-            <div className="flex gap-3 w-[60%]">
-              <input
-                type="text"
-                placeholder="Enter SKU (e.g. Capsule 500mg)"
-                value={skuInput}
-                onChange={(e) => setSkuInput(e.target.value)}
-                className="flex-1 px-3 py-3 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) outline-none text-sm"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    addSku(skuInput);
-                  }
-                }}
-              />
-              <Button
-                onClick={() => addSku(skuInput)}
-                variant="primary"
-                size="lg"
-                icon={Plus}
-                rounded="full"
-              >
-                Add Product SKU
-              </Button>
+          {/* BOTTOM SECTION: SKUs Container */}
+          <div className="bg-background shadow-soft p-6 rounded-8 border border-(--gray-1) space-y-6">
+            <div>
+              <h2 className="t-h2">Product SKUs</h2>
+              <p className="t-sm text-(--gray-5)">Manage individual SKUs for this product</p>
             </div>
 
-            {hasError("productSkus") && (
-              <p className="mt-1 t-sm t-err">{getErrorMessage("productSkus")}</p>
-            )}
-          </div>
-
-          {/* BOTTOM SECTION: Tabs Container */}
-          <div className="bg-background shadow-soft p-6 rounded-8 border border-(--gray-1)">
-            <div className="mb-6">
-              <AnimatedTabs
-                tabs={tabs}
-                activeTab={activeTab}
-                onTabChange={(id) => setActiveTab(id as any)}
-                variant="secondary"
-                size="md"
-              />
-            </div>
-
-            {activeTab === "Product SKUs" && (
+            {skus.length > 0 && (
               <div className="w-full">
-                <CenturoTable
-                  data={skus}
-                  columns={skuColumns}
-                  emptyMessage="No SKUs added yet. Enter a name above to add one."
-                />
+                <CenturoTable data={skus} columns={skuColumns} />
               </div>
             )}
+
+            {/* SKU ADD SECTION: Moved below the table */}
+            <div
+              className={`space-y-4 pt-4 ${skus.length > 0 ? "border-t border-(--gray-1)" : ""}`}
+            >
+              {skus.length === 0 && (
+                <label className="block t-label">
+                  Add Product SKU<span className="text-(--destructive)">*</span>
+                </label>
+              )}
+
+              <div className="flex gap-3 max-w-2xl">
+                <input
+                  type="text"
+                  placeholder="Enter SKU (e.g. Capsule 500mg)"
+                  value={skuInput}
+                  onChange={(e) => setSkuInput(e.target.value)}
+                  className="flex-1 px-3 py-3 border border-(--gray-3) rounded-8 focus:ring-2 focus:ring-(--primary) outline-none text-sm bg-white transition-all"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addSku(skuInput);
+                    }
+                  }}
+                />
+                <Button
+                  onClick={() => addSku(skuInput)}
+                  variant="primary"
+                  size="lg"
+                  icon={Plus}
+                  rounded="full"
+                >
+                  Add SKU
+                </Button>
+              </div>
+
+              {hasError("productSkus") && (
+                <p className="mt-1 t-sm t-err">{getErrorMessage("productSkus")}</p>
+              )}
+            </div>
           </div>
 
           {/* FOOTER ACTIONS */}

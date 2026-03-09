@@ -31,27 +31,26 @@ export const productSchema = z
     productSkus: z
       .array(
         z.object({
-          pulseCode: z
-            .string()
-            .min(1, "Pulse code is required")
-            .max(255, "Pulse code cannot exceed 255 characters"),
           sku: z
             .string()
             .min(1, "SKU name is required")
             .max(100, "SKU name cannot exceed 100 characters"),
-          productCode: z
+          skuCode: z
             .string()
-            .min(1, "Product code is required")
-            .max(255, "Product code cannot exceed 255 characters"),
-          mrp: z.coerce
-            .number({ invalid_type_error: "MRP must be a number" })
-            .positive("MRP must be greater than 0"),
-          tp: z.coerce
-            .number({ invalid_type_error: "TP must be a number" })
-            .positive("TP must be greater than 0"),
-          nsp: z.coerce
-            .number({ invalid_type_error: "NSP must be a number" })
-            .positive("NSP must be greater than 0"),
+            .min(1, "SKU code is required")
+            .max(255, "SKU code cannot exceed 255 characters"),
+          market_selling_price: z.coerce
+            .number({ invalid_type_error: "Market Selling Price must be a number" })
+            .positive("Required"),
+          trade_price: z.coerce
+            .number({ invalid_type_error: "Trade Price must be a number" })
+            .positive("Required"),
+          net_selling_price: z.coerce
+            .number({ invalid_type_error: "Net Selling Price must be a number" })
+            .positive("Required"),
+          quantity: z.coerce
+            .number({ invalid_type_error: "Quantity must be a number" })
+            .positive("Required"),
         })
       )
       .min(1, "At least one SKU is required"),
