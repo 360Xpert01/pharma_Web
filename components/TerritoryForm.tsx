@@ -23,6 +23,7 @@ import {
   generatePrefix,
   resetGeneratePrefixState,
 } from "@/store/slices/preFix/generatePrefixSlice";
+import { territorySchema } from "@/validations";
 
 interface Brick {
   id: string;
@@ -64,6 +65,8 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
     description: "",
     selectedBricks: [] as Brick[],
   });
+
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
   // Fetch initial data
   useEffect(() => {
@@ -124,10 +127,26 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
 
     const currentPulseCode = isEditMode ? formData.pulseCode : generatedPrefix || "";
 
-    // Validation
-    if (!currentPulseCode.trim()) {
+    // Validation using Zod
+    const validationResult = territorySchema.safeParse({
+      pulseCode: currentPulseCode,
+      description: formData.description,
+      bricks: formData.selectedBricks.map((b) => b.id),
+    });
+
+    if (!validationResult.success) {
+      const errors: Record<string, string> = {};
+      validationResult.error.errors.forEach((err) => {
+        const fieldName = err.path[0] as string;
+        if (!errors[fieldName]) {
+          errors[fieldName] = err.message;
+        }
+      });
+      setValidationErrors(errors);
       return;
     }
+
+    setValidationErrors({});
 
     const payload: CreateTerritoryPayload = {
       pulseCode: currentPulseCode.trim(),
@@ -173,9 +192,20 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
             label="Description"
             name="description"
             value={formData.description}
-            onChange={(value) => setFormData((prev) => ({ ...prev, description: value }))}
+            onChange={(value) => {
+              setFormData((prev) => ({ ...prev, description: value }));
+              if (validationErrors.description) {
+                setValidationErrors((prev) => {
+                  const newErrors = { ...prev };
+                  delete newErrors.description;
+                  return newErrors;
+                });
+              }
+            }}
             placeholder="Enter territory description..."
             rows={3}
+            required
+            error={validationErrors.description}
           />
         </div>
 
@@ -184,10 +214,19 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
           <BrickSearch
             allBricks={bricks}
             selectedBricks={formData.selectedBricks}
-            onBricksChange={(selected) =>
-              setFormData((prev) => ({ ...prev, selectedBricks: selected }))
-            }
+            onBricksChange={(selected) => {
+              setFormData((prev) => ({ ...prev, selectedBricks: selected }));
+              if (validationErrors.bricks) {
+                setValidationErrors((prev) => {
+                  const newErrors = { ...prev };
+                  delete newErrors.bricks;
+                  return newErrors;
+                });
+              }
+            }}
             loading={loadingBricks}
+            required
+            error={validationErrors.bricks}
           />
         </div>
 

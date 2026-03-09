@@ -18,6 +18,7 @@ interface BrickSearchProps {
   loading?: boolean;
   className?: string;
   error?: string;
+  required?: boolean;
   onSearchChange?: (query: string) => void;
 }
 
@@ -28,6 +29,7 @@ export default function BrickSearch({
   loading = false,
   className = "",
   error = "",
+  required = false,
   onSearchChange,
 }: BrickSearchProps) {
   const hasError = !!error;
@@ -63,7 +65,10 @@ export default function BrickSearch({
 
   return (
     <div className={`space-y-4 ${className}`}>
-      <label className="t-label block">Assign Bricks</label>
+      <label className="t-label block">
+        Assign Bricks
+        {required && <span className="text-(--destructive) ml-1">*</span>}
+      </label>
 
       <div className="relative max-w-sm ml-0">
         <div className="flex items-center gap-3">
