@@ -18,6 +18,7 @@ import {
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { conflictResolutionSchema } from "@/validations/targetValidation";
+import { ConfirmModal } from "./shared/confirm-modal";
 
 export default function TerritoryConflictsPage() {
   const router = useRouter();
@@ -38,6 +39,7 @@ export default function TerritoryConflictsPage() {
 
   // Validation errors state
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   useEffect(() => {
     dispatch(getTeamAll());
@@ -277,7 +279,7 @@ export default function TerritoryConflictsPage() {
             size="lg"
             rounded="full"
             className="px-8 border-(--primary) text-(--primary) hover:bg-(--primary-0) hover:text-(--primary)"
-            onClick={() => router.back()}
+            onClick={() => setIsDiscardModalOpen(true)}
           >
             Discard
           </Button>
@@ -294,6 +296,18 @@ export default function TerritoryConflictsPage() {
           </Button>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={() => {
+          setIsDiscardModalOpen(false);
+          router.back();
+        }}
+        title="Discard changes?"
+        description="You will lose all unsaved conflict resolutions."
+        confirmLabel="Discard"
+      />
     </div>
   );
 }

@@ -46,6 +46,7 @@ interface CenturoTableProps<T> {
     showItemsPerPageSelector?: boolean;
     showPageInfo?: boolean;
   }>;
+  renderTableFooter?: (columnCount: number) => React.ReactNode;
 }
 
 // Custom sorting function for case-insensitive alphabetic sorting
@@ -92,6 +93,7 @@ export default function CenturoTable<T>({
   onPaginationChange,
   onSortChange,
   PaginationComponent,
+  renderTableFooter,
 }: CenturoTableProps<T>) {
   // Helper to find pulse code column and set default sorting
   const defaultSorting: SortingState = React.useMemo(() => {
@@ -285,7 +287,7 @@ export default function CenturoTable<T>({
   return (
     <div className="w-full">
       {/* Table */}
-      <div className="overflow-x-auto border border-(--gray-2) rounded-8 bg-(--background) mx-4">
+      <div className="overflow-x-auto border border-(--gray-2) rounded-8 bg-(--background)">
         <table className="w-full border-collapse table-fixed">
           <thead className="bg-(--gray-0) border-b border-(--gray-2)">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -294,19 +296,10 @@ export default function CenturoTable<T>({
                   const canSort = header.column.getCanSort();
                   const isSorted = header.column.getIsSorted();
 
-                  // Detection for Pulse Code column to handle the "both arrows" default look
-                  const id = header.column.id;
-                  const accessorKey = (header.column.columnDef as any).accessorKey;
-                  const isPulseCode =
-                    id === "pulse_code" ||
-                    id === "pulseCode" ||
-                    accessorKey === "pulse_code" ||
-                    accessorKey === "pulseCode";
-
                   return (
                     <th
                       key={header.id}
-                      className={`px-4 py-3 text-left t-th overflow-hidden text-ellipsis whitespace-nowrap ${
+                      className={`px-3 py-3 text-left t-th overflow-hidden text-ellipsis whitespace-nowrap ${
                         canSort ? "cursor-pointer select-none" : ""
                       }`}
                       style={{
@@ -325,16 +318,10 @@ export default function CenturoTable<T>({
                           <span className="w-4 h-4 flex-shrink-0 flex items-center justify-center">
                             {isSorted === "asc" ? (
                               <ArrowUp className="w-4 h-4 text-(--gray-6) transition-colors" />
-                            ) : isSorted === "desc" && !isPulseCode ? (
+                            ) : isSorted === "desc" ? (
                               <ArrowDown className="w-4 h-4 text-(--gray-6) transition-colors" />
                             ) : (
-                              <ArrowUpDown
-                                className={`w-4 h-4 transition-colors ${
-                                  isSorted === "desc" && isPulseCode
-                                    ? "text-(--gray-4)" // Keep as default unsorted color
-                                    : "text-(--gray-4) group-hover:text-(--gray-6)"
-                                }`}
-                              />
+                              <ArrowUpDown className="w-4 h-4 text-(--gray-4) group-hover:text-(--gray-6) transition-colors" />
                             )}
                           </span>
                         </div>
@@ -358,7 +345,7 @@ export default function CenturoTable<T>({
                   } ${row.getIsExpanded() ? "bg-(--gray-0)" : ""}`}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-4 py-3 t-td t-td-b overflow-hidden">
+                    <td key={cell.id} className="px-3 py-3 t-td t-td-b overflow-hidden">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}
@@ -377,6 +364,13 @@ export default function CenturoTable<T>({
                 )}
               </React.Fragment>
             ))}
+
+            {/* Table Footer */}
+            {renderTableFooter && (
+              <tr>
+                <td colSpan={columnCount}>{renderTableFooter(columnCount)}</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

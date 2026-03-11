@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import RoleResponsibilitiesDropdown from "@/components/RoleResponsibilitiesDropdown";
+import { ConfirmModal } from "./shared/confirm-modal";
 
 export type RoleLevel = "company" | "department" | "position" | "role";
 
@@ -135,6 +136,7 @@ const RoleNode: React.FC<RoleNodeProps> = ({
 
   const [newName, setNewName] = useState("");
   const [newResponsibilities, setNewResponsibilities] = useState("");
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   // Pre-fill for update or add
   useEffect(() => {
@@ -176,7 +178,7 @@ const RoleNode: React.FC<RoleNodeProps> = ({
     }
     if (e.key === "Escape") {
       e.preventDefault();
-      onCancelAdd?.();
+      setIsDiscardModalOpen(true);
     }
   };
 
@@ -239,7 +241,7 @@ const RoleNode: React.FC<RoleNodeProps> = ({
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={onCancelAdd}
+              onClick={() => setIsDiscardModalOpen(true)}
               className="px-3 py-1.5 text-sm text-[var(--gray-5)] hover:text-[var(--gray-7)] font-medium cursor-pointer"
             >
               Cancel
@@ -383,7 +385,7 @@ const RoleNode: React.FC<RoleNodeProps> = ({
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={onCancelAdd}
+                    onClick={() => setIsDiscardModalOpen(true)}
                     className="px-3 py-1.5 text-sm text-[var(--gray-5)] hover:text-[var(--gray-7)] font-medium cursor-pointer"
                   >
                     Cancel
@@ -423,6 +425,18 @@ const RoleNode: React.FC<RoleNodeProps> = ({
             ))}
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={() => {
+          setIsDiscardModalOpen(false);
+          onCancelAdd?.();
+        }}
+        title="Discard changes?"
+        description="Are you sure you want to discard your changes to this role?"
+        confirmLabel="Discard"
+      />
     </div>
   );
 };
@@ -439,6 +453,7 @@ const RootAddRow: React.FC<{
 }> = ({ onCreateChild, onCancelAdd }) => {
   const [rootName, setRootName] = useState("");
   const [rootResponsibilities, setRootResponsibilities] = useState("Administrator");
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   useEffect(() => {
     if (rootName.trim()) {
@@ -469,7 +484,7 @@ const RootAddRow: React.FC<{
               );
             }
             if (e.key === "Escape") {
-              onCancelAdd?.();
+              setIsDiscardModalOpen(true);
             }
           }}
         />
@@ -482,7 +497,7 @@ const RootAddRow: React.FC<{
       </div>
       <div className="flex items-center gap-2">
         <button
-          onClick={onCancelAdd}
+          onClick={() => setIsDiscardModalOpen(true)}
           className="px-3 py-1.5 text-sm text-[var(--gray-5)] hover:text-[var(--gray-7)] font-medium cursor-pointer"
         >
           Cancel
@@ -506,6 +521,18 @@ const RootAddRow: React.FC<{
           Create
         </button>
       </div>
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={() => {
+          setIsDiscardModalOpen(false);
+          onCancelAdd?.();
+        }}
+        title="Discard changes?"
+        description="Are you sure you want to discard your changes to this role?"
+        confirmLabel="Discard"
+      />
     </div>
   );
 };

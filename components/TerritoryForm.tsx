@@ -18,6 +18,7 @@ import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button/button";
 import { FormInput, FormTextarea, BrickSearch } from "@/components/form";
 import { Plus } from "lucide-react";
+import { ConfirmModal } from "./shared/confirm-modal";
 
 import {
   generatePrefix,
@@ -67,6 +68,7 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
   });
 
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   // Fetch initial data
   useEffect(() => {
@@ -164,6 +166,11 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
   };
 
   const handleCancel = () => {
+    setIsDiscardModalOpen(true);
+  };
+
+  const confirmDiscard = () => {
+    setIsDiscardModalOpen(false);
     router.back();
   };
 
@@ -255,6 +262,15 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
           </Button>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={confirmDiscard}
+        title="Discard changes?"
+        description="You will lose all unsaved changes for this territory."
+        confirmLabel="Discard"
+      />
     </div>
   );
 }

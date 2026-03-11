@@ -12,6 +12,8 @@ import {
 } from "@/components/form";
 import { useDoctorForm } from "../hooks/use-doctor-form";
 import { useRouter } from "next/navigation";
+import { ConfirmModal } from "./shared/confirm-modal";
+import { useState } from "react";
 
 interface UpdateDoctorFormProps {
   partyId: string;
@@ -72,6 +74,8 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
     getErrorMessage,
     clearFieldError,
   } = useDoctorForm(channelId, partyId);
+
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   if (partyLoading) {
     return (
@@ -441,7 +445,12 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
 
       {/* Bottom Buttons */}
       <div className="flex justify-end gap-4 mt-10">
-        <Button variant="outline" size="lg" rounded="full" onClick={() => router.back()}>
+        <Button
+          variant="outline"
+          size="lg"
+          rounded="full"
+          onClick={() => setIsDiscardModalOpen(true)}
+        >
           Discard
         </Button>
         <Button
@@ -456,6 +465,18 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
           {`Update ${currentChannel?.name || "Doctor"}`}
         </Button>
       </div>
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={() => {
+          setIsDiscardModalOpen(false);
+          router.back();
+        }}
+        title="Discard changes?"
+        description="You will lose all unsaved changes for this doctor."
+        confirmLabel="Discard"
+      />
     </div>
   );
 }

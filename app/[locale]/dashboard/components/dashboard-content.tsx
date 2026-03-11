@@ -440,7 +440,7 @@ export function DashboardContent({
         )}
 
         {productForm && (
-          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
+          <div className="">
             <ProductForm mode="add" />
           </div>
         )}
@@ -672,7 +672,7 @@ export function DashboardContent({
         {doctorDetail && <DoctorDetail />}
 
         {UpdateProduct && (
-          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
+          <div className="">
             <UpdateProductForm productId={productId} />
           </div>
         )}

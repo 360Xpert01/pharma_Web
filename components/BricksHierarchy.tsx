@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import type { BrickItem } from "@/store/slices/brick/getBrickListSlice";
 import { deleteBrick } from "@/store/slices/brick/deleteBrickSlice";
 import { useDispatch } from "react-redux";
+import { ConfirmModal } from "./shared/confirm-modal";
 
 type GeoUnitType = "zone" | "region" | "brick";
 
@@ -74,6 +75,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({
 }) => {
   const [newName, setNewName] = useState("");
   const [newDescription, setNewDescription] = useState("");
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
   const dispatch = useDispatch();
 
   const hasChildren = item.children && item.children.length > 0;
@@ -125,7 +127,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({
       if (isEditingThis) {
         onCancelEdit?.();
       } else {
-        onCancelAdd?.();
+        setIsDiscardModalOpen(true);
       }
     }
   };
@@ -298,7 +300,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={onCancelEdit}
+              onClick={() => setIsDiscardModalOpen(true)}
               className="px-3 py-1.5 text-sm text-[var(--gray-5)] hover:text-[var(--gray-7)] font-medium cursor-pointer"
             >
               Cancel
@@ -359,7 +361,7 @@ const BrickNode: React.FC<BrickNodeProps> = ({
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={onCancelAdd}
+                    onClick={() => setIsDiscardModalOpen(true)}
                     className="px-3 py-1.5 text-sm text-[var(--gray-5)] hover:text-[var(--gray-7)] font-medium cursor-pointer"
                   >
                     Cancel
@@ -399,6 +401,18 @@ const BrickNode: React.FC<BrickNodeProps> = ({
             ))}
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={() => {
+          setIsDiscardModalOpen(false);
+          editingId ? onCancelEdit?.() : onCancelAdd?.();
+        }}
+        title="Discard changes?"
+        description="Are you sure you want to discard your changes?"
+        confirmLabel="Discard"
+      />
     </div>
   );
 };
@@ -441,6 +455,7 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
   const [rootAddName, setRootAddName] = useState("");
   const [rootAddDescription, setRootAddDescription] = useState("");
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   const toggleExpand = (id: string) => {
     setExpandedIds((prev) => {
@@ -614,7 +629,7 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
                     }
                     if (e.key === "Escape") {
                       e.preventDefault();
-                      onCancelAdd?.();
+                      setIsDiscardModalOpen(true);
                     }
                   }}
                   className="w-full bg-transparent border-none outline-none text-[var(--gray-9)] font-semibold placeholder:text-[var(--gray-4)]"
@@ -640,7 +655,7 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
                     }
                     if (e.key === "Escape") {
                       e.preventDefault();
-                      onCancelAdd?.();
+                      setIsDiscardModalOpen(true);
                     }
                   }}
                   className="w-full bg-transparent border-none outline-none text-[var(--gray-5)] text-sm placeholder:text-[var(--gray-3)]"
@@ -649,7 +664,7 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={onCancelAdd}
+                  onClick={() => setIsDiscardModalOpen(true)}
                   className="px-3 py-1.5 text-sm text-[var(--gray-5)] hover:text-[var(--gray-7)] font-medium cursor-pointer"
                 >
                   Cancel
@@ -698,6 +713,18 @@ export const BricksHierarchy: React.FC<BricksHierarchyProps> = ({
           />
         ))}
       </div>
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={() => {
+          setIsDiscardModalOpen(false);
+          onCancelAdd?.();
+        }}
+        title="Discard changes?"
+        description="Are you sure you want to discard your changes to this zone?"
+        confirmLabel="Discard"
+      />
     </div>
   );
 };

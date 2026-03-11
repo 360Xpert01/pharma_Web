@@ -5,6 +5,7 @@ import { ChevronDown, Edit2, Trash2, Search } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { EmployeeTarget } from "@/types/target";
+import { ConfirmModal } from "./shared/confirm-modal";
 
 interface TargetEmployeeCardProps {
   target: EmployeeTarget;
@@ -20,6 +21,7 @@ export default function TargetEmployeeCard({ target, month }: TargetEmployeeCard
     monthlyTarget: number;
     share: number;
   }>({ monthlyTarget: 0, share: 0 });
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   // Detect duplicate products
   const getDuplicateProducts = () => {
@@ -56,6 +58,11 @@ export default function TargetEmployeeCard({ target, month }: TargetEmployeeCard
   };
 
   const handleCancelEdit = () => {
+    setIsDiscardModalOpen(true);
+  };
+
+  const confirmDiscard = () => {
+    setIsDiscardModalOpen(false);
     setEditingProduct(null);
   };
 
@@ -273,6 +280,15 @@ export default function TargetEmployeeCard({ target, month }: TargetEmployeeCard
           })}
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={confirmDiscard}
+        title="Discard changes?"
+        description="Are you sure you want to discard your changes to this product target?"
+        confirmLabel="Discard"
+      />
     </div>
   );
 }
