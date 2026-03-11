@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/index";
 import { getUserDevices } from "@/store/slices/device/getUserDevicesSlice";
 import { handleOtpRequest } from "@/store/slices/PendingRequest/handleOtpRequestsSlice";
+import toast from "react-hot-toast";
 
 export default function DeviceList() {
   const searchParams = useSearchParams();
@@ -20,12 +21,33 @@ export default function DeviceList() {
     }
   }, [dispatch, userId]);
 
-  const approveDevice = (id: string) => {
-    dispatch(handleOtpRequest({ requestId: id, status: "approved" }));
+  const approveDevice = async (id: string) => {
+    try {
+      // Await + unwrap → success pe payload milega, fail pe error throw hoga
+      await dispatch(handleOtpRequest({ requestId: id, status: "approved" })).unwrap();
+
+      toast.success("Device approved successfully!");
+
+      // Optional: yahan list refresh kar sakte ho, ya button disable karo etc.
+    } catch (err: any) {
+      // err.message ya backend se aaya message use karo
+      toast.error(err?.message || "Failed to approve device. Try again.");
+
+      console.error("Approve failed:", err);
+    }
   };
 
-  const rejectDevice = (id: string) => {
-    dispatch(handleOtpRequest({ requestId: id, status: "rejected" }));
+  const rejectDevice = async (id: string) => {
+    try {
+      await dispatch(handleOtpRequest({ requestId: id, status: "rejected" })).unwrap();
+
+      toast.success("Device rejected successfully!");
+      // Ya agar reject pe error toast chahiye to yahan toast.error bhi laga sakte ho
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to reject device. Try again.");
+
+      console.error("Reject failed:", err);
+    }
   };
 
   const removeDevice = (id: string) => {
