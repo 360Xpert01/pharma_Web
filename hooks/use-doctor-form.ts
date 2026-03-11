@@ -263,7 +263,7 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
   // Handle success/error
   useEffect(() => {
     if (createSuccess || updateSuccess) {
-      toast.success(isUpdateMode ? "Doctor updated successfully!" : "Doctor added successfully!");
+      toast.success(isUpdateMode ? "Account updated successfully!" : "Account added successfully!");
       dispatch(resetCreatePartyState());
       dispatch(resetPartyByIdState());
 
