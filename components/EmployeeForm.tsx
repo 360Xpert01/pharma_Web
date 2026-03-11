@@ -26,6 +26,7 @@ import {
   getAllTerritories,
   resetTerritoriesState,
 } from "@/store/slices/territory/getAllTerritoriesSlice";
+import { ConfirmModal } from "./shared/confirm-modal";
 
 interface EmployeeFormProps {
   mode: "add" | "update";
@@ -96,6 +97,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
 
   // Validation errors state
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   // Initial data loading
   useEffect(() => {
@@ -374,6 +376,11 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
   };
 
   const handleDiscard = () => {
+    setIsDiscardModalOpen(true);
+  };
+
+  const confirmDiscard = () => {
+    setIsDiscardModalOpen(false);
     router.push("/dashboard/Employees-Management");
   };
 
@@ -820,6 +827,15 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
           </Button>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={confirmDiscard}
+        title="Discard changes?"
+        description="Are you sure you want to discard your changes to this employee?"
+        confirmLabel="Discard"
+      />
     </div>
   );
 }

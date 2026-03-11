@@ -15,6 +15,7 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { roleCreationSchema } from "@/validations/roleValidation";
 import { FormInput } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
+import { ConfirmModal } from "./shared/confirm-modal";
 
 interface Responsibility {
   id: string;
@@ -33,6 +34,7 @@ export default function AddNewRoleForm() {
 
   // Validation errors state
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -415,7 +417,12 @@ export default function AddNewRoleForm() {
 
         {/* Footer Buttons */}
         <div className="flex justify-end gap-4 pt-8">
-          <Button variant="outline" size="lg" rounded="full" onClick={() => router.back()}>
+          <Button
+            variant="outline"
+            size="lg"
+            rounded="full"
+            onClick={() => setIsDiscardModalOpen(true)}
+          >
             Discard
           </Button>
           <Button
@@ -430,6 +437,18 @@ export default function AddNewRoleForm() {
           </Button>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={() => {
+          setIsDiscardModalOpen(false);
+          router.back();
+        }}
+        title="Discard changes?"
+        description="You will lose all unsaved changes for this role."
+        confirmLabel="Discard"
+      />
     </div>
   );
 }

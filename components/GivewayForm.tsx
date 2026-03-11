@@ -22,6 +22,7 @@ import toast from "react-hot-toast";
 import { giveawayCreationSchema } from "@/validations/giveawayValidation";
 import { ProfileImageUpload, FormInput } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
+import { ConfirmModal } from "./shared/confirm-modal";
 
 type GiveawayFormProps = {
   mode?: "add" | "update";
@@ -77,6 +78,7 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
   const [legacyCode, setLegacyCode] = useState("");
   const [pulseCode, setPulseCode] = useState("");
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   // Prefetch logic
   useEffect(() => {
@@ -219,7 +221,7 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
 
   // Discard/reset
   const handleDiscard = () => {
-    router.back();
+    setIsDiscardModalOpen(true);
   };
 
   return (
@@ -351,6 +353,18 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={() => {
+          setIsDiscardModalOpen(false);
+          router.back();
+        }}
+        title="Discard changes?"
+        description="You will lose all unsaved changes for this giveaway."
+        confirmLabel="Discard"
+      />
     </div>
   );
 }

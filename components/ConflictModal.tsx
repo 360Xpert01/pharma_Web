@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { X, ChevronDown, ChevronUp, Plus } from "lucide-react";
 import Image from "next/image";
+import { ConfirmModal } from "./shared/confirm-modal";
 
 interface ConflictRep {
   id: string;
@@ -82,6 +83,8 @@ export default function ConflictModal({ isOpen, onClose }: ConflictModalProps) {
       isExpanded: false,
     },
   ]);
+
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   if (!isOpen) return null;
 
@@ -221,7 +224,7 @@ export default function ConflictModal({ isOpen, onClose }: ConflictModalProps) {
         {/* Footer */}
         <div className="p-8 pt-4 flex justify-end gap-4">
           <button
-            onClick={onClose}
+            onClick={() => setIsDiscardModalOpen(true)}
             className="px-8 py-3 border border-(--primary) text-(--primary) rounded-8 t-md font-semibold hover:bg-(--primary-0) transition cursor-pointer"
           >
             Discard
@@ -245,6 +248,18 @@ export default function ConflictModal({ isOpen, onClose }: ConflictModalProps) {
           scrollbar-width: none;
         }
       `}</style>
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={() => {
+          setIsDiscardModalOpen(false);
+          onClose();
+        }}
+        title="Discard changes?"
+        description="You will lose all unsaved conflict resolutions."
+        confirmLabel="Discard"
+      />
     </div>
   );
 }

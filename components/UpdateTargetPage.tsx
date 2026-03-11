@@ -5,6 +5,7 @@ import TargetConfigForm from "./TargetConfigForm";
 import ConflictModal from "./ConflictModal";
 import MonthRestrictionModal from "./MonthRestrictionModal";
 import { Button } from "@/components/ui/button/button";
+import { ConfirmModal } from "./shared/confirm-modal";
 import { getTeamAll } from "@/store/slices/team/getTeamAllSlice";
 import {
   getTeamTargetProducts,
@@ -60,6 +61,7 @@ export default function UpdateTargetPage() {
 
   // Validation errors state
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   // Determine if the target is read-only (current or previous months)
   const isReadOnly = (() => {
@@ -328,7 +330,7 @@ export default function UpdateTargetPage() {
             size="lg"
             rounded="full"
             className="px-6"
-            onClick={() => router.back()}
+            onClick={() => setIsDiscardModalOpen(true)}
           >
             Discard
           </Button>
@@ -352,6 +354,18 @@ export default function UpdateTargetPage() {
       <MonthRestrictionModal
         isOpen={isMonthRestrictionModalOpen}
         onClose={() => setIsMonthRestrictionModalOpen(false)}
+      />
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={() => {
+          setIsDiscardModalOpen(false);
+          router.back();
+        }}
+        title="Discard changes?"
+        description="You will lose all unsaved target changes."
+        confirmLabel="Discard"
       />
     </div>
   );

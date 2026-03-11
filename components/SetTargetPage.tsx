@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import TargetConfigForm from "./TargetConfigForm";
 import ConflictModal from "./ConflictModal";
 import { Button } from "@/components/ui/button/button";
+import { ConfirmModal } from "./shared/confirm-modal";
 import { getTeamAll } from "@/store/slices/team/getTeamAllSlice";
 import {
   getTeamTargetProducts,
@@ -49,6 +50,7 @@ export default function SetTargetPage() {
 
   // Validation errors state
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   // Helper function to clear error for a specific field when user types
   const clearFieldError = (fieldName: string) => {
@@ -277,7 +279,7 @@ export default function SetTargetPage() {
             size="lg"
             rounded="full"
             className="px-6"
-            onClick={() => router.back()}
+            onClick={() => setIsDiscardModalOpen(true)}
           >
             Discard
           </Button>
@@ -298,6 +300,18 @@ export default function SetTargetPage() {
 
       {/* Conflict Modal */}
       <ConflictModal isOpen={isConflictModalOpen} onClose={() => setIsConflictModalOpen(false)} />
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={() => {
+          setIsDiscardModalOpen(false);
+          router.back();
+        }}
+        title="Discard changes?"
+        description="You will lose all unsaved target settings."
+        confirmLabel="Discard"
+      />
     </div>
   );
 }
