@@ -71,6 +71,10 @@ import TerritoryConflictsPage from "@/components/TerritoryConflictsPage";
 import TerritoryTable from "@/components/TerritoryTable";
 import TerritoryForm from "@/components/TerritoryForm";
 import UpdateTargetPage from "@/components/UpdateTargetPage";
+import DistributorTable from "@/components/DistributorTable";
+import AddDistributor from "@/components/AddDistributor";
+import UpdateDistributorForm from "@/components/UpdateDistributorForm";
+import DistributorProfileTabs from "@/components/DistributorProfileTabs";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -158,6 +162,12 @@ export function DashboardContent({
   territoryTable,
   territoryForm,
   onAddClick,
+  distributorTable,
+  AddDistributorBtn,
+  UpdateDistributorEmp,
+  distributorProfileBtn,
+  showDistributorTabs,
+  distributorId,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -700,6 +710,18 @@ export function DashboardContent({
             <TerritoryForm />
           </div>
         )}
+
+        {/* Distributor Management */}
+        {distributorTable && (
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
+            <TableHeader campHeading="All Distributors" filterT onSearch={setSearchTerm} />
+            <DistributorTable searchTerm={searchTerm} />
+          </div>
+        )}
+
+        {AddDistributorBtn && <AddDistributor />}
+        {UpdateDistributorEmp && <UpdateDistributorForm distributorId={distributorId} />}
+        {distributorProfileBtn && showDistributorTabs && <DistributorProfileTabs />}
 
         {/* Quick Stats Footer */}
         {/* <PerformanceStats isLoading={combinedLoading} /> */}
