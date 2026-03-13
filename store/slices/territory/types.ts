@@ -54,7 +54,7 @@ export interface TerritoryDeleteResponse {
 
 // Create/Update Payload
 export interface CreateTerritoryPayload {
-  pulseCode: string;
+  pulseCode?: string;
   name?: string;
   description: string;
   bricks: string[]; // Array of brick IDs

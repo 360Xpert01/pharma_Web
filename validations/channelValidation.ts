@@ -12,8 +12,9 @@ export const channelCreationSchema = z.object({
 
   pulseCode: z
     .string()
-    .min(1, { message: "Pulse code is required" })
-    .max(100, { message: "Pulse code cannot exceed 100 characters" }),
+    .max(100, { message: "Pulse code cannot exceed 100 characters" })
+    .optional()
+    .or(z.literal("")),
 
   isActive: z.boolean().default(true),
 

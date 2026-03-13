@@ -24,10 +24,7 @@ export const giveawayCreationSchema = z.object({
     .min(1, { message: "At least 1 unit is required" })
     .max(999999, { message: "Units cannot exceed 999,999" }),
 
-  pulseCode: z
-    .string()
-    .min(1, { message: "Pulse code is required" })
-    .max(100, { message: "Pulse code cannot exceed 100 characters" }),
+  pulseCode: z.string().max(100, { message: "Pulse code cannot exceed 100 characters" }).optional(),
 
   // Optional fields
   productName: z

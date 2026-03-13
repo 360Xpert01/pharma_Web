@@ -99,7 +99,7 @@ export default function RoleHierarchyWrapper() {
   useEffect(() => {
     const handleAddRoot = () => {
       setAddingId("root");
-      dispatch(generatePrefix({ entity: "Role" }));
+      // dispatch(generatePrefix({ entity: "Role" })); // Removed as requested
     };
     window.addEventListener("roles:add-root", handleAddRoot);
     return () => window.removeEventListener("roles:add-root", handleAddRoot);
@@ -142,7 +142,7 @@ export default function RoleHierarchyWrapper() {
 
   const handleAddChild = (parentId: string, childType: string) => {
     setAddingId(parentId);
-    dispatch(generatePrefix({ entity: "Role" }));
+    // dispatch(generatePrefix({ entity: "Role" })); // Removed as requested
   };
 
   const handleCancelAdd = () => {
@@ -158,7 +158,7 @@ export default function RoleHierarchyWrapper() {
     pulseCode: string,
     permissionGroupId?: string
   ) => {
-    const finalPulseCode = pulseCode || generatedPrefix || "";
+    const finalPulseCode = pulseCode || undefined;
     await dispatch(
       createRole({
         roleName: name,

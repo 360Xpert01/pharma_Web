@@ -7,7 +7,7 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 // Types
 interface CreateRolePayload {
   roleName: string;
-  pulseCode: string;
+  pulseCode?: string;
   parentRoleId?: string;
   permissionGroupId?: string;
 }

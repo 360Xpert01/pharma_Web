@@ -6,7 +6,7 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 // Types
 interface CreateCallPointPayload {
   name: string;
-  pulseCode: string;
+  pulseCode?: string;
   latitude: number;
   longitude: number;
   legacyCode: string;
