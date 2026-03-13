@@ -5,7 +5,7 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 // Types
 interface CreateProductCategoryPayload {
-  pulseCode: string;
+  pulseCode?: string;
   productCategory: string;
   status: "active" | "inactive";
 }

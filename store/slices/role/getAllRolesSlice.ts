@@ -16,6 +16,7 @@ interface RoleItem {
   parentRoleId?: string;
   createdAt?: string;
   permissions?: number;
+  permissionGroupId?: string;
   status?: "active" | "inactive";
 }
 
@@ -74,7 +75,10 @@ export const getAllRoles = createAsyncThunk<
       order: params?.order || "asc",
     };
 
-    if (params?.pagination !== undefined) {
+    if (params?.pagination === false) {
+      queryParams.pagination = false;
+      queryParams.limit = 1000; // Force a high limit if pagination is disabled
+    } else if (params?.pagination !== undefined) {
       queryParams.pagination = params.pagination;
     }
 

@@ -11,7 +11,7 @@ interface CreateGiveawayPayload {
   imageUrl?: string | null;
   description?: string | null;
   units: number;
-  pulseCode: string;
+  pulseCode?: string;
   legacyCode?: string;
 }
 

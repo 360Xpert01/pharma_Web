@@ -83,7 +83,7 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
   // Prefetch logic
   useEffect(() => {
     if (mode === "add") {
-      dispatch(generatePrefix({ entity: "Giveaway" }));
+      // dispatch(generatePrefix({ entity: "Giveaway" })); // Removed as requested
     }
     if (mode === "update" && giveawayId) {
       setImage(null);
@@ -114,12 +114,6 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
     }
   }, [mode, giveaway]);
 
-  useEffect(() => {
-    if (mode === "add") {
-      setPulseCode(generatedPrefix || "");
-    }
-  }, [generatedPrefix, mode]);
-
   // Feedback
   useEffect(() => {
     if (createSuccess && mode === "add") {
@@ -133,7 +127,7 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
       setLegacyCode("");
       setImage(null);
       setValidationErrors({});
-      dispatch(generatePrefix({ entity: "Giveaway" }));
+      // dispatch(generatePrefix({ entity: "Giveaway" })); // Removed as requested
       setPulseCode("");
       setTimeout(() => {
         dispatch(resetGiveawayState());
@@ -190,13 +184,13 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
   // Submit
   const handleSubmit = (e?: React.MouseEvent<HTMLButtonElement>) => {
     if (e) e.preventDefault();
-    const formData = {
+    const formData: any = {
       name,
       category,
       productName,
       description,
       units,
-      pulseCode,
+      pulseCode: mode === "update" ? pulseCode : undefined,
       legacyCode,
       imageUrl: image || "",
     };
@@ -243,9 +237,9 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
               label="Pulse Code"
               name="pulseCode"
               type="text"
-              value={pulseCode}
+              value={mode === "update" ? pulseCode : "TO BE GENERATED"}
               onChange={() => {}}
-              placeholder={prefixLoading ? "Generating..." : "Auto-generated"}
+              placeholder="Auto-generated"
               readOnly
               error={prefixError || ""}
             />

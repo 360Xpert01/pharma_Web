@@ -5,7 +5,7 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 // Types
 interface CreateChannelPayload {
-  pulseCode: string;
+  pulseCode?: string;
   legacyCode?: string;
   name: string;
   code: string;

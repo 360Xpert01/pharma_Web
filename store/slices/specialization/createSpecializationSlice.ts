@@ -5,7 +5,7 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 // Types
 interface CreateSpecializationPayload {
-  pulseCode: string;
+  pulseCode?: string;
   name: string;
   status: "active" | "inactive";
 }

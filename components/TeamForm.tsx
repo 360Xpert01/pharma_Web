@@ -88,15 +88,9 @@ export default function TeamForm() {
             <FormInput
               label="Pulse Code"
               name="pulseCode"
-              value={isUpdateMode ? pulseCode : generatedPrefix || ""}
+              value={isUpdateMode ? pulseCode : "TO BE GENERATED"}
               onChange={() => {}}
-              placeholder={
-                isUpdateMode
-                  ? pulseCode || "Auto-generated"
-                  : prefixLoading
-                    ? "Generating..."
-                    : "Auto-generated"
-              }
+              placeholder="Auto-generated"
               required
               readOnly
               className="cursor-not-allowed"

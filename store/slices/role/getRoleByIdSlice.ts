@@ -9,7 +9,7 @@ interface RoleDetail {
   pulseCode: string;
   legacyCode?: string;
   parentRoleId?: string;
-  responsibilities?: string;
+  permissionGroupId?: string;
   status?: string;
   [key: string]: any;
 }

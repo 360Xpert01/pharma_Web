@@ -107,7 +107,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
       dispatch(getUserById(userId));
     } else if (!isUpdateMode) {
       // Add mode: Generate prefix
-      dispatch(generatePrefix({ entity: "User" }));
+      // dispatch(generatePrefix({ entity: "User" })); // Removed as requested
     }
 
     // Fetch roles, users, teams, and territories for dropdowns
@@ -233,7 +233,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
       roleId: selectedRoleId,
       roleName, // Add roleName for conditional validation
       mobileNumber: phoneNumber,
-      pulseCode: isUpdateMode ? pulseCode : generatedPrefix || "",
+      pulseCode: isUpdateMode ? pulseCode : undefined,
       empLegacyCode: legacyCode,
       profilePicture: imagePreview || "",
       dob,
@@ -313,8 +313,8 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
       }
       if (validatedData.verifiedDevices) payload.verifiedDevices = validatedData.verifiedDevices;
       // pulseCode and brickId can only be set during registration, not during update
-      if (validatedData.pulseCode) {
-        payload.pulseCode = validatedData.pulseCode;
+      if (validatedData.pulseCode || !isUpdateMode) {
+        payload.pulseCode = isUpdateMode ? validatedData.pulseCode : undefined;
       }
       if (finalTerritoryId) payload.brickId = finalTerritoryId;
     }
@@ -444,15 +444,9 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                 <FormInput
                   label="Pulse Code"
                   name="pulseCode"
-                  value={isUpdateMode ? pulseCode : generatedPrefix || ""}
+                  value={isUpdateMode ? pulseCode : "TO BE GENERATED"}
                   onChange={() => {}}
-                  placeholder={
-                    isUpdateMode
-                      ? pulseCode || "N/A"
-                      : prefixLoading
-                        ? "Generating..."
-                        : "Auto-generated"
-                  }
+                  placeholder="Auto-generated"
                   readOnly
                 />
                 <FormInput

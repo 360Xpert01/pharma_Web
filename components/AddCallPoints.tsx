@@ -31,11 +31,6 @@ export default function AddCallPointForm() {
 
   // Fetch prefixes and generate pulse code on mount
   useEffect(() => {
-    // 🔥 Always call generate for "CallPoint" entity
-    // Call point forms create call points (business logic, not dynamic)
-    // The /generate API is idempotent - handles existence automatically
-    dispatch(generatePrefix({ entity: "CallPoint" }));
-
     return () => {
       dispatch(resetGeneratePrefixState());
       dispatch(resetCallPointState());
@@ -52,9 +47,6 @@ export default function AddCallPointForm() {
       // Refresh call points list
       dispatch(getAllCallPoints({ pagination: true }));
 
-      // Regenerate pulse code for next entry
-      dispatch(generatePrefix({ entity: "CallPoint" }));
-
       // Reset state after delay
       setTimeout(() => {
         dispatch(resetCallPointState());
@@ -67,15 +59,8 @@ export default function AddCallPointForm() {
       return;
     }
 
-    // Validate pulse code is generated
-    if (!generatedPrefix) {
-      console.error("Pulse code not generated yet");
-      return;
-    }
-
     const callPointData = {
       name: locationTitle.trim(),
-      pulseCode: generatedPrefix, // Include pulse code in payload
       latitude: parseFloat(latitude),
       longitude: parseFloat(longitude),
       legacyCode: "",
@@ -112,9 +97,9 @@ export default function AddCallPointForm() {
                 label="Pulse Code"
                 name="pulseCode"
                 type="text"
-                value={generatedPrefix || ""}
+                value="TO BE GENERATED"
                 onChange={() => {}}
-                placeholder={prefixLoading ? "Generating..." : "Auto-generated"}
+                placeholder="Auto-generated"
                 readOnly
                 error={prefixError || ""}
               />
@@ -164,7 +149,7 @@ export default function AddCallPointForm() {
                 icon={Plus}
                 rounded="full"
                 onClick={handleSubmit}
-                loading={loading || prefixLoading}
+                loading={loading}
                 disabled={!locationTitle.trim() || !latitude.trim() || !longitude.trim()}
               >
                 {loading ? "Adding..." : "Add Call Point"}

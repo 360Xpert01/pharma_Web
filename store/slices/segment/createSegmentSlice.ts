@@ -5,7 +5,7 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 // Types
 interface CreateSegmentPayload {
-  pulseCode: string;
+  pulseCode?: string;
   name: string;
   status: "active" | "inactive";
   legacyCode?: string;

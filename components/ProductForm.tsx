@@ -103,11 +103,8 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
     });
   }, []);
 
-  // Fetch product categories and generate prefix on mount
+  // Fetch product categories on mount
   useEffect(() => {
-    if (mode === "add") {
-      dispatch(generatePrefix({ entity: "Product" }));
-    }
     dispatch(getProductCategories());
 
     return () => {
@@ -117,7 +114,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
       dispatch(resetProductByIdState());
       dispatch(resetUploadState());
     };
-  }, [dispatch, mode]);
+  }, [dispatch]);
 
   // Fetch product data in edit mode
   useEffect(() => {
@@ -167,7 +164,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
 
       // Generate new prefix for next product (only in add mode)
       if (mode === "add") {
-        dispatch(generatePrefix({ entity: "Product" }));
+        // dispatch(generatePrefix({ entity: "Product" })); // Removed as requested
       }
       dispatch(resetProductState());
       dispatch(resetUpdateProductState());
@@ -222,8 +219,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
     }));
 
     const formData = {
-      pulseCode:
-        mode === "edit" && existingProduct ? existingProduct.pulseCode : generatedPrefix || "",
+      pulseCode: mode === "edit" && existingProduct ? existingProduct.pulseCode : undefined,
       productCode: legacyCode.trim(),
       name: productName.trim(),
       productCategoryId: categoryId,
@@ -283,11 +279,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
                   label="Pulse Code"
                   name="pulseCode"
                   type="text"
-                  value={
-                    mode === "edit"
-                      ? existingProduct?.pulseCode || ""
-                      : generatedPrefix || "TO BE GENERATED"
-                  }
+                  value={mode === "edit" ? existingProduct?.pulseCode || "" : "TO BE GENERATED"}
                   onChange={() => {}}
                   placeholder="Auto-generated"
                   required

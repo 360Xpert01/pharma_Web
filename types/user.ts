@@ -6,6 +6,9 @@ export type User = {
   lastName?: string;
   avatar?: string;
   role: "user" | "admin";
+  permissionGroupName?: string;
+  permissionGroupId?: string;
+  permissions?: string[];
   createdAt?: string;
   updatedAt?: string;
 };
