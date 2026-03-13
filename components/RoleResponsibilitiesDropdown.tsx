@@ -20,6 +20,7 @@ interface RoleResponsibilitiesDropdownProps {
   placeholder?: string;
   disabled?: boolean;
   readOnly?: boolean;
+  options?: { id: string; name: string }[];
 }
 
 const getResponsibilityStyles = (val: string) => {
@@ -43,6 +44,7 @@ const RoleResponsibilitiesDropdown: React.FC<RoleResponsibilitiesDropdownProps> 
   placeholder = "Choses Role Responsibilities",
   disabled = false,
   readOnly = false,
+  options = [],
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -90,10 +92,13 @@ const RoleResponsibilitiesDropdown: React.FC<RoleResponsibilitiesDropdownProps> 
     setIsOpen((prev) => !prev);
   };
 
-  const handleSelect = (role: string) => {
-    onChange(role);
+  const handleSelect = (id: string) => {
+    onChange(id);
     setIsOpen(false);
   };
+
+  const selectedOption = options.find((opt) => opt.id === value);
+  const displayValue = selectedOption ? selectedOption.name : value;
 
   return (
     <>
@@ -104,11 +109,11 @@ const RoleResponsibilitiesDropdown: React.FC<RoleResponsibilitiesDropdownProps> 
         disabled={disabled}
         className={cn(
           "flex items-center gap-2 px-4 py-2 border rounded-8 transition-all min-w-[220px] justify-between",
-          getResponsibilityStyles(value),
+          getResponsibilityStyles(displayValue),
           disabled || readOnly ? "opacity-70 cursor-default" : "cursor-pointer"
         )}
       >
-        <span className={cn("text-sm truncate font-medium")}>{value || placeholder}</span>
+        <span className={cn("text-sm truncate font-medium")}>{displayValue || placeholder}</span>
         {!readOnly && (
           <ChevronDown
             className={cn(
@@ -133,19 +138,19 @@ const RoleResponsibilitiesDropdown: React.FC<RoleResponsibilitiesDropdownProps> 
               boxShadow: "0 4px 20px rgba(0,0,0,0.12)",
             }}
           >
-            {ROLE_RESPONSIBILITIES.map((role) => (
+            {options.map((option) => (
               <button
-                key={role}
+                key={option.id}
                 type="button"
-                onClick={() => handleSelect(role)}
+                onClick={() => handleSelect(option.id)}
                 className={cn(
                   "w-full px-4 py-2.5 text-sm text-left transition-colors cursor-pointer",
-                  value === role
+                  value === option.id
                     ? "bg-[var(--primary)]/10 text-[var(--primary)] font-medium"
                     : "text-[var(--gray-7)] hover:bg-[var(--gray-1)]"
                 )}
               >
-                {role}
+                {option.name}
               </button>
             ))}
           </div>,

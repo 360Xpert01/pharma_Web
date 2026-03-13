@@ -16,16 +16,16 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import RoleResponsibilitiesDropdown from "@/components/RoleResponsibilitiesDropdown";
+import { PermissionGroup } from "@/store/slices/permissionGroup/getAllPermissionGroupsSlice";
 import { ConfirmModal } from "./shared/confirm-modal";
-
-export type RoleLevel = "company" | "department" | "position" | "role";
+import { RoleLevel, isAdminRole } from "@/lib/role-utils";
 
 export interface RoleItem {
   id: string;
   name: string;
   subtitle?: string;
   type: RoleLevel;
-  responsibilities?: string;
+  permissionGroupId?: string;
   pulseCode?: string;
   children?: RoleItem[];
 }
@@ -35,28 +35,6 @@ const CHILD_TYPE_MAP: Record<RoleLevel, RoleLevel | null> = {
   department: "position",
   position: "role",
   role: null,
-};
-
-// Maps hierarchy depth/type to the default role responsibility
-const ROLE_LEVEL_TO_RESPONSIBILITY: Record<RoleLevel, string> = {
-  company: "Administrator",
-  department: "C-Suite",
-  position: "Manager",
-  role: "Sales Representative",
-};
-
-// Helper to determine responsibility based on role name
-const getResponsibilityByName = (name: string, level: RoleLevel): string => {
-  const upperName = name.toUpperCase();
-  if (upperName.includes("ADMIN")) return "Administrator";
-  if (upperName.includes("CEO") || upperName.includes("CCO") || upperName.includes("CHIEF"))
-    return "C-Suite";
-  if (upperName.includes("REPRESENTATIVE") || upperName.includes("REP"))
-    return "Sales Representative";
-  if (upperName.includes("MANAGER") || upperName.includes("HEAD") || upperName.includes("DIRECTOR"))
-    return "Manager";
-
-  return ROLE_LEVEL_TO_RESPONSIBILITY[level];
 };
 
 interface RoleNodeProps {
@@ -80,6 +58,7 @@ interface RoleNodeProps {
   onDeleteChild?: (id: string) => void;
   onMoreOptions?: (itemId: string, itemType: RoleLevel) => void;
   onStartUpdate?: (id: string) => void;
+  permissionGroups: PermissionGroup[];
 }
 
 const getTypeIcon = (type: RoleLevel) => {
@@ -127,6 +106,7 @@ const RoleNode: React.FC<RoleNodeProps> = ({
   onDeleteChild,
   onMoreOptions,
   onStartUpdate,
+  permissionGroups,
 }) => {
   const hasChildren = item.children && item.children.length > 0;
   const isAddingToThis = addingId === item.id;
@@ -135,38 +115,32 @@ const RoleNode: React.FC<RoleNodeProps> = ({
   const canHaveChildren = childType !== null;
 
   const [newName, setNewName] = useState("");
-  const [newResponsibilities, setNewResponsibilities] = useState("");
+  const [newPermissionGroupId, setNewPermissionGroupId] = useState("");
   const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   // Pre-fill for update or add
   useEffect(() => {
     if (isUpdatingThis) {
       setNewName(item.name);
-      setNewResponsibilities(
-        item.responsibilities || getResponsibilityByName(item.name, item.type)
-      );
+      setNewPermissionGroupId(item.permissionGroupId || "");
     } else if (isAddingToThis && childType) {
       setNewName("");
-      setNewResponsibilities(ROLE_LEVEL_TO_RESPONSIBILITY[childType]);
+      setNewPermissionGroupId("");
     }
-  }, [isUpdatingThis, isAddingToThis, item.name, item.responsibilities, item.type, childType]);
+  }, [isUpdatingThis, isAddingToThis, item.name, item.permissionGroupId, childType]);
 
-  // Update responsibilities when name changes
-  useEffect(() => {
-    if ((isAddingToThis && childType && newName.trim()) || (isUpdatingThis && newName.trim())) {
-      const typeForResp = isUpdatingThis ? item.type : childType!;
-      setNewResponsibilities(getResponsibilityByName(newName, typeForResp));
-    }
-  }, [newName, isAddingToThis, isUpdatingThis, childType, item.type]);
+  const handleResponsibilityChange = (id: string) => {
+    setNewPermissionGroupId(id);
+  };
 
   const handleAction = () => {
     if (newName.trim()) {
       if (isUpdatingThis) {
-        onUpdateChild?.(item.id, newName.trim(), newResponsibilities || undefined);
+        onUpdateChild?.(item.id, newName.trim(), newPermissionGroupId || undefined);
       } else if (isAddingToThis && childType) {
-        onCreateChild?.(item.id, childType, newName.trim(), "", newResponsibilities || undefined);
+        onCreateChild?.(item.id, childType, newName.trim(), "", newPermissionGroupId || undefined);
         setNewName("");
-        setNewResponsibilities("");
+        setNewPermissionGroupId("");
       }
     }
   };
@@ -228,14 +202,21 @@ const RoleNode: React.FC<RoleNodeProps> = ({
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               onKeyDown={handleKeyDown}
+              disabled={isAdminRole(item.permissionGroupId, permissionGroups)}
               placeholder="Enter Tree Name"
-              className="w-full bg-transparent border-none outline-none text-[var(--gray-9)] font-semibold placeholder:text-[var(--gray-4)]"
+              className={cn(
+                "w-full bg-transparent border-none outline-none text-[var(--gray-9)] font-semibold placeholder:text-[var(--gray-4)]",
+                isAdminRole(item.permissionGroupId, permissionGroups) &&
+                  "opacity-70 cursor-not-allowed"
+              )}
             />
           </div>
           <div className="flex-shrink-0">
             <RoleResponsibilitiesDropdown
-              value={newResponsibilities}
-              onChange={setNewResponsibilities}
+              value={newPermissionGroupId}
+              onChange={handleResponsibilityChange}
+              options={permissionGroups}
+              readOnly={isAdminRole(item.permissionGroupId, permissionGroups)}
             />
           </div>
           <div className="flex items-center gap-2">
@@ -300,9 +281,10 @@ const RoleNode: React.FC<RoleNodeProps> = ({
 
           <div className="flex-shrink-0">
             <RoleResponsibilitiesDropdown
-              value={item.responsibilities || getResponsibilityByName(item.name, item.type)}
+              value={item.permissionGroupId || ""}
               onChange={() => {}}
               readOnly
+              options={permissionGroups}
             />
           </div>
 
@@ -378,8 +360,9 @@ const RoleNode: React.FC<RoleNodeProps> = ({
                 </div>
                 <div className="flex-shrink-0">
                   <RoleResponsibilitiesDropdown
-                    value={newResponsibilities}
-                    onChange={setNewResponsibilities}
+                    value={newPermissionGroupId}
+                    onChange={setNewPermissionGroupId}
+                    options={permissionGroups}
                   />
                 </div>
                 <div className="flex items-center gap-2">
@@ -421,6 +404,7 @@ const RoleNode: React.FC<RoleNodeProps> = ({
                 onDeleteChild={onDeleteChild}
                 onMoreOptions={onMoreOptions}
                 onStartUpdate={onStartUpdate}
+                permissionGroups={permissionGroups}
               />
             ))}
         </div>
@@ -450,16 +434,15 @@ const RootAddRow: React.FC<{
     responsibilities?: string
   ) => void;
   onCancelAdd?: () => void;
-}> = ({ onCreateChild, onCancelAdd }) => {
+  permissionGroups: PermissionGroup[];
+}> = ({ onCreateChild, onCancelAdd, permissionGroups }) => {
   const [rootName, setRootName] = useState("");
-  const [rootResponsibilities, setRootResponsibilities] = useState("Administrator");
+  const [rootPermissionGroupId, setRootPermissionGroupId] = useState("");
   const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   useEffect(() => {
-    if (rootName.trim()) {
-      setRootResponsibilities(getResponsibilityByName(rootName, "company"));
-    }
-  }, [rootName]);
+    setRootPermissionGroupId("");
+  }, [permissionGroups]);
 
   return (
     <div className="flex items-center gap-3 border border-[var(--primary)] rounded-8 p-4 bg-[var(--background)] shadow-soft">
@@ -480,7 +463,7 @@ const RootAddRow: React.FC<{
                 "company",
                 rootName.trim(),
                 "",
-                rootResponsibilities || undefined
+                rootPermissionGroupId || undefined
               );
             }
             if (e.key === "Escape") {
@@ -491,8 +474,9 @@ const RootAddRow: React.FC<{
       </div>
       <div className="flex-shrink-0">
         <RoleResponsibilitiesDropdown
-          value={rootResponsibilities}
-          onChange={setRootResponsibilities}
+          value={rootPermissionGroupId}
+          onChange={setRootPermissionGroupId}
+          options={permissionGroups}
         />
       </div>
       <div className="flex items-center gap-2">
@@ -511,7 +495,7 @@ const RootAddRow: React.FC<{
                 "company",
                 rootName.trim(),
                 "",
-                rootResponsibilities || undefined
+                rootPermissionGroupId || undefined
               );
             }
           }}
@@ -556,6 +540,7 @@ interface RoleHierarchyProps {
   addingId?: string | null;
   updatingId?: string | null;
   onStartUpdate?: (id: string) => void;
+  permissionGroups: PermissionGroup[];
 }
 
 export const RoleHierarchy: React.FC<RoleHierarchyProps> = ({
@@ -571,6 +556,7 @@ export const RoleHierarchy: React.FC<RoleHierarchyProps> = ({
   addingId = null,
   updatingId = null,
   onStartUpdate,
+  permissionGroups,
 }) => {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
@@ -628,7 +614,11 @@ export const RoleHierarchy: React.FC<RoleHierarchyProps> = ({
     <div className="w-full bg-[var(--background)] rounded-8">
       <div className="space-y-4">
         {addingId === "root" && (
-          <RootAddRow onCreateChild={onCreateChild} onCancelAdd={onCancelAdd} />
+          <RootAddRow
+            onCreateChild={onCreateChild}
+            onCancelAdd={onCancelAdd}
+            permissionGroups={permissionGroups}
+          />
         )}
         {data.map((item) => (
           <RoleNode
@@ -647,6 +637,7 @@ export const RoleHierarchy: React.FC<RoleHierarchyProps> = ({
             onDeleteChild={onDeleteChild}
             onMoreOptions={onMoreOptions}
             onStartUpdate={onStartUpdate}
+            permissionGroups={permissionGroups}
           />
         ))}
       </div>

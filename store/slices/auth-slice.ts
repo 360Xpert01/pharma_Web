@@ -6,6 +6,7 @@ import type { User } from "@/types/user";
 export interface AuthState {
   user: User | null;
   token: string | null;
+  permissions: string[];
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
@@ -14,6 +15,7 @@ export interface AuthState {
 const initialState: AuthState = {
   user: null,
   token: getToken() || null,
+  permissions: [], // Permissions will be populated from user object or separate field
   isAuthenticated: !!getToken(),
   isLoading: false,
   error: null,
@@ -29,6 +31,13 @@ export const loginUser = createAsyncThunk(
         password,
       });
       const { token, user } = response.data;
+
+      // Block Sales Representative from entering CRM
+      if (user.permissionGroupName === "Sales Representative") {
+        removeToken(); // Ensure token is not stored
+        return rejectWithValue("Access denied, please use the mobile app");
+      }
+
       setToken(token);
       return { token, user };
     } catch (error: any) {
@@ -50,6 +59,13 @@ export const signupUser = createAsyncThunk(
         name,
       });
       const { token, user } = response.data;
+
+      // Block Sales Representative from entering CRM
+      if (user.permissionGroupName === "Sales Representative") {
+        removeToken();
+        return rejectWithValue("Access denied, please use the mobile app");
+      }
+
       setToken(token);
       return { token, user };
     } catch (error: any) {
@@ -66,6 +82,13 @@ export const googleAuth = createAsyncThunk(
         idToken,
       });
       const { token, user } = response.data;
+
+      // Block Sales Representative from entering CRM
+      if (user.permissionGroupName === "Sales Representative") {
+        removeToken();
+        return rejectWithValue("Access denied, please use the mobile app");
+      }
+
       setToken(token);
       return { token, user };
     } catch (error: any) {
@@ -81,6 +104,7 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.token = null;
+      state.permissions = [];
       state.isAuthenticated = false;
       state.error = null;
       removeToken();

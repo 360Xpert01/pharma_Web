@@ -9,7 +9,7 @@ interface CreateRolePayload {
   roleName: string;
   pulseCode: string;
   parentRoleId?: string;
-  responsibilities?: string;
+  permissionGroupId?: string;
 }
 
 interface CreateRoleResponse {
@@ -41,15 +41,16 @@ const initialState: RoleState = {
   createdRole: null,
 };
 
-const token = localStorage.getItem("userSession");
-
-// Async Thunk: Create Role (POST request)
 export const createRole = createAsyncThunk<
   CreateRoleResponse,
   CreateRolePayload,
   { rejectValue: string }
 >("role/createRole", async (payload, { rejectWithValue }) => {
   try {
+    const token = localStorage.getItem("userSession");
+    if (!token) {
+      return rejectWithValue("No session found. Please login again.");
+    }
     const response = await axios.post<CreateRoleResponse>(`${baseUrl}api/v1/role`, payload, {
       headers: {
         "Content-Type": "application/json",
