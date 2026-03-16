@@ -57,11 +57,6 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
   const success = isUpdateMode ? updateSuccess : createSuccess;
   const error = isUpdateMode ? updateError : createError;
 
-  // Dropdown options
-  const typeOptions = distributorTypes.map((t) => ({ value: t.id, label: t.name }));
-  const zoneOptions = zones.map((z) => ({ value: z.id, label: z.name }));
-  const regionOptions = regions.map((r) => ({ value: r.id, label: r.name }));
-
   // ── Form state ───────────────────────────────────────────────────────────
   const [legacyCode, setLegacyCode] = useState("");
   const [distributorName, setDistributorName] = useState("");
@@ -69,6 +64,14 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
   const [selectedZoneId, setSelectedZoneId] = useState("");
   const [selectedRegionId, setSelectedRegionId] = useState("");
   const [selectedTypeId, setSelectedTypeId] = useState("");
+
+  // Dropdown options (computed AFTER state so selectedZoneId is available)
+  const typeOptions = distributorTypes.map((t) => ({ value: t.id, label: t.name }));
+  const zoneOptions = zones.map((z) => ({ value: z.id, label: z.name }));
+  // Only show regions that belong to the selected zone (parentId === selectedZoneId)
+  const regionOptions = regions
+    .filter((r) => r.parentId === selectedZoneId)
+    .map((r) => ({ value: r.id, label: r.name }));
 
   // UI
   const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
@@ -247,20 +250,22 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
         <div className="space-y-6">
           <h2 className="t-h2">Assignment</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Zone — from getBrickList (zone key) */}
+            {/* Zone — select first; region filters by this */}
             <FormSelect
               label="Zone"
               name="zoneId"
               value={selectedZoneId}
               onChange={(v) => {
                 setSelectedZoneId(v);
+                setSelectedRegionId(""); // reset region when zone changes
                 clearError("zoneId");
+                clearError("regionId");
               }}
               options={brickLoading ? [] : zoneOptions}
               placeholder={brickLoading ? "Loading zones..." : "Select zone"}
               error={getError("zoneId")}
             />
-            {/* Region — from getBrickList (region key) */}
+            {/* Region — filtered by selected zone via parentId */}
             <FormSelect
               label="Region"
               name="regionId"
@@ -269,8 +274,16 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
                 setSelectedRegionId(v);
                 clearError("regionId");
               }}
-              options={brickLoading ? [] : regionOptions}
-              placeholder={brickLoading ? "Loading regions..." : "Select region"}
+              options={selectedZoneId && !brickLoading ? regionOptions : []}
+              placeholder={
+                brickLoading
+                  ? "Loading regions..."
+                  : !selectedZoneId
+                    ? "Select a zone first"
+                    : regionOptions.length === 0
+                      ? "No regions for this zone"
+                      : "Select region"
+              }
               error={getError("regionId")}
             />
             {/* Distributor Type — from getAllDistributorTypes */}
