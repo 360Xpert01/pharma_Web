@@ -3,11 +3,12 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button/button";
-import { FormInput, FormSelect, StatusToggle } from "@/components/form";
+import { ProfileImageUpload, FormInput, FormSelect, StatusToggle } from "@/components/form";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { ConfirmModal } from "./shared/confirm-modal";
 import { useAppDispatch, useAppSelector } from "@/store";
+import { uploadImageAction, resetUploadState } from "@/store/slices/upload/uploadSlice";
 import {
   createDistributor,
   resetCreateDistributorState,
@@ -52,6 +53,14 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
   const { distributorTypes, loading: typesLoading } = useAppSelector((s) => s.allDistributorTypes);
   const { zones, regions, loading: brickLoading } = useAppSelector((s) => s.brickList);
 
+  // Cloudinary/upload state
+  const {
+    loading: uploadLoading,
+    success: uploadSuccess,
+    error: uploadError,
+    uploadedFiles,
+  } = useAppSelector((state) => state.upload);
+
   // Derived loading / success / error for the submit action
   const loading = isUpdateMode ? updateLoading : createLoading;
   const success = isUpdateMode ? updateSuccess : createSuccess;
@@ -64,14 +73,21 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
   const [selectedZoneId, setSelectedZoneId] = useState("");
   const [selectedRegionId, setSelectedRegionId] = useState("");
   const [selectedTypeId, setSelectedTypeId] = useState("");
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   // Dropdown options (computed AFTER state so selectedZoneId is available)
   const typeOptions = distributorTypes.map((t) => ({ value: t.id, label: t.name }));
-  const zoneOptions = zones.map((z) => ({ value: z.id, label: z.name }));
+  const zoneOptions = zones.map((z) => ({
+    value: z.id,
+    label: z.description ? `${z.name} - ${z.description}` : z.name,
+  }));
   // Only show regions that belong to the selected zone (parentId === selectedZoneId)
   const regionOptions = regions
     .filter((r) => r.parentId === selectedZoneId)
-    .map((r) => ({ value: r.id, label: r.name }));
+    .map((r) => ({
+      value: r.id,
+      label: r.description ? `${r.name} - ${r.description}` : r.name,
+    }));
 
   // UI
   const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
@@ -90,8 +106,30 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
       dispatch(resetCreateDistributorState());
       dispatch(resetUpdateDistributorState());
       dispatch(resetDistributorByIdState());
+      dispatch(resetUploadState());
     };
   }, [dispatch, isUpdateMode, distributorId]);
+
+  // Image upload effect
+  useEffect(() => {
+    if (uploadSuccess && uploadedFiles.length > 0) {
+      setImagePreview(uploadedFiles[0].url);
+      toast.success("Image uploaded successfully!");
+    }
+    if (uploadError) {
+      console.error("DistributorForm: Upload error", uploadError);
+      toast.error(uploadError);
+    }
+  }, [uploadSuccess, uploadedFiles, uploadError]);
+
+  const handleImageChange = async (file: File | null) => {
+    if (file) {
+      dispatch(uploadImageAction(file));
+    } else {
+      setImagePreview(null);
+      dispatch(resetUploadState());
+    }
+  };
 
   // ── Pre-fill form when existing data loads ───────────────────────────────
   useEffect(() => {
@@ -102,6 +140,7 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
       setSelectedZoneId(existingData.zoneId || "");
       setSelectedRegionId(existingData.regionId || "");
       setSelectedTypeId(existingData.distributorTypeId || "");
+      setImagePreview(existingData.imageUrl || null);
     }
   }, [existingData, isUpdateMode]);
 
@@ -164,6 +203,7 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
           distributorName,
           distributorStatus,
           distributorTypeId: selectedTypeId,
+          imageUrl: imagePreview || undefined,
         })
       );
     } else {
@@ -175,6 +215,7 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
           distributorName,
           distributorStatus,
           distributorTypeId: selectedTypeId,
+          imageUrl: imagePreview || undefined,
         })
       );
     }
@@ -203,48 +244,63 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
     );
   }
 
+  const formLoading = loading || uploadLoading;
+
   return (
     <div className="bg-(--gray-0)">
       <div className="bg-(--background) rounded-8 shadow-soft p-8 space-y-10">
         {/* ── Basic Info ─────────────────────────────────────────────────── */}
         <div className="space-y-6">
           <h2 className="t-h2">Basic Info</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <FormInput
-              label="Pulse Code"
-              name="pulseCode"
-              value={isUpdateMode && existingData ? existingData.pulseCode : "Auto-generated"}
-              onChange={() => {}}
-              placeholder="Auto-generated"
-              readOnly
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Left: Profile Image Upload */}
+            <ProfileImageUpload
+              imagePreview={imagePreview}
+              onImageChange={handleImageChange}
+              loading={uploadLoading}
+              className="space-y-6"
             />
-            <FormInput
-              label="Legacy Code"
-              name="legacyCode"
-              value={legacyCode}
-              onChange={(v) => {
-                setLegacyCode(v);
-                clearError("legacyCode");
-              }}
-              placeholder="Enter legacy code"
-            />
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <FormInput
-              label="Distributor Name"
-              name="distributorName"
-              value={distributorName}
-              onChange={(v) => {
-                setDistributorName(v);
-                clearError("distributorName");
-              }}
-              placeholder="Enter distributor name"
-              required
-              error={getError("distributorName")}
-            />
-            <div className="flex flex-col gap-2 justify-end">
-              <StatusToggle status={status} onChange={setStatus} />
+            {/* Right: Form Fields */}
+            <div className="md:col-span-2 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormInput
+                  label="Pulse Code"
+                  name="pulseCode"
+                  value={isUpdateMode && existingData ? existingData.pulseCode : "Auto-generated"}
+                  onChange={() => {}}
+                  placeholder="Auto-generated"
+                  readOnly
+                />
+                <FormInput
+                  label="Legacy Code"
+                  name="legacyCode"
+                  value={legacyCode}
+                  onChange={(v) => {
+                    setLegacyCode(v);
+                    clearError("legacyCode");
+                  }}
+                  placeholder="Enter legacy code"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormInput
+                  label="Distributor Name"
+                  name="distributorName"
+                  value={distributorName}
+                  onChange={(v) => {
+                    setDistributorName(v);
+                    clearError("distributorName");
+                  }}
+                  placeholder="Enter distributor name"
+                  required
+                  error={getError("distributorName")}
+                />
+                <div className="flex flex-col gap-2 justify-end">
+                  <StatusToggle status={status} onChange={setStatus} />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -320,8 +376,8 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
           <Button
             type="button"
             onClick={handleSubmit}
-            disabled={loading}
-            loading={loading}
+            disabled={formLoading}
+            loading={formLoading}
             icon={Plus}
             variant="primary"
             size="lg"

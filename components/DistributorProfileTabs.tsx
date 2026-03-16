@@ -1,6 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { Loader2 } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { getDistributorById } from "@/store/slices/distributor/getDistributorByIdSlice";
 import UserProfile from "@/components/UserProfile";
 import RegionInformation from "@/components/RegionInformation";
 import MonthlyTargets from "@/components/TargetEmployees";
@@ -9,77 +13,34 @@ import MonthlyCalls from "@/components/MonthlyCalls";
 import EmployeeGraphRed from "@/components/EmployeeGraphRed";
 import MonthlyAttendance from "@/components/MonthlyAttendance";
 
-// ── Dummy distributor lookup ──────────────────────────────────────────────────
-const DUMMY_DISTRIBUTORS: Record<string, any> = {
-  "dist-001": {
-    pulseCode: "DST-0001",
-    legacyCode: "LEG-001",
-    distributorName: "Alpha Pharma Distributors",
-    distributorStatus: "active",
-    zone: "North Zone",
-    region: "Lahore Region",
-    distributorType: "Wholesale",
-    totalOrders: 148,
-  },
-  "dist-002": {
-    pulseCode: "DST-0002",
-    legacyCode: "LEG-002",
-    distributorName: "Beta Medical Supplies",
-    distributorStatus: "active",
-    zone: "South Zone",
-    region: "Karachi Region",
-    distributorType: "Retail",
-    totalOrders: 93,
-  },
-  "dist-003": {
-    pulseCode: "DST-0003",
-    legacyCode: "LEG-003",
-    distributorName: "Gamma Health Traders",
-    distributorStatus: "inactive",
-    zone: "East Zone",
-    region: "Islamabad Region",
-    distributorType: "Wholesale",
-    totalOrders: 12,
-  },
-  "dist-004": {
-    pulseCode: "DST-0004",
-    legacyCode: "LEG-004",
-    distributorName: "Delta Pharma Network",
-    distributorStatus: "active",
-    zone: "West Zone",
-    region: "Peshawar Region",
-    distributorType: "Sub-Distributor",
-    totalOrders: 67,
-  },
-  "dist-005": {
-    pulseCode: "DST-0005",
-    legacyCode: "LEG-005",
-    distributorName: "Epsilon Drug Mart",
-    distributorStatus: "active",
-    zone: "Central Zone",
-    region: "Multan Region",
-    distributorType: "Retail",
-    totalOrders: 204,
-  },
-  "dist-006": {
-    pulseCode: "DST-0006",
-    legacyCode: "LEG-006",
-    distributorName: "Zeta MedCare Distributors",
-    distributorStatus: "inactive",
-    zone: "North Zone",
-    region: "Faisalabad Region",
-    distributorType: "Wholesale",
-    totalOrders: 5,
-  },
-};
-
-const FALLBACK = DUMMY_DISTRIBUTORS["dist-001"];
-
-// ── Main Component ────────────────────────────────────────────────────────────
 export default function DistributorProfileTabs() {
+  const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const id = searchParams.get("id") || "";
-  const dist = DUMMY_DISTRIBUTORS[id] || FALLBACK;
+
+  const { distributor: dist, loading, error } = useAppSelector((s) => s.distributorById);
+
+  useEffect(() => {
+    if (id) {
+      dispatch(getDistributorById(id));
+    }
+  }, [id, dispatch]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="w-8 h-8 animate-spin text-(--primary)" />
+      </div>
+    );
+  }
+
+  if (error || !dist) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64 space-y-4">
+        <p className="t-lg t-err">{error || "Distributor not found"}</p>
+      </div>
+    );
+  }
 
   const statusLabel = dist.distributorStatus === "active" ? "Active" : "Inactive";
 
@@ -93,42 +54,42 @@ export default function DistributorProfileTabs() {
             candidate={{
               name: dist.distributorName,
               pulseCode: dist.pulseCode,
-              // email slot → distributor type
-              email: dist.distributorType,
-              // phone slot → legacy code
+              email: dist.distributorTypeName || dist.distributorTypeId,
               phone: dist.legacyCode,
+              profilePicture: dist.imageUrl,
             }}
           />
           <RegionInformation
             status={statusLabel}
             legacy={dist.legacyCode}
-            // team slot → Zone
-            team={dist.zone}
-            // channel slot → Region
-            channel={dist.region}
-            // category slot → Distributor Type
-            category={dist.distributorType}
-            // totalCalls slot → Total Orders
-            totalCalls={dist.totalOrders}
+            team={
+              dist.zoneName
+                ? dist.zoneDescription
+                  ? `${dist.zoneName} - ${dist.zoneDescription}`
+                  : dist.zoneName
+                : dist.zoneId
+            }
+            channel={
+              dist.regionName
+                ? dist.regionDescription
+                  ? `${dist.regionName} - ${dist.regionDescription}`
+                  : dist.regionName
+                : dist.regionId
+            }
+            category={dist.distributorTypeName || dist.distributorTypeId}
+            totalCalls={0} // dummy stat
           />
         </div>
 
         {/* Center (5fr) – Monthly Orders + Weekly Expenses */}
         <div className="space-y-6">
-          {/* Monthly Orders — same chart as Employee Monthly Targets */}
-          <MonthlyTargets
-            currentMonth={dist.totalOrders}
-            lastMonth={Math.round(dist.totalOrders * 0.8)}
-            date="March, 2025"
-          />
-
-          {/* Weekly Expenses — reused component (dummy data) */}
+          <MonthlyTargets currentMonth={0} lastMonth={0} date="March, 2025" />
           <WeekelyExpenses />
         </div>
 
         {/* Right (3fr) – Small Stat Charts */}
         <div className="space-y-6">
-          <MonthlyCalls totalCalls={dist.totalOrders} percentageChange={12} trend="up" />
+          <MonthlyCalls totalCalls={0} percentageChange={0} trend="up" />
           <EmployeeGraphRed />
           <MonthlyAttendance />
         </div>

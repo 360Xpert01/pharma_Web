@@ -235,6 +235,14 @@ export function DashboardContent({
     status?: string;
   }>({});
 
+  // State for Distributor Table Filters
+  const [distributorFilters, setDistributorFilters] = useState<{
+    distributorStatus?: string;
+    distributorTypeId?: string;
+    zoneId?: string;
+    regionId?: string;
+  }>({});
+
   const handleSettings = () => {
     if (settingsRoute) {
       router.push(settingsRoute);
@@ -714,8 +722,14 @@ export function DashboardContent({
         {/* Distributor Management */}
         {distributorTable && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading="All Distributors" filterT onSearch={setSearchTerm} />
-            <DistributorTable searchTerm={searchTerm} />
+            <TableHeader
+              campHeading="All Distributors"
+              filterT
+              onSearch={setSearchTerm}
+              showDistributorFilters={true}
+              onApplyFilters={setDistributorFilters}
+            />
+            <DistributorTable searchTerm={searchTerm} filters={distributorFilters} />
           </div>
         )}
 

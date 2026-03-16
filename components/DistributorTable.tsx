@@ -22,8 +22,11 @@ interface DistributorRow {
   distributorStatus: string;
   zoneId: string;
   regionId: string;
+  zoneLabel: string;
+  regionLabel: string;
   distributorTypeId: string;
   distributorTypeName: string;
+  imageUrl?: string;
 }
 
 interface DistributorFilters {
@@ -93,8 +96,19 @@ export default function DistributorTable({
         distributorStatus: d.distributorStatus,
         zoneId: d.zoneId,
         regionId: d.regionId,
+        zoneLabel: d.zoneName
+          ? d.zoneDescription
+            ? `${d.zoneName} - ${d.zoneDescription}`
+            : d.zoneName
+          : "—",
+        regionLabel: d.regionName
+          ? d.regionDescription
+            ? `${d.regionName} - ${d.regionDescription}`
+            : d.regionName
+          : "—",
         distributorTypeId: d.distributorTypeId,
         distributorTypeName: d.distributorTypeName || "—",
+        imageUrl: d.imageUrl,
       })),
     [distributors]
   );
@@ -116,7 +130,7 @@ export default function DistributorTable({
             className="flex items-center gap-3 hover:opacity-80 transition-opacity"
           >
             <ImageWithFallback
-              src=""
+              src={row.original.imageUrl}
               alt={row.original.distributorName}
               width={36}
               height={36}
@@ -145,6 +159,20 @@ export default function DistributorTable({
         enableSorting: false,
         cell: ({ row }) => (
           <span className="text-[var(--muted-foreground)]">{row.original.distributorTypeName}</span>
+        ),
+      },
+      {
+        accessorKey: "zoneLabel",
+        header: "Zone",
+        cell: ({ row }) => (
+          <span className="text-[var(--muted-foreground)]">{row.original.zoneLabel}</span>
+        ),
+      },
+      {
+        accessorKey: "regionLabel",
+        header: "Region",
+        cell: ({ row }) => (
+          <span className="text-[var(--muted-foreground)]">{row.original.regionLabel}</span>
         ),
       },
       {

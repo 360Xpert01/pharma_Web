@@ -12,6 +12,7 @@ export interface UpdateDistributorPayload {
   distributorName: string;
   distributorStatus: "active" | "inactive";
   distributorTypeId: string;
+  imageUrl?: string;
 }
 
 interface DistributorData {
@@ -23,6 +24,7 @@ interface DistributorData {
   distributorName: string;
   distributorStatus: string;
   distributorTypeId: string;
+  imageUrl?: string;
 }
 
 interface UpdateDistributorResponse {

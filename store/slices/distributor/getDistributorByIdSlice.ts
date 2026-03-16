@@ -9,10 +9,16 @@ export interface DistributorDetail {
   pulseCode: string;
   legacyCode: string;
   zoneId: string;
+  zoneName?: string;
+  zoneDescription?: string;
   regionId: string;
+  regionName?: string;
+  regionDescription?: string;
   distributorName: string;
   distributorStatus: string;
   distributorTypeId: string;
+  distributorTypeName?: string;
+  imageUrl?: string;
 }
 
 interface GetDistributorByIdResponse {

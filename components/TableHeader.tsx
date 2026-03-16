@@ -18,6 +18,7 @@ interface UsersHeaderProps {
   showGiveawayFilters?: boolean;
   showTeamFilters?: boolean;
   showTargetFilters?: boolean;
+  showDistributorFilters?: boolean;
   isAllocate?: boolean;
   channelId?: string;
   onApplyFilters?: (filters: {
@@ -30,6 +31,11 @@ interface UsersHeaderProps {
     status?: string;
     employeeId?: string;
     channelId?: string;
+    // Distributor filters
+    distributorStatus?: string;
+    distributorTypeId?: string;
+    zoneId?: string;
+    regionId?: string;
   }) => void;
 }
 
@@ -46,6 +52,7 @@ export default function UsersHeader({
   showGiveawayFilters = false,
   showTeamFilters = false,
   showTargetFilters = false,
+  showDistributorFilters = false,
   isAllocate = false,
   channelId,
   onApplyFilters,
@@ -89,6 +96,7 @@ export default function UsersHeader({
               showGiveawayFilters={showGiveawayFilters}
               showTeamFilters={showTeamFilters}
               showTargetFilters={showTargetFilters}
+              showDistributorFilters={showDistributorFilters}
               isAllocate={isAllocate}
               channelId={channelId}
               onApplyFilters={onApplyFilters}
