@@ -10,7 +10,7 @@ interface SaleRepTerritory {
 }
 
 export interface CreateTeamPayload {
-  pulseCode: string;
+  pulseCode?: string;
   legacyCode?: string;
   name: string;
   status: "active" | "inactive";

@@ -6,7 +6,7 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 // Types
 interface CreateDistributorTypePayload {
   name: string;
-  pulseCode: string;
+  pulseCode?: string;
   status: "active" | "inactive";
 }
 

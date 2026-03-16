@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { RotateCw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../../../store";
 import { requestOtp } from "../../../../store/slices/auth/loginSlice";
 import { verifyOtp } from "../../../../store/slices/auth/verifyOtp";
 import FormInput from "../../../../components/form/FormInput";
@@ -22,8 +22,8 @@ export default function LoginScreen() {
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
   const router = useRouter();
 
-  const dispatch = useDispatch();
-  const { loading, success, error, message } = useSelector((state: any) => state.auth);
+  const dispatch = useAppDispatch();
+  const { loading, success, error, message } = useAppSelector((state) => state.login);
 
   const deviceId = "ewb-123";
 
@@ -45,7 +45,10 @@ export default function LoginScreen() {
     try {
       localStorage.setItem("tenantName", subDomain.toLowerCase());
       const result = await dispatch(requestOtp({ email: email.trim(), deviceId }));
-      if (result.payload?.success) {
+
+      const payload = result.payload as any; // Cast for simplified check
+
+      if (payload?.success) {
         setIsOtpSent(true);
         setUserNotFound(false);
         toast.success("OTP sent successfully!");
@@ -113,10 +116,22 @@ export default function LoginScreen() {
         router.push("/dashboard");
       } else {
         console.log("❌ OTP Verification Failed");
-        setInvalidOtp(true);
         const errorMsg =
-          result.payload?.message || result.error?.message || "Invalid OTP. Please try again.";
-        // toast.error(errorMsg);
+          result.payload ||
+          result.payload?.message ||
+          result.error?.message ||
+          "Invalid OTP. Please try again.";
+
+        if (errorMsg === "access denied, please use the mobile app") {
+          toast.error(errorMsg);
+          setInvalidOtp(false); // Don't show generic error below inputs
+          // Optionally clear OTP
+          setOtp(["", "", "", ""]);
+          otpRefs.current[0]?.focus();
+        } else {
+          setInvalidOtp(true);
+          toast.error(errorMsg);
+        }
       }
     } catch (err: any) {
       console.error("❌ Error during OTP verification:", err);

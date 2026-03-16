@@ -12,6 +12,13 @@ interface VerifyOtpPayload {
 interface VerifyOtpResponse {
   success: boolean;
   message: string;
+  data?: {
+    accessToken?: string;
+    userEmail?: string;
+    permissionGroupId?: string;
+    permissionGroupName?: string;
+    deviceId?: string;
+  };
   token?: string;
   user?: any;
 }
@@ -49,6 +56,14 @@ export const verifyOtp = createAsyncThunk<
         },
       }
     );
+
+    // Block Sales Representative from entering CRM
+    if (
+      response.data?.success &&
+      response.data?.data?.permissionGroupName === "Sales Representative"
+    ) {
+      return rejectWithValue("access denied, please use the mobile app");
+    }
 
     return response.data;
   } catch (error: any) {

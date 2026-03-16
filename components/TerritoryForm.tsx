@@ -77,7 +77,7 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
     if (isEditMode && idFromUrl) {
       dispatch(getTerritoryById(idFromUrl));
     } else {
-      dispatch(generatePrefix({ entity: "Territory" }));
+      // dispatch(generatePrefix({ entity: "Territory" })); // Removed as requested
     }
 
     return () => {
@@ -127,7 +127,7 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const currentPulseCode = isEditMode ? formData.pulseCode : generatedPrefix || "";
+    const currentPulseCode = isEditMode ? formData.pulseCode : undefined;
 
     // Validation using Zod
     const validationResult = territorySchema.safeParse({
@@ -151,7 +151,7 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
     setValidationErrors({});
 
     const payload: CreateTerritoryPayload = {
-      pulseCode: currentPulseCode.trim(),
+      pulseCode: currentPulseCode,
       description: formData.description.trim(),
       bricks: formData.selectedBricks.map((b) => b.id),
     };
@@ -187,9 +187,9 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
           <FormInput
             label="Pulse Code"
             name="pulseCode"
-            value={isEditMode ? formData.pulseCode : generatedPrefix || ""}
+            value={isEditMode ? formData.pulseCode : "TO BE GENERATED"}
             onChange={() => {}}
-            placeholder={prefixLoading ? "Generating..." : "Auto-generated"}
+            placeholder="Auto-generated"
             required
             readOnly
             className="cursor-not-allowed max-w-sm"

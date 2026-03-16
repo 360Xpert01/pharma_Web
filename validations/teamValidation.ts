@@ -2,10 +2,7 @@ import { z } from "zod";
 
 // Team Creation Schema
 export const teamCreationSchema = z.object({
-  pulseCode: z
-    .string()
-    .min(1, { message: "Pulse code is required" })
-    .max(100, { message: "Pulse code cannot exceed 100 characters" }),
+  pulseCode: z.string().max(100, { message: "Pulse code cannot exceed 100 characters" }).optional(),
   name: z
     .string()
     .min(1, { message: "Team name is required" })

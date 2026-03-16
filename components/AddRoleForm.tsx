@@ -49,7 +49,7 @@ export default function AddNewRoleForm() {
     // 🔥 Always call generate for "Role" entity
     // Role forms create roles (business logic, not dynamic)
     // The /generate API is idempotent - handles existence automatically
-    dispatch(generatePrefix({ entity: "Role" }));
+    // dispatch(generatePrefix({ entity: "Role" })); // Removed as requested
 
     return () => {
       dispatch(resetGeneratePrefixState());
@@ -130,7 +130,7 @@ export default function AddNewRoleForm() {
     // Prepare form data for validation
     const formData = {
       roleName,
-      pulseCode: generatedPrefix || "",
+      pulseCode: undefined,
     };
 
     // Validate using Zod schema
@@ -172,7 +172,7 @@ export default function AddNewRoleForm() {
       toast.success(message || "Role created successfully!");
       setRoleName("");
       setValidationErrors({});
-      dispatch(resetGeneratePrefixState());
+      // dispatch(resetGeneratePrefixState()); // Removed as requested
       router.push("/dashboard/User-Role");
     } else {
     }
@@ -195,9 +195,9 @@ export default function AddNewRoleForm() {
                 label="Pulse Code"
                 name="pulseCode"
                 type="text"
-                value={generatedPrefix || ""}
+                value={"TO BE GENERATED"}
                 onChange={() => {}}
-                placeholder={prefixLoading ? "Generating..." : "Auto-generated"}
+                placeholder="Auto-generated"
                 readOnly
                 required
                 error={prefixError || ""}
