@@ -139,7 +139,8 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
     const errors: Record<string, string> = {};
     if (!distributorName.trim()) errors.distributorName = "Distributor name is required";
     if (!selectedZoneId) errors.zoneId = "Zone is required";
-    if (!selectedRegionId) errors.regionId = "Region is required";
+    // Region is only required if the selected zone actually has regions
+    if (regionOptions.length > 0 && !selectedRegionId) errors.regionId = "Region is required";
     if (!selectedTypeId) errors.distributorTypeId = "Distributor type is required";
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
@@ -150,6 +151,8 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
     if (!validate()) return;
 
     const distributorStatus = status === "Active" ? "active" : "inactive";
+    // Only send regionId if one is selected (zone may have no regions)
+    const regionId = selectedRegionId || undefined;
 
     if (isUpdateMode && distributorId) {
       dispatch(
@@ -157,7 +160,7 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
           id: distributorId,
           legacyCode: legacyCode || undefined,
           zoneId: selectedZoneId,
-          regionId: selectedRegionId,
+          regionId: regionId as string,
           distributorName,
           distributorStatus,
           distributorTypeId: selectedTypeId,
@@ -168,7 +171,7 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
         createDistributor({
           legacyCode: legacyCode || undefined,
           zoneId: selectedZoneId,
-          regionId: selectedRegionId,
+          regionId: regionId as string,
           distributorName,
           distributorStatus,
           distributorTypeId: selectedTypeId,

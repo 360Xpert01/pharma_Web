@@ -8,7 +8,7 @@ export interface UpdateDistributorPayload {
   id: string; // used in URL, stripped from body
   legacyCode?: string;
   zoneId: string;
-  regionId: string;
+  regionId?: string;
   distributorName: string;
   distributorStatus: "active" | "inactive";
   distributorTypeId: string;

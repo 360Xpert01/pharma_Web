@@ -8,7 +8,7 @@ export interface CreateDistributorPayload {
   pulseCode?: string;
   legacyCode?: string;
   zoneId: string;
-  regionId: string;
+  regionId?: string;
   distributorName: string;
   distributorStatus: "active" | "inactive";
   distributorTypeId: string;
