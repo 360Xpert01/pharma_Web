@@ -26,6 +26,7 @@ interface DistributorRow {
   regionLabel: string;
   distributorTypeId: string;
   distributorTypeName: string;
+  imageUrl?: string;
 }
 
 interface DistributorFilters {
@@ -107,6 +108,7 @@ export default function DistributorTable({
           : "—",
         distributorTypeId: d.distributorTypeId,
         distributorTypeName: d.distributorTypeName || "—",
+        imageUrl: d.imageUrl,
       })),
     [distributors]
   );
@@ -128,7 +130,7 @@ export default function DistributorTable({
             className="flex items-center gap-3 hover:opacity-80 transition-opacity"
           >
             <ImageWithFallback
-              src=""
+              src={row.original.imageUrl}
               alt={row.original.distributorName}
               width={36}
               height={36}

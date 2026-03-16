@@ -18,6 +18,7 @@ export interface DistributorItem {
   distributorStatus: string;
   distributorTypeId: string;
   distributorTypeName?: string;
+  imageUrl?: string;
 }
 
 interface PaginationData {
