@@ -22,6 +22,8 @@ interface DistributorRow {
   distributorStatus: string;
   zoneId: string;
   regionId: string;
+  zoneLabel: string;
+  regionLabel: string;
   distributorTypeId: string;
   distributorTypeName: string;
 }
@@ -93,6 +95,16 @@ export default function DistributorTable({
         distributorStatus: d.distributorStatus,
         zoneId: d.zoneId,
         regionId: d.regionId,
+        zoneLabel: d.zoneName
+          ? d.zoneDescription
+            ? `${d.zoneName} - ${d.zoneDescription}`
+            : d.zoneName
+          : "—",
+        regionLabel: d.regionName
+          ? d.regionDescription
+            ? `${d.regionName} - ${d.regionDescription}`
+            : d.regionName
+          : "—",
         distributorTypeId: d.distributorTypeId,
         distributorTypeName: d.distributorTypeName || "—",
       })),
@@ -145,6 +157,20 @@ export default function DistributorTable({
         enableSorting: false,
         cell: ({ row }) => (
           <span className="text-[var(--muted-foreground)]">{row.original.distributorTypeName}</span>
+        ),
+      },
+      {
+        accessorKey: "zoneLabel",
+        header: "Zone",
+        cell: ({ row }) => (
+          <span className="text-[var(--muted-foreground)]">{row.original.zoneLabel}</span>
+        ),
+      },
+      {
+        accessorKey: "regionLabel",
+        header: "Region",
+        cell: ({ row }) => (
+          <span className="text-[var(--muted-foreground)]">{row.original.regionLabel}</span>
         ),
       },
       {

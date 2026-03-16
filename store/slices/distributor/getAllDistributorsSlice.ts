@@ -10,6 +10,10 @@ export interface DistributorItem {
   legacyCode: string;
   zoneId: string;
   regionId: string;
+  zoneName?: string;
+  zoneDescription?: string;
+  regionName?: string;
+  regionDescription?: string;
   distributorName: string;
   distributorStatus: string;
   distributorTypeId: string;
