@@ -111,6 +111,7 @@ import allDistributorsReducer from "./slices/distributor/getAllDistributorsSlice
 import createDistributorReducer from "./slices/distributor/createDistributorSlice";
 import getDistributorByIdReducer from "./slices/distributor/getDistributorByIdSlice";
 import updateDistributorReducer from "./slices/distributor/updateDistributorSlice";
+import allPermissionGroupsReducer from "./slices/permissionGroup/getAllPermissionGroupsSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -220,6 +221,7 @@ const rootReducer = combineReducers({
   createDistributor: createDistributorReducer,
   distributorById: getDistributorByIdReducer,
   updateDistributor: updateDistributorReducer,
+  allPermissionGroups: allPermissionGroupsReducer,
 });
 
 const persistConfig = {

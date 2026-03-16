@@ -12,7 +12,12 @@ interface RequestOtpPayload {
 interface RequestOtpResponse {
   success: boolean;
   message: string;
-  // Add other fields if your API returns more
+  data?: {
+    deviceId: string;
+    userEmail: string;
+    permissionGroupId: string;
+    permissionGroupName: string;
+  };
 }
 
 interface AuthState {
@@ -46,6 +51,14 @@ export const requestOtp = createAsyncThunk<
         },
       }
     );
+
+    // Block Sales Representative from entering CRM early
+    if (
+      response.data?.success &&
+      response.data?.data?.permissionGroupName === "Sales Representative"
+    ) {
+      return rejectWithValue("access denied, please use the mobile app");
+    }
 
     return response.data;
   } catch (error: any) {

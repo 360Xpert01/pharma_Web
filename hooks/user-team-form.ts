@@ -130,9 +130,6 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
   };
 
   useEffect(() => {
-    // Generate pulse code for "Team" entity
-    dispatch(generatePrefix({ entity: "Team" }));
-
     // Fetch all channels for dropdown
     dispatch(getAllChannels());
 
@@ -149,7 +146,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
     dispatch(getAllTerritories({ notassigned: true }));
 
     return () => {
-      dispatch(resetGeneratePrefixState());
+      // dispatch(resetGeneratePrefixState()); // Removed as requested
       dispatch(resetUsersByRoleState());
       dispatch(resetUserHierarchyState());
       dispatch(resetCreateTeamState());
@@ -405,8 +402,8 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
 
     // Prepare form data for validation
     const formData = {
-      pulseCode: generatedPrefix || "",
-      legacyCode: generatedPrefix || "",
+      pulseCode: undefined,
+      legacyCode: undefined,
       name: teamName.trim(),
       status: status.toLowerCase() as "active" | "inactive",
       callPointIds: selectedCallPoints, // Send as array of IDs
@@ -460,7 +457,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
     }));
 
     const formData = {
-      pulseCode: pulseCode || generatedPrefix || "", // Use existing for update
+      pulseCode: pulseCode || undefined, // Use existing for update
       name: teamName.trim(),
       status: status.toLowerCase() as "active" | "inactive",
       callPointIds: selectedCallPoints, // Send as array of IDs

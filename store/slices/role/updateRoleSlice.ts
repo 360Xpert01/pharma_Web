@@ -7,7 +7,7 @@ interface UpdateRolePayload {
   roleName?: string;
   pulseCode?: string;
   parentRoleId?: string;
-  responsibilities?: string;
+  permissionGroupId?: string;
 }
 
 interface UpdateRoleResponse {
