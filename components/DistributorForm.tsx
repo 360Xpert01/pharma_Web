@@ -7,88 +7,21 @@ import { FormInput, FormSelect, StatusToggle } from "@/components/form";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { ConfirmModal } from "./shared/confirm-modal";
-
-// ── Dummy data for dropdowns ──────────────────────────────────────────────────
-const DUMMY_ZONES = [
-  { value: "zone-001", label: "North Zone" },
-  { value: "zone-002", label: "South Zone" },
-  { value: "zone-003", label: "East Zone" },
-  { value: "zone-004", label: "West Zone" },
-  { value: "zone-005", label: "Central Zone" },
-];
-
-const DUMMY_REGIONS = [
-  { value: "reg-001", label: "Lahore Region" },
-  { value: "reg-002", label: "Karachi Region" },
-  { value: "reg-003", label: "Islamabad Region" },
-  { value: "reg-004", label: "Peshawar Region" },
-  { value: "reg-005", label: "Multan Region" },
-  { value: "reg-006", label: "Faisalabad Region" },
-];
-
-const DUMMY_DISTRIBUTOR_TYPES = [
-  { value: "dtype-001", label: "Wholesale" },
-  { value: "dtype-002", label: "Retail" },
-  { value: "dtype-003", label: "Sub-Distributor" },
-];
-
-// ── Dummy existing records for pre-fill in update mode ──────────────────────
-const DUMMY_DISTRIBUTORS: Record<string, any> = {
-  "dist-001": {
-    pulseCode: "DST-0001",
-    legacyCode: "LEG-001",
-    distributorName: "Alpha Pharma Distributors",
-    distributorStatus: "Active",
-    zoneId: "zone-001",
-    regionId: "reg-001",
-    distributorTypeId: "dtype-001",
-  },
-  "dist-002": {
-    pulseCode: "DST-0002",
-    legacyCode: "LEG-002",
-    distributorName: "Beta Medical Supplies",
-    distributorStatus: "Active",
-    zoneId: "zone-002",
-    regionId: "reg-002",
-    distributorTypeId: "dtype-002",
-  },
-  "dist-003": {
-    pulseCode: "DST-0003",
-    legacyCode: "LEG-003",
-    distributorName: "Gamma Health Traders",
-    distributorStatus: "Inactive",
-    zoneId: "zone-003",
-    regionId: "reg-003",
-    distributorTypeId: "dtype-001",
-  },
-  "dist-004": {
-    pulseCode: "DST-0004",
-    legacyCode: "LEG-004",
-    distributorName: "Delta Pharma Network",
-    distributorStatus: "Active",
-    zoneId: "zone-004",
-    regionId: "reg-004",
-    distributorTypeId: "dtype-003",
-  },
-  "dist-005": {
-    pulseCode: "DST-0005",
-    legacyCode: "LEG-005",
-    distributorName: "Epsilon Drug Mart",
-    distributorStatus: "Active",
-    zoneId: "zone-005",
-    regionId: "reg-005",
-    distributorTypeId: "dtype-002",
-  },
-  "dist-006": {
-    pulseCode: "DST-0006",
-    legacyCode: "LEG-006",
-    distributorName: "Zeta MedCare Distributors",
-    distributorStatus: "Inactive",
-    zoneId: "zone-001",
-    regionId: "reg-006",
-    distributorTypeId: "dtype-001",
-  },
-};
+import { useAppDispatch, useAppSelector } from "@/store";
+import {
+  createDistributor,
+  resetCreateDistributorState,
+} from "@/store/slices/distributor/createDistributorSlice";
+import {
+  updateDistributor,
+  resetUpdateDistributorState,
+} from "@/store/slices/distributor/updateDistributorSlice";
+import {
+  getDistributorById,
+  resetDistributorByIdState,
+} from "@/store/slices/distributor/getDistributorByIdSlice";
+import { getAllDistributorTypes } from "@/store/slices/distributorType/getAllDistributorTypesSlice";
+import { getBrickList } from "@/store/slices/brick/getBrickListSlice";
 
 // ── Props ────────────────────────────────────────────────────────────────────
 interface DistributorFormProps {
@@ -99,10 +32,37 @@ interface DistributorFormProps {
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function DistributorForm({ mode, distributorId }: DistributorFormProps) {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const isUpdateMode = mode === "update";
 
-  // Form state
-  const [pulseCode, setPulseCode] = useState("");
+  // ── Redux selectors ──────────────────────────────────────────────────────
+  const {
+    loading: createLoading,
+    success: createSuccess,
+    error: createError,
+  } = useAppSelector((s) => s.createDistributor);
+  const {
+    loading: updateLoading,
+    success: updateSuccess,
+    error: updateError,
+  } = useAppSelector((s) => s.updateDistributor);
+  const { distributor: existingData, loading: fetchLoading } = useAppSelector(
+    (s) => s.distributorById
+  );
+  const { distributorTypes, loading: typesLoading } = useAppSelector((s) => s.allDistributorTypes);
+  const { zones, regions, loading: brickLoading } = useAppSelector((s) => s.brickList);
+
+  // Derived loading / success / error for the submit action
+  const loading = isUpdateMode ? updateLoading : createLoading;
+  const success = isUpdateMode ? updateSuccess : createSuccess;
+  const error = isUpdateMode ? updateError : createError;
+
+  // Dropdown options
+  const typeOptions = distributorTypes.map((t) => ({ value: t.id, label: t.name }));
+  const zoneOptions = zones.map((z) => ({ value: z.id, label: z.name }));
+  const regionOptions = regions.map((r) => ({ value: r.id, label: r.name }));
+
+  // ── Form state ───────────────────────────────────────────────────────────
   const [legacyCode, setLegacyCode] = useState("");
   const [distributorName, setDistributorName] = useState("");
   const [status, setStatus] = useState<"Active" | "Inactive">("Active");
@@ -110,42 +70,63 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
   const [selectedRegionId, setSelectedRegionId] = useState("");
   const [selectedTypeId, setSelectedTypeId] = useState("");
 
-  // UI state
-  const [loading, setLoading] = useState(false);
-  const [fetchingData, setFetchingData] = useState(false);
+  // UI
   const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
-  // ── Load existing data in update mode ─────────────────────────────────────
+  // ── On mount: fetch dropdowns + existing data (update mode) ─────────────
   useEffect(() => {
-    if (isUpdateMode && distributorId) {
-      setFetchingData(true);
-      // Simulate API fetch with a short delay
-      const timeout = setTimeout(() => {
-        const existing = DUMMY_DISTRIBUTORS[distributorId];
-        if (existing) {
-          setPulseCode(existing.pulseCode || "");
-          setLegacyCode(existing.legacyCode || "");
-          setDistributorName(existing.distributorName || "");
-          setStatus(existing.distributorStatus === "Inactive" ? "Inactive" : "Active");
-          setSelectedZoneId(existing.zoneId || "");
-          setSelectedRegionId(existing.regionId || "");
-          setSelectedTypeId(existing.distributorTypeId || "");
-        }
-        setFetchingData(false);
-      }, 600);
-      return () => clearTimeout(timeout);
-    }
-  }, [isUpdateMode, distributorId]);
+    dispatch(getAllDistributorTypes({ limit: 100 }));
+    dispatch(getBrickList());
 
-  // ── Helpers ───────────────────────────────────────────────────────────────
+    if (isUpdateMode && distributorId) {
+      dispatch(getDistributorById(distributorId));
+    }
+
+    return () => {
+      dispatch(resetCreateDistributorState());
+      dispatch(resetUpdateDistributorState());
+      dispatch(resetDistributorByIdState());
+    };
+  }, [dispatch, isUpdateMode, distributorId]);
+
+  // ── Pre-fill form when existing data loads ───────────────────────────────
+  useEffect(() => {
+    if (isUpdateMode && existingData) {
+      setDistributorName(existingData.distributorName || "");
+      setLegacyCode(existingData.legacyCode || "");
+      setStatus(existingData.distributorStatus === "active" ? "Active" : "Inactive");
+      setSelectedZoneId(existingData.zoneId || "");
+      setSelectedRegionId(existingData.regionId || "");
+      setSelectedTypeId(existingData.distributorTypeId || "");
+    }
+  }, [existingData, isUpdateMode]);
+
+  // ── Handle success ───────────────────────────────────────────────────────
+  useEffect(() => {
+    if (success) {
+      toast.success(
+        isUpdateMode ? "Distributor updated successfully!" : "Distributor added successfully!"
+      );
+      dispatch(resetCreateDistributorState());
+      dispatch(resetUpdateDistributorState());
+      router.push("/dashboard/Distributors-Management");
+    }
+  }, [success]);
+
+  // ── Handle error ─────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (error) toast.error(error);
+  }, [error]);
+
+  // ── Field helpers ─────────────────────────────────────────────────────────
   const getError = (field: string) => validationErrors[field] || "";
   const clearError = (field: string) => {
     if (validationErrors[field]) {
       setValidationErrors((prev) => {
-        const next = { ...prev };
-        delete next[field];
-        return next;
+        const n = { ...prev };
+        delete n[field];
+        return n;
       });
     }
   };
@@ -162,19 +143,35 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
   };
 
   // ── Submit ────────────────────────────────────────────────────────────────
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!validate()) return;
 
-    setLoading(true);
-    // Simulate API call
-    await new Promise((res) => setTimeout(res, 800));
-    setLoading(false);
+    const distributorStatus = status === "Active" ? "active" : "inactive";
 
-    const msg = isUpdateMode
-      ? "Distributor updated successfully!"
-      : "Distributor added successfully!";
-    toast.success(msg);
-    router.push("/dashboard/Distributors-Management");
+    if (isUpdateMode && distributorId) {
+      dispatch(
+        updateDistributor({
+          id: distributorId,
+          legacyCode: legacyCode || undefined,
+          zoneId: selectedZoneId,
+          regionId: selectedRegionId,
+          distributorName,
+          distributorStatus,
+          distributorTypeId: selectedTypeId,
+        })
+      );
+    } else {
+      dispatch(
+        createDistributor({
+          legacyCode: legacyCode || undefined,
+          zoneId: selectedZoneId,
+          regionId: selectedRegionId,
+          distributorName,
+          distributorStatus,
+          distributorTypeId: selectedTypeId,
+        })
+      );
+    }
   };
 
   const handleDiscard = () => setIsDiscardModalOpen(true);
@@ -182,18 +179,6 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
     setIsDiscardModalOpen(false);
     router.push("/dashboard/Distributors-Management");
   };
-
-  // ── Loading state (update mode) ───────────────────────────────────────────
-  if (isUpdateMode && fetchingData) {
-    return (
-      <div className="bg-(--gray-0) flex items-center justify-center min-h-[400px]">
-        <div className="bg-(--background) rounded-8 shadow-soft p-12 flex flex-col items-center gap-4">
-          <Loader2 className="w-12 h-12 animate-spin text-(--primary)" />
-          <p className="t-lg">Loading distributor data...</p>
-        </div>
-      </div>
-    );
-  }
 
   const buttonText = isUpdateMode
     ? loading
@@ -203,23 +188,30 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
       ? "Adding..."
       : "Add Distributor";
 
+  // ── Loading skeleton while fetching existing data ─────────────────────
+  if (isUpdateMode && fetchLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="w-8 h-8 animate-spin text-(--primary)" />
+      </div>
+    );
+  }
+
   return (
     <div className="bg-(--gray-0)">
       <div className="bg-(--background) rounded-8 shadow-soft p-8 space-y-10">
-        {/* ── Section: Basic Info ──────────────────────────────────────── */}
+        {/* ── Basic Info ─────────────────────────────────────────────────── */}
         <div className="space-y-6">
           <h2 className="t-h2">Basic Info</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Pulse Code */}
             <FormInput
               label="Pulse Code"
               name="pulseCode"
-              value={isUpdateMode ? pulseCode : "Auto-generated"}
+              value={isUpdateMode && existingData ? existingData.pulseCode : "Auto-generated"}
               onChange={() => {}}
               placeholder="Auto-generated"
               readOnly
             />
-            {/* Legacy Code */}
             <FormInput
               label="Legacy Code"
               name="legacyCode"
@@ -233,7 +225,6 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Distributor Name */}
             <FormInput
               label="Distributor Name"
               name="distributorName"
@@ -246,18 +237,17 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
               required
               error={getError("distributorName")}
             />
-            {/* Status Toggle */}
             <div className="flex flex-col gap-2 justify-end">
               <StatusToggle status={status} onChange={setStatus} />
             </div>
           </div>
         </div>
 
-        {/* ── Section: Assignment ──────────────────────────────────────── */}
+        {/* ── Assignment ────────────────────────────────────────────────── */}
         <div className="space-y-6">
           <h2 className="t-h2">Assignment</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Zone */}
+            {/* Zone — from getBrickList (zone key) */}
             <FormSelect
               label="Zone"
               name="zoneId"
@@ -266,11 +256,11 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
                 setSelectedZoneId(v);
                 clearError("zoneId");
               }}
-              options={DUMMY_ZONES}
-              placeholder="Select zone"
+              options={brickLoading ? [] : zoneOptions}
+              placeholder={brickLoading ? "Loading zones..." : "Select zone"}
               error={getError("zoneId")}
             />
-            {/* Region */}
+            {/* Region — from getBrickList (region key) */}
             <FormSelect
               label="Region"
               name="regionId"
@@ -279,11 +269,11 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
                 setSelectedRegionId(v);
                 clearError("regionId");
               }}
-              options={DUMMY_REGIONS}
-              placeholder="Select region"
+              options={brickLoading ? [] : regionOptions}
+              placeholder={brickLoading ? "Loading regions..." : "Select region"}
               error={getError("regionId")}
             />
-            {/* Distributor Type */}
+            {/* Distributor Type — from getAllDistributorTypes */}
             <FormSelect
               label="Distributor Type"
               name="distributorTypeId"
@@ -292,8 +282,8 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
                 setSelectedTypeId(v);
                 clearError("distributorTypeId");
               }}
-              options={DUMMY_DISTRIBUTOR_TYPES}
-              placeholder="Select type"
+              options={typesLoading ? [] : typeOptions}
+              placeholder={typesLoading ? "Loading types..." : "Select type"}
               error={getError("distributorTypeId")}
             />
           </div>
@@ -327,7 +317,6 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
         </div>
       </div>
 
-      {/* Discard Confirm Modal */}
       <ConfirmModal
         isOpen={isDiscardModalOpen}
         onClose={() => setIsDiscardModalOpen(false)}

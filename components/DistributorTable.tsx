@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { getAllDistributors } from "@/store/slices/distributor/getAllDistributorsSlice";
 import EditIcon from "@/components/svgs/edit-icon";
 import EyeIcon from "@/components/svgs/eye-icon";
 import CenturoTable from "@/components/shared/table/CeturoTable";
@@ -11,84 +13,24 @@ import TablePagination from "@/components/TablePagination";
 import StatusBadge from "@/components/shared/StatusBadge";
 import ImageWithFallback from "@/components/shared/ImageWithFallback";
 
-// ── Dummy Data ──────────────────────────────────────────────────────────────
-const DUMMY_DISTRIBUTORS = [
-  {
-    id: "dist-001",
-    pulseCode: "DST-0001",
-    legacyCode: "LEG-001",
-    distributorName: "Alpha Pharma Distributors",
-    distributorStatus: "active",
-    zone: "North Zone",
-    region: "Lahore Region",
-    distributorType: "Wholesale",
-  },
-  {
-    id: "dist-002",
-    pulseCode: "DST-0002",
-    legacyCode: "LEG-002",
-    distributorName: "Beta Medical Supplies",
-    distributorStatus: "active",
-    zone: "South Zone",
-    region: "Karachi Region",
-    distributorType: "Retail",
-  },
-  {
-    id: "dist-003",
-    pulseCode: "DST-0003",
-    legacyCode: "LEG-003",
-    distributorName: "Gamma Health Traders",
-    distributorStatus: "inactive",
-    zone: "East Zone",
-    region: "Islamabad Region",
-    distributorType: "Wholesale",
-  },
-  {
-    id: "dist-004",
-    pulseCode: "DST-0004",
-    legacyCode: "LEG-004",
-    distributorName: "Delta Pharma Network",
-    distributorStatus: "active",
-    zone: "West Zone",
-    region: "Peshawar Region",
-    distributorType: "Sub-Distributor",
-  },
-  {
-    id: "dist-005",
-    pulseCode: "DST-0005",
-    legacyCode: "LEG-005",
-    distributorName: "Epsilon Drug Mart",
-    distributorStatus: "active",
-    zone: "Central Zone",
-    region: "Multan Region",
-    distributorType: "Retail",
-  },
-  {
-    id: "dist-006",
-    pulseCode: "DST-0006",
-    legacyCode: "LEG-006",
-    distributorName: "Zeta MedCare Distributors",
-    distributorStatus: "inactive",
-    zone: "North Zone",
-    region: "Faisalabad Region",
-    distributorType: "Wholesale",
-  },
-];
-
-// ── Types ────────────────────────────────────────────────────────────────────
+// ── Types ─────────────────────────────────────────────────────────────────────
 interface DistributorRow {
   id: string;
   pulseCode: string;
   legacyCode: string;
   distributorName: string;
   distributorStatus: string;
-  zone: string;
-  region: string;
-  distributorType: string;
+  zoneId: string;
+  regionId: string;
+  distributorTypeId: string;
+  distributorTypeName: string;
 }
 
 interface DistributorFilters {
-  status?: string;
+  distributorStatus?: string;
+  distributorTypeId?: string;
+  zoneId?: string;
+  regionId?: string;
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -99,21 +41,65 @@ export default function DistributorTable({
   searchTerm?: string;
   filters?: DistributorFilters;
 }) {
+  const dispatch = useAppDispatch();
   const router = useRouter();
-  const [sorting, setSorting] = useState<any[]>([]);
+  const { distributors, loading, error, pagination } = useAppSelector((s) => s.allDistributors);
+  const [sorting, setSorting] = useState<any[]>([{ id: "pulseCode", desc: true }]);
 
-  // Filter by search term
-  const data = useMemo<DistributorRow[]>(() => {
-    const term = searchTerm.toLowerCase();
-    return DUMMY_DISTRIBUTORS.filter(
-      (d) =>
-        d.distributorName.toLowerCase().includes(term) ||
-        d.pulseCode.toLowerCase().includes(term) ||
-        d.legacyCode.toLowerCase().includes(term)
+  const filters = externalFilters || {};
+
+  // ── Fetch on mount / search / sort / filter change (resets to page 1) ─────
+  useEffect(() => {
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
+    dispatch(
+      getAllDistributors({
+        search: searchTerm,
+        page: 1,
+        limit: 20,
+        sort: sortField,
+        order: sortOrder,
+        ...filters,
+      })
     );
-  }, [searchTerm]);
+  }, [dispatch, searchTerm, JSON.stringify(filters), JSON.stringify(sorting)]);
 
-  // ── Columns ──────────────────────────────────────────────────────────────
+  // ── Server-side pagination handler ────────────────────────────────────────
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
+    dispatch(
+      getAllDistributors({
+        search: searchTerm,
+        page,
+        limit: pageSize,
+        sort: sortField,
+        order: sortOrder,
+        ...filters,
+      })
+    );
+  };
+
+  // ── Map API data to row shape ─────────────────────────────────────────────
+  const data = useMemo<DistributorRow[]>(
+    () =>
+      distributors.map((d) => ({
+        id: d.id,
+        pulseCode: d.pulseCode,
+        legacyCode: d.legacyCode,
+        distributorName: d.distributorName,
+        distributorStatus: d.distributorStatus,
+        zoneId: d.zoneId,
+        regionId: d.regionId,
+        distributorTypeId: d.distributorTypeId,
+        distributorTypeName: d.distributorTypeName || "—",
+      })),
+    [distributors]
+  );
+
+  // ── Columns ───────────────────────────────────────────────────────────────
   const columns = useMemo<ColumnDef<DistributorRow>[]>(
     () => [
       {
@@ -141,9 +127,7 @@ export default function DistributorTable({
               <p className="text-[var(--primary)] underline truncate font-medium">
                 {row.original.distributorName}
               </p>
-              <span className="text-xs text-gray-500 truncate block">
-                {row.original.distributorType}
-              </span>
+              <span className="text-xs text-gray-500 truncate block">{row.original.pulseCode}</span>
             </div>
           </Link>
         ),
@@ -152,16 +136,16 @@ export default function DistributorTable({
         accessorKey: "legacyCode",
         header: "Legacy Code",
         cell: ({ row }) => (
-          <span className="text-[var(--muted-foreground)]">{row.original.legacyCode}</span>
+          <span className="text-[var(--muted-foreground)]">{row.original.legacyCode || "—"}</span>
         ),
       },
       {
-        accessorKey: "zone",
-        header: "Zone",
-      },
-      {
-        accessorKey: "region",
-        header: "Region",
+        accessorKey: "distributorTypeName",
+        header: "Distributor Type",
+        enableSorting: false,
+        cell: ({ row }) => (
+          <span className="text-[var(--muted-foreground)]">{row.original.distributorTypeName}</span>
+        ),
       },
       {
         accessorKey: "distributorStatus",
@@ -178,18 +162,16 @@ export default function DistributorTable({
         enableSorting: false,
         cell: ({ row }) => (
           <div className="flex items-center gap-3">
-            {/* Edit */}
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 router.push(`/dashboard/UpdateDistributor?id=${row.original.id}`);
               }}
-              className="group hover:opacity-80 transition cursor-pointer"
+              className="hover:opacity-80 transition cursor-pointer"
               title="Edit Distributor"
             >
               <EditIcon />
             </button>
-            {/* View */}
             <Link
               href={`/dashboard/Distributor-Profile?id=${row.original.id}`}
               className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
@@ -207,18 +189,18 @@ export default function DistributorTable({
     <CenturoTable
       data={data}
       columns={columns}
-      loading={false}
-      error={null}
-      onRetry={() => {}}
+      loading={loading}
+      error={error}
+      onRetry={() => dispatch(getAllDistributors({ search: searchTerm, page: 1, limit: 20 }))}
       enableSorting={true}
       enableExpanding={false}
       enablePagination={true}
-      serverSidePagination={false}
-      serverSideSorting={false}
-      totalItems={data.length}
-      onPaginationChange={() => {}}
+      serverSidePagination={true}
+      serverSideSorting={true}
+      totalItems={pagination?.total ?? 0}
+      onPaginationChange={handlePaginationChange}
       onSortChange={(newSorting) => setSorting(newSorting)}
-      pageSize={10}
+      pageSize={20}
       emptyMessage="No distributors found"
       PaginationComponent={TablePagination}
     />
