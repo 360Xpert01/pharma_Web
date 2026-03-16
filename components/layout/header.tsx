@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { persistor, useAppDispatch, useAppSelector } from "@/store";
 import { getAllChannels } from "@/store/slices/channel/getAllChannelsSlice";
+import { usePermission } from "@/hooks/usePermission";
+import { logout as logoutAction } from "@/store/slices/auth/verifyOtp";
 
 interface DropdownItem {
   label: string;
@@ -26,6 +28,7 @@ const Navbar = () => {
   const locale = useLocale();
   const dispatch = useAppDispatch();
   const { channels, loading: channelsLoading } = useAppSelector((state) => state.allChannels);
+  const { canSeeNav, userEmail, role } = usePermission();
 
   const [hoveredItem, setHoveredItem] = useState<string | null>(null); // for hover
   const [clickedItem, setClickedItem] = useState<string | null>(null); // for click (mobile)
@@ -367,6 +370,9 @@ const Navbar = () => {
   // Logout handler
   const handleLogout = async () => {
     try {
+      // ✅ Use logout action to wipe state
+      dispatch(logoutAction());
+
       // Clear Redux persist store
       await persistor.purge();
 
@@ -542,8 +548,8 @@ const Navbar = () => {
                   />
                 </div>
                 <div>
-                  <div className="t-label">Nirma Amir</div>
-                  <div className="t-cap">namraamir@ceturo.com</div>
+                  <div className="t-label">{userEmail?.split("@")[0] ?? "User"}</div>
+                  <div className="t-cap">{userEmail ?? role ?? "Guest"}</div>
                 </div>
               </div>
 
@@ -563,8 +569,8 @@ const Navbar = () => {
                         />
                       </div>
                       <div className="flex-1">
-                        <div className="t-label-b">Nirma Amir</div>
-                        <div className="t-cap">namraamir@ceturo.com</div>
+                        <div className="t-label-b">{userEmail?.split("@")[0] ?? "User"}</div>
+                        <div className="t-cap">{userEmail ?? role ?? "Guest"}</div>
                       </div>
                     </div>
                   </div>
@@ -586,66 +592,68 @@ const Navbar = () => {
       <hr className="border-(--header-border)" />
 
       <div className="flex items-center ml-1 lg:ml-2 xl:ml-6 bg-(--background) text-(--gray-7)">
-        {navItems.map((item) => (
-          <div
-            key={item.label}
-            className="relative"
-            ref={(el) => {
-              dropdownRefs.current[item.label] = el;
-            }}
-            onMouseEnter={() => item.items && handleMouseEnter(item.label)}
-            onMouseLeave={item.items ? handleMouseLeave : undefined}
-          >
-            {item.items ? (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  item.items && toggleClick(item.label);
-                }}
-                className={`flex items-center gap-0.5 lg:gap-1 cursor-pointer px-1 lg:px-2 xl:px-5 py-3 text-md font-medium transition-all duration-200 hover:bg-(--gray-1) ${
-                  activeDropdown === item.label ? "bg-(--gray-1)" : "text-(--gray-6)"
-                }`}
-              >
-                {item.label}
-                <Image
-                  src="/arrow-down.png"
-                  alt="Ceturvi Logo"
-                  width={20}
-                  height={20}
-                  // className="object-contain"
-                  className={`w-4 h-4 object-contai transition-transform duration-200 ${
-                    activeDropdown === item.label ? "rotate-180" : ""
+        {navItems
+          .filter((item) => canSeeNav(item.label))
+          .map((item) => (
+            <div
+              key={item.label}
+              className="relative"
+              ref={(el) => {
+                dropdownRefs.current[item.label] = el;
+              }}
+              onMouseEnter={() => item.items && handleMouseEnter(item.label)}
+              onMouseLeave={item.items ? handleMouseLeave : undefined}
+            >
+              {item.items ? (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    item.items && toggleClick(item.label);
+                  }}
+                  className={`flex items-center gap-0.5 lg:gap-1 cursor-pointer px-1 lg:px-2 xl:px-5 py-3 text-md font-medium transition-all duration-200 hover:bg-(--gray-1) ${
+                    activeDropdown === item.label ? "bg-(--gray-1)" : "text-(--gray-6)"
                   }`}
-                />
-                {/* <ChevronDown
+                >
+                  {item.label}
+                  <Image
+                    src="/arrow-down.png"
+                    alt="Ceturvi Logo"
+                    width={20}
+                    height={20}
+                    // className="object-contain"
+                    className={`w-4 h-4 object-contai transition-transform duration-200 ${
+                      activeDropdown === item.label ? "rotate-180" : ""
+                    }`}
+                  />
+                  {/* <ChevronDown
                   className={`w-4 h-4 transition-transform duration-200 ${
                     activeDropdown === item.label ? "rotate-180" : ""
                   }`}
                 /> */}
-              </button>
-            ) : (
-              <Link
-                href={item.href || "#"}
-                className="flex items-center gap-0.5 lg:gap-1 cursor-pointer px-1 lg:px-2 xl:px-5 py-3 text-md font-medium transition-all duration-200 hover:bg-(--gray-1) text-(--gray-6)"
-              >
-                {item.label}
-              </Link>
-            )}
+                </button>
+              ) : (
+                <Link
+                  href={item.href || "#"}
+                  className="flex items-center gap-0.5 lg:gap-1 cursor-pointer px-1 lg:px-2 xl:px-5 py-3 text-md font-medium transition-all duration-200 hover:bg-(--gray-1) text-(--gray-6)"
+                >
+                  {item.label}
+                </Link>
+              )}
 
-            {/* Mega Menu Dropdown */}
-            {item.items && activeDropdown === item.label && (
-              <div
-                className={`absolute shadow-soft top-full mt-0.5 w-60 bg-(--background) py-3 z-50 ${
-                  dropdownAlignment[item.label] === "right" ? "right-0" : "left-0"
-                }`}
-                onMouseEnter={() => hoveredItem && handleMouseEnter(item.label)}
-                onMouseLeave={handleMouseLeave}
-              >
-                <div className="mt-1 ">{renderDropdownItems(item.items)}</div>
-              </div>
-            )}
-          </div>
-        ))}
+              {/* Mega Menu Dropdown */}
+              {item.items && activeDropdown === item.label && (
+                <div
+                  className={`absolute shadow-soft top-full mt-0.5 w-60 bg-(--background) py-3 z-50 ${
+                    dropdownAlignment[item.label] === "right" ? "right-0" : "left-0"
+                  }`}
+                  onMouseEnter={() => hoveredItem && handleMouseEnter(item.label)}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  <div className="mt-1 ">{renderDropdownItems(item.items)}</div>
+                </div>
+              )}
+            </div>
+          ))}
       </div>
     </nav>
   );

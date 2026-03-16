@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import type { RootState } from "@/store"; // ✅ import RootState
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-// Types
 export interface PermissionGroup {
   id: string;
   pulseCode: string;
@@ -32,7 +32,6 @@ interface PermissionGroupState {
   permissionGroups: PermissionGroup[];
 }
 
-// Initial State
 const initialState: PermissionGroupState = {
   loading: false,
   success: false,
@@ -40,41 +39,37 @@ const initialState: PermissionGroupState = {
   permissionGroups: [],
 };
 
-// Async Thunk: Get All Permission Groups (GET /api/v1/permissionGroup)
 export const getAllPermissionGroups = createAsyncThunk<
   GetPermissionGroupsResponse,
   void,
-  { rejectValue: string }
->("permissionGroup/getAllPermissionGroups", async (_, { rejectWithValue }) => {
+  { rejectValue: string; state: RootState } // ✅ typed state
+>("permissionGroup/getAllPermissionGroups", async (_, { rejectWithValue, getState }) => {
   try {
-    const sessionStr = localStorage.getItem("userSession");
-    if (!sessionStr) {
-      return rejectWithValue("No session found. Please login again.");
-    }
+    // ✅ read token from Redux — not localStorage directly
+    const token = getState().verifyOtp.token;
+    if (!token) return rejectWithValue("No session found. Please login again.");
 
     const response = await axios.get<GetPermissionGroupsResponse>(
       `${baseUrl}api/v1/permissionGroup`,
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionStr}`,
+          Authorization: `Bearer ${token}`,
         },
       }
     );
 
     return response.data;
   } catch (error: any) {
-    const errorMessage =
+    return rejectWithValue(
       error.response?.data?.message ||
-      error.response?.data?.error ||
-      error.message ||
-      "Failed to fetch permission groups.";
-
-    return rejectWithValue(errorMessage);
+        error.response?.data?.error ||
+        error.message ||
+        "Failed to fetch permission groups."
+    );
   }
 });
 
-// Slice
 const getAllPermissionGroupsSlice = createSlice({
   name: "allPermissionGroups",
   initialState,
@@ -109,8 +104,5 @@ const getAllPermissionGroupsSlice = createSlice({
   },
 });
 
-// Export actions
 export const { resetPermissionGroupsState } = getAllPermissionGroupsSlice.actions;
-
-// Export reducer
 export default getAllPermissionGroupsSlice.reducer;

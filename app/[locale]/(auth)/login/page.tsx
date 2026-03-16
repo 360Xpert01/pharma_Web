@@ -122,7 +122,7 @@ export default function LoginScreen() {
           result.error?.message ||
           "Invalid OTP. Please try again.";
 
-        if (errorMsg === "access denied, please use the mobile app") {
+        if (errorMsg === "Access denied. Please use the mobile app.") {
           toast.error(errorMsg);
           setInvalidOtp(false); // Don't show generic error below inputs
           // Optionally clear OTP
