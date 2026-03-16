@@ -548,7 +548,7 @@ const Navbar = () => {
                   />
                 </div>
                 <div>
-                  <div className="t-label">{userEmail?.split("@")[0] ?? "User"}</div>
+                  {/* <div className="t-label">{userEmail?.split("@")[0] ?? "User"}</div> */}
                   <div className="t-cap">{userEmail ?? role ?? "Guest"}</div>
                 </div>
               </div>
@@ -569,7 +569,7 @@ const Navbar = () => {
                         />
                       </div>
                       <div className="flex-1">
-                        <div className="t-label-b">{userEmail?.split("@")[0] ?? "User"}</div>
+                        {/* <div className="t-label-b">{userEmail?.split("@")[0] ?? "User"}</div> */}
                         <div className="t-cap">{userEmail ?? role ?? "Guest"}</div>
                       </div>
                     </div>
