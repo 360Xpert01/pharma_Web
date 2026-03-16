@@ -439,7 +439,10 @@ export default function TableFilter({
                       setSelectedZoneId(v);
                       setSelectedRegionId(""); // reset region on zone change
                     }}
-                    options={zones.map((z) => ({ value: z.id, label: z.name }))}
+                    options={zones.map((z) => ({
+                      value: z.id,
+                      label: z.description ? `${z.name} - ${z.description}` : z.name,
+                    }))}
                     placeholder="Select zone"
                     className="mb-0"
                   />
@@ -454,7 +457,10 @@ export default function TableFilter({
                     onChange={setSelectedRegionId}
                     options={
                       selectedZoneId
-                        ? filteredRegions.map((r) => ({ value: r.id, label: r.name }))
+                        ? filteredRegions.map((r) => ({
+                            value: r.id,
+                            label: r.description ? `${r.name} - ${r.description}` : r.name,
+                          }))
                         : []
                     }
                     placeholder={!selectedZoneId ? "Select a zone first" : "Select region"}

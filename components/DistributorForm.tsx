@@ -67,11 +67,17 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
 
   // Dropdown options (computed AFTER state so selectedZoneId is available)
   const typeOptions = distributorTypes.map((t) => ({ value: t.id, label: t.name }));
-  const zoneOptions = zones.map((z) => ({ value: z.id, label: z.name }));
+  const zoneOptions = zones.map((z) => ({
+    value: z.id,
+    label: z.description ? `${z.name} - ${z.description}` : z.name,
+  }));
   // Only show regions that belong to the selected zone (parentId === selectedZoneId)
   const regionOptions = regions
     .filter((r) => r.parentId === selectedZoneId)
-    .map((r) => ({ value: r.id, label: r.name }));
+    .map((r) => ({
+      value: r.id,
+      label: r.description ? `${r.name} - ${r.description}` : r.name,
+    }));
 
   // UI
   const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
