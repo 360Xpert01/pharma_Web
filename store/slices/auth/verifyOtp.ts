@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import type { PermissionGroupName } from "@/lib/rbac";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-// Types
 interface VerifyOtpPayload {
   deviceId: string;
   otp: number | string;
@@ -16,7 +16,7 @@ interface VerifyOtpResponse {
     accessToken?: string;
     userEmail?: string;
     permissionGroupId?: string;
-    permissionGroupName?: string;
+    permissionGroupName?: PermissionGroupName;
     deviceId?: string;
   };
   token?: string;
@@ -29,18 +29,22 @@ interface AuthState {
   error: string | null;
   message: string | null;
   token: string | null;
+  permissionGroupId: string | null;
+  permissionGroupName: PermissionGroupName | null;
+  userEmail: string | null;
 }
 
-// Initial State
 const initialState: AuthState = {
   loading: false,
   success: false,
   error: null,
   message: null,
   token: null,
+  permissionGroupId: null,
+  permissionGroupName: null,
+  userEmail: null,
 };
 
-// Async Thunk: Verify OTP (PUT request)
 export const verifyOtp = createAsyncThunk<
   VerifyOtpResponse,
   VerifyOtpPayload,
@@ -50,66 +54,65 @@ export const verifyOtp = createAsyncThunk<
     const response = await axios.put<VerifyOtpResponse>(
       `${baseUrl}api/v1/auth/verify-otp`,
       payload,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      { headers: { "Content-Type": "application/json" } }
     );
 
-    // Block Sales Representative from entering CRM
     if (
       response.data?.success &&
       response.data?.data?.permissionGroupName === "Sales Representative"
     ) {
-      return rejectWithValue("access denied, please use the mobile app");
+      return rejectWithValue("Access denied. Please use the mobile app.");
     }
 
     return response.data;
   } catch (error: any) {
-    const errorMessage =
+    return rejectWithValue(
       error.response?.data?.message ||
-      error.response?.data?.error ||
-      error.message ||
-      "Invalid OTP. Please try again.";
-
-    return rejectWithValue(errorMessage);
+        error.response?.data?.error ||
+        error.message ||
+        "Invalid OTP. Please try again."
+    );
   }
 });
 
-// Slice
-const authSlice = createSlice({
-  name: "auth",
+const verifyOtpSlice = createSlice({
+  name: "verifyAuth",
   initialState,
   reducers: {
-    resetOtpState: (state) => {
+    resetVerifyState: (state) => {
       state.loading = false;
       state.success = false;
       state.error = null;
       state.message = null;
     },
     logout: (state) => {
-      state.token = null;
-      state.success = false;
+      // ✅ wipe everything on logout
+      Object.assign(state, initialState);
     },
   },
   extraReducers: (builder) => {
     builder
-      // Verify OTP Pending
       .addCase(verifyOtp.pending, (state) => {
         state.loading = true;
         state.success = false;
         state.error = null;
         state.message = null;
       })
-      // Verify OTP Success
       .addCase(verifyOtp.fulfilled, (state, action: PayloadAction<VerifyOtpResponse>) => {
         state.loading = false;
         state.success = true;
         state.message = action.payload.message || "Login successful!";
-        state.token = action.payload.token || null;
+
+        // ✅ token
+        state.token = action.payload.token ?? action.payload.data?.accessToken ?? null;
+
+        // ✅ permission data (override from requestOtp if verify also returns it)
+        if (action.payload.data?.permissionGroupId)
+          state.permissionGroupId = action.payload.data.permissionGroupId;
+        if (action.payload.data?.permissionGroupName)
+          state.permissionGroupName = action.payload.data.permissionGroupName;
+        if (action.payload.data?.userEmail) state.userEmail = action.payload.data.userEmail;
       })
-      // Verify OTP Failed
       .addCase(verifyOtp.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
@@ -118,7 +121,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { resetOtpState, logout } = authSlice.actions;
-
-// Export reducer
-export default authSlice.reducer;
+export const { resetVerifyState, logout } = verifyOtpSlice.actions;
+export default verifyOtpSlice.reducer;
