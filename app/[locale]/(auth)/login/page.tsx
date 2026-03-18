@@ -54,10 +54,7 @@ export default function LoginScreen() {
       const payload = result.payload as any; // Cast for simplified check
 
       if (payload?.success) {
-        setIsOtpSent(true);
         setUserNotFound(false);
-        toast.success("OTP sent successfully!");
-        otpRefs.current[0]?.focus();
       } else {
         toast.error(result.payload || "Failed to send OTP");
       }
@@ -229,6 +226,11 @@ export default function LoginScreen() {
                 }}
                 placeholder="Enter tenant name"
                 disabled={loading}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && email.includes("@") && subDomain.trim() && !loading) {
+                    handleSendOTP();
+                  }
+                }}
                 className="w-full h-12 px-4 py-3 border border-[var(--gray-2)] rounded-8 outline-none transition-all focus:ring-2 focus:ring-[var(--primary-1)] focus:border-[var(--primary-1)] disabled:bg-[var(--gray-1)] disabled:cursor-not-allowed bg-white text-sm tracking-widest"
               />
               <div className="min-h-[20px]" />
