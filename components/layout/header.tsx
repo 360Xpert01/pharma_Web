@@ -10,6 +10,8 @@ import { persistor, useAppDispatch, useAppSelector } from "@/store";
 import { getAllChannels } from "@/store/slices/channel/getAllChannelsSlice";
 import { usePermission } from "@/hooks/usePermission";
 import { logout as logoutAction } from "@/store/slices/auth/verifyOtp";
+import { logout as loginLogoutAction } from "@/store/slices/auth/loginSlice";
+import { logout as authLogoutAction } from "@/store/slices/auth-slice";
 
 interface DropdownItem {
   label: string;
@@ -370,8 +372,10 @@ const Navbar = () => {
   // Logout handler
   const handleLogout = async () => {
     try {
-      // ✅ Use logout action to wipe state
+      // ✅ Use logout actions to wipe state across all auth slices
       dispatch(logoutAction());
+      dispatch(loginLogoutAction());
+      dispatch(authLogoutAction());
 
       // Clear Redux persist store
       await persistor.purge();
