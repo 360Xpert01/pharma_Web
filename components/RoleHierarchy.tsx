@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 import RoleResponsibilitiesDropdown from "@/components/RoleResponsibilitiesDropdown";
 import { PermissionGroup } from "@/store/slices/permissionGroup/getAllPermissionGroupsSlice";
 import { ConfirmModal } from "./shared/confirm-modal";
-import { RoleLevel, isAdminRole } from "@/lib/role-utils";
+import { RoleLevel } from "@/lib/role-utils";
 
 export interface RoleItem {
   id: string;
@@ -59,6 +59,7 @@ interface RoleNodeProps {
   onMoreOptions?: (itemId: string, itemType: RoleLevel) => void;
   onStartUpdate?: (id: string) => void;
   permissionGroups: PermissionGroup[];
+  currentUserRoleId?: string;
 }
 
 const getTypeIcon = (type: RoleLevel) => {
@@ -107,6 +108,7 @@ const RoleNode: React.FC<RoleNodeProps> = ({
   onMoreOptions,
   onStartUpdate,
   permissionGroups,
+  currentUserRoleId,
 }) => {
   const hasChildren = item.children && item.children.length > 0;
   const isAddingToThis = addingId === item.id;
@@ -202,13 +204,9 @@ const RoleNode: React.FC<RoleNodeProps> = ({
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               onKeyDown={handleKeyDown}
-              disabled={isAdminRole(item.permissionGroupId, permissionGroups)}
+              disabled={false}
               placeholder="Enter Tree Name"
-              className={cn(
-                "w-full bg-transparent border-none outline-none text-[var(--gray-9)] font-semibold placeholder:text-[var(--gray-4)]",
-                isAdminRole(item.permissionGroupId, permissionGroups) &&
-                  "opacity-70 cursor-not-allowed"
-              )}
+              className="w-full bg-transparent border-none outline-none text-[var(--gray-9)] font-semibold placeholder:text-[var(--gray-4)]"
             />
           </div>
           <div className="flex-shrink-0">
@@ -216,7 +214,7 @@ const RoleNode: React.FC<RoleNodeProps> = ({
               value={newPermissionGroupId}
               onChange={handleResponsibilityChange}
               options={permissionGroups}
-              readOnly={isAdminRole(item.permissionGroupId, permissionGroups)}
+              readOnly={item.id === currentUserRoleId}
             />
           </div>
           <div className="flex items-center gap-2">
@@ -313,9 +311,13 @@ const RoleNode: React.FC<RoleNodeProps> = ({
             {!hasChildren && (
               <button
                 type="button"
-                className="w-8 h-8 flex items-center justify-center bg-destructive text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
                 onClick={() => onDeleteChild?.(item.id)}
-                title="Delete"
+                disabled={item.id === currentUserRoleId}
+                className={cn(
+                  "w-8 h-8 flex items-center justify-center bg-destructive text-white rounded-8 transition-colors flex-shrink-0",
+                  item.id === currentUserRoleId ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                )}
+                title={item.id === currentUserRoleId ? "You cannot delete your own role" : "Delete"}
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -405,6 +407,7 @@ const RoleNode: React.FC<RoleNodeProps> = ({
                 onMoreOptions={onMoreOptions}
                 onStartUpdate={onStartUpdate}
                 permissionGroups={permissionGroups}
+                currentUserRoleId={currentUserRoleId}
               />
             ))}
         </div>
@@ -541,6 +544,7 @@ interface RoleHierarchyProps {
   updatingId?: string | null;
   onStartUpdate?: (id: string) => void;
   permissionGroups: PermissionGroup[];
+  currentUserRoleId?: string;
 }
 
 export const RoleHierarchy: React.FC<RoleHierarchyProps> = ({
@@ -557,6 +561,7 @@ export const RoleHierarchy: React.FC<RoleHierarchyProps> = ({
   updatingId = null,
   onStartUpdate,
   permissionGroups,
+  currentUserRoleId,
 }) => {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
@@ -638,6 +643,7 @@ export const RoleHierarchy: React.FC<RoleHierarchyProps> = ({
             onMoreOptions={onMoreOptions}
             onStartUpdate={onStartUpdate}
             permissionGroups={permissionGroups}
+            currentUserRoleId={currentUserRoleId}
           />
         ))}
       </div>

@@ -90,6 +90,7 @@ export default function RoleHierarchyWrapper() {
     permissionGroups,
     error: groupsError,
   } = useAppSelector((state) => state.allPermissionGroups);
+  const { user } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(getAllRoles({ pagination: false }));
@@ -125,6 +126,8 @@ export default function RoleHierarchyWrapper() {
       setUpdatingId(null);
     }
     if (updateError) {
+      const friendlyError = updateError.replace(/permissionGroupId/gi, "permission");
+      toast.error(friendlyError);
       dispatch(resetUpdateRoleState());
     }
   }, [updateSuccess, updateMessage, updateError, dispatch]);
@@ -136,6 +139,7 @@ export default function RoleHierarchyWrapper() {
       dispatch(resetDeleteRoleState());
     }
     if (deleteError) {
+      toast.error(deleteError);
       dispatch(resetDeleteRoleState());
     }
   }, [deleteSuccess, deleteMessage, deleteError, dispatch]);
@@ -215,6 +219,7 @@ export default function RoleHierarchyWrapper() {
         onDeleteChild={handleDeleteChild}
         onMoreOptions={handleMoreOptions}
         onStartUpdate={handleStartUpdate}
+        currentUserRoleId={user?.roleId}
       />
     </div>
   );
