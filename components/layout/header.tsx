@@ -553,7 +553,8 @@ const Navbar = () => {
                 </div>
                 <div>
                   {/* <div className="t-label">{userEmail?.split("@")[0] ?? "User"}</div> */}
-                  <div className="t-cap">{userEmail ?? role ?? "Guest"}</div>
+                  <div className="t-cap">{userEmail ?? "Guest"}</div>
+                  <div className="t-cap">{role ?? "Guest"}</div>
                 </div>
               </div>
 
