@@ -5,7 +5,7 @@ import { RotateCw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useAppDispatch, useAppSelector } from "../../../../store";
-import { requestOtp } from "../../../../store/slices/auth/loginSlice";
+import { requestOtp, resetOtpState } from "../../../../store/slices/auth/loginSlice";
 import { verifyOtp } from "../../../../store/slices/auth/verifyOtp";
 import FormInput from "../../../../components/form/FormInput";
 import { Button } from "../../../../components/ui/button/button";
@@ -26,6 +26,11 @@ export default function LoginScreen() {
   const { loading, success, error, message } = useAppSelector((state) => state.login);
 
   const deviceId = "ewb-123";
+
+  // Reset state on mount to ensure clean login flow (prevents direct OTP screen from persisted state)
+  useEffect(() => {
+    dispatch(resetOtpState());
+  }, [dispatch]);
 
   // Handle OTP send success
   useEffect(() => {
