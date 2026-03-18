@@ -80,6 +80,9 @@ const requestOtpSlice = createSlice({
       state.message = null;
       // ✅ keep permission fields — needed for OTP verify step
     },
+    logout: (state) => {
+      Object.assign(state, initialState);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -111,5 +114,5 @@ const requestOtpSlice = createSlice({
   },
 });
 
-export const { resetOtpState } = requestOtpSlice.actions;
+export const { resetOtpState, logout } = requestOtpSlice.actions;
 export default requestOtpSlice.reducer;
