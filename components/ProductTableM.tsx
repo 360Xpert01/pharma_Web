@@ -33,13 +33,17 @@ export default function MedicineTable({
   const [openId, setOpenId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
+  const [sorting, setSorting] = useState<any[]>([]);
   const dispatch = useAppDispatch();
 
   // Get products from Redux store
   const { products, loading, error, total } = useAppSelector((state) => state.allProducts);
 
-  // Fetch products with filters
+  // Fetch products with filters/sorting
   useEffect(() => {
+    const sortField = sorting.length > 0 ? sorting[0].id : "pulseCode";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "desc";
+
     dispatch(
       getAllProducts({
         page: 1,
@@ -47,9 +51,11 @@ export default function MedicineTable({
         search: searchTerm,
         categoryId: filters?.categoryId,
         status: filters?.status,
+        sort: sortField,
+        order: sortOrder as any,
       })
     );
-  }, [dispatch, searchTerm, filters]);
+  }, [dispatch, searchTerm, filters, sorting]);
 
   const handleRetry = () => {
     dispatch(getAllProducts({ page: 1, limit: 10 }));
@@ -57,6 +63,9 @@ export default function MedicineTable({
 
   // Handle pagination changes from the table
   const handlePaginationChange = (page: number, pageSize: number) => {
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
     dispatch(
       getAllProducts({
         page,
@@ -64,6 +73,8 @@ export default function MedicineTable({
         search: searchTerm,
         categoryId: filters?.categoryId,
         status: filters?.status,
+        sort: sortField,
+        order: sortOrder as any,
       })
     );
   };
@@ -104,14 +115,16 @@ export default function MedicineTable({
     {
       header: "Image",
       accessorKey: "imageUrl",
+      enableSorting: false,
+      size: 90,
       cell: ({ row }) => (
-        <div className="w-12 h-12 rounded-8 overflow-hidden ring-2 ring-[var(--gray-2)]">
+        <div className="h-10 rounded-8 overflow-hidden ring-2 ring-[var(--gray-2)] flex items-center justify-center">
           <ImageWithFallback
             src={row.original.imageUrl}
             alt={row.original.name}
-            width={36}
-            height={36}
-            className="rounded-8 flex-shrink-0 object-contain w-9 h-9 border border-gray-100 p-0.5"
+            width={48}
+            height={48}
+            className="w-full h-full object-cover rounded-8"
             fallbackSrc="/images/MedicinePlaceholder.svg"
           />
         </div>
@@ -169,8 +182,10 @@ export default function MedicineTable({
         onRetry={handleRetry}
         enablePagination={true}
         serverSidePagination={true}
+        serverSideSorting={true}
         totalItems={total}
         onPaginationChange={handlePaginationChange}
+        onSortChange={(newSorting) => setSorting(newSorting)}
         pageSize={10}
         PaginationComponent={TablePagination}
         emptyMessage="No products found"

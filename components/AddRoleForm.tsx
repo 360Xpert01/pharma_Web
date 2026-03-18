@@ -15,6 +15,7 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { roleCreationSchema } from "@/validations/roleValidation";
 import { FormInput } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
+import { ConfirmModal } from "./shared/confirm-modal";
 
 interface Responsibility {
   id: string;
@@ -33,6 +34,7 @@ export default function AddNewRoleForm() {
 
   // Validation errors state
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -47,7 +49,7 @@ export default function AddNewRoleForm() {
     // 🔥 Always call generate for "Role" entity
     // Role forms create roles (business logic, not dynamic)
     // The /generate API is idempotent - handles existence automatically
-    dispatch(generatePrefix({ entity: "Role" }));
+    // dispatch(generatePrefix({ entity: "Role" })); // Removed as requested
 
     return () => {
       dispatch(resetGeneratePrefixState());
@@ -128,7 +130,7 @@ export default function AddNewRoleForm() {
     // Prepare form data for validation
     const formData = {
       roleName,
-      pulseCode: generatedPrefix || "",
+      pulseCode: undefined,
     };
 
     // Validate using Zod schema
@@ -149,7 +151,7 @@ export default function AddNewRoleForm() {
 
       // Also show the first error as a toast for immediate feedback
       const firstError = validation.error.errors[0];
-      toast.error(firstError.message);
+
       return;
     }
 
@@ -170,10 +172,9 @@ export default function AddNewRoleForm() {
       toast.success(message || "Role created successfully!");
       setRoleName("");
       setValidationErrors({});
-      dispatch(resetGeneratePrefixState());
+      // dispatch(resetGeneratePrefixState()); // Removed as requested
       router.push("/dashboard/User-Role");
     } else {
-      toast.error(error || "Failed to create role");
     }
   };
 
@@ -194,9 +195,9 @@ export default function AddNewRoleForm() {
                 label="Pulse Code"
                 name="pulseCode"
                 type="text"
-                value={generatedPrefix || ""}
+                value={"TO BE GENERATED"}
                 onChange={() => {}}
-                placeholder={prefixLoading ? "Generating..." : "Auto-generated"}
+                placeholder="Auto-generated"
                 readOnly
                 required
                 error={prefixError || ""}
@@ -416,7 +417,12 @@ export default function AddNewRoleForm() {
 
         {/* Footer Buttons */}
         <div className="flex justify-end gap-4 pt-8">
-          <Button variant="outline" size="lg" rounded="full" onClick={() => router.back()}>
+          <Button
+            variant="outline"
+            size="lg"
+            rounded="full"
+            onClick={() => setIsDiscardModalOpen(true)}
+          >
             Discard
           </Button>
           <Button
@@ -431,6 +437,18 @@ export default function AddNewRoleForm() {
           </Button>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={() => {
+          setIsDiscardModalOpen(false);
+          router.back();
+        }}
+        title="Discard changes?"
+        description="You will lose all unsaved changes for this role."
+        confirmLabel="Discard"
+      />
     </div>
   );
 }

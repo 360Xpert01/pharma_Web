@@ -24,17 +24,42 @@ interface AllDoctorSegmentsProps {
 
 export default function AllDoctorSegments({ onEditSegment }: AllDoctorSegmentsProps) {
   const dispatch = useAppDispatch();
-  const { loading, error, segments } = useAppSelector((state) => state.allSegments);
+  const { loading, error, segments, pagination } = useAppSelector((state) => state.allSegments);
   const [openId, setOpenId] = useState<string | null>(null);
+  const [sorting, setSorting] = useState<any[]>([]);
 
-  // Fetch segments on mount
+  // Fetch segments on mount and when sorting changes
   useEffect(() => {
-    dispatch(getAllSegments());
+    const sortField = sorting.length > 0 ? sorting[0].id : "pulseCode";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "desc";
+
+    dispatch(
+      getAllSegments({
+        page: 1,
+        limit: 10,
+        sort: sortField,
+        order: sortOrder as any,
+      })
+    );
 
     return () => {
       dispatch(resetSegmentsState());
     };
-  }, [dispatch]);
+  }, [dispatch, sorting]);
+
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    const sortField = sorting.length > 0 ? sorting[0].id : "pulseCode";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "desc";
+
+    dispatch(
+      getAllSegments({
+        page,
+        limit: pageSize,
+        sort: sortField,
+        order: sortOrder as any,
+      })
+    );
+  };
 
   const handleRetry = () => {
     dispatch(getAllSegments());
@@ -113,8 +138,13 @@ export default function AllDoctorSegments({ onEditSegment }: AllDoctorSegmentsPr
         loading={loading}
         error={error}
         onRetry={handleRetry}
-        enableSorting={false}
+        enableSorting={true}
+        serverSideSorting={true}
         enablePagination={true}
+        serverSidePagination={true}
+        totalItems={pagination?.total || segments?.length || 0}
+        onPaginationChange={handlePaginationChange}
+        onSortChange={(newSorting) => setSorting(newSorting)}
         pageSize={10}
         PaginationComponent={TablePagination}
         emptyMessage="No doctor segments found"

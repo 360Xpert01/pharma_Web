@@ -63,7 +63,6 @@ export default function AllocateUserForm() {
   // Handle error
   useEffect(() => {
     if (allocateError) {
-      toast.error(allocateError);
     }
   }, [allocateError]);
 
@@ -108,12 +107,10 @@ export default function AllocateUserForm() {
   // Handle form submission
   const handleSubmit = () => {
     if (!selectedUserId) {
-      toast.error("Please select a user");
       return;
     }
 
     if (selectedGiveaways.length === 0 && selectedSamples.length === 0) {
-      toast.error("Please select at least one giveaway or sample");
       return;
     }
 

@@ -9,9 +9,8 @@ import {
   resetTerritoriesState,
   resetDeleteTerritoryState,
 } from "@/store/slices/territory";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
 import EditIcon from "@/components/svgs/edit-icon";
-import EyeIcon from "@/components/svgs/eye-icon";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 
@@ -37,6 +36,7 @@ export default function TerritoryTable({
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { territories, loading, error, pagination } = useAppSelector((s) => s.allTerritories);
+  const [sorting, setSorting] = useState<any[]>([]);
 
   // Merge external filters with internal state
   const filters = useMemo(() => externalFilters || {}, [externalFilters]);
@@ -48,13 +48,18 @@ export default function TerritoryTable({
     message: deleteMessage,
   } = useAppSelector((state) => state.deleteTerritory);
 
-  // Fetch territories on mount and when filters change
+  // Fetch territories on mount and when filters/sorting change
   useEffect(() => {
+    const sortField = sorting.length > 0 ? sorting[0].id : "pulseCode";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "desc";
+
     dispatch(
       getAllTerritories({
         search: searchTerm,
         page: 1,
         limit: 10,
+        sort: sortField,
+        order: sortOrder as any,
         ...filters,
       })
     );
@@ -62,15 +67,20 @@ export default function TerritoryTable({
     return () => {
       dispatch(resetTerritoriesState());
     };
-  }, [dispatch, searchTerm, JSON.stringify(filters)]);
+  }, [dispatch, searchTerm, JSON.stringify(filters), sorting]);
 
   // Handle pagination changes
   const handlePaginationChange = (page: number, pageSize: number) => {
+    const sortField = sorting.length > 0 ? sorting[0].id : "pulseCode";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "desc";
+
     dispatch(
       getAllTerritories({
         search: searchTerm,
         page,
         limit: pageSize,
+        sort: sortField,
+        order: sortOrder as any,
         ...filters,
       })
     );
@@ -79,7 +89,7 @@ export default function TerritoryTable({
   // Handle delete success
   useEffect(() => {
     if (deleteSuccess && deleteMessage) {
-      toast.success("Success", { description: deleteMessage });
+      toast.success(deleteMessage);
       dispatch(resetDeleteTerritoryState());
       // Refresh the list
       dispatch(getAllTerritories({ page: 1, limit: 10, search: searchTerm }));
@@ -89,7 +99,6 @@ export default function TerritoryTable({
   // Handle errors
   useEffect(() => {
     if (deleteError) {
-      toast.error("Error", { description: deleteError });
     }
   }, [deleteError]);
 
@@ -98,7 +107,7 @@ export default function TerritoryTable({
     return territories.map((t) => ({
       id: t.id,
       pulseCode: t.pulseCode,
-      name: t.name,
+      name: t.name || "N/A",
       description: t.description || "N/A",
       bricks: t.bricks?.length || 0,
     }));
@@ -172,8 +181,11 @@ export default function TerritoryTable({
       enableExpanding={false}
       enablePagination={true}
       serverSidePagination={true}
+      serverSideSorting={true}
       totalItems={pagination?.total || 0}
       onPaginationChange={handlePaginationChange}
+      onSortChange={(newSorting) => setSorting(newSorting)}
+      sorting={sorting}
       pageSize={10}
       emptyMessage="No territories found"
       PaginationComponent={TablePagination}

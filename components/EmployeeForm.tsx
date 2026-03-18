@@ -26,6 +26,7 @@ import {
   getAllTerritories,
   resetTerritoriesState,
 } from "@/store/slices/territory/getAllTerritoriesSlice";
+import { ConfirmModal } from "./shared/confirm-modal";
 
 interface EmployeeFormProps {
   mode: "add" | "update";
@@ -78,7 +79,8 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
   // Form States
   const [status, setStatus] = useState<"Active" | "Inactive">("Active");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [dob, setDob] = useState("");
@@ -95,6 +97,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
 
   // Validation errors state
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   // Initial data loading
   useEffect(() => {
@@ -104,11 +107,11 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
       dispatch(getUserById(userId));
     } else if (!isUpdateMode) {
       // Add mode: Generate prefix
-      dispatch(generatePrefix({ entity: "User" }));
+      // dispatch(generatePrefix({ entity: "User" })); // Removed as requested
     }
 
     // Fetch roles, users, teams, and territories for dropdowns
-    dispatch(getAllRoles());
+    dispatch(getAllRoles({ pagination: false }));
     dispatch(getAllUsers({ limit: 10000 })); // Fetch more users to increase chances of finding supervisors
     dispatch(getTeamAll());
     dispatch(getAllTerritories({ notassigned: true })); // Fetch unassigned territories without pagination
@@ -134,7 +137,6 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
     }
     if (uploadError) {
       console.error("EmployeeForm: Upload error", uploadError);
-      toast.error(uploadError);
     }
   }, [uploadSuccess, uploadedFiles, uploadError]);
 
@@ -150,10 +152,8 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
   // Populate form with fetched employee data (Update mode only)
   useEffect(() => {
     if (isUpdateMode && employeeData) {
-      const fullName = [employeeData.firstName, employeeData.middleName, employeeData.lastName]
-        .filter(Boolean)
-        .join(" ");
-      setName(fullName || "");
+      setFirstName(employeeData.firstName || "");
+      setLastName(employeeData.lastName || "");
       setEmail(employeeData.email || "");
       setPhoneNumber(employeeData.mobileNumber || "");
       setDob(
@@ -193,7 +193,6 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
   // Show error if fetching user fails
   useEffect(() => {
     if (isUpdateMode && fetchError) {
-      toast.error(fetchError);
     }
   }, [fetchError, isUpdateMode]);
 
@@ -216,15 +215,10 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
 
     // Validate userId for update mode
     if (isUpdateMode && !userId) {
-      toast.error("No user ID provided");
       return;
     }
 
-    // Split name into parts (first, middle, last)
-    const nameParts = name.trim().split(/\s+/);
-    const firstName = nameParts[0] || "";
-    const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
-    const middleName = nameParts.length > 2 ? nameParts.slice(1, -1).join(" ") : "";
+    // Get the selected role name for conditional validation
 
     // Get the selected role name for conditional validation
     const selectedRole = roles.find((r) => r.id === selectedRoleId);
@@ -234,13 +228,12 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
     const formData = {
       email,
       firstName,
-      middleName,
       lastName,
       fullAddress,
       roleId: selectedRoleId,
       roleName, // Add roleName for conditional validation
       mobileNumber: phoneNumber,
-      pulseCode: isUpdateMode ? pulseCode : generatedPrefix || "",
+      pulseCode: isUpdateMode ? pulseCode : undefined,
       empLegacyCode: legacyCode,
       profilePicture: imagePreview || "",
       dob,
@@ -272,7 +265,7 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
 
       // Also show the first error as a toast for immediate feedback
       const firstError = validation.error.errors[0];
-      toast.error(firstError.message);
+
       return;
     }
 
@@ -293,8 +286,6 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
     if (validatedData.lastName) payload.lastName = validatedData.lastName;
     if (validatedData.mobileNumber) payload.mobileNumber = validatedData.mobileNumber;
 
-    // Add optional fields only if they have values
-    if (validatedData.middleName) payload.middleName = validatedData.middleName;
     if (validatedData.fullAddress) payload.fullAddress = validatedData.fullAddress;
     if (validatedData.roleId) payload.roleId = validatedData.roleId;
 
@@ -322,8 +313,8 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
       }
       if (validatedData.verifiedDevices) payload.verifiedDevices = validatedData.verifiedDevices;
       // pulseCode and brickId can only be set during registration, not during update
-      if (validatedData.pulseCode) {
-        payload.pulseCode = validatedData.pulseCode;
+      if (validatedData.pulseCode || !isUpdateMode) {
+        payload.pulseCode = isUpdateMode ? validatedData.pulseCode : undefined;
       }
       if (finalTerritoryId) payload.brickId = finalTerritoryId;
     }
@@ -352,7 +343,8 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
 
       if (!isUpdateMode) {
         // Reset form for add mode
-        setName("");
+        setFirstName("");
+        setLastName("");
         setEmail("");
         setPhoneNumber("");
         setDob("");
@@ -378,14 +370,17 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
         setValidationErrors({
           email: "Email Already Taken",
         });
-        toast.error("Email Already Taken");
       } else {
-        toast.error(errorMsg);
       }
     }
   };
 
   const handleDiscard = () => {
+    setIsDiscardModalOpen(true);
+  };
+
+  const confirmDiscard = () => {
+    setIsDiscardModalOpen(false);
     router.push("/dashboard/Employees-Management");
   };
 
@@ -449,15 +444,9 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                 <FormInput
                   label="Pulse Code"
                   name="pulseCode"
-                  value={isUpdateMode ? pulseCode : generatedPrefix || ""}
+                  value={isUpdateMode ? pulseCode : "TO BE GENERATED"}
                   onChange={() => {}}
-                  placeholder={
-                    isUpdateMode
-                      ? pulseCode || "N/A"
-                      : prefixLoading
-                        ? "Generating..."
-                        : "Auto-generated"
-                  }
+                  placeholder="Auto-generated"
                   readOnly
                 />
                 <FormInput
@@ -472,22 +461,36 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                 />
               </div>
 
-              {/* Row 2: Name, Email */}
+              {/* Row 2: First Name, Last Name */}
               <div className="grid grid-cols-2 gap-4">
                 <FormInput
-                  label="Name"
-                  name="name"
-                  value={name}
+                  label="First Name"
+                  name="firstName"
+                  value={firstName}
                   onChange={(value) => {
-                    setName(value);
+                    setFirstName(value);
                     clearFieldError("firstName");
-                    clearFieldError("middleName");
+                  }}
+                  placeholder="Enter first name"
+                  required
+                  error={getErrorMessage("firstName")}
+                />
+                <FormInput
+                  label="Last Name"
+                  name="lastName"
+                  value={lastName}
+                  onChange={(value) => {
+                    setLastName(value);
                     clearFieldError("lastName");
                   }}
-                  placeholder="Enter employee name"
+                  placeholder="Enter last name"
                   required
-                  error={getErrorMessage("firstName") || getErrorMessage("lastName")}
+                  error={getErrorMessage("lastName")}
                 />
+              </div>
+
+              {/* Row 3: Email Address */}
+              <div className="grid grid-cols-2 gap-4">
                 <FormInput
                   label="Email Address"
                   name="email"
@@ -501,10 +504,6 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                   required
                   error={getErrorMessage("email")}
                 />
-              </div>
-
-              {/* Row 3: Mobile Number, Date of Birth */}
-              <div className="grid grid-cols-2 gap-4">
                 <FormInput
                   label="Mobile Number"
                   name="mobileNumber"
@@ -518,6 +517,9 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                   required
                   error={getErrorMessage("mobileNumber")}
                 />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
                 <FormInput
                   label="Date of Birth"
                   name="dob"
@@ -529,23 +531,6 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                   }}
                   error={getErrorMessage("dob")}
                 />
-              </div>
-
-              {/* Full Address */}
-              <FormInput
-                label="Full Address"
-                name="fullAddress"
-                value={fullAddress}
-                onChange={(value) => {
-                  setFullAddress(value);
-                  clearFieldError("fullAddress");
-                }}
-                placeholder="Enter full address"
-                error={getErrorMessage("fullAddress")}
-              />
-
-              {/* Row 4: Joining Date, Status */}
-              <div className="grid grid-cols-2 gap-4 items-end">
                 <FormInput
                   label="Joining Date"
                   name="joiningDate"
@@ -556,6 +541,23 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
                     clearFieldError("joiningDate");
                   }}
                   error={getErrorMessage("joiningDate")}
+                />
+              </div>
+
+              {/* Full Address */}
+
+              {/* Row 4: Joining Date, Status */}
+              <div className="grid grid-cols-2 gap-4 items-end">
+                <FormInput
+                  label="Full Address"
+                  name="fullAddress"
+                  value={fullAddress}
+                  onChange={(value) => {
+                    setFullAddress(value);
+                    clearFieldError("fullAddress");
+                  }}
+                  placeholder="Enter full address"
+                  error={getErrorMessage("fullAddress")}
                 />
                 <div className="flex flex-col gap-2">
                   <StatusToggle status={status} onChange={setStatus} />
@@ -819,6 +821,15 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
           </Button>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={confirmDiscard}
+        title="Discard changes?"
+        description="Are you sure you want to discard your changes to this employee?"
+        confirmLabel="Discard"
+      />
     </div>
   );
 }

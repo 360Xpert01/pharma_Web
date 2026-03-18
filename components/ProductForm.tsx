@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { Plus, Loader2, X } from "lucide-react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { Plus } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   generatePrefix,
@@ -18,6 +18,8 @@ import { productSchema } from "@/validations";
 import ConflictModal from "./ConflictModal";
 import { ProfileImageUpload, FormInput, FormSelect, StatusToggle } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
+import ProductSkuSection from "./ProductSkuSection";
+import { ConfirmModal } from "./shared/confirm-modal";
 
 interface ProductFormProps {
   mode?: "add" | "edit";
@@ -69,16 +71,40 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
   const [chemicalFormula, setChemicalFormula] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState<"Active" | "Inactive">("Active");
-  const [skus, setSkus] = useState<string[]>([""]);
+  const [skus, setSkus] = useState<any[]>(
+    mode === "add"
+      ? [
+          {
+            sku: "",
+            skuCode: "",
+            market_selling_price: "",
+            trade_price: "",
+            net_selling_price: "",
+            quantity: "",
+          },
+        ]
+      : []
+  );
   const [isConflictModalOpen, setIsConflictModalOpen] = useState(false);
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Fetch product categories and generate prefix on mount
+  // Memoize validation helpers to keep column definitions stable
+  // Generic validation helpers
+  const getErrorMessage = (fieldName: string) => validationErrors[fieldName] || "";
+  const hasError = (fieldName: string) => !!validationErrors[fieldName];
+
+  const clearFieldError = useCallback((fieldName: string) => {
+    setValidationErrors((prev) => {
+      if (!prev[fieldName]) return prev;
+      const newErrors = { ...prev };
+      delete newErrors[fieldName];
+      return newErrors;
+    });
+  }, []);
+
+  // Fetch product categories on mount
   useEffect(() => {
-    if (mode === "add") {
-      dispatch(generatePrefix({ entity: "Product" }));
-    }
     dispatch(getProductCategories());
 
     return () => {
@@ -88,7 +114,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
       dispatch(resetProductByIdState());
       dispatch(resetUploadState());
     };
-  }, [dispatch, mode]);
+  }, [dispatch]);
 
   // Fetch product data in edit mode
   useEffect(() => {
@@ -107,7 +133,17 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
       setDescription(existingProduct.description || "");
       setStatus(existingProduct.status === "active" ? "Active" : "Inactive");
       setImage(existingProduct.imageUrl || null);
-      setSkus(existingProduct.productSkus?.map((sku) => sku.sku) || ["500mg", "750mg", "1000mg"]);
+      setSkus(
+        existingProduct.productSkus?.map((sku: any) => ({
+          sku: sku.sku || "",
+          pulseCode: sku.pulseCode || "",
+          skuCode: sku.skuCode || "",
+          market_selling_price: sku.market_selling_price || "",
+          trade_price: sku.trade_price || "",
+          net_selling_price: sku.net_selling_price || "",
+          quantity: sku.quantity || "",
+        })) || []
+      );
     }
   }, [mode, existingProduct]);
 
@@ -123,12 +159,12 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
       setCategoryId("");
       setChemicalFormula("");
       setDescription("");
-      setSkus(["Capsule 500mg"]);
+      setSkus([]);
       setImage(null);
 
       // Generate new prefix for next product (only in add mode)
       if (mode === "add") {
-        dispatch(generatePrefix({ entity: "Product" }));
+        // dispatch(generatePrefix({ entity: "Product" })); // Removed as requested
       }
       dispatch(resetProductState());
       dispatch(resetUpdateProductState());
@@ -146,8 +182,6 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
     if (errorMessage) {
       if (statusCode === 409) {
         setIsConflictModalOpen(true);
-      } else {
-        toast.error(errorMessage);
       }
     }
   }, [productError, updateError, productStatus, updateStatus]);
@@ -160,7 +194,6 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
     }
     if (uploadError) {
       console.error("AddProductForm: Upload error", uploadError);
-      toast.error(uploadError);
     }
   }, [uploadSuccess, uploadedFiles, uploadError]);
 
@@ -174,50 +207,19 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
     }
   };
 
-  const addSkuField = () => setSkus([...skus, ""]);
-  const updateSku = (index: number, value: string) => {
-    const updated = [...skus];
-    updated[index] = value;
-    setSkus(updated);
-  };
-  const removeSku = (index: number) => setSkus(skus.filter((_, i) => i !== index));
-
-  // Helper functions for validation
-  const getErrorMessage = (fieldName: string) => validationErrors[fieldName] || "";
-  const hasError = (fieldName: string) => !!validationErrors[fieldName];
-  const clearFieldError = (fieldName: string) => {
-    if (validationErrors[fieldName]) {
-      setValidationErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[fieldName];
-        return newErrors;
-      });
-    }
-  };
-
-  const getInputClasses = (fieldName: string) => {
-    const baseClasses =
-      "w-full px-3 py-3 border rounded-8 focus:ring-2 outline-none text-sm transition-all";
-    if (hasError(fieldName)) {
-      return `${baseClasses} border-(--destructive) focus:ring-(--destructive)`;
-    }
-    return `${baseClasses} border-(--gray-3) focus:ring-(--primary)`;
-  };
-
   // Form submission handler
   const handleSubmit = async () => {
-    console.log("ProductForm: handleSubmit called");
-    // Transform SKUs to match API structure
-    const productSkus = skus
-      .filter((sku) => sku.trim())
-      .map((sku) => ({
-        sku: sku.trim(),
-      }));
+    const productSkus = skus.map((sku) => ({
+      sku: sku.sku.trim(),
+      skuCode: sku.skuCode.trim(),
+      market_selling_price: sku.market_selling_price ? Number(sku.market_selling_price) : 0,
+      trade_price: sku.trade_price ? Number(sku.trade_price) : 0,
+      net_selling_price: sku.net_selling_price ? Number(sku.net_selling_price) : 0,
+      quantity: sku.quantity ? Number(sku.quantity) : 0,
+    }));
 
-    // Prepare payload strictly matching the requested schema
     const formData = {
-      pulseCode:
-        mode === "edit" && existingProduct ? existingProduct.pulseCode : generatedPrefix || "",
+      pulseCode: mode === "edit" && existingProduct ? existingProduct.pulseCode : undefined,
       productCode: legacyCode.trim(),
       name: productName.trim(),
       productCategoryId: categoryId,
@@ -228,48 +230,37 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
       productSkus,
     };
 
-    console.log("ProductForm: formData prepared", formData);
-
-    // Validate using Zod schema
     const validation = productSchema.safeParse(formData);
 
     if (!validation.success) {
-      console.log("ProductForm: Validation failed", validation.error.format());
       const errors: Record<string, string> = {};
       validation.error.errors.forEach((err: any) => {
-        const fieldName = err.path[0] as string;
+        const fieldName = err.path.join(".");
         if (!errors[fieldName]) {
           errors[fieldName] = err.message;
         }
       });
-
       setValidationErrors(errors);
-      toast.error(validation.error.errors[0].message);
       return;
     }
 
-    console.log("ProductForm: Validation successful", validation.data);
-
-    // Clear previous errors
     setValidationErrors({});
 
-    // Dispatch create or update action based on mode
     if (mode === "edit" && productId) {
-      console.log("ProductForm: Dispatching updateProduct with ID", productId);
       const { pulseCode, ...updateData } = validation.data;
       dispatch(updateProduct({ id: productId, ...updateData }));
     } else {
-      console.log("ProductForm: Dispatching createProduct");
       dispatch(createProduct(validation.data));
     }
   };
 
   return (
-    <div className="">
-      <div className="">
-        <div className="p-10 space-y-12">
-          <div className="grid grid-cols-1 lg:grid-cols-[25%_75%] gap-12 pr-12">
-            {/* Left: Image Upload */}
+    <div className="space-y-6 w-full max-w-full">
+      {/* TOP SECTION: Basic Information - Wrapped in Card */}
+      <div className="bg-background shadow-soft p-6 lg:p-8 rounded-8 border border-(--gray-1) overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Left: Image Upload - Span 1 */}
+          <div className="lg:col-span-1 min-w-0">
             <div className="space-y-4">
               <ProfileImageUpload
                 imagePreview={image}
@@ -278,20 +269,17 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
                 loading={uploadLoading}
               />
             </div>
+          </div>
 
-            {/* Right: Form Fields */}
+          {/* Right: Form Fields - Span 3 */}
+          <div className="lg:col-span-3 min-w-0">
             <div className="space-y-6">
-              {/* FIRST ROW: Pulse Code + Product code (2 columns) */}
               <div className="grid grid-cols-2 gap-4">
                 <FormInput
                   label="Pulse Code"
                   name="pulseCode"
                   type="text"
-                  value={
-                    mode === "edit" && existingProduct?.pulseCode
-                      ? existingProduct.pulseCode
-                      : generatedPrefix || ""
-                  }
+                  value={mode === "edit" ? existingProduct?.pulseCode || "" : "TO BE GENERATED"}
                   onChange={() => {}}
                   placeholder="Auto-generated"
                   required
@@ -309,12 +297,11 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
                     clearFieldError("productCode");
                   }}
                   placeholder="Enter product code"
-                  // required
+                  required
                   error={getErrorMessage("productCode")}
                 />
               </div>
 
-              {/* SECOND ROW: Category + Name + Formula (3 columns) */}
               <div className="grid grid-cols-3 gap-4">
                 <FormSelect
                   label="Product Category"
@@ -362,7 +349,6 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
                 />
               </div>
 
-              {/* THIRD ROW: Product Description (full width) */}
               <FormInput
                 label="Product Description"
                 name="description"
@@ -376,97 +362,48 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
                 error={getErrorMessage("description")}
               />
 
-              {/* Status Toggle */}
               <div className="flex flex-col gap-2">
                 <label className="t-label">Status</label>
-                {/* <span className="text-(--destructive)">*</span> */}
                 <StatusToggle status={status} onChange={(newStatus) => setStatus(newStatus)} />
-              </div>
-
-              {/* SKU SECTION */}
-              <div>
-                <label className="block t-label mb-2">
-                  Add Product SKU's<span className="text-(--destructive)">*</span>
-                </label>
-
-                {/* Input + Button side by side */}
-                <div className="flex gap-3 w-[60%]">
-                  <input
-                    type="text"
-                    id="sku-input"
-                    placeholder="Enter SKU (e.g. Capsule 500mg)"
-                    className="flex-1 px-3 py-3 border border-[var(--gray-3)] rounded-8 focus:ring-2 focus:ring-[var(--primary)] outline-none text-sm"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && e.currentTarget.value.trim()) {
-                        setSkus([...skus, e.currentTarget.value.trim()]);
-                        e.currentTarget.value = "";
-                      }
-                    }}
-                  />
-                  <Button
-                    onClick={() => {
-                      const input = document.getElementById("sku-input") as HTMLInputElement;
-                      if (input && input.value.trim()) {
-                        setSkus([...skus, input.value.trim()]);
-                        input.value = "";
-                        clearFieldError("productSkus");
-                      }
-                    }}
-                    variant="primary"
-                    size="lg"
-                    icon={Plus}
-                    rounded="full"
-                  >
-                    Add Brand SKUs
-                  </Button>
-                </div>
-                {hasError("productSkus") && (
-                  <p className="mt-1 t-sm t-err">{getErrorMessage("productSkus")}</p>
-                )}
-
-                {/* SKU Chips Display */}
-                <div className="flex flex-wrap gap-2 mt-3">
-                  {skus
-                    .filter((s) => s.trim())
-                    .map((sku, index) => (
-                      <div
-                        key={index}
-                        className="px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-8 text-sm font-medium flex items-center gap-2 hover:bg-[var(--primary)]/90 transition"
-                      >
-                        {sku}
-                        <button onClick={() => removeSku(index)} className="cursor-pointer">
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-                    ))}
-                </div>
-              </div>
-
-              {/* FOOTER ACTIONS */}
-              <div className="flex justify-end gap-4 pt-6">
-                <Button variant="outline" size="lg" rounded="full" onClick={() => router.back()}>
-                  Discard
-                </Button>
-                <Button
-                  onClick={handleSubmit}
-                  disabled={(mode === "edit" ? updateLoading : productLoading) || uploadLoading}
-                  loading={(mode === "edit" ? updateLoading : productLoading) || uploadLoading}
-                  variant="primary"
-                  size="lg"
-                  icon={Plus}
-                  rounded="full"
-                  className="shadow-lg"
-                >
-                  {uploadLoading
-                    ? "Uploading..."
-                    : mode === "edit"
-                      ? "Update Product"
-                      : "Add Product"}
-                </Button>
               </div>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* BOTTOM SECTION: SKUs - Now a separate component */}
+      <ProductSkuSection
+        skus={skus}
+        setSkus={setSkus}
+        mode={mode}
+        validationErrors={validationErrors}
+        clearFieldError={clearFieldError}
+        getErrorMessage={getErrorMessage}
+        hasError={hasError}
+      />
+
+      {/* FOOTER ACTIONS */}
+      <div className="flex justify-end gap-4 pt-6">
+        <Button
+          variant="outline"
+          size="lg"
+          rounded="full"
+          onClick={() => setIsDiscardModalOpen(true)}
+        >
+          Discard
+        </Button>
+        <Button
+          onClick={handleSubmit}
+          disabled={(mode === "edit" ? updateLoading : productLoading) || uploadLoading}
+          loading={(mode === "edit" ? updateLoading : productLoading) || uploadLoading}
+          variant="primary"
+          size="lg"
+          icon={Plus}
+          rounded="full"
+          className="shadow-lg"
+        >
+          {uploadLoading ? "Uploading..." : mode === "edit" ? "Update Product" : "Add Product"}
+        </Button>
       </div>
 
       <ConflictModal
@@ -475,6 +412,18 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
           setIsConflictModalOpen(false);
           dispatch(resetProductState());
         }}
+      />
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={() => {
+          setIsDiscardModalOpen(false);
+          router.back();
+        }}
+        title="Discard changes?"
+        description="You will lose all unsaved changes for this product."
+        confirmLabel="Discard"
       />
     </div>
   );

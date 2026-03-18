@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchWeeklyCallExpenses } from "@/store/slices/employeeProfile/weeklyCallExpensesSlice";
 import { useSearchParams } from "next/navigation";
 import ImageWithFallback from "./shared/ImageWithFallback";
+import { ConfirmModal } from "./shared/confirm-modal";
 interface ExpenseItem {
   id: string;
   name: string;
@@ -119,6 +120,7 @@ export default function ExpenseApprovalList() {
   const id = searchParams.get("id");
   const [showCalendar, setShowCalendar] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
   const [approving, setApproving] = useState(false);
   const [dataStart, setDataStart] = useState(format(new Date(), "yyyy-MM-dd"));
   const [dataEnd, setDataEnd] = useState(format(new Date(), "yyyy-MM-dd"));
@@ -200,7 +202,7 @@ export default function ExpenseApprovalList() {
 
               <div className="flex justify-end gap-3 mt-3 pt-3 border-t">
                 <button
-                  onClick={() => setShowCalendar(false)}
+                  onClick={() => setIsDiscardModalOpen(true)}
                   className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded"
                 >
                   Cancel
@@ -336,6 +338,18 @@ export default function ExpenseApprovalList() {
         onApprove={(id) => console.log("Approve:", id)}
         onReject={(id) => console.log("Reject:", id)}
         isLoading={approving}
+      />
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={() => {
+          setIsDiscardModalOpen(false);
+          setShowCalendar(false);
+        }}
+        title="Discard date selection?"
+        description="Are you sure you want to discard your selected date range?"
+        confirmLabel="Discard"
       />
     </div>
   );

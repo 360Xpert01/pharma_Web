@@ -21,6 +21,7 @@ import toast from "react-hot-toast";
 import { FormInput } from "@/components/form";
 import GiveawayAllocation from "./allocation/GiveawayAllocation";
 import SampleAllocation from "./allocation/SampleAllocation";
+import { ConfirmModal } from "./shared/confirm-modal";
 
 interface GiveawayItem {
   id: string;
@@ -98,6 +99,7 @@ export default function AddAllocateGivewaySample({
   // Selected items state
   const [selectedGiveaways, setSelectedGiveaways] = useState<GiveawayItem[]>([]);
   const [selectedSamples, setSelectedSamples] = useState<SampleItem[]>([]);
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   // Fetch employees, giveaways, and product SKUs on mount
   useEffect(() => {
@@ -196,7 +198,6 @@ export default function AddAllocateGivewaySample({
   const error = allocateError || updateError;
   useEffect(() => {
     if (error) {
-      toast.error(error);
     }
   }, [error]);
 
@@ -279,7 +280,6 @@ export default function AddAllocateGivewaySample({
         prev.map((item) => (item.id === giveaway.id ? { ...item, quantity: 1 } : item))
       );
     } else {
-      toast.error("This giveaway is already added");
     }
   };
 
@@ -297,11 +297,15 @@ export default function AddAllocateGivewaySample({
         prev.map((item) => (item.id === sample.productSkuId ? { ...item, quantity: 1 } : item))
       );
     } else {
-      toast.error("This sample is already added");
     }
   };
 
   const handleDiscard = () => {
+    setIsDiscardModalOpen(true);
+  };
+
+  const confirmDiscard = () => {
+    setIsDiscardModalOpen(false);
     setSelectedEmployee(null);
     setEmployeeSearch("");
     setSelectedGiveaways([]);
@@ -311,11 +315,9 @@ export default function AddAllocateGivewaySample({
 
   const handleAllocate = () => {
     if (!selectedEmployee) {
-      toast.error("Please select an employee");
       return;
     }
     if (selectedGiveaways.length === 0 && selectedSamples.length === 0) {
-      toast.error("Please select at least one giveaway or sample");
       return;
     }
 
@@ -523,6 +525,15 @@ export default function AddAllocateGivewaySample({
           </button>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={confirmDiscard}
+        title="Discard changes?"
+        description="You will lose all unsaved changes for this allocation."
+        confirmLabel="Discard"
+      />
     </div>
   );
 }

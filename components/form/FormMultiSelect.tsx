@@ -78,14 +78,14 @@ export default function FormMultiSelect({
 
   const getContainerClasses = () => {
     const baseClasses =
-      "relative mt-1 w-[82%] min-h-[48px] px-3 py-2 border rounded-lg bg-white transition-all cursor-pointer";
+      "relative mt-1 w-full min-h-[48px] px-3 py-2 border rounded-lg bg-white transition-all cursor-pointer";
 
     if (disabled) {
       return `${baseClasses} border-gray-300 bg-gray-50 text-gray-400 cursor-not-allowed`;
     }
 
     if (hasError) {
-      return `${baseClasses} border-red-500 focus-within:ring-2 focus-within:ring-red-200`;
+      return `${baseClasses} border-(--destructive) focus-within:ring-2 focus-within:ring-(--destructive)`;
     }
 
     if (isOpen) {
@@ -97,9 +97,9 @@ export default function FormMultiSelect({
 
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
+      <label className="t-label">
         {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
+        {required && <span className="text-(--destructive) ml-1">*</span>}
       </label>
 
       {/* Main Container */}

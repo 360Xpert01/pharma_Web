@@ -65,13 +65,10 @@ export default function ProductCategories({
 
   // Auto-generate next pulse code on mount
   useEffect(() => {
-    if (!isUpdateMode) {
-      dispatch(generatePrefix({ entity: "ProductCategory" }));
-    }
     return () => {
       dispatch(resetGeneratePrefixState());
     };
-  }, [dispatch, isUpdateMode]);
+  }, [dispatch]);
 
   // Populate form in update mode
   useEffect(() => {
@@ -89,10 +86,8 @@ export default function ProductCategories({
       setStatus("active");
       dispatch(resetProductCategoryState());
       dispatch(getAllProductCategories()); // Refresh list
-      dispatch(generatePrefix({ entity: "ProductCategory" })); // Get next prefix
     }
     if (createError) {
-      toast.error(createError);
       dispatch(resetProductCategoryState());
     }
   }, [createSuccess, createError, dispatch]);
@@ -110,7 +105,6 @@ export default function ProductCategories({
       }
     }
     if (updateError) {
-      toast.error(updateError);
       dispatch(resetUpdateProductCategoryState());
     }
   }, [updateSuccess, updateError, dispatch, onUpdateComplete]);
@@ -127,11 +121,9 @@ export default function ProductCategories({
         })
       );
     } else {
-      if (!generatedPrefix) return;
       dispatch(
         createProductCategory({
           productCategory: categoryName.trim(),
-          pulseCode: generatedPrefix,
           status: status,
         })
       );
@@ -163,13 +155,7 @@ export default function ProductCategories({
                 label="Pulse Code"
                 name="pulseCode"
                 type="text"
-                value={
-                  isUpdateMode
-                    ? categoryData?.pulseCode || ""
-                    : prefixLoading
-                      ? "Generating..."
-                      : generatedPrefix || ""
-                }
+                value={isUpdateMode ? categoryData?.pulseCode || "" : "TO BE GENERATED"}
                 onChange={() => {}}
                 placeholder="Auto-generated"
                 readOnly
@@ -202,12 +188,7 @@ export default function ProductCategories({
             {/* Submit Button */}
             <Button
               onClick={handleSubmit}
-              disabled={
-                !categoryName.trim() ||
-                creatingLoading ||
-                updatingLoading ||
-                (!isUpdateMode && prefixLoading)
-              }
+              disabled={!categoryName.trim() || creatingLoading || updatingLoading}
               variant="primary"
               size="lg"
               icon={Plus}

@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import type { PermissionGroupName } from "@/lib/rbac";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-// Types
 interface RequestOtpPayload {
   email: string;
   deviceId: string;
@@ -12,7 +12,14 @@ interface RequestOtpPayload {
 interface RequestOtpResponse {
   success: boolean;
   message: string;
-  // Add other fields if your API returns more
+  data?: {
+    deviceId: string;
+    userEmail: string;
+    deviceName: string;
+    deviceType: string;
+    permissionGroupId: string;
+    permissionGroupName: PermissionGroupName;
+  };
 }
 
 interface AuthState {
@@ -20,17 +27,23 @@ interface AuthState {
   success: boolean;
   error: string | null;
   message: string | null;
+  permissionGroupId: string | null;
+  permissionGroupName: PermissionGroupName | null;
+  userEmail: string | null;
+  deviceId: string | null;
 }
 
-// Initial State
 const initialState: AuthState = {
   loading: false,
   success: false,
   error: null,
   message: null,
+  permissionGroupId: null,
+  permissionGroupName: null,
+  userEmail: null,
+  deviceId: null,
 };
 
-// Async Thunk: Request OTP
 export const requestOtp = createAsyncThunk<
   RequestOtpResponse,
   RequestOtpPayload,
@@ -40,24 +53,23 @@ export const requestOtp = createAsyncThunk<
     const response = await axios.post<RequestOtpResponse>(
       `${baseUrl}api/v1/auth/request-otp`,
       payload,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      { headers: { "Content-Type": "application/json" } }
     );
+
+    if (
+      response.data?.success &&
+      response.data?.data?.permissionGroupName === "Sales Representative"
+    ) {
+      return rejectWithValue("Access denied. Please use the mobile app.");
+    }
 
     return response.data;
   } catch (error: any) {
-    const errorMessage =
-      error.response?.data?.message || error.message || "Failed to send OTP. Please try again.";
-
-    return rejectWithValue(errorMessage);
+    return rejectWithValue(error.response?.data?.message || error.message || "Failed to send OTP.");
   }
 });
 
-// Slice
-const authSlice = createSlice({
+const requestOtpSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
@@ -66,34 +78,41 @@ const authSlice = createSlice({
       state.success = false;
       state.error = null;
       state.message = null;
+      // ✅ keep permission fields — needed for OTP verify step
+    },
+    logout: (state) => {
+      Object.assign(state, initialState);
     },
   },
   extraReducers: (builder) => {
     builder
-      // Pending
       .addCase(requestOtp.pending, (state) => {
         state.loading = true;
         state.success = false;
         state.error = null;
         state.message = null;
       })
-      // Fulfilled
       .addCase(requestOtp.fulfilled, (state, action: PayloadAction<RequestOtpResponse>) => {
         state.loading = false;
         state.success = true;
         state.message = action.payload.message || "OTP sent successfully!";
+        // ✅ store from request-otp response
+        if (action.payload.data) {
+          state.permissionGroupId = action.payload.data.permissionGroupId;
+          state.permissionGroupName = action.payload.data.permissionGroupName;
+          state.userEmail = action.payload.data.userEmail;
+          state.deviceId = action.payload.data.deviceId;
+        }
       })
-      // Rejected
       .addCase(requestOtp.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
         state.error = action.payload || "Something went wrong";
+        state.permissionGroupId = null;
+        state.permissionGroupName = null;
       });
   },
 });
 
-// Export actions
-export const { resetOtpState } = authSlice.actions;
-
-// Export reducer
-export default authSlice.reducer;
+export const { resetOtpState, logout } = requestOtpSlice.actions;
+export default requestOtpSlice.reducer;

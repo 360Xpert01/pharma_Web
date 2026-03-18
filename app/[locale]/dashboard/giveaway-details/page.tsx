@@ -20,7 +20,7 @@ export default function DashboardPage() {
         sample={"Giveaway Details"}
         descrip={"Unlock the potential of your candidates"}
         table={"All product"}
-        btnAdd={"Add New Giveaway"}
+        btnTrue={true}
         settingsRoute={"/dashboard/Giveaway-Form"}
         hideMetrics={true}
         giveawayDetail={true}

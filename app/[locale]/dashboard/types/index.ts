@@ -191,4 +191,11 @@ export interface DashboardProps {
   territoryTable?: boolean;
   territoryForm?: boolean;
   onAddClick?: () => void;
+  // Distributor Management
+  distributorTable?: boolean;
+  AddDistributorBtn?: boolean;
+  UpdateDistributorEmp?: boolean;
+  distributorProfileBtn?: boolean;
+  showDistributorTabs?: boolean;
+  distributorId?: string | null;
 }

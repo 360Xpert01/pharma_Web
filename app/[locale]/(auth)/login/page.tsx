@@ -4,14 +4,15 @@ import React, { useState, useRef, useEffect } from "react";
 import { RotateCw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
-import { requestOtp } from "../../../../store/slices/auth/loginSlice";
+import { useAppDispatch, useAppSelector } from "../../../../store";
+import { requestOtp, logout as loginLogout } from "../../../../store/slices/auth/loginSlice";
 import { verifyOtp } from "../../../../store/slices/auth/verifyOtp";
 import FormInput from "../../../../components/form/FormInput";
 import { Button } from "../../../../components/ui/button/button";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
+  const [subDomain, setSubDomain] = useState("");
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [userNotFound, setUserNotFound] = useState(false);
@@ -21,10 +22,15 @@ export default function LoginScreen() {
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
   const router = useRouter();
 
-  const dispatch = useDispatch();
-  const { loading, success, error, message } = useSelector((state: any) => state.auth);
+  const dispatch = useAppDispatch();
+  const { loading, success, error, message } = useAppSelector((state) => state.login);
 
   const deviceId = "ewb-123";
+
+  // Reset state on mount to ensure clean login flow (prevents direct OTP screen from persisted state)
+  useEffect(() => {
+    dispatch(loginLogout());
+  }, [dispatch]);
 
   // Handle OTP send success
   useEffect(() => {
@@ -32,9 +38,6 @@ export default function LoginScreen() {
       setIsOtpSent(true);
       toast.success(message || "OTP sent successfully!");
       otpRefs.current[0]?.focus();
-    }
-    if (error) {
-      toast.error(error);
     }
   }, [success, error, message, isOtpSent]);
 
@@ -45,12 +48,18 @@ export default function LoginScreen() {
     }
 
     try {
+      localStorage.setItem("tenantName", subDomain.toLowerCase());
       const result = await dispatch(requestOtp({ email: email.trim(), deviceId }));
-      if (result.payload?.success) {
+
+      const payload = result.payload as any; // Cast for simplified check
+
+      if (payload?.success) {
         setIsOtpSent(true);
         setUserNotFound(false);
         toast.success("OTP sent successfully!");
         otpRefs.current[0]?.focus();
+      } else {
+        toast.error(result.payload || "Failed to send OTP");
       }
 
       if (result.payload === "User not found") {
@@ -61,11 +70,9 @@ export default function LoginScreen() {
         setOtpSentState(true);
         setUserNotFound(false);
         setIsOtpSent(true);
-      } else {
-        toast.error(result.payload?.error?.message || "Failed to send OTP");
       }
     } catch (error: any) {
-      toast.error(error.message || "Failed to send OTP");
+      toast.error("Failed to send OTP");
     }
   };
 
@@ -110,19 +117,31 @@ export default function LoginScreen() {
         localStorage.setItem("userSession", loginData);
         document.cookie = `userSession=${JSON.stringify(loginData)}; path=/; max-age=86400`;
 
-        toast.success("Login Successful! Welcome back 🎉");
+        toast.success("Login Successful");
         router.push("/dashboard");
       } else {
         console.log("❌ OTP Verification Failed");
-        setInvalidOtp(true);
         const errorMsg =
-          result.payload?.message || result.error?.message || "Invalid OTP. Please try again.";
-        toast.error(errorMsg);
+          result.payload ||
+          result.payload?.message ||
+          result.error?.message ||
+          "Invalid OTP. Please try again.";
+
+        if (errorMsg === "Access denied. Please use the mobile app.") {
+          toast.error(errorMsg);
+          setInvalidOtp(false); // Don't show generic error below inputs
+          // Optionally clear OTP
+          setOtp(["", "", "", ""]);
+          otpRefs.current[0]?.focus();
+        } else {
+          setInvalidOtp(true);
+          toast.error(errorMsg);
+        }
       }
     } catch (err: any) {
       console.error("❌ Error during OTP verification:", err);
       setInvalidOtp(true);
-      toast.error(err.message || "Invalid OTP. Please try again.");
+      // toast.error(err.message || "Invalid OTP. Please try again.");
     } finally {
       setIsVerifying(false);
     }
@@ -177,7 +196,7 @@ export default function LoginScreen() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" && email.includes("@") && !loading) {
+                  if (e.key === "Enter" && email.includes("@") && subDomain.trim() && !loading) {
                     handleSendOTP();
                   }
                 }}
@@ -197,10 +216,28 @@ export default function LoginScreen() {
               </div>
             </div>
 
+            {/* Tenant Name Input */}
+            <div className="space-y-2">
+              <label className="t-label text-[var(--gray-9)]">Tenant Name</label>
+              <input
+                type="text"
+                value={subDomain}
+                maxLength={3}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/[^a-zA-Z]/g, "").toUpperCase();
+                  setSubDomain(val);
+                }}
+                placeholder="Enter tenant name"
+                disabled={loading}
+                className="w-full h-12 px-4 py-3 border border-[var(--gray-2)] rounded-8 outline-none transition-all focus:ring-2 focus:ring-[var(--primary-1)] focus:border-[var(--primary-1)] disabled:bg-[var(--gray-1)] disabled:cursor-not-allowed bg-white text-sm tracking-widest"
+              />
+              <div className="min-h-[20px]" />
+            </div>
+
             {/* Send OTP Button */}
             <button
               onClick={handleSendOTP}
-              disabled={loading || !email.includes("@")}
+              disabled={loading || !email.includes("@") || !subDomain.trim()}
               className="w-full h-12 cursor-pointer bg-gradient-to-r from-[var(--primary-gradient-start)] to-[var(--primary-gradient-end)] hover:from-[var(--primary-gradient-start-hover)] hover:to-[var(--primary-gradient-end-hover)] text-white font-semibold rounded-8 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Sending..." : "Send OTP"}

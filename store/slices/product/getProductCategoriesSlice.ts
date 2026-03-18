@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { BasePaginationParams } from "@/types/api";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -31,18 +32,28 @@ const initialState: ProductCategoriesState = {
 // Async Thunk: Get all product categories
 export const getProductCategories = createAsyncThunk<
   GetProductCategoriesResponse,
-  void,
+  BasePaginationParams | void,
   { rejectValue: string }
->("productCategory/getAll", async (_, { rejectWithValue }) => {
+>("productCategory/getAll", async (params, { rejectWithValue }) => {
   try {
     const token = localStorage.getItem("userSession");
     if (!token) {
       return rejectWithValue("No session found. Please login again.");
     }
 
+    const queryParams: any = {};
+    if (params) {
+      if (params.sort) queryParams.sort = params.sort;
+      if (params.order) queryParams.order = params.order;
+      if (params.search) queryParams.search = params.search;
+      if (params.page) queryParams.page = params.page;
+      if (params.limit) queryParams.limit = params.limit;
+    }
+
     const response = await axios.get<GetProductCategoriesResponse>(
       `${baseUrl}api/v1/productCategory`,
       {
+        params: queryParams,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

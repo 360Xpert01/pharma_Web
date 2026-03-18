@@ -13,6 +13,8 @@ import {
 } from "@/components/form";
 import { HierarchyNode } from "@/components/HierarchyNode";
 import { useTeamForm } from "@/hooks/user-team-form";
+import { ConfirmModal } from "./shared/confirm-modal";
+import { useState } from "react";
 
 import { useSearchParams, useRouter } from "next/navigation";
 
@@ -23,6 +25,8 @@ export default function TeamForm() {
   const mode = searchParams.get("mode") === "update" ? "update" : "add";
 
   const { state, actions } = useTeamForm(mode, teamId || undefined);
+
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   const {
     generatedPrefix,
@@ -84,15 +88,9 @@ export default function TeamForm() {
             <FormInput
               label="Pulse Code"
               name="pulseCode"
-              value={isUpdateMode ? pulseCode : generatedPrefix || ""}
+              value={isUpdateMode ? pulseCode : "TO BE GENERATED"}
               onChange={() => {}}
-              placeholder={
-                isUpdateMode
-                  ? pulseCode || "Auto-generated"
-                  : prefixLoading
-                    ? "Generating..."
-                    : "Auto-generated"
-              }
+              placeholder="Auto-generated"
               required
               readOnly
               className="cursor-not-allowed"
@@ -143,7 +141,7 @@ export default function TeamForm() {
               value={selectedCallPoints}
               onChange={(value) => {
                 setSelectedCallPoints(value);
-                clearFieldError("callPoints");
+                clearFieldError("callPointIds");
               }}
               options={(Array.isArray(callPoints) ? callPoints : []).map((callPoint) => ({
                 value: callPoint.id,
@@ -152,7 +150,7 @@ export default function TeamForm() {
               placeholder="Select Call Points"
               required
               loading={callPointsLoading}
-              error={getErrorMessage("callPoints")}
+              error={getErrorMessage("callPointIds")}
             />
           </div>
         </div>
@@ -242,7 +240,12 @@ export default function TeamForm() {
 
         {/* Buttons */}
         <div className="flex justify-end gap-4 pt-6">
-          <Button variant="outline" size="lg" rounded="default" onClick={() => router.back()}>
+          <Button
+            variant="outline"
+            size="lg"
+            rounded="default"
+            onClick={() => setIsDiscardModalOpen(true)}
+          >
             Discard
           </Button>
           <Button
@@ -265,6 +268,18 @@ export default function TeamForm() {
           </Button>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={() => {
+          setIsDiscardModalOpen(false);
+          router.back();
+        }}
+        title="Discard changes?"
+        description="You will lose all unsaved changes for this team."
+        confirmLabel="Discard"
+      />
     </div>
   );
 }

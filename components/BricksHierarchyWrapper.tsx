@@ -8,6 +8,7 @@ import { createBrick } from "@/store/slices/brick/createBrickSlice";
 import { updateBrick } from "@/store/slices/brick/updateBrickSlice";
 import { useBricksImport } from "@/hooks/useBricksImport";
 import { toast } from "react-hot-toast";
+import { deleteBrick, resetDeleteBrickState } from "@/store/slices/brick/deleteBrickSlice";
 
 export default function BricksHierarchyWrapper() {
   const dispatch = useAppDispatch();
@@ -17,11 +18,27 @@ export default function BricksHierarchyWrapper() {
 
   // Select state from Redux store
   const { loading, error, zones, regions, bricks } = useAppSelector((state) => state.brickList);
+  const {
+    success: deleteSuccess,
+    error: deleteError,
+    message: deleteMessage,
+  } = useAppSelector((state) => state.deleteBrick);
 
   // Fetch brick list on mount
   useEffect(() => {
     dispatch(getBrickList());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (deleteSuccess) {
+      toast.success(deleteMessage || "Deleted successfully!");
+      dispatch(getBrickList());
+      dispatch(resetDeleteBrickState());
+    }
+    if (deleteError) {
+      dispatch(resetDeleteBrickState());
+    }
+  }, [deleteSuccess, deleteError, deleteMessage, dispatch]);
 
   useEffect(() => {
     const handleAddRoot = () => setAddingId("root");
@@ -45,9 +62,7 @@ export default function BricksHierarchyWrapper() {
       toast.success(`${type} created successfully!`);
       setAddingId(null);
       dispatch(getBrickList());
-    } catch (err: any) {
-      toast.error(`Failed to create ${type}: ${err}`);
-    }
+    } catch (err: any) {}
   };
 
   const handleAddChild = (parentId: string, childType: string) => {
@@ -76,9 +91,7 @@ export default function BricksHierarchyWrapper() {
       toast.success(`${type} updated successfully!`);
       setEditingId(null);
       dispatch(getBrickList());
-    } catch (err: any) {
-      toast.error(`Failed to update ${type}: ${err}`);
-    }
+    } catch (err: any) {}
   };
 
   return (

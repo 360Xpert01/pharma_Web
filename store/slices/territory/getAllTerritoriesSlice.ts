@@ -41,9 +41,11 @@ export const getAllTerritories = createAsyncThunk<
 
     const response = await axios.get<TerritoryListResponse>(`${baseUrl}api/v1/territory`, {
       params: {
-        ...(params?.page !== undefined && { page: params.page }),
-        ...(params?.limit !== undefined && { limit: params.limit }),
-        ...(params?.search && { search: params.search }),
+        page: params?.page || 1,
+        limit: params?.limit || 10,
+        search: params?.search || "",
+        sort: params?.sort || "pulseCode",
+        order: params?.order || "asc",
         ...(params?.notassigned !== undefined && { notassigned: params.notassigned }),
       },
       headers: {

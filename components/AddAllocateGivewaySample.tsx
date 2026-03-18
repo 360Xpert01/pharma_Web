@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import { FormInput } from "@/components/form";
 import GiveawayAllocation from "./allocation/GiveawayAllocation";
 import SampleAllocation from "./allocation/SampleAllocation";
+import { ConfirmModal } from "./shared/confirm-modal";
 
 interface GiveawayItem {
   id: string;
@@ -59,6 +60,7 @@ export default function AddAllocateGivewaySample() {
   // Selected items state
   const [selectedGiveaways, setSelectedGiveaways] = useState<GiveawayItem[]>([]);
   const [selectedSamples, setSelectedSamples] = useState<SampleItem[]>([]);
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   // Fetch employees, giveaways, and product SKUs on mount
   useEffect(() => {
@@ -77,7 +79,7 @@ export default function AddAllocateGivewaySample() {
       toast.success("Items allocated successfully!");
 
       // Reset form
-      handleDiscard();
+      confirmDiscard();
 
       // Redirect to allocation list page after a short delay
       setTimeout(() => {
@@ -89,7 +91,6 @@ export default function AddAllocateGivewaySample() {
   // Handle allocation error
   useEffect(() => {
     if (allocateError) {
-      toast.error(allocateError);
     }
   }, [allocateError]);
 
@@ -151,7 +152,6 @@ export default function AddAllocateGivewaySample() {
         { id: giveaway.id, name: giveaway.name, quantity: 1 },
       ]);
     } else {
-      toast.error("This giveaway is already added");
     }
   };
 
@@ -163,11 +163,15 @@ export default function AddAllocateGivewaySample() {
         { id: sample.productSkuId, name: `${sample.productName} - ${skuStr}`, quantity: 1 },
       ]);
     } else {
-      toast.error("This sample is already added");
     }
   };
 
   const handleDiscard = () => {
+    setIsDiscardModalOpen(true);
+  };
+
+  const confirmDiscard = () => {
+    setIsDiscardModalOpen(false);
     setSelectedEmployee(null);
     setEmployeeSearch("");
     setSelectedGiveaways([]);
@@ -177,11 +181,9 @@ export default function AddAllocateGivewaySample() {
 
   const handleAllocate = () => {
     if (!selectedEmployee) {
-      toast.error("Please select an employee");
       return;
     }
     if (selectedGiveaways.length === 0 && selectedSamples.length === 0) {
-      toast.error("Please select at least one giveaway or sample");
       return;
     }
 
@@ -338,7 +340,7 @@ export default function AddAllocateGivewaySample() {
         {/* Footer Actions */}
         <div className="flex justify-end gap-4 pt-6 mt-8">
           <button
-            onClick={() => router.back()}
+            onClick={handleDiscard}
             disabled={allocateLoading}
             className="px-8 py-3 border border-(--gray-3) text-(--gray-7) rounded-8 hover:bg-(--gray-0) transition cursor-pointer disabled:opacity-50"
           >
@@ -365,6 +367,15 @@ export default function AddAllocateGivewaySample() {
           </button>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={confirmDiscard}
+        title="Discard changes?"
+        description="You will lose all unsaved changes for this allocation."
+        confirmLabel="Discard"
+      />
     </div>
   );
 }

@@ -10,12 +10,15 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://api.ceturo.com
 
 export interface GiveawayRecord {
   id: string;
+  pulseCode?: string;
   partyId: string;
   productId?: string;
   productName?: string;
   quantity: number;
   unit?: string; // e.g. "pcs", "boxes", "samples"
   giveawayDate?: string; // ISO date or "2026-01-15"
+  date?: string; // Used in table
+  allocated?: number; // Used in table
   notes?: string;
   status?: "given" | "confirmed" | "returned" | "expired" | "pending";
   givenBy?: string; // salesman id or name

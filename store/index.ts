@@ -12,6 +12,7 @@ import addRole from "./slices/role/addRole";
 import allRolesReducer from "./slices/role/getAllRolesSlice";
 import roleByIdReducer from "./slices/role/getRoleByIdSlice";
 import updateRoleReducer from "./slices/role/updateRoleSlice";
+import deleteRoleReducer from "./slices/role/deleteRoleSlice";
 import allPreFixTable from "./slices/preFix/allPreFixTable";
 import createPrefixReducer from "./slices/preFix/postPrefix";
 import allPrefixesReducer from "./slices/preFix/getAllPrefixesSlice";
@@ -105,6 +106,12 @@ import updateTerritoryReducer from "./slices/territory/updateTerritorySlice";
 import deleteTerritoryReducer from "./slices/territory/deleteTerritorySlice";
 import updateTargetReducer from "./slices/target/updateTargetSlice";
 import targetAllocationReducer from "./slices/target/targetAllocationSlice";
+import deleteBrickReducer from "./slices/brick/deleteBrickSlice";
+import allDistributorsReducer from "./slices/distributor/getAllDistributorsSlice";
+import createDistributorReducer from "./slices/distributor/createDistributorSlice";
+import getDistributorByIdReducer from "./slices/distributor/getDistributorByIdSlice";
+import updateDistributorReducer from "./slices/distributor/updateDistributorSlice";
+import allPermissionGroupsReducer from "./slices/permissionGroup/getAllPermissionGroupsSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -115,6 +122,7 @@ const rootReducer = combineReducers({
   allRoles: allRolesReducer,
   roleById: roleByIdReducer,
   updateRole: updateRoleReducer,
+  deleteRole: deleteRoleReducer,
   allPreFixTable: allPreFixTable,
   createPrefix: createPrefixReducer,
   allPrefixes: allPrefixesReducer,
@@ -208,12 +216,18 @@ const rootReducer = combineReducers({
   updateTerritory: updateTerritoryReducer,
   deleteTerritory: deleteTerritoryReducer,
   targetAllocation: targetAllocationReducer,
+  deleteBrick: deleteBrickReducer,
+  allDistributors: allDistributorsReducer,
+  createDistributor: createDistributorReducer,
+  distributorById: getDistributorByIdReducer,
+  updateDistributor: updateDistributorReducer,
+  allPermissionGroups: allPermissionGroupsReducer,
 });
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth", "ui"],
+  whitelist: ["auth", "ui", "login", "verifyOtp"],
 };
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

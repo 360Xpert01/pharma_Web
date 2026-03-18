@@ -14,20 +14,23 @@ import {
   type CreateTerritoryPayload,
 } from "@/store/slices/territory";
 import { getBrickList } from "@/store/slices/brick/getBrickListSlice";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button/button";
 import { FormInput, FormTextarea, BrickSearch } from "@/components/form";
 import { Plus } from "lucide-react";
+import { ConfirmModal } from "./shared/confirm-modal";
 
 import {
   generatePrefix,
   resetGeneratePrefixState,
 } from "@/store/slices/preFix/generatePrefixSlice";
+import { territorySchema } from "@/validations";
 
 interface Brick {
   id: string;
   name: string;
   brickCode?: string;
+  description?: string;
 }
 
 export default function TerritoryForm({ territoryId }: { territoryId?: string | null }) {
@@ -64,6 +67,9 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
     selectedBricks: [] as Brick[],
   });
 
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
+
   // Fetch initial data
   useEffect(() => {
     dispatch(getBrickList());
@@ -71,7 +77,7 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
     if (isEditMode && idFromUrl) {
       dispatch(getTerritoryById(idFromUrl));
     } else {
-      dispatch(generatePrefix({ entity: "Territory" }));
+      // dispatch(generatePrefix({ entity: "Territory" })); // Removed as requested
     }
 
     return () => {
@@ -81,24 +87,29 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
 
   // Populate form with territory data
   useEffect(() => {
-    if (territory && isEditMode) {
+    if (territory && isEditMode && bricks.length > 0) {
       setFormData({
         pulseCode: territory.pulseCode || "",
         description: territory.description || "",
         selectedBricks:
-          territory.bricks?.map((b: any) => ({
-            id: b.id,
-            name: b.name,
-            brickCode: b.brickCode,
-          })) || [],
+          territory.bricks?.map((b: any) => {
+            // Find full brick details from the bricks list
+            const fullBrick = bricks.find((brick) => brick.id === b.id);
+            return {
+              id: b.id,
+              name: fullBrick?.name || b.name,
+              brickCode: fullBrick?.brickCode || b.brickCode,
+              description: fullBrick?.description || b.description,
+            };
+          }) || [],
       });
     }
-  }, [territory, isEditMode]);
+  }, [territory, isEditMode, bricks]);
 
   // Handle success
   useEffect(() => {
     if (createSuccess && createMessage) {
-      toast.success("Success", { description: createMessage });
+      toast.success(createMessage);
       dispatch(resetCreateTerritoryState());
       dispatch(resetGeneratePrefixState());
       router.push("/dashboard/territory-Management");
@@ -107,7 +118,7 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
 
   useEffect(() => {
     if (updateSuccess && updateMessage) {
-      toast.success("Success", { description: updateMessage });
+      toast.success(updateMessage);
       dispatch(resetUpdateTerritoryState());
       router.push("/dashboard/territory-Management");
     }
@@ -116,16 +127,31 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const currentPulseCode = isEditMode ? formData.pulseCode : generatedPrefix || "";
+    const currentPulseCode = isEditMode ? formData.pulseCode : undefined;
 
-    // Validation
-    if (!currentPulseCode.trim()) {
-      toast.error("Validation Error", { description: "Pulse Code is required" });
+    // Validation using Zod
+    const validationResult = territorySchema.safeParse({
+      pulseCode: currentPulseCode,
+      description: formData.description,
+      bricks: formData.selectedBricks.map((b) => b.id),
+    });
+
+    if (!validationResult.success) {
+      const errors: Record<string, string> = {};
+      validationResult.error.errors.forEach((err) => {
+        const fieldName = err.path[0] as string;
+        if (!errors[fieldName]) {
+          errors[fieldName] = err.message;
+        }
+      });
+      setValidationErrors(errors);
       return;
     }
 
+    setValidationErrors({});
+
     const payload: CreateTerritoryPayload = {
-      pulseCode: currentPulseCode.trim(),
+      pulseCode: currentPulseCode,
       description: formData.description.trim(),
       bricks: formData.selectedBricks.map((b) => b.id),
     };
@@ -140,6 +166,11 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
   };
 
   const handleCancel = () => {
+    setIsDiscardModalOpen(true);
+  };
+
+  const confirmDiscard = () => {
+    setIsDiscardModalOpen(false);
     router.back();
   };
 
@@ -156,9 +187,9 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
           <FormInput
             label="Pulse Code"
             name="pulseCode"
-            value={isEditMode ? formData.pulseCode : generatedPrefix || ""}
+            value={isEditMode ? formData.pulseCode : "TO BE GENERATED"}
             onChange={() => {}}
-            placeholder={prefixLoading ? "Generating..." : "Auto-generated"}
+            placeholder="Auto-generated"
             required
             readOnly
             className="cursor-not-allowed max-w-sm"
@@ -168,9 +199,20 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
             label="Description"
             name="description"
             value={formData.description}
-            onChange={(value) => setFormData((prev) => ({ ...prev, description: value }))}
+            onChange={(value) => {
+              setFormData((prev) => ({ ...prev, description: value }));
+              if (validationErrors.description) {
+                setValidationErrors((prev) => {
+                  const newErrors = { ...prev };
+                  delete newErrors.description;
+                  return newErrors;
+                });
+              }
+            }}
             placeholder="Enter territory description..."
             rows={3}
+            required
+            error={validationErrors.description}
           />
         </div>
 
@@ -179,10 +221,19 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
           <BrickSearch
             allBricks={bricks}
             selectedBricks={formData.selectedBricks}
-            onBricksChange={(selected) =>
-              setFormData((prev) => ({ ...prev, selectedBricks: selected }))
-            }
+            onBricksChange={(selected) => {
+              setFormData((prev) => ({ ...prev, selectedBricks: selected }));
+              if (validationErrors.bricks) {
+                setValidationErrors((prev) => {
+                  const newErrors = { ...prev };
+                  delete newErrors.bricks;
+                  return newErrors;
+                });
+              }
+            }}
             loading={loadingBricks}
+            required
+            error={validationErrors.bricks}
           />
         </div>
 
@@ -211,6 +262,15 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
           </Button>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={confirmDiscard}
+        title="Discard changes?"
+        description="You will lose all unsaved changes for this territory."
+        confirmLabel="Discard"
+      />
     </div>
   );
 }

@@ -22,6 +22,7 @@ import toast from "react-hot-toast";
 import { giveawayCreationSchema } from "@/validations/giveawayValidation";
 import { ProfileImageUpload, FormInput } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
+import { ConfirmModal } from "./shared/confirm-modal";
 
 type GiveawayFormProps = {
   mode?: "add" | "update";
@@ -77,11 +78,12 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
   const [legacyCode, setLegacyCode] = useState("");
   const [pulseCode, setPulseCode] = useState("");
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   // Prefetch logic
   useEffect(() => {
     if (mode === "add") {
-      dispatch(generatePrefix({ entity: "Giveaway" }));
+      // dispatch(generatePrefix({ entity: "Giveaway" })); // Removed as requested
     }
     if (mode === "update" && giveawayId) {
       setImage(null);
@@ -112,12 +114,6 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
     }
   }, [mode, giveaway]);
 
-  useEffect(() => {
-    if (mode === "add") {
-      setPulseCode(generatedPrefix || "");
-    }
-  }, [generatedPrefix, mode]);
-
   // Feedback
   useEffect(() => {
     if (createSuccess && mode === "add") {
@@ -131,7 +127,7 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
       setLegacyCode("");
       setImage(null);
       setValidationErrors({});
-      dispatch(generatePrefix({ entity: "Giveaway" }));
+      // dispatch(generatePrefix({ entity: "Giveaway" })); // Removed as requested
       setPulseCode("");
       setTimeout(() => {
         dispatch(resetGiveawayState());
@@ -145,9 +141,15 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
         router.push("/dashboard/giveaway-Management");
       }, 2000);
     }
-    if (createError && mode === "add") toast.error(createError);
-    if (updateError && mode === "update") toast.error(updateError);
-    if (fetchError && mode === "update") toast.error(fetchError);
+    if (createError && mode === "add") {
+      toast.error(createError || "Failed to create giveaway");
+    }
+    if (updateError && mode === "update") {
+      toast.error(updateError || "Failed to update giveaway");
+    }
+    if (fetchError && mode === "update") {
+      toast.error(fetchError || "Failed to fetch giveaway");
+    }
   }, [
     createSuccess,
     updateSuccess,
@@ -167,7 +169,6 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
     }
     if (uploadError) {
       console.error("GiveawayForm: Upload error", uploadError);
-      toast.error(uploadError);
     }
   }, [uploadSuccess, uploadedFiles, uploadError]);
 
@@ -183,13 +184,13 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
   // Submit
   const handleSubmit = (e?: React.MouseEvent<HTMLButtonElement>) => {
     if (e) e.preventDefault();
-    const formData = {
+    const formData: any = {
       name,
       category,
       productName,
       description,
       units,
-      pulseCode,
+      pulseCode: mode === "update" ? pulseCode : undefined,
       legacyCode,
       imageUrl: image || "",
     };
@@ -200,7 +201,7 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
         errors[err.path[0] as string] = err.message;
       });
       setValidationErrors(errors);
-      toast.error(validation.error.errors[0].message);
+
       return;
     }
     setValidationErrors({});
@@ -214,7 +215,7 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
 
   // Discard/reset
   const handleDiscard = () => {
-    router.back();
+    setIsDiscardModalOpen(true);
   };
 
   return (
@@ -236,9 +237,9 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
               label="Pulse Code"
               name="pulseCode"
               type="text"
-              value={pulseCode}
+              value={mode === "update" ? pulseCode : "TO BE GENERATED"}
               onChange={() => {}}
-              placeholder={prefixLoading ? "Generating..." : "Auto-generated"}
+              placeholder="Auto-generated"
               readOnly
               error={prefixError || ""}
             />
@@ -346,6 +347,18 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={() => {
+          setIsDiscardModalOpen(false);
+          router.back();
+        }}
+        title="Discard changes?"
+        description="You will lose all unsaved changes for this giveaway."
+        confirmLabel="Discard"
+      />
     </div>
   );
 }

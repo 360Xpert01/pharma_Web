@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { FormSelect } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getTeamAll } from "@/store/slices/team/getTeamAllSlice";
@@ -16,11 +16,14 @@ import {
   resetTargetAllocationState,
 } from "@/store/slices/target/targetAllocationSlice";
 import { useEffect } from "react";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
 import { conflictResolutionSchema } from "@/validations/targetValidation";
+import { ConfirmModal } from "./shared/confirm-modal";
 
 export default function TerritoryConflictsPage() {
   const router = useRouter();
+  const params = useParams();
+  const locale = params?.locale || "en";
   const [selectedTeam, setSelectedTeam] = useState("");
   const dispatch = useAppDispatch();
   const { teams } = useAppSelector((state) => state.teamAll);
@@ -36,6 +39,7 @@ export default function TerritoryConflictsPage() {
 
   // Validation errors state
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   useEffect(() => {
     dispatch(getTeamAll());
@@ -52,10 +56,14 @@ export default function TerritoryConflictsPage() {
   // Handle resolve success
   useEffect(() => {
     if (resolveSuccess && resolveMessage) {
-      toast.success("Success", { description: resolveMessage });
+      toast.success(resolveMessage);
       dispatch(resetTargetAllocationState());
       setValidationErrors({});
-      // Refresh conflicts
+
+      // Redirect to target list view after success
+      router.push(`/${locale}/dashboard/target-listview`);
+
+      // Refresh conflicts (optional since we're redirecting, but kept for completeness)
       if (selectedTeam) {
         dispatch(getTeamConflicts(selectedTeam));
       }
@@ -65,7 +73,6 @@ export default function TerritoryConflictsPage() {
   // Handle resolve error
   useEffect(() => {
     if (resolveError) {
-      toast.error("Error", { description: resolveError });
       dispatch(resetTargetAllocationState());
     }
   }, [resolveError, dispatch]);
@@ -240,7 +247,7 @@ export default function TerritoryConflictsPage() {
                     </div>
 
                     {/* Status Alert */}
-                    {conflict.isResolved ? (
+                    {conflict.isResolved || getBrickTotalPercentage(conflict) === 100 ? (
                       <div className="bg-(--success-0) rounded-8 px-4 py-3 flex items-center gap-3">
                         <CheckCircle2 className="w-5 h-5 text-(--success)" />
                         <span className="font-medium text-xs text-(--success)">
@@ -248,9 +255,7 @@ export default function TerritoryConflictsPage() {
                         </span>
                       </div>
                     ) : (
-                      <div
-                        className={`rounded-8 px-4 py-3 flex items-center gap-3 ${getErrorMessage(conflict.brickId) ? "bg-(--destructive-0)" : "bg-(--destructive-0)"}`}
-                      >
+                      <div className="bg-(--destructive-0) rounded-8 px-4 py-3 flex items-center gap-3">
                         <AlertCircle className="w-5 h-5 text-(--destructive)" />
                         <span className="font-medium text-xs text-(--destructive)">
                           {getErrorMessage(conflict.brickId) ||
@@ -274,7 +279,7 @@ export default function TerritoryConflictsPage() {
             size="lg"
             rounded="full"
             className="px-8 border-(--primary) text-(--primary) hover:bg-(--primary-0) hover:text-(--primary)"
-            onClick={() => router.back()}
+            onClick={() => setIsDiscardModalOpen(true)}
           >
             Discard
           </Button>
@@ -291,6 +296,18 @@ export default function TerritoryConflictsPage() {
           </Button>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={() => {
+          setIsDiscardModalOpen(false);
+          router.back();
+        }}
+        title="Discard changes?"
+        description="You will lose all unsaved conflict resolutions."
+        confirmLabel="Discard"
+      />
     </div>
   );
 }

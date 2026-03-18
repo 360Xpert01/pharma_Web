@@ -8,6 +8,8 @@ import { getAllRoles } from "@/store/slices/role/getAllRolesSlice";
 import { getTeamAll } from "@/store/slices/team/getTeamAllSlice";
 import { getAllUsers } from "@/store/slices/employee/getAllUsersSlice";
 import { getProductCategories } from "@/store/slices/product/getProductCategoriesSlice";
+import { getAllDistributorTypes } from "@/store/slices/distributorType/getAllDistributorTypesSlice";
+import { getBrickList } from "@/store/slices/brick/getBrickListSlice";
 import FormSelect from "@/components/form/FormSelect";
 
 interface TableFilterProps {
@@ -16,6 +18,8 @@ interface TableFilterProps {
   showProductFilters?: boolean;
   showGiveawayFilters?: boolean;
   showTeamFilters?: boolean;
+  showTargetFilters?: boolean;
+  showDistributorFilters?: boolean;
   isAllocate?: boolean;
   channelId?: string;
   onApply?: () => void;
@@ -29,6 +33,11 @@ interface TableFilterProps {
     status?: string;
     employeeId?: string;
     channelId?: string;
+    // Distributor filters
+    distributorStatus?: string;
+    distributorTypeId?: string;
+    zoneId?: string;
+    regionId?: string;
   }) => void;
   onClear?: () => void;
 }
@@ -39,6 +48,8 @@ export default function TableFilter({
   showProductFilters = false,
   showGiveawayFilters = false,
   showTeamFilters = false,
+  showTargetFilters = false,
+  showDistributorFilters = false,
   isAllocate = false,
   channelId,
   onApply,
@@ -62,6 +73,12 @@ export default function TableFilter({
   const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
   const [selectedChannel, setSelectedChannel] = useState("");
 
+  // Distributor Filter States
+  const [selectedDistributorStatus, setSelectedDistributorStatus] = useState("");
+  const [selectedDistributorTypeId, setSelectedDistributorTypeId] = useState("");
+  const [selectedZoneId, setSelectedZoneId] = useState("");
+  const [selectedRegionId, setSelectedRegionId] = useState("");
+
   // Redux state for filters
   const { specializations } = useAppSelector((state) => state.allSpecializations);
   const { segments } = useAppSelector((state) => state.allSegments);
@@ -70,6 +87,13 @@ export default function TableFilter({
   const { teams } = useAppSelector((state) => state.teamAll);
   const { users } = useAppSelector((state) => state.allUsers);
   const { categories } = useAppSelector((state) => state.productCategories);
+
+  // Redux state for distributor filters
+  const { distributorTypes } = useAppSelector((state) => state.allDistributorTypes);
+  const { zones, regions } = useAppSelector((state) => state.brickList);
+
+  // Cascaded regions
+  const filteredRegions = regions.filter((r) => r.parentId === selectedZoneId);
 
   // Find current channel to check if it's "Doctor"
   const currentChannel = channels.find((ch) => ch.id === channelId);
@@ -83,9 +107,10 @@ export default function TableFilter({
         dispatch(getAllChannels());
       }
     }
-    if (showEmployeeFilters && isFilterOpen) {
+    if ((showEmployeeFilters || showTargetFilters) && isFilterOpen) {
       dispatch(getAllRoles());
       dispatch(getTeamAll());
+      dispatch(getAllUsers({ page: 1, limit: 100 }));
     }
     if (showProductFilters && isFilterOpen) {
       dispatch(getProductCategories());
@@ -93,11 +118,16 @@ export default function TableFilter({
     if (isAllocate && isFilterOpen) {
       dispatch(getAllUsers({ page: 1, limit: 100 })); // Fetch more users for dropdown
     }
+    if (showDistributorFilters && isFilterOpen) {
+      dispatch(getAllDistributorTypes({ limit: 100 }));
+      dispatch(getBrickList());
+    }
   }, [
     dispatch,
     showDoctorFilters,
     showEmployeeFilters,
     showProductFilters,
+    showDistributorFilters,
     isFilterOpen,
     channels.length,
   ]);
@@ -308,6 +338,136 @@ export default function TableFilter({
                   />
                 </div>
               </>
+            ) : showTargetFilters ? (
+              <>
+                {/* Employee Filter - Show only Sales Reps */}
+                <div>
+                  <FormSelect
+                    label="Employee (Sales Rep)"
+                    name="employeeId"
+                    value={selectedEmployeeId}
+                    onChange={setSelectedEmployeeId}
+                    options={[
+                      ...users
+                        .filter((user) =>
+                          (user.role?.roleName ?? "").toLowerCase().includes("sales representative")
+                        )
+                        .map((user) => ({
+                          value: user.id,
+                          label: `${user.firstName} ${user.lastName}`,
+                        })),
+                    ]}
+                    placeholder="Select sales rep"
+                    className="mb-0"
+                  />
+                </div>
+
+                {/* Team Filter */}
+                <div>
+                  <FormSelect
+                    label="Team"
+                    name="team"
+                    value={selectedTeam}
+                    onChange={setSelectedTeam}
+                    options={[
+                      ...teams.map((team) => ({
+                        value: team.id,
+                        label: team.name,
+                      })),
+                    ]}
+                    placeholder="Select team"
+                    className="mb-0"
+                  />
+                </div>
+
+                {/* Supervisor Filter */}
+                <div>
+                  <FormSelect
+                    label="Supervisor"
+                    name="supervisor"
+                    value={selectedSupervisor}
+                    onChange={setSelectedSupervisor}
+                    options={[
+                      ...users.map((user) => ({
+                        value: user.id,
+                        label: `${user.firstName} ${user.lastName}`,
+                      })),
+                    ]}
+                    placeholder="Select supervisor"
+                    className="mb-0"
+                  />
+                </div>
+              </>
+            ) : showDistributorFilters ? (
+              <>
+                {/* Status */}
+                <div>
+                  <FormSelect
+                    label="Status"
+                    name="distributorStatus"
+                    value={selectedDistributorStatus}
+                    onChange={setSelectedDistributorStatus}
+                    options={[
+                      { value: "active", label: "Active" },
+                      { value: "inactive", label: "Inactive" },
+                    ]}
+                    placeholder="Select status"
+                    className="mb-0"
+                  />
+                </div>
+
+                {/* Distributor Type */}
+                <div>
+                  <FormSelect
+                    label="Distributor Type"
+                    name="distributorTypeId"
+                    value={selectedDistributorTypeId}
+                    onChange={setSelectedDistributorTypeId}
+                    options={distributorTypes.map((t) => ({ value: t.id, label: t.name }))}
+                    placeholder="Select type"
+                    className="mb-0"
+                  />
+                </div>
+
+                {/* Zone */}
+                <div>
+                  <FormSelect
+                    label="Zone"
+                    name="zoneId"
+                    value={selectedZoneId}
+                    onChange={(v) => {
+                      setSelectedZoneId(v);
+                      setSelectedRegionId(""); // reset region on zone change
+                    }}
+                    options={zones.map((z) => ({
+                      value: z.id,
+                      label: z.description ? `${z.name} - ${z.description}` : z.name,
+                    }))}
+                    placeholder="Select zone"
+                    className="mb-0"
+                  />
+                </div>
+
+                {/* Region */}
+                <div>
+                  <FormSelect
+                    label="Region"
+                    name="regionId"
+                    value={selectedRegionId}
+                    onChange={setSelectedRegionId}
+                    options={
+                      selectedZoneId
+                        ? filteredRegions.map((r) => ({
+                            value: r.id,
+                            label: r.description ? `${r.name} - ${r.description}` : r.name,
+                          }))
+                        : []
+                    }
+                    placeholder={!selectedZoneId ? "Select a zone first" : "Select region"}
+                    className="mb-0"
+                  />
+                </div>
+              </>
             ) : null}
 
             {/* Status Filter (Common for Doctor, Employee, Product, and Team) */}
@@ -342,7 +502,9 @@ export default function TableFilter({
               !showProductFilters &&
               !showGiveawayFilters &&
               !isAllocate &&
-              !showTeamFilters && (
+              !showTeamFilters &&
+              !showTargetFilters &&
+              !showDistributorFilters && (
                 /* Date Range */
                 <div>
                   <FormSelect
@@ -394,6 +556,10 @@ export default function TableFilter({
                       status: "",
                       employeeId: "",
                       channelId: "",
+                      distributorStatus: "",
+                      distributorTypeId: "",
+                      zoneId: "",
+                      regionId: "",
                     });
                   }
                   onClear?.();
@@ -426,6 +592,10 @@ export default function TableFilter({
                           : selectedStatus,
                       employeeId: selectedEmployeeId,
                       channelId: selectedChannel,
+                      distributorStatus: selectedDistributorStatus,
+                      distributorTypeId: selectedDistributorTypeId,
+                      zoneId: selectedZoneId,
+                      regionId: selectedRegionId,
                     });
                   }
                   onApply?.();

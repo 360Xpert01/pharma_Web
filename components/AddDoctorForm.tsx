@@ -11,6 +11,8 @@ import {
   TimeRangePicker,
 } from "@/components/form";
 import { useDoctorForm } from "../hooks/use-doctor-form";
+import { ConfirmModal } from "./shared/confirm-modal";
+import { useState } from "react";
 
 export default function AddDoctorForm({ idForm }: { idForm?: string }) {
   const {
@@ -67,6 +69,8 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
     clearFieldError,
     router,
   } = useDoctorForm(idForm);
+
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   if (partyLoading) {
     return (
@@ -427,7 +431,12 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
 
       {/* Bottom Buttons */}
       <div className="flex justify-end gap-4 mt-10">
-        <Button variant="outline" size="lg" rounded="full" onClick={() => router.back()}>
+        <Button
+          variant="outline"
+          size="lg"
+          rounded="full"
+          onClick={() => setIsDiscardModalOpen(true)}
+        >
           Discard
         </Button>
         <Button
@@ -442,6 +451,18 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
           {"Add " + currentChannel?.name}
         </Button>
       </div>
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={() => {
+          setIsDiscardModalOpen(false);
+          router.back();
+        }}
+        title="Discard changes?"
+        description="You will lose all unsaved changes for this doctor."
+        confirmLabel="Discard"
+      />
     </div>
   );
 }

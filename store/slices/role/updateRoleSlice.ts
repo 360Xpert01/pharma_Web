@@ -7,7 +7,7 @@ interface UpdateRolePayload {
   roleName?: string;
   pulseCode?: string;
   parentRoleId?: string;
-  responsibilities?: string;
+  permissionGroupId?: string;
 }
 
 interface UpdateRoleResponse {
@@ -40,7 +40,7 @@ export const updateRole = createAsyncThunk<
       return rejectWithValue("No session found. Please login again.");
     }
 
-    const response = await axios.patch<UpdateRoleResponse>(`${baseUrl}api/v1/role/${id}`, payload, {
+    const response = await axios.put<UpdateRoleResponse>(`${baseUrl}api/v1/role/${id}`, payload, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStr}`,

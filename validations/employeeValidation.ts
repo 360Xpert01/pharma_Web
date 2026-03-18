@@ -40,15 +40,6 @@ export const employeeRegistrationSchema = z.object({
 
   roleName: z.string().optional(), // Used for conditional validation
 
-  // Optional fields
-  middleName: z
-    .string()
-    .min(2, { message: "Middle name must be at least 2 characters long" })
-    .max(50, { message: "Middle name cannot exceed 50 characters" })
-    .transform((val) => val.trim())
-    .optional()
-    .or(z.literal("")),
-
   pulseCode: z
     .string()
     .max(100, { message: "Pulse code cannot exceed 100 characters" })

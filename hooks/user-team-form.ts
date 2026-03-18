@@ -5,6 +5,7 @@ import {
   generatePrefix,
   resetGeneratePrefixState,
 } from "@/store/slices/preFix/generatePrefixSlice";
+import { toast } from "react-hot-toast";
 import { getAllChannels } from "@/store/slices/channel/getAllChannelsSlice";
 import { getAllCallPoints } from "@/store/slices/callPoint/getAllCallPointsSlice";
 import { getAllProducts } from "@/store/slices/product/getAllProductsSlice";
@@ -129,14 +130,11 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
   };
 
   useEffect(() => {
-    // Generate pulse code for "Team" entity
-    dispatch(generatePrefix({ entity: "Team" }));
-
     // Fetch all channels for dropdown
     dispatch(getAllChannels());
 
     // Fetch all call points for dropdown
-    dispatch(getAllCallPoints());
+    dispatch(getAllCallPoints({ pagination: false }));
 
     // Fetch all products for search
     dispatch(getAllProducts());
@@ -148,7 +146,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
     dispatch(getAllTerritories({ notassigned: true }));
 
     return () => {
-      dispatch(resetGeneratePrefixState());
+      // dispatch(resetGeneratePrefixState()); // Removed as requested
       dispatch(resetUsersByRoleState());
       dispatch(resetUserHierarchyState());
       dispatch(resetCreateTeamState());
@@ -156,9 +154,9 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
     };
   }, [dispatch]);
 
-  // Handle create team success/error
   useEffect(() => {
     if (createTeamSuccess) {
+      toast.success("Team created successfully!");
       // Reset state and navigate to campaign-management
       dispatch(resetCreateTeamState());
       router.push("/en/dashboard/campaign-Management");
@@ -171,6 +169,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
   // Handle update team success/error
   useEffect(() => {
     if (updateTeamSuccess) {
+      toast.success("Team updated successfully!");
       dispatch(resetUpdateTeamState());
       dispatch(resetGetTeamByIdState());
       router.push("/en/dashboard/campaign-Management");
@@ -403,8 +402,8 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
 
     // Prepare form data for validation
     const formData = {
-      pulseCode: generatedPrefix || "",
-      legacyCode: generatedPrefix || "",
+      pulseCode: undefined,
+      legacyCode: undefined,
       name: teamName.trim(),
       status: status.toLowerCase() as "active" | "inactive",
       callPointIds: selectedCallPoints, // Send as array of IDs
@@ -458,7 +457,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
     }));
 
     const formData = {
-      pulseCode: pulseCode || generatedPrefix || "", // Use existing for update
+      pulseCode: pulseCode || undefined, // Use existing for update
       name: teamName.trim(),
       status: status.toLowerCase() as "active" | "inactive",
       callPointIds: selectedCallPoints, // Send as array of IDs

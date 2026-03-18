@@ -12,18 +12,20 @@ import {
   User,
   Loader2,
   Pencil,
+  Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import RoleResponsibilitiesDropdown from "@/components/RoleResponsibilitiesDropdown";
-
-export type RoleLevel = "company" | "department" | "position" | "role";
+import { PermissionGroup } from "@/store/slices/permissionGroup/getAllPermissionGroupsSlice";
+import { ConfirmModal } from "./shared/confirm-modal";
+import { RoleLevel, isAdminRole } from "@/lib/role-utils";
 
 export interface RoleItem {
   id: string;
   name: string;
   subtitle?: string;
   type: RoleLevel;
-  responsibilities?: string;
+  permissionGroupId?: string;
   pulseCode?: string;
   children?: RoleItem[];
 }
@@ -35,32 +37,11 @@ const CHILD_TYPE_MAP: Record<RoleLevel, RoleLevel | null> = {
   role: null,
 };
 
-// Maps hierarchy depth/type to the default role responsibility
-const ROLE_LEVEL_TO_RESPONSIBILITY: Record<RoleLevel, string> = {
-  company: "Administrator",
-  department: "C-Suite",
-  position: "Manager",
-  role: "Sales Representative",
-};
-
-// Helper to determine responsibility based on role name
-const getResponsibilityByName = (name: string, level: RoleLevel): string => {
-  const upperName = name.toUpperCase();
-  if (upperName.includes("ADMIN")) return "Administrator";
-  if (upperName.includes("CEO") || upperName.includes("CCO") || upperName.includes("CHIEF"))
-    return "C-Suite";
-  if (upperName.includes("REPRESENTATIVE") || upperName.includes("REP"))
-    return "Sales Representative";
-  if (upperName.includes("MANAGER") || upperName.includes("HEAD") || upperName.includes("DIRECTOR"))
-    return "Manager";
-
-  return ROLE_LEVEL_TO_RESPONSIBILITY[level];
-};
-
 interface RoleNodeProps {
   item: RoleItem;
   level: number;
   addingId: string | null;
+  updatingId: string | null;
   isExpanded: boolean;
   expandedIds: Set<string>;
   onToggleExpand: (id: string) => void;
@@ -73,7 +54,11 @@ interface RoleNodeProps {
     pulseCode: string,
     responsibilities?: string
   ) => void;
+  onUpdateChild?: (id: string, name: string, responsibilities?: string) => void;
+  onDeleteChild?: (id: string) => void;
   onMoreOptions?: (itemId: string, itemType: RoleLevel) => void;
+  onStartUpdate?: (id: string) => void;
+  permissionGroups: PermissionGroup[];
 }
 
 const getTypeIcon = (type: RoleLevel) => {
@@ -110,48 +95,64 @@ const RoleNode: React.FC<RoleNodeProps> = ({
   item,
   level,
   addingId,
+  updatingId,
   isExpanded,
   expandedIds,
   onToggleExpand,
   onAddChild,
   onCancelAdd,
   onCreateChild,
+  onUpdateChild,
+  onDeleteChild,
   onMoreOptions,
+  onStartUpdate,
+  permissionGroups,
 }) => {
   const hasChildren = item.children && item.children.length > 0;
   const isAddingToThis = addingId === item.id;
+  const isUpdatingThis = updatingId === item.id;
   const childType = CHILD_TYPE_MAP[item.type];
   const canHaveChildren = childType !== null;
 
   const [newName, setNewName] = useState("");
-  // Pre-fill from depth: the child being created gets a default responsibility
-  const [newResponsibilities, setNewResponsibilities] = useState(
-    childType ? ROLE_LEVEL_TO_RESPONSIBILITY[childType] : ""
-  );
+  const [newPermissionGroupId, setNewPermissionGroupId] = useState("");
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
-  // Update responsibilities when name changes
+  // Pre-fill for update or add
   useEffect(() => {
-    if (isAddingToThis && childType && newName.trim()) {
-      setNewResponsibilities(getResponsibilityByName(newName, childType));
-    }
-  }, [newName, isAddingToThis, childType]);
-
-  const handleCreate = () => {
-    if (newName.trim()) {
-      onCreateChild?.(item.id, childType!, newName.trim(), "", newResponsibilities || undefined);
+    if (isUpdatingThis) {
+      setNewName(item.name);
+      setNewPermissionGroupId(item.permissionGroupId || "");
+    } else if (isAddingToThis && childType) {
       setNewName("");
-      setNewResponsibilities("");
+      setNewPermissionGroupId("");
+    }
+  }, [isUpdatingThis, isAddingToThis, item.name, item.permissionGroupId, childType]);
+
+  const handleResponsibilityChange = (id: string) => {
+    setNewPermissionGroupId(id);
+  };
+
+  const handleAction = () => {
+    if (newName.trim()) {
+      if (isUpdatingThis) {
+        onUpdateChild?.(item.id, newName.trim(), newPermissionGroupId || undefined);
+      } else if (isAddingToThis && childType) {
+        onCreateChild?.(item.id, childType, newName.trim(), "", newPermissionGroupId || undefined);
+        setNewName("");
+        setNewPermissionGroupId("");
+      }
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      handleCreate();
+      handleAction();
     }
     if (e.key === "Escape") {
       e.preventDefault();
-      onCancelAdd?.();
+      setIsDiscardModalOpen(true);
     }
   };
 
@@ -183,59 +184,111 @@ const RoleNode: React.FC<RoleNodeProps> = ({
         />
       )}
 
-      {/* ── Existing Node View Row ── */}
-      <div className="flex items-center gap-3 group border border-[var(--gray-2)] rounded-8 p-4 bg-[var(--background)] hover:bg-[var(--gray-0)] transition-colors">
-        <div className="flex items-center">
-          {hasChildren ? (
+      {/* ── Existing Node View Row OR Update Row ── */}
+      {isUpdatingThis ? (
+        <div className="flex items-center gap-3 border border-[var(--primary)] rounded-8 p-4 bg-[var(--background)] shadow-soft animate-in fade-in duration-200">
+          <div
+            className={cn(
+              "w-10 h-10 rounded-8 flex items-center justify-center",
+              getTypeStyles(item.type)
+            )}
+          >
+            <Icon className="w-5 h-5" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <input
+              autoFocus
+              type="text"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              onKeyDown={handleKeyDown}
+              disabled={isAdminRole(item.permissionGroupId, permissionGroups)}
+              placeholder="Enter Tree Name"
+              className={cn(
+                "w-full bg-transparent border-none outline-none text-[var(--gray-9)] font-semibold placeholder:text-[var(--gray-4)]",
+                isAdminRole(item.permissionGroupId, permissionGroups) &&
+                  "opacity-70 cursor-not-allowed"
+              )}
+            />
+          </div>
+          <div className="flex-shrink-0">
+            <RoleResponsibilitiesDropdown
+              value={newPermissionGroupId}
+              onChange={handleResponsibilityChange}
+              options={permissionGroups}
+              readOnly={isAdminRole(item.permissionGroupId, permissionGroups)}
+            />
+          </div>
+          <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={() => onToggleExpand(item.id)}
-              className="w-6 h-6 flex items-center justify-center hover:bg-[var(--gray-2)] rounded-8 transition-colors z-10 mr-2 cursor-pointer"
+              onClick={() => setIsDiscardModalOpen(true)}
+              className="px-3 py-1.5 text-sm text-[var(--gray-5)] hover:text-[var(--gray-7)] font-medium cursor-pointer"
             >
-              {isExpanded ? (
-                <ChevronDown className="w-4 h-4 text-[var(--gray-6)]" />
-              ) : (
-                <ChevronRight className="w-4 h-4 text-[var(--gray-6)]" />
-              )}
+              Cancel
             </button>
-          ) : (
-            <div className="w-6 mr-2" />
-          )}
-        </div>
-
-        <div
-          className={cn(
-            "w-10 h-10 rounded-8 flex items-center justify-center",
-            getTypeStyles(item.type)
-          )}
-        >
-          <Icon className="w-5 h-5" />
-        </div>
-
-        <div className="flex-1 min-w-0 flex flex-col">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="font-bold text-(--gray-9) truncate" title={item.name}>
-              {item.name}
-            </span>
+            <button
+              type="button"
+              onClick={handleAction}
+              disabled={!newName.trim()}
+              className="px-4 py-1.5 text-sm bg-[var(--primary)] text-[var(--light)] rounded-8 font-medium hover:bg-[var(--primary)]/90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            >
+              Update
+            </button>
           </div>
-          {item.subtitle && (
-            <span className="text-xs text-(--gray-4) truncate" title={item.subtitle}>
-              {item.subtitle}
-            </span>
-          )}
         </div>
+      ) : (
+        <div className="flex items-center gap-3 group border border-[var(--gray-2)] rounded-8 p-4 bg-[var(--background)] hover:bg-[var(--gray-0)] transition-colors">
+          <div className="flex items-center">
+            {hasChildren ? (
+              <button
+                type="button"
+                onClick={() => onToggleExpand(item.id)}
+                className="w-6 h-6 flex items-center justify-center hover:bg-[var(--gray-2)] rounded-8 transition-colors z-10 mr-2 cursor-pointer"
+              >
+                {isExpanded ? (
+                  <ChevronDown className="w-4 h-4 text-[var(--gray-6)]" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 text-[var(--gray-6)]" />
+                )}
+              </button>
+            ) : (
+              <div className="w-6 mr-2" />
+            )}
+          </div>
 
-        {/* Dropdown shown on every existing node – defaults from depth */}
-        <div className="flex-shrink-0">
-          <RoleResponsibilitiesDropdown
-            value={item.responsibilities || getResponsibilityByName(item.name, item.type)}
-            onChange={() => {}}
-            readOnly
-          />
-        </div>
+          <div
+            className={cn(
+              "w-10 h-10 rounded-8 flex items-center justify-center",
+              getTypeStyles(item.type)
+            )}
+          >
+            <Icon className="w-5 h-5" />
+          </div>
 
-        <div className="flex items-center gap-2">
-          {canHaveChildren && (
+          <div className="flex-1 min-w-0 flex flex-col">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="font-bold text-(--gray-9) truncate" title={item.name}>
+                {item.name}
+              </span>
+            </div>
+            {item.subtitle && (
+              <span className="text-xs text-(--gray-4) truncate" title={item.subtitle}>
+                {item.subtitle}
+              </span>
+            )}
+          </div>
+
+          <div className="flex-shrink-0">
+            <RoleResponsibilitiesDropdown
+              value={item.permissionGroupId || ""}
+              onChange={() => {}}
+              readOnly
+              options={permissionGroups}
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={(e) => {
@@ -248,17 +301,28 @@ const RoleNode: React.FC<RoleNodeProps> = ({
             >
               <Plus className="w-4 h-4" />
             </button>
-          )}
-          <button
-            type="button"
-            className="w-8 h-8 flex items-center justify-center bg-(--primary) text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
-            onClick={() => onMoreOptions?.(item.id, item.type)}
-            title="Edit"
-          >
-            <Pencil className="w-4 h-4" />
-          </button>
+
+            <button
+              type="button"
+              className="w-8 h-8 flex items-center justify-center bg-(--primary) text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
+              onClick={() => onStartUpdate?.(item.id)}
+              title="Edit"
+            >
+              <Pencil className="w-4 h-4" />
+            </button>
+            {!hasChildren && (
+              <button
+                type="button"
+                className="w-8 h-8 flex items-center justify-center bg-destructive text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
+                onClick={() => onDeleteChild?.(item.id)}
+                title="Delete"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* ── Children + Inline Create ── */}
       {isExpanded && (
@@ -296,21 +360,22 @@ const RoleNode: React.FC<RoleNodeProps> = ({
                 </div>
                 <div className="flex-shrink-0">
                   <RoleResponsibilitiesDropdown
-                    value={newResponsibilities}
-                    onChange={setNewResponsibilities}
+                    value={newPermissionGroupId}
+                    onChange={setNewPermissionGroupId}
+                    options={permissionGroups}
                   />
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={onCancelAdd}
+                    onClick={() => setIsDiscardModalOpen(true)}
                     className="px-3 py-1.5 text-sm text-[var(--gray-5)] hover:text-[var(--gray-7)] font-medium cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="button"
-                    onClick={handleCreate}
+                    onClick={handleAction}
                     disabled={!newName.trim()}
                     className="px-4 py-1.5 text-sm bg-[var(--primary)] text-[var(--light)] rounded-8 font-medium hover:bg-[var(--primary)]/90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   >
@@ -328,22 +393,38 @@ const RoleNode: React.FC<RoleNodeProps> = ({
                 item={child}
                 level={level + 1}
                 addingId={addingId}
+                updatingId={updatingId}
                 isExpanded={expandedIds.has(child.id)}
                 expandedIds={expandedIds}
                 onToggleExpand={onToggleExpand}
                 onAddChild={onAddChild}
                 onCancelAdd={onCancelAdd}
                 onCreateChild={onCreateChild}
+                onUpdateChild={onUpdateChild}
+                onDeleteChild={onDeleteChild}
                 onMoreOptions={onMoreOptions}
+                onStartUpdate={onStartUpdate}
+                permissionGroups={permissionGroups}
               />
             ))}
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={() => {
+          setIsDiscardModalOpen(false);
+          onCancelAdd?.();
+        }}
+        title="Discard changes?"
+        description="Are you sure you want to discard your changes to this role?"
+        confirmLabel="Discard"
+      />
     </div>
   );
 };
 
-// ── Root-level add row ──
 const RootAddRow: React.FC<{
   onCreateChild?: (
     parentId: string,
@@ -353,17 +434,15 @@ const RootAddRow: React.FC<{
     responsibilities?: string
   ) => void;
   onCancelAdd?: () => void;
-}> = ({ onCreateChild, onCancelAdd }) => {
+  permissionGroups: PermissionGroup[];
+}> = ({ onCreateChild, onCancelAdd, permissionGroups }) => {
   const [rootName, setRootName] = useState("");
-  // Root level = company = Administrator by default
-  const [rootResponsibilities, setRootResponsibilities] = useState("Administrator");
+  const [rootPermissionGroupId, setRootPermissionGroupId] = useState("");
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
-  // Update responsibilities when name changes
   useEffect(() => {
-    if (rootName.trim()) {
-      setRootResponsibilities(getResponsibilityByName(rootName, "company"));
-    }
-  }, [rootName]);
+    setRootPermissionGroupId("");
+  }, [permissionGroups]);
 
   return (
     <div className="flex items-center gap-3 border border-[var(--primary)] rounded-8 p-4 bg-[var(--background)] shadow-soft">
@@ -384,24 +463,25 @@ const RootAddRow: React.FC<{
                 "company",
                 rootName.trim(),
                 "",
-                rootResponsibilities || undefined
+                rootPermissionGroupId || undefined
               );
             }
             if (e.key === "Escape") {
-              onCancelAdd?.();
+              setIsDiscardModalOpen(true);
             }
           }}
         />
       </div>
       <div className="flex-shrink-0">
         <RoleResponsibilitiesDropdown
-          value={rootResponsibilities}
-          onChange={setRootResponsibilities}
+          value={rootPermissionGroupId}
+          onChange={setRootPermissionGroupId}
+          options={permissionGroups}
         />
       </div>
       <div className="flex items-center gap-2">
         <button
-          onClick={onCancelAdd}
+          onClick={() => setIsDiscardModalOpen(true)}
           className="px-3 py-1.5 text-sm text-[var(--gray-5)] hover:text-[var(--gray-7)] font-medium cursor-pointer"
         >
           Cancel
@@ -415,7 +495,7 @@ const RootAddRow: React.FC<{
                 "company",
                 rootName.trim(),
                 "",
-                rootResponsibilities || undefined
+                rootPermissionGroupId || undefined
               );
             }
           }}
@@ -425,11 +505,22 @@ const RootAddRow: React.FC<{
           Create
         </button>
       </div>
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={() => {
+          setIsDiscardModalOpen(false);
+          onCancelAdd?.();
+        }}
+        title="Discard changes?"
+        description="Are you sure you want to discard your changes to this role?"
+        confirmLabel="Discard"
+      />
     </div>
   );
 };
 
-// ── Main Hierarchy Component ──
 interface RoleHierarchyProps {
   data: RoleItem[];
   loading?: boolean;
@@ -443,8 +534,13 @@ interface RoleHierarchyProps {
     pulseCode: string,
     responsibilities?: string
   ) => void;
+  onUpdateChild?: (id: string, name: string, responsibilities?: string) => void;
+  onDeleteChild?: (id: string) => void;
   onMoreOptions?: (itemId: string, itemType: RoleLevel) => void;
   addingId?: string | null;
+  updatingId?: string | null;
+  onStartUpdate?: (id: string) => void;
+  permissionGroups: PermissionGroup[];
 }
 
 export const RoleHierarchy: React.FC<RoleHierarchyProps> = ({
@@ -454,8 +550,13 @@ export const RoleHierarchy: React.FC<RoleHierarchyProps> = ({
   onAddChild,
   onCancelAdd,
   onCreateChild,
+  onUpdateChild,
+  onDeleteChild,
   onMoreOptions,
   addingId = null,
+  updatingId = null,
+  onStartUpdate,
+  permissionGroups,
 }) => {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
@@ -513,7 +614,11 @@ export const RoleHierarchy: React.FC<RoleHierarchyProps> = ({
     <div className="w-full bg-[var(--background)] rounded-8">
       <div className="space-y-4">
         {addingId === "root" && (
-          <RootAddRow onCreateChild={onCreateChild} onCancelAdd={onCancelAdd} />
+          <RootAddRow
+            onCreateChild={onCreateChild}
+            onCancelAdd={onCancelAdd}
+            permissionGroups={permissionGroups}
+          />
         )}
         {data.map((item) => (
           <RoleNode
@@ -521,13 +626,18 @@ export const RoleHierarchy: React.FC<RoleHierarchyProps> = ({
             item={item}
             level={0}
             addingId={addingId}
+            updatingId={updatingId}
             isExpanded={expandedIds.has(item.id)}
             expandedIds={expandedIds}
             onToggleExpand={toggleExpand}
             onAddChild={onAddChild}
             onCancelAdd={onCancelAdd}
             onCreateChild={onCreateChild}
+            onUpdateChild={onUpdateChild}
+            onDeleteChild={onDeleteChild}
             onMoreOptions={onMoreOptions}
+            onStartUpdate={onStartUpdate}
+            permissionGroups={permissionGroups}
           />
         ))}
       </div>

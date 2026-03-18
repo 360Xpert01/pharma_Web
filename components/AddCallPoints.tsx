@@ -14,6 +14,7 @@ import {
 } from "@/store/slices/preFix/generatePrefixSlice";
 import { FormInput } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
+import toast from "react-hot-toast";
 
 export default function AddCallPointForm() {
   const dispatch = useAppDispatch();
@@ -30,11 +31,6 @@ export default function AddCallPointForm() {
 
   // Fetch prefixes and generate pulse code on mount
   useEffect(() => {
-    // 🔥 Always call generate for "CallPoint" entity
-    // Call point forms create call points (business logic, not dynamic)
-    // The /generate API is idempotent - handles existence automatically
-    dispatch(generatePrefix({ entity: "CallPoint" }));
-
     return () => {
       dispatch(resetGeneratePrefixState());
       dispatch(resetCallPointState());
@@ -49,10 +45,7 @@ export default function AddCallPointForm() {
       setLongitude("");
 
       // Refresh call points list
-      dispatch(getAllCallPoints());
-
-      // Regenerate pulse code for next entry
-      dispatch(generatePrefix({ entity: "CallPoint" }));
+      dispatch(getAllCallPoints({ pagination: true }));
 
       // Reset state after delay
       setTimeout(() => {
@@ -61,27 +54,29 @@ export default function AddCallPointForm() {
     }
   }, [success, dispatch]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!locationTitle.trim() || !latitude.trim() || !longitude.trim()) {
-      return;
-    }
-
-    // Validate pulse code is generated
-    if (!generatedPrefix) {
-      console.error("Pulse code not generated yet");
       return;
     }
 
     const callPointData = {
       name: locationTitle.trim(),
-      pulseCode: generatedPrefix, // Include pulse code in payload
       latitude: parseFloat(latitude),
       longitude: parseFloat(longitude),
       legacyCode: "",
       isActive: true,
     };
 
-    dispatch(createCallPoint(callPointData));
+    try {
+      const result = await dispatch(createCallPoint(callPointData)).unwrap();
+
+      // Yahan result = thunk ka returned payload (success case)
+      toast.success("Call point created successfully!");
+      // Optional: reset form, navigate, etc.
+    } catch (rejectedValueOrError) {
+      // Yahan rejectedValueOrError = thunk ke rejectWithValue() se jo bheja tha
+      // toast.error(rejectedValueOrError?.message || "Something went wrong!");
+    }
   };
 
   return (
@@ -102,9 +97,9 @@ export default function AddCallPointForm() {
                 label="Pulse Code"
                 name="pulseCode"
                 type="text"
-                value={generatedPrefix || ""}
+                value="TO BE GENERATED"
                 onChange={() => {}}
-                placeholder={prefixLoading ? "Generating..." : "Auto-generated"}
+                placeholder="Auto-generated"
                 readOnly
                 error={prefixError || ""}
               />
@@ -154,7 +149,7 @@ export default function AddCallPointForm() {
                 icon={Plus}
                 rounded="full"
                 onClick={handleSubmit}
-                loading={loading || prefixLoading}
+                loading={loading}
                 disabled={!locationTitle.trim() || !latitude.trim() || !longitude.trim()}
               >
                 {loading ? "Adding..." : "Add Call Point"}

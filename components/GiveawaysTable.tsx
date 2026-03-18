@@ -8,17 +8,21 @@ import TablePagination from "@/components/TablePagination";
 import StatusBadge from "@/components/shared/StatusBadge";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
-import { clearPartyGiveaways, fetchPartyGiveaways } from "@/store/slices/party/partyGiveawaySlice";
+import {
+  clearPartyGiveaways,
+  fetchPartyGiveaways,
+  GiveawayRecord,
+} from "@/store/slices/party/partyGiveawaySlice";
 
-interface Giveaway {
-  id: string;
-  date: string;
-  name: string;
-  type: string;
-  available: number;
-  allocated: number;
-  status: "In Stock" | "Out of Stock" | "Low Stock";
-}
+// interface Giveaway {
+//   id: string;
+//   date: string;
+//   name: string;
+//   type: string;
+//   available: number;
+//   allocated: number;
+//   status: "In Stock" | "Out of Stock" | "Low Stock";
+// }
 
 export default function GiveawaysTable({ id }: { id: string }) {
   const dispatch = useDispatch<AppDispatch>();
@@ -42,13 +46,13 @@ export default function GiveawaysTable({ id }: { id: string }) {
     dispatch(fetchPartyGiveaways({ partyId: id, page, limit: pageSize }));
   };
 
-  const columns = useMemo<ColumnDef<Giveaway>[]>(
+  const columns = useMemo<ColumnDef<GiveawayRecord>[]>(
     () => [
       {
-        accessorKey: "id",
+        accessorKey: "pulseCode",
         header: "ID",
         cell: ({ row }) => (
-          <p className="font-medium text-(--gray-9)">{row.original?.pulseCode || "N/A"}</p>
+          <p className="font-medium text-(--gray-9)">{row.original.pulseCode || "N/A"}</p>
         ),
       },
       {
@@ -126,6 +130,8 @@ export default function GiveawaysTable({ id }: { id: string }) {
         error={error}
         enableExpanding={false}
         enablePagination={true}
+        enableSorting={true}
+        serverSideSorting={true}
         pageSize={10}
         emptyMessage="No giveaways found"
         PaginationComponent={TablePagination}

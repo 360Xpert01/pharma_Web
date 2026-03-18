@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 import { ProfileImageUpload, FormInput } from "@/components/form";
 import { Button } from "@/components/ui/button/button";
+import { ConfirmModal } from "./shared/confirm-modal";
 
 export default function AddSampleForm() {
   const router = useRouter();
   const [image, setImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
   const [sampleName, setSampleName] = useState("");
   const [brandName, setBrandName] = useState("");
   const [strength, setStrength] = useState("");
@@ -18,22 +20,22 @@ export default function AddSampleForm() {
   const [thresholdValue, setThresholdValue] = useState("");
   const [description, setDescription] = useState("");
 
-  const handleImageChange = (imageData: string | null) => {
-    setImage(imageData);
-    if (imageData && imageData.startsWith("data:image")) {
-      fetch(imageData)
-        .then((res) => res.blob())
-        .then((blob) => {
-          const file = new File([blob], "sample-image.png", { type: blob.type });
-          setImageFile(file);
-        });
+  const handleImageChange = (file: File | null) => {
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result as string);
+        setImageFile(file);
+      };
+      reader.readAsDataURL(file);
     } else {
+      setImage(null);
       setImageFile(null);
     }
   };
 
   const handleDiscard = () => {
-    router.back();
+    setIsDiscardModalOpen(true);
   };
 
   return (
@@ -127,6 +129,18 @@ export default function AddSampleForm() {
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={() => {
+          setIsDiscardModalOpen(false);
+          router.back();
+        }}
+        title="Discard changes?"
+        description="You will lose all unsaved changes for this sample."
+        confirmLabel="Discard"
+      />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import ExpenseRequestItem from "./ExpenseRequestItem";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/store";
+import { toast } from "react-hot-toast";
 import {
   fetchPendingRequests,
   removeRequest,
@@ -31,12 +32,24 @@ const ExpenseApprovalList: React.FC = () => {
     dispatch(fetchPendingRequests());
   }, [dispatch]);
 
-  const handleApprove = (id: string) => {
-    dispatch(handleOtpRequest({ requestId: id, status: "approved" }));
+  const handleApprove = async (id: string) => {
+    try {
+      await dispatch(handleOtpRequest({ requestId: id, status: "approved" })).unwrap();
+      toast.success("OTP request approved successfully!");
+      // Optional: refresh list, close modal, etc.
+    } catch (err: any) {
+      // err = rejectWithValue() se jo payload bheja tha thunk mein
+      // toast.error(err?.message || "Failed to approve OTP request");
+    }
   };
 
-  const handleReject = (id: string) => {
-    dispatch(handleOtpRequest({ requestId: id, status: "rejected" }));
+  const handleReject = async (id: string) => {
+    try {
+      await dispatch(handleOtpRequest({ requestId: id, status: "rejected" })).unwrap();
+      toast.success("OTP request rejected successfully!");
+    } catch (err: any) {
+      // toast.error(err?.message || "Failed to reject OTP request");
+    }
   };
 
   return (

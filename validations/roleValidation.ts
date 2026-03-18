@@ -10,10 +10,7 @@ export const roleCreationSchema = z.object({
     .max(100, { message: "Role name cannot exceed 100 characters" })
     .transform((val) => val.trim()),
 
-  pulseCode: z
-    .string()
-    .min(1, { message: "Pulse code is required" })
-    .max(100, { message: "Pulse code cannot exceed 100 characters" }),
+  pulseCode: z.string().max(100, { message: "Pulse code cannot exceed 100 characters" }).optional(),
 });
 
 export type RoleCreationFormValues = z.infer<typeof roleCreationSchema>;

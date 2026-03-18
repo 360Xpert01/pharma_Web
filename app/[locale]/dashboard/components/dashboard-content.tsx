@@ -71,6 +71,10 @@ import TerritoryConflictsPage from "@/components/TerritoryConflictsPage";
 import TerritoryTable from "@/components/TerritoryTable";
 import TerritoryForm from "@/components/TerritoryForm";
 import UpdateTargetPage from "@/components/UpdateTargetPage";
+import DistributorTable from "@/components/DistributorTable";
+import AddDistributor from "@/components/AddDistributor";
+import UpdateDistributorForm from "@/components/UpdateDistributorForm";
+import DistributorProfileTabs from "@/components/DistributorProfileTabs";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -158,6 +162,12 @@ export function DashboardContent({
   territoryTable,
   territoryForm,
   onAddClick,
+  distributorTable,
+  AddDistributorBtn,
+  UpdateDistributorEmp,
+  distributorProfileBtn,
+  showDistributorTabs,
+  distributorId,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -208,9 +218,29 @@ export function DashboardContent({
     channelId?: string;
   }>({});
 
+  // State for Target List Filters
+  const [targetFilters, setTargetFilters] = useState<{
+    employeeId?: string;
+    teamId?: string;
+    supervisorId?: string;
+  }>({});
+
   // State for Allocation Table Filters
   const [allocationFilters, setAllocationFilters] = useState<{
     employeeId?: string;
+  }>({});
+
+  // State for Roles Table Filters
+  const [roleFilters, setRoleFilters] = useState<{
+    status?: string;
+  }>({});
+
+  // State for Distributor Table Filters
+  const [distributorFilters, setDistributorFilters] = useState<{
+    distributorStatus?: string;
+    distributorTypeId?: string;
+    zoneId?: string;
+    regionId?: string;
   }>({});
 
   const handleSettings = () => {
@@ -428,7 +458,7 @@ export function DashboardContent({
         )}
 
         {productForm && (
-          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
+          <div className="">
             <ProductForm mode="add" />
           </div>
         )}
@@ -486,8 +516,14 @@ export function DashboardContent({
 
         {sampleTable && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading={campHeading} filterT={filterT} />
-            <SampleManagTable />
+            <TableHeader
+              campHeading={campHeading}
+              filterT={filterT}
+              showProductFilters={true}
+              onSearch={setSearchTerm}
+              onApplyFilters={setProductFilters}
+            />
+            <SampleManagTable searchTerm={searchTerm} filters={productFilters} />
           </div>
         )}
 
@@ -533,8 +569,14 @@ export function DashboardContent({
 
         {UserRoleTable && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading={campHeading} filterT={filterT} />
-            <UserRoles />
+            <TableHeader
+              campHeading={campHeading}
+              filterT={filterT}
+              onSearch={setSearchTerm}
+              showEmployeeFilters={true} // Reusing employee filters for roles status
+              onApplyFilters={setRoleFilters}
+            />
+            <UserRoles searchTerm={searchTerm} filters={roleFilters} />
           </div>
         )}
 
@@ -593,8 +635,14 @@ export function DashboardContent({
 
         {targetListView && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading="All Employees" filterT={filterT} />
-            <TargetListView />
+            <TableHeader
+              campHeading="All Employees"
+              filterT={true}
+              onSearch={setSearchTerm}
+              showTargetFilters={true}
+              onApplyFilters={setTargetFilters}
+            />
+            <TargetListView searchTerm={searchTerm} filters={targetFilters} />
           </div>
         )}
 
@@ -642,7 +690,7 @@ export function DashboardContent({
         {doctorDetail && <DoctorDetail />}
 
         {UpdateProduct && (
-          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
+          <div className="">
             <UpdateProductForm productId={productId} />
           </div>
         )}
@@ -670,6 +718,24 @@ export function DashboardContent({
             <TerritoryForm />
           </div>
         )}
+
+        {/* Distributor Management */}
+        {distributorTable && (
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
+            <TableHeader
+              campHeading="All Distributors"
+              filterT
+              onSearch={setSearchTerm}
+              showDistributorFilters={true}
+              onApplyFilters={setDistributorFilters}
+            />
+            <DistributorTable searchTerm={searchTerm} filters={distributorFilters} />
+          </div>
+        )}
+
+        {AddDistributorBtn && <AddDistributor />}
+        {UpdateDistributorEmp && <UpdateDistributorForm distributorId={distributorId} />}
+        {distributorProfileBtn && showDistributorTabs && <DistributorProfileTabs />}
 
         {/* Quick Stats Footer */}
         {/* <PerformanceStats isLoading={combinedLoading} /> */}

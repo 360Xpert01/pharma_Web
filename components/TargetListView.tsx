@@ -34,37 +34,70 @@ const getMonthName = (month: number): string => {
   return months[month - 1] || "";
 };
 
-export default function TargetListView() {
+export default function TargetListView({
+  searchTerm = "",
+  filters = {},
+}: {
+  searchTerm?: string;
+  filters?: {
+    employeeId?: string;
+    teamId?: string;
+    supervisorId?: string;
+  };
+}) {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState("");
-  const { targets, loading, error } = useAppSelector((state) => state.targetList);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [sorting, setSorting] = useState<any[]>([]);
+  const { targets, loading, error, total } = useAppSelector((state) => state.targetList);
 
-  // Fetch target list on mount
+  // Fetch target list on mount and when states change
   useEffect(() => {
-    dispatch(getTargetList());
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
+    dispatch(
+      getTargetList({
+        page: currentPage,
+        limit: itemsPerPage,
+        search: searchTerm,
+        sort: sortField,
+        order: sortOrder as any,
+        userId: filters.employeeId,
+        teamId: filters.teamId,
+        lineManagerId: filters.supervisorId,
+      })
+    );
 
     return () => {
       dispatch(resetTargetListState());
     };
-  }, [dispatch]);
+  }, [dispatch, searchTerm, currentPage, itemsPerPage, sorting, filters]);
 
   const handleRetry = () => {
-    dispatch(getTargetList());
+    const sortField = sorting.length > 0 ? sorting[0].id : "";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
+
+    dispatch(
+      getTargetList({
+        page: currentPage,
+        limit: itemsPerPage,
+        search: searchTerm,
+        sort: sortField,
+        order: sortOrder as any,
+      })
+    );
   };
 
-  const filteredTargets = useMemo(() => {
-    return targets.filter((target) => {
-      const matchesSearch =
-        target.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        target.teamName.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesSearch;
-    });
-  }, [searchQuery, targets]);
+  const handlePaginationChange = (page: number, size: number) => {
+    setCurrentPage(page);
+    setItemsPerPage(size);
+  };
 
-  const handleViewDetails = (e: React.MouseEvent, targetId: string) => {
+  const handleViewDetails = (e: React.MouseEvent, targetId: string, userId: string) => {
     e.stopPropagation();
-    router.push(`/dashboard/SetTarget?targetId=${targetId}`);
+    router.push(`/dashboard/SetTarget?targetId=${targetId}&userId=${userId}`);
   };
 
   const columns: ColumnDef<TargetListItem>[] = [
@@ -154,7 +187,7 @@ export default function TargetListView() {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              handleViewDetails(e, row.original.targetId);
+              handleViewDetails(e, row.original.targetId, row.original.userId);
             }}
             className="group hover:opacity-80 transition cursor-pointer"
             title="Edit Target"
@@ -169,13 +202,18 @@ export default function TargetListView() {
   return (
     <div className="w-full">
       <CenturoTable
-        data={filteredTargets}
+        data={targets || []}
         columns={columns}
         loading={loading}
         error={error}
         onRetry={handleRetry}
         enablePagination={true}
-        pageSize={10}
+        serverSidePagination={true}
+        serverSideSorting={true}
+        totalItems={total}
+        onPaginationChange={handlePaginationChange}
+        onSortChange={(newSorting) => setSorting(newSorting)}
+        pageSize={itemsPerPage}
         PaginationComponent={TablePagination}
         emptyMessage="No targets found"
         enableExpanding={true}

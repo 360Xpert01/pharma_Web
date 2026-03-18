@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import TargetConfigForm from "./TargetConfigForm";
 import ConflictModal from "./ConflictModal";
 import { Button } from "@/components/ui/button/button";
+import { ConfirmModal } from "./shared/confirm-modal";
 import { getTeamAll } from "@/store/slices/team/getTeamAllSlice";
 import {
   getTeamTargetProducts,
@@ -49,6 +50,7 @@ export default function SetTargetPage() {
 
   // Validation errors state
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   // Helper function to clear error for a specific field when user types
   const clearFieldError = (fieldName: string) => {
@@ -81,17 +83,25 @@ export default function SetTargetPage() {
     if (selectedTeam) {
       dispatch(getTeamTargetProducts(selectedTeam));
 
-      // Find the "Sales Representative" role to filter users
-      const salesRepRole = roles.find(
-        (r) => r.roleName === "Sales Representative" || r.pulseCode === "SR"
-      );
+      // Wait until roles are available before fetching team users
+      if (roles.length > 0) {
+        // Find the "Sales Representative" role to filter users
+        const salesRepRole = roles.find(
+          (r) => r.roleName === "Sales Representative" || r.pulseCode === "SR"
+        );
 
-      dispatch(
-        getTeamUsers({
-          teamId: selectedTeam,
-          roleId: salesRepRole?.id,
-        })
-      );
+        dispatch(
+          getTeamUsers({
+            teamId: selectedTeam,
+            roleId: salesRepRole?.id,
+          })
+        ).then((action: any) => {
+          // Auto-select "All Sales Reps" when a team is selected
+          if (action.payload?.success && action.payload?.data?.length > 0) {
+            setSelectedSalesRep("all");
+          }
+        });
+      }
     } else {
       dispatch(resetTeamTargetProductsState());
       dispatch(resetTeamUsersState());
@@ -112,7 +122,6 @@ export default function SetTargetPage() {
   // Handle API error
   useEffect(() => {
     if (createError) {
-      toast.error(`Error: ${createError}`);
       dispatch(resetCreateTargetState());
     }
   }, [createError, dispatch]);
@@ -125,7 +134,7 @@ export default function SetTargetPage() {
     teamName: matchTeam?.name || "",
     channelName: teamTargetData?.channelName || matchTeam?.channelName || "",
     callPoint: "No Callpoint available", // Not in target API
-    areaManager: selectedRepData?.supervisorName || "Abdul Aziz Warisi",
+    areaManager: selectedRepData?.supervisorName || "N/A",
     territoryPulseCode: selectedRepData?.territoryPulseCode || "N/A",
   };
 
@@ -172,11 +181,20 @@ export default function SetTargetPage() {
 
     // Build allocation payload from team details and users
     if (!teamUsers || teamUsers.length === 0) {
-      toast.error("No team members found for the selected team.");
       return;
     }
 
-    const targets = teamUsers.map((user: any) => ({
+    // Filter users based on selection
+    const usersToTarget =
+      selectedSalesRep === "all" || !selectedSalesRep
+        ? teamUsers
+        : teamUsers.filter((user: any) => (user.userId || user.id) === selectedSalesRep);
+
+    if (usersToTarget.length === 0) {
+      return;
+    }
+
+    const targets = usersToTarget.map((user: any) => ({
       userId: user.userId || user.id,
       productTargets: products.flatMap((product: any) =>
         product.skus.map((sku: any) => ({
@@ -261,7 +279,7 @@ export default function SetTargetPage() {
             size="lg"
             rounded="full"
             className="px-6"
-            onClick={() => router.back()}
+            onClick={() => setIsDiscardModalOpen(true)}
           >
             Discard
           </Button>
@@ -282,6 +300,18 @@ export default function SetTargetPage() {
 
       {/* Conflict Modal */}
       <ConflictModal isOpen={isConflictModalOpen} onClose={() => setIsConflictModalOpen(false)} />
+
+      <ConfirmModal
+        isOpen={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={() => {
+          setIsDiscardModalOpen(false);
+          router.back();
+        }}
+        title="Discard changes?"
+        description="You will lose all unsaved target settings."
+        confirmLabel="Discard"
+      />
     </div>
   );
 }

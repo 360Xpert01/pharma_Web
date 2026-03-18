@@ -131,7 +131,6 @@ export const useBricksImport = () => {
     } catch (err: any) {
       console.error("Hierarchy import failed:", err);
       const errorMessage = typeof err === "string" ? err : err.message || JSON.stringify(err);
-      toast.error(`Import failed: ${errorMessage}`, { id: "import-hierarchy" });
     } finally {
       setIsImporting(false);
       dispatch(resetCreateBrickState());

@@ -263,7 +263,7 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
   // Handle success/error
   useEffect(() => {
     if (createSuccess || updateSuccess) {
-      toast.success(isUpdateMode ? "Doctor updated successfully!" : "Doctor added successfully!");
+      toast.success(isUpdateMode ? "Account updated successfully!" : "Account added successfully!");
       dispatch(resetCreatePartyState());
       dispatch(resetPartyByIdState());
 
@@ -279,7 +279,6 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
       router.push(`/dashboard/${channelSlug}?id=${idForm || ""}`);
     }
     if (createError || updateError) {
-      toast.error(createError || updateError);
       dispatch(resetCreatePartyState());
       dispatch(resetUpdatePartyState());
       dispatch(resetPartyByIdState());
@@ -379,7 +378,7 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
         }
       });
       setValidationErrors(errors);
-      toast.error(validation.error.errors[0].message);
+
       return;
     }
 
