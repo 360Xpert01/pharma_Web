@@ -13,6 +13,7 @@ interface Candidate {
   profilePicture?: string;
   fullAddress?: string;
   dob?: string;
+  role?: string;
 }
 
 interface UserProfileProps {
@@ -29,6 +30,7 @@ const UserProfile: FC<UserProfileProps> = ({ candidate, productData }) => {
   const description = productData?.productGroup || candidate.fullAddress;
   const extraInfo = productData?.productCategory || candidate.phone;
   const footerInfo = candidate.dob;
+  const role = candidate.role;
   const pulseCode = productData?.pulseCode || candidate.pulseCode;
   const profilePicture = productData?.imageUrl || candidate.profilePicture;
   const Name = productData?.name || candidate.name;
@@ -53,8 +55,17 @@ const UserProfile: FC<UserProfileProps> = ({ candidate, productData }) => {
       {/* Name */}
       <h2 className="text-3xl font-bold text-center text-gray-9 mb-2">{Name}</h2>
 
+      {/* Role */}
+      {role && role !== "N/A" && (
+        <div className="px-5 py-1.5 text-(--gray-9) rounded-full text-sm font-bold mb-4">
+          {role}
+        </div>
+      )}
+
       {/* Subtitle (Email/Formula) */}
-      {subTitle && <p className="text-base font-thin text-center mb-3">{subTitle}</p>}
+      {subTitle && (
+        <p className="text-sm text-(--gray-5) font-medium text-center mb-6">{subTitle}</p>
+      )}
 
       {/* Description (Address/Group) */}
       {description && description !== "N/A" && (

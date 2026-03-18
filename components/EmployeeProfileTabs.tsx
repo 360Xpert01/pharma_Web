@@ -70,6 +70,7 @@ export default function EmployeeProfileTabs({ candidate }: { candidate?: any }) 
               profilePicture: user.profilePicture || "/girlPic.png",
               fullAddress: user.fullAddress || "N/A",
               dob: user.dob || "N/A",
+              role: typeof user.role === "string" ? user.role : user.role?.roleName || "N/A",
             }}
           />
           <RegionInformation
