@@ -1,7 +1,5 @@
 "use client";
 
-"use client";
-
 import React, { useEffect, useState } from "react";
 import { ColumnDef, SortingState } from "@tanstack/react-table";
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -34,6 +32,8 @@ interface UserRolesProps {
 export default function RolesCardList({ searchTerm = "", filters }: UserRolesProps) {
   const dispatch = useAppDispatch();
   const { roles, loading, error, pagination } = useAppSelector((state) => state.allRoles);
+  const { user } = useAppSelector((state) => state.auth);
+  const verifyOtp = useAppSelector((state: any) => state.verifyOtp);
   const [openId, setOpenId] = useState<string | null>(null);
 
   // Server-side state
@@ -150,15 +150,19 @@ export default function RolesCardList({ searchTerm = "", filters }: UserRolesPro
             onToggle={() => setOpenId(openId === row.original.id ? null : row.original.id)}
             onClose={() => setOpenId(null)}
             items={[
-              {
-                label: "Edit",
-                onClick: () => console.log("Edit", row.original.id),
-              },
-              {
-                label: "Delete",
-                onClick: () => console.log("Delete", row.original.id),
-                variant: "danger",
-              },
+              ...(row.original.id !== (user?.roleId || verifyOtp?.user?.roleId)
+                ? [
+                    {
+                      label: "Edit",
+                      onClick: () => console.log("Edit", row.original.id),
+                    },
+                    {
+                      label: "Delete",
+                      onClick: () => console.log("Delete", row.original.id),
+                      variant: "danger" as const,
+                    },
+                  ]
+                : []),
             ]}
           />
         </div>

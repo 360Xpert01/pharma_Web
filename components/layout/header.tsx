@@ -30,7 +30,7 @@ const Navbar = () => {
   const locale = useLocale();
   const dispatch = useAppDispatch();
   const { channels, loading: channelsLoading } = useAppSelector((state) => state.allChannels);
-  const { canSeeNav, userEmail, role } = usePermission();
+  const { canSeeNav, userName, role } = usePermission();
 
   const [hoveredItem, setHoveredItem] = useState<string | null>(null); // for hover
   const [clickedItem, setClickedItem] = useState<string | null>(null); // for click (mobile)
@@ -540,7 +540,7 @@ const Navbar = () => {
             <div className="relative" ref={profileRef}>
               <div
                 onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                className="flex items-center gap-2 p-2 text-(--gray-7) hover:text-(--gray-9) hover:bg-(--gray-0) rounded-8 transition-colors cursor-pointer"
+                className="flex items-center gap-2 p-2 text-(--gray-7) bg-(--gray-1) hover:text-(--gray-9) hover:bg-(--gray-0) rounded-8 transition-colors cursor-pointer border"
               >
                 <div className="w-8 h-8 bg-(--gray-2) rounded-8 flex items-center justify-center">
                   <Image
@@ -553,8 +553,8 @@ const Navbar = () => {
                 </div>
                 <div>
                   {/* <div className="t-label">{userEmail?.split("@")[0] ?? "User"}</div> */}
-                  <div className="t-cap">{userEmail ?? "Guest"}</div>
-                  <div className="t-cap">{role ?? "Guest"}</div>
+                  <div className="t-label-b truncate">{userName ?? "Guest"}</div>
+                  <div className="t-cap truncate">{role ?? "Guest"}</div>
                 </div>
               </div>
 
@@ -574,8 +574,8 @@ const Navbar = () => {
                         />
                       </div>
                       <div className="flex-1">
-                        {/* <div className="t-label-b">{userEmail?.split("@")[0] ?? "User"}</div> */}
-                        <div className="t-cap">{userEmail ?? role ?? "Guest"}</div>
+                        <div className="t-label-b">{userName ?? "User"}</div>
+                        <div className="t-cap">{role ?? "Guest"}</div>
                       </div>
                     </div>
                   </div>
