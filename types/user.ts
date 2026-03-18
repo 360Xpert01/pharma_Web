@@ -5,7 +5,8 @@ export type User = {
   firstName?: string;
   lastName?: string;
   avatar?: string;
-  role: "user" | "admin";
+  roleId?: string;
+  role: string | "user" | "admin";
   permissionGroupName?: string;
   permissionGroupId?: string;
   permissions?: string[];
