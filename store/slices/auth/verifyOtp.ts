@@ -18,9 +18,10 @@ interface VerifyOtpResponse {
     permissionGroupId?: string;
     permissionGroupName?: PermissionGroupName;
     deviceId?: string;
+    userName?: string;
+    user?: any;
   };
   token?: string;
-  user?: any;
 }
 
 interface AuthState {
@@ -32,6 +33,8 @@ interface AuthState {
   permissionGroupId: string | null;
   permissionGroupName: PermissionGroupName | null;
   userEmail: string | null;
+  userName: string | null;
+  user: any | null;
 }
 
 const initialState: AuthState = {
@@ -43,6 +46,8 @@ const initialState: AuthState = {
   permissionGroupId: null,
   permissionGroupName: null,
   userEmail: null,
+  userName: null,
+  user: null,
 };
 
 export const verifyOtp = createAsyncThunk<
@@ -112,6 +117,8 @@ const verifyOtpSlice = createSlice({
         if (action.payload.data?.permissionGroupName)
           state.permissionGroupName = action.payload.data.permissionGroupName;
         if (action.payload.data?.userEmail) state.userEmail = action.payload.data.userEmail;
+        if (action.payload.data?.userName) state.userName = action.payload.data.userName;
+        if (action.payload.data?.user) state.user = action.payload.data.user;
       })
       .addCase(verifyOtp.rejected, (state, action) => {
         state.loading = false;

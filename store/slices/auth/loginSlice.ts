@@ -19,6 +19,8 @@ interface RequestOtpResponse {
     deviceType: string;
     permissionGroupId: string;
     permissionGroupName: PermissionGroupName;
+    userName: string;
+    user?: any;
   };
 }
 
@@ -31,6 +33,8 @@ interface AuthState {
   permissionGroupName: PermissionGroupName | null;
   userEmail: string | null;
   deviceId: string | null;
+  userName: string | null;
+  user: any | null;
 }
 
 const initialState: AuthState = {
@@ -42,6 +46,8 @@ const initialState: AuthState = {
   permissionGroupName: null,
   userEmail: null,
   deviceId: null,
+  userName: null,
+  user: null,
 };
 
 export const requestOtp = createAsyncThunk<
@@ -102,6 +108,8 @@ const requestOtpSlice = createSlice({
           state.permissionGroupName = action.payload.data.permissionGroupName;
           state.userEmail = action.payload.data.userEmail;
           state.deviceId = action.payload.data.deviceId;
+          state.userName = action.payload.data.userName;
+          if (action.payload.data.user) state.user = action.payload.data.user;
         }
       })
       .addCase(requestOtp.rejected, (state, action) => {

@@ -5,7 +5,6 @@ import {
   ChevronDown,
   ChevronRight,
   Plus,
-  MoreVertical,
   Globe,
   Building2,
   Users,
@@ -27,6 +26,7 @@ export interface RoleItem {
   type: RoleLevel;
   permissionGroupId?: string;
   pulseCode?: string;
+  assignedUsersCount?: number;
   children?: RoleItem[];
 }
 
@@ -60,6 +60,7 @@ interface RoleNodeProps {
   onStartUpdate?: (id: string) => void;
   permissionGroups: PermissionGroup[];
   currentUserRoleId?: string;
+  currentUserPermissionGroupId?: string;
 }
 
 const getTypeIcon = (type: RoleLevel) => {
@@ -109,6 +110,7 @@ const RoleNode: React.FC<RoleNodeProps> = ({
   onStartUpdate,
   permissionGroups,
   currentUserRoleId,
+  currentUserPermissionGroupId,
 }) => {
   const hasChildren = item.children && item.children.length > 0;
   const isAddingToThis = addingId === item.id;
@@ -119,6 +121,9 @@ const RoleNode: React.FC<RoleNodeProps> = ({
   const [newName, setNewName] = useState("");
   const [newPermissionGroupId, setNewPermissionGroupId] = useState("");
   const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
+
+  // ── Only block edit/delete for the exact role the signed-in user belongs to ──
+  const isOwnRole = item.id === currentUserRoleId;
 
   // Pre-fill for update or add
   useEffect(() => {
@@ -204,7 +209,6 @@ const RoleNode: React.FC<RoleNodeProps> = ({
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               onKeyDown={handleKeyDown}
-              disabled={false}
               placeholder="Enter Tree Name"
               className="w-full bg-transparent border-none outline-none text-[var(--gray-9)] font-semibold placeholder:text-[var(--gray-4)]"
             />
@@ -214,7 +218,6 @@ const RoleNode: React.FC<RoleNodeProps> = ({
               value={newPermissionGroupId}
               onChange={handleResponsibilityChange}
               options={permissionGroups}
-              readOnly={item.id === currentUserRoleId}
             />
           </div>
           <div className="flex items-center gap-2">
@@ -287,40 +290,44 @@ const RoleNode: React.FC<RoleNodeProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (!isExpanded) onToggleExpand(item.id);
-                onAddChild?.(item.id, childType!);
-              }}
-              className="w-8 h-8 flex items-center justify-center bg-(--primary) text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
-              title={`Add ${childType}`}
-            >
-              <Plus className="w-4 h-4" />
-            </button>
-
-            <button
-              type="button"
-              className="w-8 h-8 flex items-center justify-center bg-(--primary) text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
-              onClick={() => onStartUpdate?.(item.id)}
-              title="Edit"
-            >
-              <Pencil className="w-4 h-4" />
-            </button>
-            {!hasChildren && (
+            {/* Add child button — always visible when the node can have children */}
+            {canHaveChildren && (
               <button
                 type="button"
-                onClick={() => onDeleteChild?.(item.id)}
-                disabled={item.id === currentUserRoleId}
-                className={cn(
-                  "w-8 h-8 flex items-center justify-center bg-destructive text-white rounded-8 transition-colors flex-shrink-0",
-                  item.id === currentUserRoleId ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-                )}
-                title={item.id === currentUserRoleId ? "You cannot delete your own role" : "Delete"}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!isExpanded) onToggleExpand(item.id);
+                  onAddChild?.(item.id, childType!);
+                }}
+                className="w-8 h-8 flex items-center justify-center bg-(--primary) text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
+                title={`Add ${childType}`}
               >
-                <Trash2 className="w-4 h-4" />
+                <Plus className="w-4 h-4" />
               </button>
+            )}
+
+            {/* Edit & Delete — hidden for the signed-in user's own role */}
+            {!isOwnRole && (
+              <>
+                <button
+                  type="button"
+                  className="w-8 h-8 flex items-center justify-center bg-(--primary) text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
+                  onClick={() => onStartUpdate?.(item.id)}
+                  title="Edit"
+                >
+                  <Pencil className="w-4 h-4" />
+                </button>
+                {!hasChildren && (
+                  <button
+                    type="button"
+                    onClick={() => onDeleteChild?.(item.id)}
+                    className="w-8 h-8 flex items-center justify-center bg-destructive text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
+                    title="Delete"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
+              </>
             )}
           </div>
         </div>
@@ -408,6 +415,7 @@ const RoleNode: React.FC<RoleNodeProps> = ({
                 onStartUpdate={onStartUpdate}
                 permissionGroups={permissionGroups}
                 currentUserRoleId={currentUserRoleId}
+                currentUserPermissionGroupId={currentUserPermissionGroupId}
               />
             ))}
         </div>
@@ -545,6 +553,7 @@ interface RoleHierarchyProps {
   onStartUpdate?: (id: string) => void;
   permissionGroups: PermissionGroup[];
   currentUserRoleId?: string;
+  currentUserPermissionGroupId?: string;
 }
 
 export const RoleHierarchy: React.FC<RoleHierarchyProps> = ({
@@ -562,6 +571,7 @@ export const RoleHierarchy: React.FC<RoleHierarchyProps> = ({
   onStartUpdate,
   permissionGroups,
   currentUserRoleId,
+  currentUserPermissionGroupId,
 }) => {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
@@ -644,6 +654,7 @@ export const RoleHierarchy: React.FC<RoleHierarchyProps> = ({
             onStartUpdate={onStartUpdate}
             permissionGroups={permissionGroups}
             currentUserRoleId={currentUserRoleId}
+            currentUserPermissionGroupId={currentUserPermissionGroupId}
           />
         ))}
       </div>

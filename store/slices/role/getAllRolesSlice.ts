@@ -18,6 +18,7 @@ interface RoleItem {
   permissions?: number;
   permissionGroupId?: string;
   status?: "active" | "inactive";
+  assignedUsersCount?: number;
 }
 
 interface GetRolesResponse {

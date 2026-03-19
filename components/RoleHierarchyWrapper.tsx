@@ -15,6 +15,8 @@ import {
 } from "@/store/slices/preFix/generatePrefixSlice";
 import { getAllPermissionGroups } from "@/store/slices/permissionGroup/getAllPermissionGroupsSlice";
 import toast from "react-hot-toast";
+import { ConfirmModal } from "@/components/shared/confirm-modal";
+import { AlertModal } from "@/components/shared/alert-modal";
 
 // Helper function to build hierarchy from flat role list
 const buildRoleHierarchy = (roles: any[]) => {
@@ -40,9 +42,10 @@ const buildRoleHierarchy = (roles: any[]) => {
       ...role, // Keep original data if needed
       id: role.id,
       name: role.roleName,
-      subtitle: role.pulseCode || role.legacyCode,
+      subtitle: role.pulseCode,
       pulseCode: role.pulseCode,
       permissionGroupId: role.permissionGroupId,
+      assignedUsersCount: role.assignedUsersCount,
       children: [],
     });
   });
@@ -56,7 +59,6 @@ const buildRoleHierarchy = (roles: any[]) => {
       rootRoles.push(roleNode);
     }
   });
-
   return rootRoles;
 };
 
@@ -64,6 +66,14 @@ export default function RoleHierarchyWrapper() {
   const dispatch = useAppDispatch();
   const [addingId, setAddingId] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+  // Confirmation state
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [updateConfirmData, setUpdateConfirmData] = useState<{
+    id: string;
+    name: string;
+    permissionGroupId?: string;
+  } | null>(null);
 
   const { loading, error, roles } = useAppSelector((state) => state.allRoles);
   const {
@@ -84,7 +94,7 @@ export default function RoleHierarchyWrapper() {
     message: deleteMessage,
     error: deleteError,
   } = useAppSelector((state) => state.deleteRole);
-  const { generatedPrefix } = useAppSelector((state) => state.generatePrefix);
+  const verifyOtp = useAppSelector((state: any) => state.verifyOtp);
   const {
     loading: groupsLoading,
     permissionGroups,
@@ -174,6 +184,17 @@ export default function RoleHierarchyWrapper() {
   };
 
   const handleUpdateChild = async (id: string, name: string, permissionGroupId?: string) => {
+    // Prevent updating own role
+    if (id === user?.roleId) {
+      return;
+    }
+    // Show confirmation dialog instead of immediate update
+    setUpdateConfirmData({ id, name, permissionGroupId });
+  };
+
+  const handleConfirmUpdate = async () => {
+    if (!updateConfirmData) return;
+    const { id, name, permissionGroupId } = updateConfirmData;
     await dispatch(
       updateRole({
         id,
@@ -183,6 +204,7 @@ export default function RoleHierarchyWrapper() {
         },
       })
     );
+    setUpdateConfirmData(null);
   };
 
   const handleStartUpdate = (id: string) => {
@@ -191,8 +213,17 @@ export default function RoleHierarchyWrapper() {
   };
 
   const handleDeleteChild = async (id: string) => {
-    {
-      await dispatch(deleteRole(id));
+    // Prevent deleting own role
+    if (id === user?.roleId) {
+      return;
+    }
+    setDeleteConfirmId(id);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deleteConfirmId) {
+      await dispatch(deleteRole(deleteConfirmId));
+      setDeleteConfirmId(null);
     }
   };
 
@@ -219,7 +250,32 @@ export default function RoleHierarchyWrapper() {
         onDeleteChild={handleDeleteChild}
         onMoreOptions={handleMoreOptions}
         onStartUpdate={handleStartUpdate}
-        currentUserRoleId={user?.roleId}
+        currentUserRoleId={user?.roleId || verifyOtp?.user?.roleId}
+        currentUserPermissionGroupId={user?.permissionGroupId || verifyOtp?.permissionGroupId}
+      />
+
+      <ConfirmModal
+        isOpen={!!deleteConfirmId}
+        onClose={() => setDeleteConfirmId(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Role?"
+        description={`This role is currently assigned to ${
+          roles.find((r) => r.id === deleteConfirmId)?.assignedUsersCount || 0
+        } users. Are you sure you want to delete it?`}
+        confirmLabel="Delete"
+        loading={deleting}
+      />
+
+      <ConfirmModal
+        isOpen={!!updateConfirmData}
+        onClose={() => setUpdateConfirmData(null)}
+        onConfirm={handleConfirmUpdate}
+        title="Update Role?"
+        description={`Updating this role will impact ${
+          roles.find((r) => r.id === updateConfirmData?.id)?.assignedUsersCount || 0
+        } users currently assigned to it. Are you sure you want to proceed?`}
+        confirmLabel="Update"
+        loading={updating}
       />
     </div>
   );
