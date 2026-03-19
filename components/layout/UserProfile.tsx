@@ -10,15 +10,27 @@ import { logout as logoutAction } from "@/store/slices/auth/verifyOtp";
 import { logout as loginLogoutAction } from "@/store/slices/auth/loginSlice";
 import { logout as authLogoutAction } from "@/store/slices/auth-slice";
 import { usePermission } from "@/hooks/usePermission";
+import { getUserProfile } from "@/store/slices/auth/getUserProfileSlice";
 import { cn } from "@/lib/utils";
+import { useAppSelector } from "@/store";
 
 export const UserProfile = () => {
   const router = useRouter();
   const locale = useLocale();
   const dispatch = useAppDispatch();
-  const { userName, role, userRole } = usePermission();
+  const { userName, userRole, avatar } = usePermission();
+  const { loading: profileLoading } = useAppSelector((state) => state.getUserProfile);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const profileRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    dispatch(getUserProfile());
+  }, [dispatch]);
+
+  const result = getUserProfile();
+  console.log("result of user profile", result);
+
+  const profilePicture = avatar || "/girlPic.png";
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -77,7 +89,7 @@ export const UserProfile = () => {
       >
         <div className="w-8 h-8 bg-(--gray-2) rounded-8 flex items-center justify-center">
           <Image
-            src="/girlPic.png"
+            src={profilePicture}
             alt="Profile"
             width={60}
             height={60}
@@ -98,7 +110,7 @@ export const UserProfile = () => {
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-(--gray-2) rounded-8 flex items-center justify-center">
                 <Image
-                  src="/girlPic.png"
+                  src={profilePicture}
                   alt="Profile"
                   width={60}
                   height={60}

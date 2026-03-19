@@ -1,14 +1,20 @@
 export type User = {
   id: string;
   email: string;
-  name: string;
+  name?: string;
+  userName?: string;
   firstName?: string;
   lastName?: string;
   avatar?: string;
+  mobileNumber?: string;
+  completionPercentage?: number;
+  status?: string;
+  role?: any;
   roleId?: string;
-  role: string | "user" | "admin";
-  permissionGroupName?: string;
+  userRole?: string;
+  permissionGroup?: any;
   permissionGroupId?: string;
+  permissionGroupName?: string;
   permissions?: string[];
   createdAt?: string;
   updatedAt?: string;

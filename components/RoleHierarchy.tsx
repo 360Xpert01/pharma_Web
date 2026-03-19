@@ -26,7 +26,7 @@ export interface RoleItem {
   type: RoleLevel;
   permissionGroupId?: string;
   pulseCode?: string;
-  assignedUsersCount?: number;
+  userCount?: number;
   children?: RoleItem[];
 }
 
@@ -302,26 +302,28 @@ const RoleNode: React.FC<RoleNodeProps> = ({
               </button>
             )}
 
-            <>
-              <button
-                type="button"
-                className="w-8 h-8 flex items-center justify-center bg-(--primary) text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
-                onClick={() => onStartUpdate?.(item.id)}
-                title="Edit"
-              >
-                <Pencil className="w-4 h-4" />
-              </button>
-              {!hasChildren && (
+            {item.id !== currentUserRoleId && (
+              <>
                 <button
                   type="button"
-                  onClick={() => onDeleteChild?.(item.id)}
-                  className="w-8 h-8 flex items-center justify-center bg-destructive text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
-                  title="Delete"
+                  className="w-8 h-8 flex items-center justify-center bg-(--primary) text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
+                  onClick={() => onStartUpdate?.(item.id)}
+                  title="Edit"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Pencil className="w-4 h-4" />
                 </button>
-              )}
-            </>
+                {!hasChildren && (
+                  <button
+                    type="button"
+                    onClick={() => onDeleteChild?.(item.id)}
+                    className="w-8 h-8 flex items-center justify-center bg-destructive text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
+                    title="Delete"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
+              </>
+            )}
           </div>
         </div>
       )}

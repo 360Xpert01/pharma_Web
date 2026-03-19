@@ -14,6 +14,7 @@ import {
   resetGeneratePrefixState,
 } from "@/store/slices/preFix/generatePrefixSlice";
 import { getAllPermissionGroups } from "@/store/slices/permissionGroup/getAllPermissionGroupsSlice";
+import { usePermission } from "@/hooks/usePermission";
 import toast from "react-hot-toast";
 import { ConfirmModal } from "@/components/shared/confirm-modal";
 
@@ -44,7 +45,7 @@ const buildRoleHierarchy = (roles: any[]) => {
       subtitle: role.pulseCode,
       pulseCode: role.pulseCode,
       permissionGroupId: role.permissionGroupId,
-      assignedUsersCount: role.assignedUsersCount,
+      userCount: role.userCount,
       children: [],
     });
   });
@@ -225,6 +226,9 @@ export default function RoleHierarchyWrapper() {
 
   const hierarchyData = buildRoleHierarchy(roles);
 
+  const { roleId: currentUserRoleId, permissionGroupId: currentUserPermissionGroupId } =
+    usePermission();
+
   return (
     <div className="shadow-soft bg-[var(--background)] rounded-8 p-6">
       <RoleHierarchy
@@ -241,8 +245,8 @@ export default function RoleHierarchyWrapper() {
         onDeleteChild={handleDeleteChild}
         onMoreOptions={handleMoreOptions}
         onStartUpdate={handleStartUpdate}
-        currentUserRoleId={user?.roleId || verifyOtp?.user?.roleId}
-        currentUserPermissionGroupId={user?.permissionGroupId || verifyOtp?.permissionGroupId}
+        currentUserRoleId={currentUserRoleId || undefined}
+        currentUserPermissionGroupId={currentUserPermissionGroupId || undefined}
       />
 
       <ConfirmModal
@@ -250,9 +254,16 @@ export default function RoleHierarchyWrapper() {
         onClose={() => setDeleteConfirmId(null)}
         onConfirm={handleConfirmDelete}
         title="Delete Role?"
-        description={`This role is currently assigned to ${
-          roles.find((r) => r.id === deleteConfirmId)?.assignedUsersCount || 0
-        } users. Are you sure you want to delete it?`}
+        description={
+          <span>
+            This role is currently assigned to{" "}
+            <strong className="text-(--gray-9)">
+              {roles.find((r) => r.id === deleteConfirmId)?.userCount || 0}
+            </strong>{" "}
+            users. <br />
+            <strong>Are you sure you want to delete it?</strong>
+          </span>
+        }
         confirmLabel="Delete"
         loading={deleting}
       />
@@ -262,9 +273,16 @@ export default function RoleHierarchyWrapper() {
         onClose={() => setUpdateConfirmData(null)}
         onConfirm={handleConfirmUpdate}
         title="Update Role?"
-        description={`Updating this role will impact ${
-          roles.find((r) => r.id === updateConfirmData?.id)?.assignedUsersCount || 0
-        } users currently assigned to it. Are you sure you want to proceed?`}
+        description={
+          <span>
+            Updating this role will impact{" "}
+            <strong className="text-(--gray-9)">
+              {roles.find((r) => r.id === updateConfirmData?.id)?.userCount || 0}
+            </strong>{" "}
+            users currently assigned to it. <br />
+            <strong>Are you sure you want to proceed?</strong>
+          </span>
+        }
         confirmLabel="Update"
         loading={updating}
       />
