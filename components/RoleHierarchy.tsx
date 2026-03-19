@@ -122,10 +122,7 @@ const RoleNode: React.FC<RoleNodeProps> = ({
   const [newPermissionGroupId, setNewPermissionGroupId] = useState("");
   const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
-  // ── Only block edit/delete for the exact role the signed-in user belongs to ──
-  const isOwnRole = item.id === currentUserRoleId;
-
-  // Pre-fill for update or add
+  // ── Pre-fill for update or add ──
   useEffect(() => {
     if (isUpdatingThis) {
       setNewName(item.name);
@@ -284,7 +281,6 @@ const RoleNode: React.FC<RoleNodeProps> = ({
             <RoleResponsibilitiesDropdown
               value={item.permissionGroupId || ""}
               onChange={() => {}}
-              readOnly
               options={permissionGroups}
             />
           </div>
@@ -306,29 +302,26 @@ const RoleNode: React.FC<RoleNodeProps> = ({
               </button>
             )}
 
-            {/* Edit & Delete — hidden for the signed-in user's own role */}
-            {!isOwnRole && (
-              <>
+            <>
+              <button
+                type="button"
+                className="w-8 h-8 flex items-center justify-center bg-(--primary) text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
+                onClick={() => onStartUpdate?.(item.id)}
+                title="Edit"
+              >
+                <Pencil className="w-4 h-4" />
+              </button>
+              {!hasChildren && (
                 <button
                   type="button"
-                  className="w-8 h-8 flex items-center justify-center bg-(--primary) text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
-                  onClick={() => onStartUpdate?.(item.id)}
-                  title="Edit"
+                  onClick={() => onDeleteChild?.(item.id)}
+                  className="w-8 h-8 flex items-center justify-center bg-destructive text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
+                  title="Delete"
                 >
-                  <Pencil className="w-4 h-4" />
+                  <Trash2 className="w-4 h-4" />
                 </button>
-                {!hasChildren && (
-                  <button
-                    type="button"
-                    onClick={() => onDeleteChild?.(item.id)}
-                    className="w-8 h-8 flex items-center justify-center bg-destructive text-white rounded-8 transition-colors cursor-pointer flex-shrink-0"
-                    title="Delete"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                )}
-              </>
-            )}
+              )}
+            </>
           </div>
         </div>
       )}

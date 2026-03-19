@@ -56,8 +56,6 @@ const initialState: EmployeeState = {
   registeredEmployee: null,
 };
 
-const token = localStorage.getItem("userSession");
-
 // Async Thunk: Register Employee (POST /auth/register)
 export const registerEmployee = createAsyncThunk<
   RegisterEmployeeResponse,
@@ -71,7 +69,7 @@ export const registerEmployee = createAsyncThunk<
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${localStorage.getItem("userSession")}`,
         },
       }
     );

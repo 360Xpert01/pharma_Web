@@ -1,17 +1,13 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { ChevronDown, Search, Bell, User, ChevronRight, LogOut } from "lucide-react";
+import { Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
-import { persistor, useAppDispatch, useAppSelector } from "@/store";
+import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllChannels } from "@/store/slices/channel/getAllChannelsSlice";
 import { usePermission } from "@/hooks/usePermission";
-import { logout as logoutAction } from "@/store/slices/auth/verifyOtp";
-import { logout as loginLogoutAction } from "@/store/slices/auth/loginSlice";
-import { logout as authLogoutAction } from "@/store/slices/auth-slice";
+import { UserProfile } from "./UserProfile";
 
 interface DropdownItem {
   label: string;
@@ -26,20 +22,16 @@ interface NavItem {
 }
 
 const Navbar = () => {
-  const router = useRouter();
-  const locale = useLocale();
   const dispatch = useAppDispatch();
-  const { channels, loading: channelsLoading } = useAppSelector((state) => state.allChannels);
-  const { canSeeNav, userName, role } = usePermission();
+  const { channels } = useAppSelector((state) => state.allChannels);
+  const { canSeeNav } = usePermission();
 
   const [hoveredItem, setHoveredItem] = useState<string | null>(null); // for hover
   const [clickedItem, setClickedItem] = useState<string | null>(null); // for click (mobile)
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
-  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
-  const profileRef = useRef<HTMLDivElement | null>(null);
   const [dropdownAlignment, setDropdownAlignment] = useState<{ [key: string]: "left" | "right" }>(
     {}
   );
@@ -341,73 +333,6 @@ const Navbar = () => {
     };
   }, []);
 
-  // Close on outside click (only for clicked state - mobile)
-  useEffect(() => {
-    const handleOutsideClick = (e: MouseEvent) => {
-      // Close profile dropdown
-      if (
-        showProfileDropdown &&
-        profileRef.current &&
-        !profileRef.current.contains(e.target as Node)
-      ) {
-        setShowProfileDropdown(false);
-      }
-
-      // Close nav dropdowns
-      if (clickedItem) {
-        const clickedOutside = Object.values(dropdownRefs.current).every(
-          (ref) => ref && !ref.contains(e.target as Node)
-        );
-        if (clickedOutside) {
-          setClickedItem(null);
-          setActiveSubmenu(null);
-        }
-      }
-    };
-
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, [clickedItem, showProfileDropdown]);
-
-  // Logout handler
-  const handleLogout = async () => {
-    try {
-      // ✅ Use logout actions to wipe state across all auth slices
-      dispatch(logoutAction());
-      dispatch(loginLogoutAction());
-      dispatch(authLogoutAction());
-
-      // Clear Redux persist store
-      await persistor.purge();
-
-      // Clear cookies - specifically the userSession cookie
-      document.cookie = "userSession=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-
-      // Clear all other cookies
-      const cookies = document.cookie.split(";");
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i];
-        const eqPos = cookie.indexOf("=");
-        const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
-        document.cookie = name + "=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-      }
-
-      // Clear localStorage and sessionStorage
-      localStorage.clear();
-      sessionStorage.clear();
-
-      // Close dropdown
-      setShowProfileDropdown(false);
-
-      // Redirect to login with locale
-      router.push(`/${locale}/login`);
-    } catch (error) {
-      console.error("Logout error:", error);
-      // Still redirect even if there's an error
-      router.push(`/${locale}/login`);
-    }
-  };
-
   const renderDropdownItems = (items: DropdownItem[], isSubmenu = false) => {
     return items.map((item) => (
       <div
@@ -537,60 +462,7 @@ const Navbar = () => {
               </span>
             </button>
 
-            <div className="relative" ref={profileRef}>
-              <div
-                onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                className="flex items-center gap-2 p-2 text-(--gray-7) bg-(--gray-1) hover:text-(--gray-9) hover:bg-(--gray-0) rounded-8 transition-colors cursor-pointer border"
-              >
-                <div className="w-8 h-8 bg-(--gray-2) rounded-8 flex items-center justify-center">
-                  <Image
-                    src="/girlPic.png"
-                    alt="Profile"
-                    width={60}
-                    height={60}
-                    className="object-contain"
-                  />
-                </div>
-                <div>
-                  {/* <div className="t-label">{userEmail?.split("@")[0] ?? "User"}</div> */}
-                  <div className="t-label-b truncate">{userName ?? "Guest"}</div>
-                  <div className="t-cap truncate">{role ?? "Guest"}</div>
-                </div>
-              </div>
-
-              {/* Profile Dropdown */}
-              {showProfileDropdown && (
-                <div className="absolute right-0 top-full mt-2 w-64 bg-(--background) rounded-8 shadow-soft border border-(--header-border) py-2 z-50">
-                  {/* Profile Info */}
-                  <div className="px-4 py-3 border-b border-(--gray-2)">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-(--gray-2) rounded-8 flex items-center justify-center">
-                        <Image
-                          src="/girlPic.png"
-                          alt="Profile"
-                          width={60}
-                          height={60}
-                          className="object-contain"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <div className="t-label-b">{userName ?? "User"}</div>
-                        <div className="t-cap">{role ?? "Guest"}</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Logout Button */}
-                  <button
-                    onClick={handleLogout}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-sm text-(--destructive) hover:bg-(--destructive-0) transition-colors cursor-pointer"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    <span className="font-medium">Logout</span>
-                  </button>
-                </div>
-              )}
-            </div>
+            <UserProfile />
           </div>
         </div>
       </div>
@@ -630,11 +502,6 @@ const Navbar = () => {
                       activeDropdown === item.label ? "rotate-180" : ""
                     }`}
                   />
-                  {/* <ChevronDown
-                  className={`w-4 h-4 transition-transform duration-200 ${
-                    activeDropdown === item.label ? "rotate-180" : ""
-                  }`}
-                /> */}
                 </button>
               ) : (
                 <Link
