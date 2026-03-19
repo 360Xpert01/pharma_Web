@@ -2,8 +2,8 @@ export type PermissionGroupName = string;
 
 type BaseRole = "ADMIN" | "CSUITE" | "MANAGER" | "SALES" | "UNKNOWN";
 
-function resolveBaseRole(roleName: string): BaseRole {
-  const n = roleName.toLowerCase();
+function resolveBaseRole(permissionGroup: string): BaseRole {
+  const n = permissionGroup.toLowerCase();
   if (n.includes("admin") || n.includes("root")) return "ADMIN";
   if (n.includes("c-suite") || n.includes("csuite")) return "CSUITE";
   if (n.includes("manager")) return "MANAGER";
@@ -58,19 +58,19 @@ export const ROLE_ROUTE_ACCESS: Record<BaseRole, string[]> = {
 };
 
 // ─── Helper functions ─────────────────────────────────────────────────────────
-export function canAccessNav(role: string, navLabel: string): boolean {
-  const baseRole = resolveBaseRole(role);
+export function canAccessNav(permissionGroup: string, navLabel: string): boolean {
+  const baseRole = resolveBaseRole(permissionGroup);
   const allowed = ROLE_NAV_ACCESS[baseRole];
   return allowed?.includes("*") || allowed?.includes(navLabel) || false;
 }
 
-export function canDo(role: string, action: Action): boolean {
-  const baseRole = resolveBaseRole(role);
+export function canDo(permissionGroup: string, action: Action): boolean {
+  const baseRole = resolveBaseRole(permissionGroup);
   return ROLE_ACTIONS[baseRole]?.includes(action) ?? false;
 }
 
-export function canAccessRoute(role: string, pathname: string): boolean {
-  const baseRole = resolveBaseRole(role);
+export function canAccessRoute(permissionGroup: string, pathname: string): boolean {
+  const baseRole = resolveBaseRole(permissionGroup);
   const allowed = ROLE_ROUTE_ACCESS[baseRole];
   return allowed?.includes("*") || allowed?.some((r) => pathname.startsWith(r)) || false;
 }

@@ -1,14 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import RoleHierarchy from "@/components/RoleHierarchy";
-import { RoleLevel } from "@/lib/role-utils";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllRoles } from "@/store/slices/role/getAllRolesSlice";
-import { createRole, resetRoleState } from "@/store/slices/role/addRole";
-import { updateRole, resetUpdateRoleState } from "@/store/slices/role/updateRoleSlice";
-import { deleteRole, resetDeleteRoleState } from "@/store/slices/role/deleteRoleSlice";
-import { getRoleById, resetRoleDetailState } from "@/store/slices/role/getRoleByIdSlice";
+import { updateRole } from "@/store/slices/role/updateRoleSlice";
+import { deleteRole } from "@/store/slices/role/deleteRoleSlice";
 import {
   generatePrefix,
   resetGeneratePrefixState,
@@ -17,90 +13,32 @@ import { getAllPermissionGroups } from "@/store/slices/permissionGroup/getAllPer
 import { usePermission } from "@/hooks/usePermission";
 import toast from "react-hot-toast";
 import { ConfirmModal } from "@/components/shared/confirm-modal";
+import { RoleHierarchy } from "./RoleHierarchy";
+import { buildRoleHierarchy } from "./role-hierarchy/utils";
+import { RoleLevel } from "@/lib/role-utils";
+import { createRole } from "@/store/slices/role/addRole";
 
-// Helper function to build hierarchy from flat role list
-const buildRoleHierarchy = (roles: any[]) => {
-  const roleMap = new Map();
-  const rootRoles: any[] = [];
-
-  const getRoleType = (role: any, roleMap: Map<string, any>): RoleLevel => {
-    let level = 0;
-    let currentRole = role;
-    while (currentRole.parentRoleId) {
-      level++;
-      currentRole = roleMap.get(currentRole.parentRoleId);
-      if (!currentRole) break;
-    }
-    if (level === 0) return "company";
-    if (level === 1) return "department";
-    if (level === 2) return "position";
-    return "role";
-  };
-
-  roles.forEach((role) => {
-    roleMap.set(role.id, {
-      ...role, // Keep original data if needed
-      id: role.id,
-      name: role.roleName,
-      subtitle: role.pulseCode,
-      pulseCode: role.pulseCode,
-      permissionGroupId: role.permissionGroupId,
-      userCount: role.userCount,
-      children: [],
-    });
-  });
-
-  roles.forEach((role) => {
-    const roleNode = roleMap.get(role.id);
-    roleNode.type = getRoleType(role, roleMap);
-    if (role.parentRoleId && roleMap.has(role.parentRoleId)) {
-      roleMap.get(role.parentRoleId).children.push(roleNode);
-    } else {
-      rootRoles.push(roleNode);
-    }
-  });
-  return rootRoles;
-};
-
-export default function RoleHierarchyWrapper() {
+export const RoleHierarchyWrapper: React.FC = () => {
   const dispatch = useAppDispatch();
+  const { roles, loading, error } = useAppSelector((state) => state.allRoles);
+  const {
+    permissionGroups,
+    loading: groupsLoading,
+    error: groupsError,
+  } = useAppSelector((state) => state.allPermissionGroups);
+  const { loading: creating } = useAppSelector((state) => state.addRole);
+  const { loading: updating } = useAppSelector((state) => state.updateRole);
+  const { loading: deleting } = useAppSelector((state) => state.deleteRole);
+  const { prefix } = useAppSelector((state) => state.generatePrefix);
+
   const [addingId, setAddingId] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
-
-  // Confirmation state
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [updateConfirmData, setUpdateConfirmData] = useState<{
     id: string;
     name: string;
     permissionGroupId?: string;
   } | null>(null);
-
-  const { loading, error, roles } = useAppSelector((state) => state.allRoles);
-  const {
-    loading: creating,
-    success: createSuccess,
-    message: createMessage,
-    error: createError,
-  } = useAppSelector((state) => state.addRole);
-  const {
-    loading: updating,
-    success: updateSuccess,
-    message: updateMessage,
-    error: updateError,
-  } = useAppSelector((state) => state.updateRole);
-  const {
-    loading: deleting,
-    success: deleteSuccess,
-    message: deleteMessage,
-    error: deleteError,
-  } = useAppSelector((state) => state.deleteRole);
-  const verifyOtp = useAppSelector((state: any) => state.verifyOtp);
-  const {
-    loading: groupsLoading,
-    permissionGroups,
-    error: groupsError,
-  } = useAppSelector((state) => state.allPermissionGroups);
-  const { user } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(getAllRoles({ pagination: false }));
@@ -110,53 +48,15 @@ export default function RoleHierarchyWrapper() {
   useEffect(() => {
     const handleAddRoot = () => {
       setAddingId("root");
-      // dispatch(generatePrefix({ entity: "Role" })); // Removed as requested
+      dispatch(generatePrefix({ type: "company" }));
     };
     window.addEventListener("roles:add-root", handleAddRoot);
     return () => window.removeEventListener("roles:add-root", handleAddRoot);
   }, [dispatch]);
 
-  useEffect(() => {
-    if (createSuccess) {
-      toast.success(createMessage || "Role created successfully!");
-      dispatch(getAllRoles({ pagination: false }));
-      dispatch(resetRoleState());
-      setAddingId(null);
-    }
-    if (createError) {
-      dispatch(resetRoleState());
-    }
-  }, [createSuccess, createMessage, createError, dispatch]);
-
-  useEffect(() => {
-    if (updateSuccess) {
-      toast.success(updateMessage || "Role updated successfully!");
-      dispatch(getAllRoles({ pagination: false }));
-      dispatch(resetUpdateRoleState());
-      setUpdatingId(null);
-    }
-    if (updateError) {
-      const friendlyError = updateError.replace(/permissionGroupId/gi, "permission");
-      toast.error(friendlyError);
-      dispatch(resetUpdateRoleState());
-    }
-  }, [updateSuccess, updateMessage, updateError, dispatch]);
-
-  useEffect(() => {
-    if (deleteSuccess) {
-      toast.success(deleteMessage || "Role deleted successfully!");
-      dispatch(getAllRoles({ pagination: false }));
-      dispatch(resetDeleteRoleState());
-    }
-    if (deleteError) {
-      toast.error(deleteError);
-      dispatch(resetDeleteRoleState());
-    }
-  }, [deleteSuccess, deleteMessage, deleteError, dispatch]);
-
-  const handleAddChild = (parentId: string, childType: string) => {
+  const handleAddChild = (parentId: string, childType: RoleLevel) => {
     setAddingId(parentId);
-    // dispatch(generatePrefix({ entity: "Role" })); // Removed as requested
+    dispatch(generatePrefix({ type: childType }));
   };
 
   const handleCancelAdd = () => {
@@ -172,56 +72,86 @@ export default function RoleHierarchyWrapper() {
     pulseCode: string,
     permissionGroupId?: string
   ) => {
-    const finalPulseCode = pulseCode || undefined;
-    await dispatch(
-      createRole({
-        roleName: name,
-        pulseCode: finalPulseCode,
-        parentRoleId: parentId === "root" ? undefined : parentId,
-        permissionGroupId,
-      })
-    );
-  };
-
-  const handleUpdateChild = async (id: string, name: string, permissionGroupId?: string) => {
-    // Show confirmation dialog instead of immediate update
-    setUpdateConfirmData({ id, name, permissionGroupId });
-  };
-
-  const handleConfirmUpdate = async () => {
-    if (!updateConfirmData) return;
-    const { id, name, permissionGroupId } = updateConfirmData;
-    await dispatch(
-      updateRole({
-        id,
-        payload: {
+    try {
+      const result = await dispatch(
+        createRole({
           roleName: name,
+          pulseCode: prefix || pulseCode,
+          parentRoleId: parentId === "root" ? undefined : parentId,
           permissionGroupId,
-        },
-      })
-    );
-    setUpdateConfirmData(null);
+          status: "active",
+        })
+      ).unwrap();
+
+      if (result) {
+        toast.success("Role created successfully");
+        setAddingId(null);
+        dispatch(resetGeneratePrefixState());
+        dispatch(getAllRoles({ pagination: false }));
+      }
+    } catch (err: any) {
+      toast.error(err || "Failed to create role");
+    }
   };
 
   const handleStartUpdate = (id: string) => {
     setUpdatingId(id);
-    setAddingId(null);
   };
 
-  const handleDeleteChild = async (id: string) => {
-    setDeleteConfirmId(id);
-  };
-
-  const handleConfirmDelete = async () => {
-    if (deleteConfirmId) {
-      await dispatch(deleteRole(deleteConfirmId));
-      setDeleteConfirmId(null);
+  const handleUpdateChild = async (id: string, name: string, permissionGroupId?: string) => {
+    // Check if the role is assigned to users and show warning
+    const role = roles.find((r) => r.id === id);
+    if (role && (role.userCount || 0) > 0) {
+      setUpdateConfirmData({ id, name, permissionGroupId });
+    } else {
+      executeUpdate(id, name, permissionGroupId);
     }
   };
 
-  const handleMoreOptions = (itemId: string, itemType: string) => {
-    console.log("More options for:", itemId, "Type:", itemType);
-    dispatch(getRoleById(itemId));
+  const executeUpdate = async (id: string, name: string, permissionGroupId?: string) => {
+    try {
+      const result = await dispatch(
+        updateRole({
+          id,
+          roleName: name,
+          permissionGroupId,
+        })
+      ).unwrap();
+
+      if (result) {
+        toast.success("Role updated successfully");
+        setUpdatingId(null);
+        setUpdateConfirmData(null);
+        dispatch(getAllRoles({ pagination: false }));
+      }
+    } catch (err: any) {
+      const errorMessage = typeof err === "string" ? err : err?.message || "Failed to update role";
+      const friendlyError = errorMessage.replace(/permissionGroupId/gi, "permission");
+      toast.error(friendlyError);
+    }
+  };
+
+  const handleDeleteChild = (id: string) => {
+    setDeleteConfirmId(id);
+  };
+
+  const executeDelete = async () => {
+    if (!deleteConfirmId) return;
+    try {
+      const result = await dispatch(deleteRole(deleteConfirmId)).unwrap();
+      if (result) {
+        toast.success("Role deleted successfully");
+        setDeleteConfirmId(null);
+        dispatch(getAllRoles({ pagination: false }));
+      }
+    } catch (err: any) {
+      const errorMessage = typeof err === "string" ? err : err?.message || "Failed to delete role";
+      toast.error(errorMessage);
+    }
+  };
+
+  const handleMoreOptions = (id: string, type: string) => {
+    console.log("More options for:", id, type);
   };
 
   const hierarchyData = buildRoleHierarchy(roles);
@@ -252,8 +182,8 @@ export default function RoleHierarchyWrapper() {
       <ConfirmModal
         isOpen={!!deleteConfirmId}
         onClose={() => setDeleteConfirmId(null)}
-        onConfirm={handleConfirmDelete}
-        title="Delete Role?"
+        onConfirm={executeDelete}
+        title="Delete Role"
         description={
           <span>
             This role is currently assigned to{" "}
@@ -271,8 +201,15 @@ export default function RoleHierarchyWrapper() {
       <ConfirmModal
         isOpen={!!updateConfirmData}
         onClose={() => setUpdateConfirmData(null)}
-        onConfirm={handleConfirmUpdate}
-        title="Update Role?"
+        onConfirm={() =>
+          updateConfirmData &&
+          executeUpdate(
+            updateConfirmData.id,
+            updateConfirmData.name,
+            updateConfirmData.permissionGroupId
+          )
+        }
+        title="Update Role"
         description={
           <span>
             Updating this role will impact{" "}
@@ -288,4 +225,6 @@ export default function RoleHierarchyWrapper() {
       />
     </div>
   );
-}
+};
+
+export default RoleHierarchyWrapper;
