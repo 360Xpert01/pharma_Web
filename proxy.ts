@@ -11,19 +11,24 @@ export default function proxy(request: NextRequest) {
   const session = request.cookies.get("userSession")?.value;
   const isLoggedIn = session ? true : false;
 
-  if (!isLoggedIn && !pathname.includes("/login")) {
+  // Allow /login and /otp without a session
+  const isAuthPath = pathname.includes("/login") || pathname.includes("/otp");
+
+  if (!isLoggedIn && !isAuthPath) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 
-  if (isLoggedIn && pathname.includes("/login")) {
+  if (isLoggedIn && isAuthPath) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
     return NextResponse.redirect(url);
   }
 
-  if (pathname === "/" || pathname === "/en" || pathname === "/hi") {
+  const isRootPath =
+    pathname === "/" || pathname === "/en" || pathname === "/hi" || pathname === "/ur";
+  if (isRootPath) {
     const url = request.nextUrl.clone();
     url.pathname = isLoggedIn ? "/dashboard" : "/login";
     return NextResponse.redirect(url);
