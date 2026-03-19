@@ -57,9 +57,11 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
     (state) => state.allProducts
   );
   const { roles } = useAppSelector((state) => state.allRoles);
-  const { users: salesRepUsers, loading: usersLoading } = useAppSelector(
-    (state) => state.usersByRole
-  );
+  const { loading: usersLoading } = useAppSelector((state) => state.usersByRole);
+
+  // Combined users state to hold multiple roles
+  const [salesRepUsers, setSalesRepUsers] = useState<any[]>([]); // Keep name to avoid breaking TeamForm
+  const [combinedUsersLoading, setCombinedUsersLoading] = useState(false);
   // Territories selector
   const { territories: availableTerritories, loading: territoriesLoading } = useAppSelector(
     (state) => state.allTerritories
@@ -139,8 +141,8 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
     // Fetch all products for search
     dispatch(getAllProducts());
 
-    // Fetch all roles to find Sales Representative roleId
-    dispatch(getAllRoles());
+    // Fetch all roles to find target roleIds (no pagination to ensure all roles are found)
+    dispatch(getAllRoles({ pagination: false }));
 
     // Fetch all territories for assignment
     dispatch(getAllTerritories({ notassigned: true }));
@@ -305,16 +307,47 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
     }
   }, [teamData, mode, handleAddMemberHierarchy]);
 
-  // Find Sales Representative role and fetch users with that role
+  // Find relevant roles and fetch users for all of them
   useEffect(() => {
-    if (roles.length > 0) {
-      const salesRepRole = roles.find(
-        (role) => role.roleName.toLowerCase() === "sales representative"
-      );
-      if (salesRepRole) {
-        dispatch(getUsersByRole(salesRepRole.id));
+    const fetchAllTargetUsers = async () => {
+      if (roles.length > 0) {
+        setCombinedUsersLoading(true);
+        const targetRoles = roles.filter((role) => {
+          const name = role.roleName.toLowerCase();
+          return name === "sales representative" || name === "assistant product manager";
+        });
+
+        if (targetRoles.length === 0) {
+          setCombinedUsersLoading(false);
+          return;
+        }
+
+        // Fetch users for each role
+        const userResults = await Promise.all(
+          targetRoles.map((role) => dispatch(getUsersByRole(role.id)))
+        );
+
+        // Combine and deduplicate users
+        const combinedUsers: any[] = [];
+        const seenIds = new Set<string>();
+
+        userResults.forEach((result) => {
+          if (getUsersByRole.fulfilled.match(result) && result.payload.data) {
+            result.payload.data.forEach((user: any) => {
+              if (!seenIds.has(user.id)) {
+                seenIds.add(user.id);
+                combinedUsers.push(user);
+              }
+            });
+          }
+        });
+
+        setSalesRepUsers(combinedUsers);
+        setCombinedUsersLoading(false);
       }
-    }
+    };
+
+    fetchAllTargetUsers();
   }, [dispatch, roles]);
 
   // Merge hierarchies whenever memberHierarchies changes
@@ -510,7 +543,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
       allProducts,
       productsLoading,
       salesRepUsers,
-      usersLoading,
+      usersLoading: usersLoading || combinedUsersLoading,
       availableTerritories,
       territoriesLoading,
       status,
