@@ -11,7 +11,7 @@ interface RoleDetail {
   parentRoleId?: string;
   permissionGroupId?: string;
   status?: string;
-  assignedUsersCount?: number;
+  userCount?: number;
   [key: string]: any;
 }
 
