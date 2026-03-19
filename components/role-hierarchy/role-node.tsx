@@ -52,8 +52,13 @@ export const RoleNode: React.FC<RoleNodeProps> = ({
     setNewPermissionGroupId(id);
   };
 
+  const isChanged = isUpdatingThis
+    ? newName.trim() !== (item.name || "").trim() ||
+      (newPermissionGroupId || "") !== (item.permissionGroupId || "")
+    : newName.trim() !== "" || (newPermissionGroupId || "") !== "";
+
   const handleAction = () => {
-    if (newName.trim()) {
+    if (newName.trim() && isChanged) {
       if (isUpdatingThis) {
         onUpdateChild?.(item.id, newName.trim(), newPermissionGroupId || undefined);
       } else if (isAddingToThis && childType) {
@@ -71,7 +76,11 @@ export const RoleNode: React.FC<RoleNodeProps> = ({
     }
     if (e.key === "Escape") {
       e.preventDefault();
-      setIsDiscardModalOpen(true);
+      if (isChanged) {
+        setIsDiscardModalOpen(true);
+      } else {
+        onCancelAdd?.();
+      }
     }
   };
 
@@ -135,7 +144,13 @@ export const RoleNode: React.FC<RoleNodeProps> = ({
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={() => setIsDiscardModalOpen(true)}
+              onClick={() => {
+                if (isChanged) {
+                  setIsDiscardModalOpen(true);
+                } else {
+                  onCancelAdd?.();
+                }
+              }}
               className="px-3 py-1.5 text-sm text-[var(--gray-5)] hover:text-[var(--gray-7)] font-medium cursor-pointer"
             >
               Cancel
@@ -143,7 +158,7 @@ export const RoleNode: React.FC<RoleNodeProps> = ({
             <button
               type="button"
               onClick={handleAction}
-              disabled={!newName.trim()}
+              disabled={!newName.trim() || !isChanged}
               className="px-4 py-1.5 text-sm bg-[var(--primary)] text-[var(--light)] rounded-8 font-medium hover:bg-[var(--primary)]/90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               Update
@@ -287,7 +302,13 @@ export const RoleNode: React.FC<RoleNodeProps> = ({
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={() => setIsDiscardModalOpen(true)}
+                    onClick={() => {
+                      if (isChanged) {
+                        setIsDiscardModalOpen(true);
+                      } else {
+                        onCancelAdd?.();
+                      }
+                    }}
                     className="px-3 py-1.5 text-sm text-[var(--gray-5)] hover:text-[var(--gray-7)] font-medium cursor-pointer"
                   >
                     Cancel
@@ -295,7 +316,7 @@ export const RoleNode: React.FC<RoleNodeProps> = ({
                   <button
                     type="button"
                     onClick={handleAction}
-                    disabled={!newName.trim()}
+                    disabled={!newName.trim() || !isChanged}
                     className="px-4 py-1.5 text-sm bg-[var(--primary)] text-[var(--light)] rounded-8 font-medium hover:bg-[var(--primary)]/90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   >
                     Create

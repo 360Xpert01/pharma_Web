@@ -19,6 +19,8 @@ export const RootAddRow: React.FC<RootAddRowProps> = ({
     setRootPermissionGroupId("");
   }, [permissionGroups]);
 
+  const isChanged = rootName.trim() !== "" || rootPermissionGroupId !== "";
+
   return (
     <div className="flex items-center gap-3 border border-[var(--primary)] rounded-8 p-4 bg-[var(--background)] shadow-soft">
       <div className="w-10 h-10 rounded-8 flex items-center justify-center bg-[var(--chart-4)] text-[var(--light)]">
@@ -42,7 +44,11 @@ export const RootAddRow: React.FC<RootAddRowProps> = ({
               );
             }
             if (e.key === "Escape") {
-              setIsDiscardModalOpen(true);
+              if (isChanged) {
+                setIsDiscardModalOpen(true);
+              } else {
+                onCancelAdd?.();
+              }
             }
           }}
         />
@@ -56,7 +62,13 @@ export const RootAddRow: React.FC<RootAddRowProps> = ({
       </div>
       <div className="flex items-center gap-2">
         <button
-          onClick={() => setIsDiscardModalOpen(true)}
+          onClick={() => {
+            if (isChanged) {
+              setIsDiscardModalOpen(true);
+            } else {
+              onCancelAdd?.();
+            }
+          }}
           className="px-3 py-1.5 text-sm text-[var(--gray-5)] hover:text-[var(--gray-7)] font-medium cursor-pointer"
         >
           Cancel
@@ -64,7 +76,7 @@ export const RootAddRow: React.FC<RootAddRowProps> = ({
         <button
           type="button"
           onClick={() => {
-            if (rootName.trim()) {
+            if (isChanged) {
               onCreateChild?.(
                 "root",
                 "company",
@@ -74,7 +86,7 @@ export const RootAddRow: React.FC<RootAddRowProps> = ({
               );
             }
           }}
-          disabled={!rootName.trim()}
+          disabled={!isChanged}
           className="px-4 py-1.5 text-sm bg-[var(--primary)] text-[var(--light)] rounded-8 font-medium hover:bg-[var(--primary)]/90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           Create

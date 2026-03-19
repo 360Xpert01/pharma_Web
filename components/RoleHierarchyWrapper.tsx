@@ -101,10 +101,21 @@ export const RoleHierarchyWrapper: React.FC = () => {
   const handleUpdateChild = async (id: string, name: string, permissionGroupId?: string) => {
     // Check if the role is assigned to users and show warning
     const role = roles.find((r) => r.id === id);
-    if (role && (role.userCount || 0) > 0) {
-      setUpdateConfirmData({ id, name, permissionGroupId });
-    } else {
-      executeUpdate(id, name, permissionGroupId);
+    if (role) {
+      const hasNameChanged = name.trim() !== (role.roleName || "").trim();
+      const hasPermissionChanged = (permissionGroupId || "") !== (role.permissionGroupId || "");
+
+      if (!hasNameChanged && !hasPermissionChanged) {
+        // No change, just close the edit mode
+        setUpdatingId(null);
+        return;
+      }
+
+      if ((role.userCount || 0) > 0) {
+        setUpdateConfirmData({ id, name, permissionGroupId });
+      } else {
+        executeUpdate(id, name, permissionGroupId);
+      }
     }
   };
 
@@ -113,8 +124,10 @@ export const RoleHierarchyWrapper: React.FC = () => {
       const result = await dispatch(
         updateRole({
           id,
-          roleName: name,
-          permissionGroupId,
+          payload: {
+            roleName: name,
+            permissionGroupId,
+          },
         })
       ).unwrap();
 
