@@ -3,43 +3,27 @@ import { canAccessNav, canDo, canAccessRoute } from "@/lib/rbac";
 import type { PermissionGroupName, Action } from "@/lib/rbac";
 
 export function usePermission() {
-  const rawRole = useAppSelector(
-    (s) =>
+  const { rawRole, permissionGroupId, token, userEmail, userName } = useAppSelector((s) => ({
+    rawRole:
       s.verifyOtp.permissionGroupName ||
       s.verifyOtp.user?.userRole ||
       s.login.permissionGroupName ||
       s.auth.user?.permissionGroupName ||
-      (s.auth.user as any)?.role
-  );
-
-  const role = (rawRole === "Admin" ? "Administrator" : rawRole) as PermissionGroupName | null;
-
-  const permissionGroupId =
-    useAppSelector((s) => s.verifyOtp.permissionGroupId) ||
-    useAppSelector((s) => s.login.permissionGroupId) ||
-    useAppSelector((s) => s.auth.user?.permissionGroupId);
-
-  const token = useAppSelector((s) => s.verifyOtp.token || s.auth.token);
-  const userEmail = useAppSelector(
-    (s) => s.verifyOtp.userEmail || s.login.userEmail || s.auth.user?.email
-  );
-  const userName = useAppSelector(
-    (s) =>
+      (s.auth.user as any)?.role,
+    permissionGroupId:
+      s.verifyOtp.permissionGroupId || s.login.permissionGroupId || s.auth.user?.permissionGroupId,
+    token: s.verifyOtp.token || s.auth.token,
+    userEmail: s.verifyOtp.userEmail || s.login.userEmail || s.auth.user?.email,
+    userName:
       s.verifyOtp.user?.userName ||
       s.login.user?.userName ||
       s.verifyOtp.userName ||
       s.login.userName ||
       s.auth.user?.name ||
-      // s.auth.user?.userName ||
-      "User"
-  );
+      "User",
+  }));
 
-  console.log("🔍 [Debug UserName]:", {
-    verifyOtp: useAppSelector((s) => s.verifyOtp.userName),
-    login: useAppSelector((s) => s.login.userName),
-    auth: useAppSelector((s) => s.auth.user?.name),
-    final: userName,
-  });
+  const role = (rawRole === "Admin" ? "Administrator" : rawRole) as PermissionGroupName | null;
 
   const permissions = {
     role,
@@ -47,6 +31,7 @@ export function usePermission() {
     token: token ? "PRESENT" : "MISSING",
     userEmail,
     userName,
+    userRole: rawRole,
     isAuthenticated: !!token,
     isAdmin: role === "Administrator",
     isCSuite: role === "C-Suite",

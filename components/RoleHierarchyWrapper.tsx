@@ -16,7 +16,6 @@ import {
 import { getAllPermissionGroups } from "@/store/slices/permissionGroup/getAllPermissionGroupsSlice";
 import toast from "react-hot-toast";
 import { ConfirmModal } from "@/components/shared/confirm-modal";
-import { AlertModal } from "@/components/shared/alert-modal";
 
 // Helper function to build hierarchy from flat role list
 const buildRoleHierarchy = (roles: any[]) => {
@@ -184,10 +183,6 @@ export default function RoleHierarchyWrapper() {
   };
 
   const handleUpdateChild = async (id: string, name: string, permissionGroupId?: string) => {
-    // Prevent updating own role
-    if (id === user?.roleId) {
-      return;
-    }
     // Show confirmation dialog instead of immediate update
     setUpdateConfirmData({ id, name, permissionGroupId });
   };
@@ -213,10 +208,6 @@ export default function RoleHierarchyWrapper() {
   };
 
   const handleDeleteChild = async (id: string) => {
-    // Prevent deleting own role
-    if (id === user?.roleId) {
-      return;
-    }
     setDeleteConfirmId(id);
   };
 

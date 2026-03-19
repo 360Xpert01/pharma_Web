@@ -150,19 +150,15 @@ export default function RolesCardList({ searchTerm = "", filters }: UserRolesPro
             onToggle={() => setOpenId(openId === row.original.id ? null : row.original.id)}
             onClose={() => setOpenId(null)}
             items={[
-              ...(row.original.id !== (user?.roleId || verifyOtp?.user?.roleId)
-                ? [
-                    {
-                      label: "Edit",
-                      onClick: () => console.log("Edit", row.original.id),
-                    },
-                    {
-                      label: "Delete",
-                      onClick: () => console.log("Delete", row.original.id),
-                      variant: "danger" as const,
-                    },
-                  ]
-                : []),
+              {
+                label: "Edit",
+                onClick: () => console.log("Edit", row.original.id),
+              },
+              {
+                label: "Delete",
+                onClick: () => console.log("Delete", row.original.id),
+                variant: "danger" as const,
+              },
             ]}
           />
         </div>

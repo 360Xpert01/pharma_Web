@@ -46,6 +46,7 @@ export const ROLE_ROUTE_ACCESS: Record<PermissionGroupName, string[]> = {
 // ─── Helper functions ─────────────────────────────────────────────────────────
 export function canAccessNav(role: PermissionGroupName, navLabel: string): boolean {
   const allowed = ROLE_NAV_ACCESS[role];
+  if (!allowed) return false;
   return allowed.includes("*") || allowed.includes(navLabel);
 }
 
@@ -55,6 +56,7 @@ export function canDo(role: PermissionGroupName, action: Action): boolean {
 
 export function canAccessRoute(role: PermissionGroupName, pathname: string): boolean {
   const allowed = ROLE_ROUTE_ACCESS[role];
+  if (!allowed) return false;
   if (allowed.includes("*")) return true;
   return allowed.some((r) => pathname.startsWith(r));
 }
