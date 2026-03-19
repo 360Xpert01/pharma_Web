@@ -23,7 +23,11 @@ export function usePermission() {
       "User",
   }));
 
-  const role = (rawRole === "Admin" ? "Administrator" : rawRole) as PermissionGroupName | null;
+  const role = rawRole as string | null;
+  const isAdmin = !!(
+    role &&
+    (role.toLowerCase().includes("admin") || role.toLowerCase().includes("root"))
+  );
 
   const permissions = {
     role,
@@ -33,9 +37,12 @@ export function usePermission() {
     userName,
     userRole: rawRole,
     isAuthenticated: !!token,
-    isAdmin: role === "Administrator",
-    isCSuite: role === "C-Suite",
-    isManager: role === "Manager",
+    isAdmin,
+    isCSuite: !!(
+      role &&
+      (role.toLowerCase().includes("c-suite") || role.toLowerCase().includes("csuite"))
+    ),
+    isManager: !!(role && role.toLowerCase().includes("manager")),
   };
 
   console.log("🔐 [Permission State]:", permissions);
