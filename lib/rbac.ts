@@ -1,9 +1,20 @@
-export type PermissionGroupName = "Administrator" | "C-Suite" | "Manager" | "Sales Representative";
+export type PermissionGroupName = string;
+
+type BaseRole = "ADMIN" | "CSUITE" | "MANAGER" | "SALES" | "UNKNOWN";
+
+function resolveBaseRole(roleName: string): BaseRole {
+  const n = roleName.toLowerCase();
+  if (n.includes("admin") || n.includes("root")) return "ADMIN";
+  if (n.includes("c-suite") || n.includes("csuite")) return "CSUITE";
+  if (n.includes("manager")) return "MANAGER";
+  if (n.includes("sales")) return "SALES";
+  return "UNKNOWN";
+}
 
 // ─── Nav item access per role ─────────────────────────────────────────────────
-export const ROLE_NAV_ACCESS: Record<PermissionGroupName, string[]> = {
-  Administrator: ["*"],
-  "C-Suite": [
+export const ROLE_NAV_ACCESS: Record<BaseRole, string[]> = {
+  ADMIN: ["*"],
+  CSUITE: [
     "Dashboard",
     "People & Teams",
     "Accounts",
@@ -13,7 +24,7 @@ export const ROLE_NAV_ACCESS: Record<PermissionGroupName, string[]> = {
     "Compliance",
     "Support",
   ],
-  Manager: [
+  MANAGER: [
     "Dashboard",
     "People & Teams",
     "Accounts",
@@ -22,41 +33,44 @@ export const ROLE_NAV_ACCESS: Record<PermissionGroupName, string[]> = {
     "Analytics & Reports",
     "Support",
   ],
-  "Sales Representative": [], // blocked at login — never reaches navbar
+  SALES: [],
+  UNKNOWN: [],
 };
 
 // ─── What actions each role can perform ──────────────────────────────────────
 export type Action = "view" | "add" | "edit" | "delete";
 
-export const ROLE_ACTIONS: Record<PermissionGroupName, Action[]> = {
-  Administrator: ["view", "add", "edit", "delete"],
-  "C-Suite": ["view"], // view only, no mutations
-  Manager: ["view", "add", "edit"], // no delete
-  "Sales Representative": [], // blocked
+export const ROLE_ACTIONS: Record<BaseRole, Action[]> = {
+  ADMIN: ["view", "add", "edit", "delete"],
+  CSUITE: ["view"],
+  MANAGER: ["view", "add", "edit"],
+  SALES: [],
+  UNKNOWN: [],
 };
 
 // ─── Route-level access ───────────────────────────────────────────────────────
-export const ROLE_ROUTE_ACCESS: Record<PermissionGroupName, string[]> = {
-  Administrator: ["*"],
-  "C-Suite": ["/dashboard", "/support", "/ai"],
-  Manager: ["/dashboard", "/support"],
-  "Sales Representative": [],
+export const ROLE_ROUTE_ACCESS: Record<BaseRole, string[]> = {
+  ADMIN: ["*"],
+  CSUITE: ["/dashboard", "/support", "/ai"],
+  MANAGER: ["/dashboard", "/support"],
+  SALES: [],
+  UNKNOWN: [],
 };
 
 // ─── Helper functions ─────────────────────────────────────────────────────────
-export function canAccessNav(role: PermissionGroupName, navLabel: string): boolean {
-  const allowed = ROLE_NAV_ACCESS[role];
-  if (!allowed) return false;
-  return allowed.includes("*") || allowed.includes(navLabel);
+export function canAccessNav(role: string, navLabel: string): boolean {
+  const baseRole = resolveBaseRole(role);
+  const allowed = ROLE_NAV_ACCESS[baseRole];
+  return allowed?.includes("*") || allowed?.includes(navLabel) || false;
 }
 
-export function canDo(role: PermissionGroupName, action: Action): boolean {
-  return ROLE_ACTIONS[role]?.includes(action) ?? false;
+export function canDo(role: string, action: Action): boolean {
+  const baseRole = resolveBaseRole(role);
+  return ROLE_ACTIONS[baseRole]?.includes(action) ?? false;
 }
 
-export function canAccessRoute(role: PermissionGroupName, pathname: string): boolean {
-  const allowed = ROLE_ROUTE_ACCESS[role];
-  if (!allowed) return false;
-  if (allowed.includes("*")) return true;
-  return allowed.some((r) => pathname.startsWith(r));
+export function canAccessRoute(role: string, pathname: string): boolean {
+  const baseRole = resolveBaseRole(role);
+  const allowed = ROLE_ROUTE_ACCESS[baseRole];
+  return allowed?.includes("*") || allowed?.some((r) => pathname.startsWith(r)) || false;
 }
