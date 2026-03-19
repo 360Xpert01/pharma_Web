@@ -1,177 +1,199 @@
 "use client";
-import { useRouter, usePathname } from "next/navigation";
-import Link from "next/link";
-import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
-import { toast } from "sonner";
-import { AuthGuard } from "@/lib/auth/auth-guard";
-import { axiosInstance } from "@/lib/axios/axios-instance";
-import { OTPInput } from "@/components/ui/otp-input";
+
+import React, { useState, useRef, useEffect } from "react";
+import { RotateCw } from "lucide-react";
+import { useRouter, useParams } from "next/navigation";
+import toast from "react-hot-toast";
+import { useAppDispatch, useAppSelector } from "../../../../store";
+import { requestOtp } from "../../../../store/slices/auth/loginSlice";
+import { verifyOtp } from "../../../../store/slices/auth/verifyOtp";
 
 export default function OtpPage() {
-  const t = useTranslations("auth.otp");
+  const [otp, setOtp] = useState(["", "", "", ""]);
+  const [invalidOtp, setInvalidOtp] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
   const router = useRouter();
-  const pathname = usePathname() || "/";
-  const [isLoading, setIsLoading] = useState(false);
-  const [isResending, setIsResending] = useState(false);
-  const [otpCode, setOtpCode] = useState("");
-  const [error, setError] = useState(false);
-  const [countdown, setCountdown] = useState(0);
+  const params = useParams();
+  const locale = params?.locale || "en";
 
-  const getLocaleFromPath = (p: string) => {
-    const m = p.match(/^\/(en|ur)/);
-    return m?.[1] || "en";
-  };
-  const locale = getLocaleFromPath(pathname);
+  const dispatch = useAppDispatch();
+  const { userEmail, deviceId, loading: loginLoading } = useAppSelector((state) => state.login);
 
-  // Countdown timer effect
+  // Redirect to login if essential data is missing
   useEffect(() => {
-    if (countdown > 0) {
-      const timer = setTimeout(() => {
-        setCountdown(countdown - 1);
-      }, 1000);
-      return () => clearTimeout(timer);
+    if (!userEmail || !deviceId) {
+      router.push(`/${locale}/login`);
     }
-  }, [countdown]);
+  }, [userEmail, deviceId, router, locale]);
 
-  async function handleVerify(code: string) {
-    if (code.length !== 4) return;
+  useEffect(() => {
+    if (otpRefs.current[0]) {
+      otpRefs.current[0].focus();
+    }
+  }, []);
 
-    setIsLoading(true);
-    setError(false);
+  const handleResendOTP = async () => {
+    if (!userEmail || !deviceId) return;
+
+    setOtp(["", "", "", ""]);
+    setInvalidOtp(false);
 
     try {
-      const response = await axiosInstance.post("/auth/verify-otp", {
-        code,
-      });
+      const result: any = await dispatch(requestOtp({ email: userEmail, deviceId }));
+      if (result.payload?.success || result.payload === "OTP request already exists") {
+        toast.success("OTP Resent Successfully");
+        otpRefs.current[0]?.focus();
+      } else {
+        toast.error(result.payload || "Failed to resend OTP");
+      }
+    } catch (error) {
+      toast.error("Failed to resend OTP");
+    }
+  };
 
-      if (response.data?.success) {
-        toast.success(t("verifiedMessage") || "Verified", {
-          description: t("verifiedDescription") || "Your code has been verified successfully.",
-        });
+  const handleVerifyOTP = async (otpToVerify?: string) => {
+    const enteredOtp = otpToVerify || otp.join("");
 
-        // Redirect to dashboard after successful verification
+    if (enteredOtp.length !== 4) {
+      toast.error("Please enter 4-digit OTP");
+      return;
+    }
+
+    if (!deviceId) return;
+
+    setIsVerifying(true);
+    setInvalidOtp(false);
+
+    try {
+      const result: any = await dispatch(
+        verifyOtp({
+          deviceId,
+          otp: Number(enteredOtp),
+        })
+      );
+
+      if (result.type === "auth/verifyOtp/fulfilled" && result.payload?.success) {
+        const loginData = result?.payload?.data?.accessToken;
+        localStorage.setItem("userSession", loginData);
+        document.cookie = `userSession=${JSON.stringify(loginData)}; path=/; max-age=86400`;
+
+        toast.success("Login Successful");
         router.push(`/${locale}/dashboard`);
+      } else {
+        const errorMsg =
+          result.payload ||
+          result.payload?.message ||
+          result.error?.message ||
+          "Invalid OTP. Please try again.";
+
+        if (errorMsg === "Access denied. Please use the mobile app.") {
+          toast.error(errorMsg);
+          setOtp(["", "", "", ""]);
+          otpRefs.current[0]?.focus();
+        } else {
+          setInvalidOtp(true);
+          toast.error(errorMsg);
+        }
       }
     } catch (err: any) {
-      setError(true);
-      const message = err?.response?.data?.message || err?.message || "Verification failed";
-      toast.error(t("verificationFailed") || "Verification failed", {
-        description: message,
-      });
+      setInvalidOtp(true);
+      toast.error("OTP verification failed");
     } finally {
-      setIsLoading(false);
+      setIsVerifying(false);
     }
-  }
+  };
 
-  async function handleResendCode() {
-    if (countdown > 0) return; // Prevent resending if countdown is active
+  const handleOtpChange = (index: number, value: string) => {
+    if (!/^\d*$/.test(value)) return;
 
-    setIsResending(true);
-    // Start 60 second countdown immediately
-    setCountdown(60);
+    if (invalidOtp) {
+      setInvalidOtp(false);
+    }
 
-    try {
-      const response = await axiosInstance.post("/auth/resend-otp");
+    const newOtp = [...otp];
+    newOtp[index] = value.slice(-1);
+    setOtp(newOtp);
 
-      if (response.data?.success) {
-        toast.success(t("resendSuccess") || "Code Resent", {
-          description:
-            t("resendSuccessDescription") || "A new verification code has been sent to your email.",
-        });
-        // Clear the OTP input
-        setOtpCode("");
-        setError(false);
+    if (value && index < 3) {
+      otpRefs.current[index + 1]?.focus();
+    }
+
+    if (index === 3 && value) {
+      const fullOtp = newOtp.join("");
+      if (fullOtp.length === 4) {
+        setTimeout(() => {
+          handleVerifyOTP(fullOtp);
+        }, 100);
       }
-    } catch (err: any) {
-      const message = err?.response?.data?.message || err?.message || "Failed to resend code";
-      toast.error(t("resendFailed") || "Resend Failed", {
-        description: message,
-      });
-      // Reset countdown on error
-      setCountdown(0);
-    } finally {
-      setIsResending(false);
     }
+  };
+
+  const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      otpRefs.current[index - 1]?.focus();
+    }
+  };
+
+  if (!userEmail || !deviceId) {
+    return null; // Don't render anything while redirecting
   }
-
-  const handleOtpChange = (value: string) => {
-    setOtpCode(value);
-    setError(false);
-  };
-
-  const handleOtpComplete = (value: string) => {
-    handleVerify(value);
-  };
 
   return (
-    <AuthGuard>
-      <div className="relative space-y-6">
-        <div className="space-y-2">
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold">{t("title")}</h1>
-          <p className="text-muted-foreground text-sm md:text-base">{t("subtitle")}</p>
-        </div>
+    <div className="bg-background rounded-8 shadow-soft px-14 py-24 space-y-6 w-full">
+      <div className="text-center space-y-1">
+        <h1 className="t-h1 text-[var(--gray-9)]">Verification</h1>
+        <p className="t-sm text-[var(--gray-5)]">Enter the OTP sent to {userEmail}</p>
+      </div>
 
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm md:text-base font-medium block text-center">
-              {t("codeLabel")}
-            </label>
-            <OTPInput
-              length={4}
-              value={otpCode}
-              onChange={handleOtpChange}
-              onComplete={handleOtpComplete}
-              disabled={isLoading}
-              error={error}
-              className="my-4"
-            />
-            {error && (
-              <p className="text-sm text-destructive text-center">
-                {t("verificationFailed") || "Invalid verification code"}
-              </p>
-            )}
+      <div className="space-y-5">
+        <div>
+          <label className="t-label text-[var(--gray-7)] mb-4 text-center block">
+            Enter 4-Digit OTP
+          </label>
+          <div className="flex justify-center gap-3">
+            {[0, 1, 2, 3].map((index) => (
+              <input
+                key={index}
+                ref={(el) => {
+                  otpRefs.current[index] = el;
+                }}
+                type="text"
+                inputMode="numeric"
+                maxLength={1}
+                value={otp[index]}
+                onChange={(e) => handleOtpChange(index, e.target.value)}
+                onKeyDown={(e) => handleKeyDown(index, e)}
+                disabled={isVerifying}
+                className="w-14 h-14 text-center text-2xl font-bold border-2 border-[var(--gray-3)] rounded-8 focus:border-[var(--primary)] focus:ring-4 focus:ring-[var(--primary-0)] outline-none transition-all disabled:bg-[var(--gray-1)] disabled:cursor-not-allowed"
+              />
+            ))}
           </div>
 
-          <button
-            type="button"
-            onClick={() => handleVerify(otpCode)}
-            disabled={isLoading || otpCode.length !== 4}
-            className="w-full cursor-pointer text-sm md:text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 rounded-8 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {isLoading ? (
-              <div className="flex items-center justify-center gap-2">
-                <div className="animate-spin rounded-8 h-4 w-4 border-2 border-white border-t-transparent" />
-                {t("submittingButton")}
-              </div>
-            ) : (
-              t("submitButton")
-            )}
-          </button>
+          {isVerifying && (
+            <div className="mt-4 flex items-center justify-center gap-2 text-[var(--primary)]">
+              <RotateCw className="w-5 h-5 animate-spin" />
+              <span className="t-sm font-medium">Verifying OTP...</span>
+            </div>
+          )}
+
+          {invalidOtp && (
+            <p className="mt-4 t-sm text-[var(--destructive)] text-center">
+              Invalid OTP. Please try again.
+            </p>
+          )}
         </div>
 
-        <div className="text-center space-y-2">
-          <p className="text-sm md:text-base text-muted-foreground">
-            {t("resendText")}{" "}
-            <button
-              type="button"
-              onClick={handleResendCode}
-              disabled={countdown > 0}
-              className="underline text-primary hover:text-primary/80 cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {countdown > 0 ? `${countdown}` : t("resendButton")}
-            </button>
-          </p>
-          <p className="text-sm md:text-base text-muted-foreground">
-            <Link
-              href={`/${locale}/login`}
-              className="underline hover:text-primary cursor-pointer transition-colors"
-            >
-              {t("backToLogin")}
-            </Link>
-          </p>
+        <div className="text-center">
+          <button
+            onClick={handleResendOTP}
+            disabled={loginLoading || isVerifying}
+            className="t-link text-[var(--primary)] hover:text-[var(--primary-2)] disabled:text-[var(--gray-4)] disabled:cursor-not-allowed underline transition"
+          >
+            {loginLoading ? "Resending..." : "Resend OTP"}
+          </button>
         </div>
       </div>
-    </AuthGuard>
+    </div>
   );
 }
