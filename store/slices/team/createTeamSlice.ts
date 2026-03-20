@@ -18,6 +18,7 @@ export interface CreateTeamPayload {
   channelId: string;
   productIds: string[];
   saleRepIds: SaleRepTerritory[];
+  assProductManagerId?: string;
 }
 
 interface CreatedTeam {

@@ -1,10 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store";
-import {
-  generatePrefix,
-  resetGeneratePrefixState,
-} from "@/store/slices/preFix/generatePrefixSlice";
 import { toast } from "react-hot-toast";
 import { getAllChannels } from "@/store/slices/channel/getAllChannelsSlice";
 import { getAllCallPoints } from "@/store/slices/callPoint/getAllCallPointsSlice";
@@ -164,6 +160,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
       router.push("/en/dashboard/campaign-Management");
     }
     if (createTeamError) {
+      toast.error(createTeamError);
       dispatch(resetCreateTeamState());
     }
   }, [createTeamSuccess, createTeamError, dispatch, router]);
@@ -177,7 +174,8 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
       router.push("/en/dashboard/campaign-Management");
     }
     if (updateTeamError) {
-      // dispatch(resetUpdateTeamState()); // Keep error visible or handle it
+      toast.error(updateTeamError);
+      dispatch(resetUpdateTeamState());
     }
   }, [updateTeamSuccess, updateTeamError, dispatch, router]);
 
@@ -281,6 +279,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
               lastName: user.lastName || fullUserData?.lastName || lastName,
               email: user.email || fullUserData?.email || "",
               pulseCode: user.pulseCode || fullUserData?.pulseCode || "",
+              roleName: (fullUserData?.roleName || user.role || "") as string,
               profilePicture: user.profilePicture || fullUserData?.profilePicture || "",
             });
 
@@ -324,22 +323,29 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
 
         // Fetch users for each role
         const userResults = await Promise.all(
-          targetRoles.map((role) => dispatch(getUsersByRole(role.id)))
+          targetRoles.map(async (role) => {
+            const result = await dispatch(getUsersByRole(role.id));
+            if (getUsersByRole.fulfilled.match(result) && result.payload.data) {
+              return result.payload.data.map((user: any) => ({
+                ...user,
+                roleName: role.roleName, // Attach roleName
+              }));
+            }
+            return [];
+          })
         );
 
         // Combine and deduplicate users
         const combinedUsers: any[] = [];
         const seenIds = new Set<string>();
 
-        userResults.forEach((result) => {
-          if (getUsersByRole.fulfilled.match(result) && result.payload.data) {
-            result.payload.data.forEach((user: any) => {
-              if (!seenIds.has(user.id)) {
-                seenIds.add(user.id);
-                combinedUsers.push(user);
-              }
-            });
-          }
+        userResults.forEach((usersArray) => {
+          usersArray.forEach((user: any) => {
+            if (!seenIds.has(user.id)) {
+              seenIds.add(user.id);
+              combinedUsers.push(user);
+            }
+          });
         });
 
         setSalesRepUsers(combinedUsers);
@@ -427,11 +433,28 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
   };
 
   const handleCreateSubmit = async () => {
-    // Build saleRepIds with their assigned territory
-    const saleRepIds = selectedMembers.map((member) => ({
-      id: member.id,
-      territoryId: assignedTerritories.get(member.id)?.id || null,
-    }));
+    // Build saleRepIds with their assigned territory, and pick assistant product manager
+    const saleRepIds: { id: string; territoryId: string }[] = [];
+    let assProductManagerId: string | undefined = undefined;
+
+    selectedMembers.forEach((member) => {
+      if (
+        member.roleName.toLowerCase() === "assistant product manager" ||
+        member.roleName.toLowerCase() === "assistant_product_manager"
+      ) {
+        assProductManagerId = member.id;
+      } else {
+        const territoryId = assignedTerritories.get(member.id)?.id;
+        if (territoryId) {
+          saleRepIds.push({
+            id: member.id,
+            territoryId,
+          });
+        }
+        // If it's a sales rep but no territory is assigned, the API might fail if we put it in saleRepIds.
+        // However, the user said "only sales rep [can assign]", so we assume others go elsewhere.
+      }
+    });
 
     // Prepare form data for validation
     const formData = {
@@ -443,6 +466,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
       channelId: selectedChannelId,
       productIds: products.map((p) => p.id),
       saleRepIds,
+      assProductManagerId,
     };
 
     // Validate using Zod schema
@@ -484,10 +508,25 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
     // Use similar validation logic (reuse or create separate schema if needed)
     // For now assuming same requirements for update
 
-    const saleRepIds = selectedMembers.map((member) => ({
-      id: member.id,
-      territoryId: assignedTerritories.get(member.id)?.id || null,
-    }));
+    const saleRepIds: { id: string; territoryId: string }[] = [];
+    let assProductManagerId: string | undefined = undefined;
+
+    selectedMembers.forEach((member) => {
+      if (
+        member.roleName.toLowerCase() === "assistant product manager" ||
+        member.roleName.toLowerCase() === "assistant_product_manager"
+      ) {
+        assProductManagerId = member.id;
+      } else {
+        const territoryId = assignedTerritories.get(member.id)?.id;
+        if (territoryId) {
+          saleRepIds.push({
+            id: member.id,
+            territoryId,
+          });
+        }
+      }
+    });
 
     const formData = {
       pulseCode: pulseCode || undefined, // Use existing for update
@@ -497,6 +536,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
       channelId: selectedChannelId,
       productIds: products.map((p) => p.id),
       saleRepIds,
+      assProductManagerId,
     };
 
     // Validate
