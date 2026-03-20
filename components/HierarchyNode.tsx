@@ -163,7 +163,7 @@ export function HierarchyNode({
           <p className="t-md">{node.roleName}</p>
         </div>
 
-        {node.isSalesRep && (
+        {node.roleName.toLowerCase() === "sales representative" && (
           <div className="flex items-center gap-2">
             {/* Assigned Territory Pill (Single) */}
             {userTerritory && (
