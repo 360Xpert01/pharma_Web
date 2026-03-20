@@ -11,6 +11,7 @@ export interface SelectedMember {
   lastName: string;
   pulseCode: string;
   email: string;
+  roleName: string;
   profilePicture?: string;
 }
 
@@ -59,6 +60,7 @@ export default function MemberSearch({
       lastName: user.lastName,
       pulseCode: user.pulseCode,
       email: user.email,
+      roleName: user.roleName,
       profilePicture: user.profilePicture,
     };
 

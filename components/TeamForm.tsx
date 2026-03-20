@@ -191,6 +191,7 @@ export default function TeamForm() {
                   lastName: user.lastName || "",
                   pulseCode: user.pulseCode || "",
                   email: user.email || "",
+                  roleName: user.roleName || "",
                   profilePicture: user.profilePicture || "",
                 })) || []
               }

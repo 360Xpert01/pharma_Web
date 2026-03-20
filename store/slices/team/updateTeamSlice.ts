@@ -16,6 +16,7 @@ export interface UpdateTeamPayload {
   productIds?: string[];
   userIds?: string[]; // Array of user IDs - might be deprecated in favor of saleRepIds
   saleRepIds?: { id: string; territoryId?: string | null }[]; // Updated to use territoryId instead of brickIds
+  assProductManagerId?: string;
   // Add other fields as needed
 }
 
