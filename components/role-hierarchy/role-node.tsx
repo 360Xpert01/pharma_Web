@@ -212,6 +212,7 @@ export const RoleNode: React.FC<RoleNodeProps> = ({
               value={item.permissionGroupId || ""}
               onChange={() => {}}
               options={permissionGroups}
+              readOnly={true}
             />
           </div>
 

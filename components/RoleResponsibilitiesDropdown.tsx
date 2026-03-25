@@ -110,7 +110,11 @@ const RoleResponsibilitiesDropdown: React.FC<RoleResponsibilitiesDropdownProps> 
         className={cn(
           "flex items-center gap-2 px-4 py-2 border rounded-8 transition-all min-w-[220px] justify-between",
           getResponsibilityStyles(displayValue),
-          disabled || readOnly ? "opacity-70 cursor-default" : "cursor-pointer"
+          disabled
+            ? "opacity-70 cursor-not-allowed"
+            : readOnly
+              ? "cursor-default"
+              : "cursor-pointer"
         )}
       >
         <span className={cn("text-sm truncate font-medium")}>{displayValue || placeholder}</span>
