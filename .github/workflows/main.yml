@@ -1,40 +1,51 @@
-name: Deploy Pharma Web
+name: Deploy Pharma web
 
 on:
   push:
-    branches:
-      - develop
-  #workflow_dispatch:  # Change this to the branch you want to trigger on
+    branches: [ develop ]
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write   # Needed for future federated identity
+      contents: read
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Deploying Locally
-      run: |
-          # The runner is already at the destination. 
-          # We just move to the app folder and run the script.
-          cd /home/ubuntu/pharma_Web
-          bash deploy.sh
-    
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+          # Optional: version: latest
+          # ping: ${{ secrets.SERVER_HOST }}   # Forces connection wait
 
-    # - name: Set up SSH
-    #   run: |
-    #     sudo apt-get update
-    #     sudo apt-get install -y sshpass
-    #     mkdir -p ~/.ssh
-    #     chmod 700 ~/.ssh
+      - name: Verify Tailscale Connectivity
+        run: |
+          tailscale status
+          tailscale ping ${{ secrets.SERVER_HOST }} || true
+          nc -zv ${{ secrets.SERVER_HOST }} 22 || true
+          echo "Tailscale debug:"
+          tailscale debug prefs || true
 
-    # - name: Add SSH Host Key
-    #   run: |
-    #     ssh-keyscan -H 178.18.250.150 >> ~/.ssh/known_hosts || { echo "Failed to add host key"; exit 1; }
-
-    # - name: Run Remote Script
-    #   env:
-    #     SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-    #   run: |
-    #     sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no ubuntu@178.18.250.150 "bash /home/ubuntu/pharma_Web/deploy.sh" || { echo "SSH command failed"; exit 1; }
+      - name: Deploy via SSH
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+      
+          # Write private key to file
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+      
+          # Optional: add known_hosts to avoid StrictHostKeyChecking prompt
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts || true
+      
+          ssh -o StrictHostKeyChecking=no \
+              -i ~/.ssh/id_rsa \
+              ubuntu@${{ secrets.SERVER_HOST }} << 'EOF'
+            cd /home/ubuntu/pharma_Web
+            bash deploy.sh
+          EOF
