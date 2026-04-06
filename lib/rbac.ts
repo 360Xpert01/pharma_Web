@@ -14,24 +14,21 @@ function resolveBaseRole(permissionGroup: string): BaseRole {
 // ─── Nav item access per role ─────────────────────────────────────────────────
 export const ROLE_NAV_ACCESS: Record<BaseRole, string[]> = {
   ADMIN: ["*"],
-  CSUITE: [
-    "Dashboard",
-    "People & Teams",
-    "Accounts",
-    "Products & Samples",
-    "DCR & Field Ops",
-    "Analytics & Reports",
-    "Compliance",
-    "Support",
-  ],
+  CSUITE: ["*", "!Control Center"],
   MANAGER: [
     "Dashboard",
     "People & Teams",
-    "Accounts",
-    "Products & Samples",
+    "Attendance & Tracking",
+    "Expense Requests",
     "DCR & Field Ops",
-    "Analytics & Reports",
-    "Support",
+    "Planning",
+    "Monthly Work plans",
+    "Execution",
+    "Attendance",
+    "Admin",
+    "Expense Claims",
+    "Reports",
+    "Daily Call Reports",
   ],
   SALES: [],
   UNKNOWN: [],
@@ -51,7 +48,7 @@ export const ROLE_ACTIONS: Record<BaseRole, Action[]> = {
 // ─── Route-level access ───────────────────────────────────────────────────────
 export const ROLE_ROUTE_ACCESS: Record<BaseRole, string[]> = {
   ADMIN: ["*"],
-  CSUITE: ["/dashboard", "/support", "/ai"],
+  CSUITE: ["*"],
   MANAGER: ["/dashboard", "/support"],
   SALES: [],
   UNKNOWN: [],
@@ -61,6 +58,7 @@ export const ROLE_ROUTE_ACCESS: Record<BaseRole, string[]> = {
 export function canAccessNav(permissionGroup: string, navLabel: string): boolean {
   const baseRole = resolveBaseRole(permissionGroup);
   const allowed = ROLE_NAV_ACCESS[baseRole];
+  if (allowed?.includes(`!${navLabel}`)) return false;
   return allowed?.includes("*") || allowed?.includes(navLabel) || false;
 }
 

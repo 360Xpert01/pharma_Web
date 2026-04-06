@@ -334,81 +334,83 @@ const Navbar = () => {
   }, []);
 
   const renderDropdownItems = (items: DropdownItem[], isSubmenu = false) => {
-    return items.map((item) => (
-      <div
-        key={item.label}
-        className="relative group"
-        onMouseEnter={(e) => {
-          if (item.items) {
-            setActiveSubmenu(item.label);
-            const rect = e.currentTarget.getBoundingClientRect();
-            const submenuWidth = 232; // w-58 is 14.5rem = 232px
-            if (rect.right + submenuWidth > window.innerWidth) {
-              setSubmenuAlignment((prev) => ({ ...prev, [item.label]: "right" }));
-            } else {
-              setSubmenuAlignment((prev) => ({ ...prev, [item.label]: "left" }));
+    return items
+      .filter((item) => canSeeNav(item.label))
+      .map((item) => (
+        <div
+          key={item.label}
+          className="relative group"
+          onMouseEnter={(e) => {
+            if (item.items) {
+              setActiveSubmenu(item.label);
+              const rect = e.currentTarget.getBoundingClientRect();
+              const submenuWidth = 232; // w-58 is 14.5rem = 232px
+              if (rect.right + submenuWidth > window.innerWidth) {
+                setSubmenuAlignment((prev) => ({ ...prev, [item.label]: "right" }));
+              } else {
+                setSubmenuAlignment((prev) => ({ ...prev, [item.label]: "left" }));
+              }
             }
-          }
-        }}
-        onMouseLeave={() => item.items && setActiveSubmenu(null)}
-      >
-        {item.href ? (
-          <Link
-            href={item.href}
-            onClick={() => {
-              setHoveredItem(null);
-              setClickedItem(null);
-              setActiveSubmenu(null);
-            }}
-            className="flex items-center  transition-all duration-200  justify-between px-4 py-3 text-sm text-(--gray-7)  border-b border-(--gray-1) hover:bg-(--gray-1)"
-          >
-            <span>{item.label}</span>
-            {item.items && (
-              <Image
-                src="/arrow-down.png"
-                alt="Ceturvi Logo"
-                width={20}
-                height={20}
-                // className="object-contain"
-                className={`w-4 h-4 object-contai transition-transform duration-200 ${
-                  activeDropdown === item.label ? "rotate-100" : ""
-                }`}
-              />
-            )}
-          </Link>
-        ) : (
-          <div className="flex items-center cursor-pointer justify-between px-4 py-3 text-sm text-(--gray-7)  border-b border-(--gray-1) hover:bg-(--gray-1)">
-            <span>{item.label}</span>
-            {item.items && (
-              <Image
-                src="/arrow-down.png"
-                alt="Ceturvi Logo"
-                width={20}
-                height={20}
-                // className="object-contain"
-                className={`w-4 h-4 object-contain cursor-pointer transition-transform duration-200 ${
-                  activeSubmenu === item.label ? "rotate-90" : ""
-                }`}
-              />
-            )}
-          </div>
-        )}
+          }}
+          onMouseLeave={() => item.items && setActiveSubmenu(null)}
+        >
+          {item.href ? (
+            <Link
+              href={item.href}
+              onClick={() => {
+                setHoveredItem(null);
+                setClickedItem(null);
+                setActiveSubmenu(null);
+              }}
+              className="flex items-center  transition-all duration-200  justify-between px-4 py-3 text-sm text-(--gray-7)  border-b border-(--gray-1) hover:bg-(--gray-1)"
+            >
+              <span>{item.label}</span>
+              {item.items && (
+                <Image
+                  src="/arrow-down.png"
+                  alt="Ceturvi Logo"
+                  width={20}
+                  height={20}
+                  // className="object-contain"
+                  className={`w-4 h-4 object-contai transition-transform duration-200 ${
+                    activeDropdown === item.label ? "rotate-100" : ""
+                  }`}
+                />
+              )}
+            </Link>
+          ) : (
+            <div className="flex items-center cursor-pointer justify-between px-4 py-3 text-sm text-(--gray-7)  border-b border-(--gray-1) hover:bg-(--gray-1)">
+              <span>{item.label}</span>
+              {item.items && (
+                <Image
+                  src="/arrow-down.png"
+                  alt="Ceturvi Logo"
+                  width={20}
+                  height={20}
+                  // className="object-contain"
+                  className={`w-4 h-4 object-contain cursor-pointer transition-transform duration-200 ${
+                    activeSubmenu === item.label ? "rotate-90" : ""
+                  }`}
+                />
+              )}
+            </div>
+          )}
 
-        {/* Flyout Submenu */}
-        {item.items && activeSubmenu === item.label && (
-          <div
-            className={`absolute cursor-pointer top-0 bg-(--background) w-58 z-50 shadow-soft ${
-              submenuAlignment[item.label] === "right" ? "right-full" : "left-full"
-            }`}
-            style={{ top: -8 }}
-            onMouseEnter={() => setActiveSubmenu(item.label)}
-            onMouseLeave={() => setActiveSubmenu(null)}
-          >
-            {renderDropdownItems(item.items, true)}
-          </div>
-        )}
-      </div>
-    ));
+          {/* Flyout Submenu */}
+          {item.items && activeSubmenu === item.label && (
+            <div
+              className={`absolute cursor-pointer top-0 bg-(--background) w-58 z-50 shadow-soft ${
+                submenuAlignment[item.label] === "right" ? "right-full" : "left-full"
+              }`}
+              style={{ top: -8 }}
+              onMouseEnter={() => setActiveSubmenu(item.label)}
+              onMouseLeave={() => setActiveSubmenu(null)}
+            >
+              {renderDropdownItems(item.items, true)}
+            </div>
+          )}
+        </div>
+      ));
   };
 
   const [query, setQuery] = useState("");
