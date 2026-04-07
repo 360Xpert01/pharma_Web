@@ -1,20 +1,46 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { resolveBaseRole } from "@/lib/rbac";
+
+export interface ManagerCall {
+  id: string;
+  status: string;
+  remarks: string | null;
+  comments: string | null;
+  scheduleId: string;
+  partyId: string;
+  locationId: string;
+  partyScheduleId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ManagerScheduleDay {
+  callDate: string;
+  calls: ManagerCall[];
+}
 
 export interface ScheduleItem {
+  id: string;
   salesmanId: string;
   salesmanName: string;
-  id: string;
-  month: string;
-  year: number;
-  status: string;
-  campaignId: string;
+  salesmanPhone?: string;
   teamId: string;
   teamName?: string;
   channelId?: string;
   channelName?: string;
+  month: string | number;
+  year: number;
+  status: string;
+  campaignId?: string;
+  approvedBy?: string | null;
+  approvedAt?: string | null;
+  notes?: string | null;
+  totalCalls?: number;
+  calls?: ManagerScheduleDay[];
   createdAt: string;
+  updatedAt?: string;
+  row_version?: number;
+  updated_by?: string | null;
 }
 
 interface PaginationInfo {
