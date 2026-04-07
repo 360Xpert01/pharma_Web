@@ -8,34 +8,76 @@ import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import StatusBadge from "@/components/shared/StatusBadge";
 import { fetchCrmSchedule } from "@/store/slices/plan-Manage/scheduleSlice";
+import { fetchManagerSchedule } from "@/store/slices/plan-Manage/managerScheduleSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { usePermission } from "@/hooks/usePermission";
 
 interface CampaignItem {
   id: string;
   campaignId: string;
   createdAt: string;
-  month: string;
+  month: string | number;
   salesmanId: string;
   salesmanName: string;
   status: "Accepted" | "Rejected" | "Under Review" | string;
   teamId: string;
   year: number;
+  teamName?: string;
 }
 
 export default function CampaignApprovalTable() {
   const dispatch = useDispatch<any>();
-  const { data, pagination, loading, error } = useSelector((state: any) => state.schedule);
+  const { isManager } = usePermission();
+
+  const crmState = useSelector((state: any) => state.schedule);
+  const managerState = useSelector((state: any) => state.managerSchedule);
+
+  const { data, loading, error } = isManager ? managerState : crmState;
+  const pagination = !isManager
+    ? crmState.pagination
+    : { total: data.length, page: 1, limit: 100, totalPages: 1 };
 
   useEffect(() => {
-    dispatch(fetchCrmSchedule({ page: 1, limit: 10 }));
-  }, [dispatch]);
+    if (isManager) {
+      dispatch(fetchManagerSchedule());
+    } else {
+      dispatch(fetchCrmSchedule({ page: 1, limit: 10 }));
+    }
+  }, [dispatch, isManager]);
 
   const handleRetry = () => {
-    dispatch(fetchCrmSchedule({ page: pagination.page, limit: pagination.limit }));
+    if (isManager) {
+      dispatch(fetchManagerSchedule());
+    } else {
+      dispatch(fetchCrmSchedule({ page: pagination.page, limit: pagination.limit }));
+    }
   };
 
   const handlePaginationChange = (page: number, limit: number) => {
-    dispatch(fetchCrmSchedule({ page, limit }));
+    if (!isManager) {
+      dispatch(fetchCrmSchedule({ page, limit }));
+    }
+  };
+
+  const getMonthDisplay = (m: string | number) => {
+    if (typeof m === "number") {
+      const months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+      return months[m - 1] || String(m);
+    }
+    return m || "N/A";
   };
 
   const columns: ColumnDef<CampaignItem>[] = [
@@ -52,8 +94,8 @@ export default function CampaignApprovalTable() {
       header: "Month",
       accessorKey: "month",
       cell: ({ row }) => (
-        <div className="t-td truncate" title={row.original.month || "N/A"}>
-          {row.original.month || "N/A"}
+        <div className="t-td truncate" title={String(row.original.month) || "N/A"}>
+          {getMonthDisplay(row.original.month)}
         </div>
       ),
     },

@@ -58,6 +58,7 @@ import createSpecializationReducer from "./slices/specialization/createSpecializ
 import updateDoctorSpecializationReducer from "./slices/specialization/updateDoctorSpecializationSlice";
 import getDoctorSpecializationByIdReducer from "./slices/specialization/getDoctorSpecializationByIdSlice";
 import scheduleSliceReducer from "./slices/plan-Manage/scheduleSlice";
+import managerScheduleReducer from "./slices/plan-Manage/managerScheduleSlice";
 import singleScheduleDetailReducer from "./slices/plan-Manage/singleScheduleDetailSlice";
 import scheduleHandleReducer from "./slices/plan-Manage/scheduleHandleSlice";
 import singleScheduleByFilterReducer from "./slices/plan-Manage/sinleScheduleByFilter";
@@ -162,6 +163,7 @@ const rootReducer = combineReducers({
   updateDoctorSpecialization: updateDoctorSpecializationReducer,
   specializationById: getDoctorSpecializationByIdReducer,
   schedule: scheduleSliceReducer,
+  managerSchedule: managerScheduleReducer,
   singleScheduleDetail: singleScheduleDetailReducer,
   scheduleHandle: scheduleHandleReducer,
   scheduleByFilter: singleScheduleByFilterReducer,

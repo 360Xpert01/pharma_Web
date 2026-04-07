@@ -2,7 +2,7 @@ export type PermissionGroupName = string;
 
 type BaseRole = "ADMIN" | "CSUITE" | "MANAGER" | "SALES" | "UNKNOWN";
 
-function resolveBaseRole(permissionGroup: string): BaseRole {
+export function resolveBaseRole(permissionGroup: string): BaseRole {
   const n = permissionGroup.toLowerCase();
   if (n.includes("admin") || n.includes("root")) return "ADMIN";
   if (n.includes("c-suite") || n.includes("csuite")) return "CSUITE";
