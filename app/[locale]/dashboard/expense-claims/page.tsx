@@ -5,7 +5,7 @@ export default function DashboardPage() {
   return (
     <div className=" bg-(--background)">
       <DashboardContent
-        sample={"Expanse Claims"}
+        sample={"Expense Claims"}
         descrip={"Welcome to Ceutro, It's looking like a slow day"}
         table={"Total Expense"}
         btnTrue={true}
