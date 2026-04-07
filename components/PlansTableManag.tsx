@@ -8,7 +8,6 @@ import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import StatusBadge from "@/components/shared/StatusBadge";
 import { fetchCrmSchedule } from "@/store/slices/plan-Manage/scheduleSlice";
-import { fetchManagerSchedule } from "@/store/slices/plan-Manage/managerScheduleSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { usePermission } from "@/hooks/usePermission";
 
@@ -29,34 +28,18 @@ export default function CampaignApprovalTable() {
   const dispatch = useDispatch<any>();
   const { isManager } = usePermission();
 
-  const crmState = useSelector((state: any) => state.schedule);
-  const managerState = useSelector((state: any) => state.managerSchedule);
-
-  const { data, loading, error } = isManager ? managerState : crmState;
-  const pagination = !isManager
-    ? crmState.pagination
-    : { total: data.length, page: 1, limit: 100, totalPages: 1 };
+  const { data, loading, error, pagination } = useSelector((state: any) => state.schedule);
 
   useEffect(() => {
-    if (isManager) {
-      dispatch(fetchManagerSchedule());
-    } else {
-      dispatch(fetchCrmSchedule({ page: 1, limit: 10 }));
-    }
-  }, [dispatch, isManager]);
+    dispatch(fetchCrmSchedule({ page: 1, limit: 10 }));
+  }, [dispatch]);
 
   const handleRetry = () => {
-    if (isManager) {
-      dispatch(fetchManagerSchedule());
-    } else {
-      dispatch(fetchCrmSchedule({ page: pagination.page, limit: pagination.limit }));
-    }
+    dispatch(fetchCrmSchedule({ page: pagination.page, limit: pagination.limit }));
   };
 
   const handlePaginationChange = (page: number, limit: number) => {
-    if (!isManager) {
-      dispatch(fetchCrmSchedule({ page, limit }));
-    }
+    dispatch(fetchCrmSchedule({ page, limit }));
   };
 
   const getMonthDisplay = (m: string | number) => {
