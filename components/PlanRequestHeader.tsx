@@ -7,20 +7,6 @@ import { toast } from "react-hot-toast";
 import { handleSchedule } from "@/store/slices/plan-Manage/scheduleHandleSlice";
 import { fetchScheduleDetail } from "@/store/slices/plan-Manage/singleScheduleDetailSlice";
 
-const avatars = ["/woman-1.png", "/woman-2.png", "/man-1.png", "/woman-3.png", "/man-2.png"];
-
-const candidate = {
-  name: "Sami Kashan",
-  email: "samikashan099@gmail.com",
-  phone: "+92 312 283 8270",
-  reportingManager: "A. Aziz Warsi",
-  campaign: "Diabetics",
-  requestedMonth: "September",
-  channel: "Doctors",
-  totalCalls: 220,
-  status: "Under Review",
-};
-
 export default function PlanRequestHeader({
   id,
   scheduleStatus,
@@ -90,7 +76,7 @@ export default function PlanRequestHeader({
             <button
               onClick={handleReject}
               disabled={loading}
-              className={`text-(--destructive) border border-(--destructive) rounded-8 flex items-center gap-2 px-4 py-2 bg-(--background) hover:bg-(--destructive-0) ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`text-(--destructive) border border-(--destructive) rounded-8 flex items-center gap-2 px-4 py-2 bg-(--background) hover:bg-(--destructive-0) ${loading ? "opacity-50 cursor-not-allowed" : "!cursor-pointer"}`}
             >
               <X className="w-4" />
               Reject
@@ -98,7 +84,7 @@ export default function PlanRequestHeader({
             <button
               onClick={handleAccept}
               disabled={loading}
-              className={`bg-(--primary) hover:bg-(--primary-2) text-(--light) rounded-8 flex items-center gap-2 px-4 py-2 ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`bg-(--primary) hover:bg-(--primary-2) text-(--light) rounded-8 flex items-center gap-2 px-4 py-2 ${loading ? "opacity-50 cursor-not-allowed" : "!cursor-pointer"}`}
             >
               {loading ? "Processing..." : "Accept"}
               {!loading && <ChevronRight className="w-4" />}
@@ -106,7 +92,7 @@ export default function PlanRequestHeader({
           </div>
         )}
         {/* {scheduleStatus !== "Pending" && (
-          <button className="bg-(--primary) hover:bg-(--primary-2) text-(--light) rounded-8 flex items-center gap-2 px-4 py-2">
+          <button className="bg-(--primary) hover:bg-(--primary-2) text-(--light) cursor-pointer rounded-8 flex items-center gap-2 px-4 py-2">
             {scheduleStatus}
           </button>
         )} */}
