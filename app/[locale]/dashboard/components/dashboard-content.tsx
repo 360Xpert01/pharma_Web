@@ -582,8 +582,8 @@ export function DashboardContent({
 
         {PlanTable && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading={campHeading} filterT={filterT} />
-            <PlansTableManag />
+            <TableHeader campHeading={campHeading} filterT={filterT} onSearch={setSearchTerm} />
+            <PlansTableManag searchTerm={searchTerm} />
           </div>
         )}
 
