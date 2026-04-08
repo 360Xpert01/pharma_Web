@@ -71,9 +71,15 @@ const initialState: ScheduleState = {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
+interface FetchScheduleParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+}
+
 export const fetchCrmSchedule = createAsyncThunk<
   { data: ScheduleItem[]; pagination: PaginationInfo },
-  { page: number; limit: number } | void,
+  FetchScheduleParams | void,
   { rejectValue: string }
 >("schedule/fetchCrmSchedule", async (params, { rejectWithValue }) => {
   try {
@@ -85,6 +91,7 @@ export const fetchCrmSchedule = createAsyncThunk<
 
     const page = params?.page || 1;
     const limit = params?.limit || 10;
+    const search = params?.search || "";
 
     const response = await axios.get<{
       success: boolean;
@@ -92,7 +99,7 @@ export const fetchCrmSchedule = createAsyncThunk<
       data: ScheduleItem[];
       pagination: PaginationInfo;
     }>(`${API_BASE_URL}api/v1/schedule/crm`, {
-      params: { page, limit },
+      params: { page, limit, search },
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",

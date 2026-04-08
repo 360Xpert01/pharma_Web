@@ -4,7 +4,7 @@ import axios from "axios";
 
 interface HandleSchedulePayload {
   status: "Accepted" | "Rejected";
-  remarks?: string;
+  notes?: string;
 }
 
 interface HandleScheduleResponse {

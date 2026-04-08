@@ -24,22 +24,24 @@ interface CampaignItem {
   teamName?: string;
 }
 
-export default function CampaignApprovalTable() {
+export default function CampaignApprovalTable({ searchTerm = "" }: { searchTerm?: string }) {
   const dispatch = useDispatch<any>();
   const { isManager } = usePermission();
 
   const { data, loading, error, pagination } = useSelector((state: any) => state.schedule);
 
   useEffect(() => {
-    dispatch(fetchCrmSchedule({ page: 1, limit: 10 }));
-  }, [dispatch]);
+    dispatch(fetchCrmSchedule({ page: 1, limit: 10, search: searchTerm }));
+  }, [dispatch, searchTerm]);
 
   const handleRetry = () => {
-    dispatch(fetchCrmSchedule({ page: pagination.page, limit: pagination.limit }));
+    dispatch(
+      fetchCrmSchedule({ page: pagination.page, limit: pagination.limit, search: searchTerm })
+    );
   };
 
   const handlePaginationChange = (page: number, limit: number) => {
-    dispatch(fetchCrmSchedule({ page, limit }));
+    dispatch(fetchCrmSchedule({ page, limit, search: searchTerm }));
   };
 
   const getMonthDisplay = (m: string | number) => {

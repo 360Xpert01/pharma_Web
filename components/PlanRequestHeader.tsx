@@ -2,8 +2,10 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { X, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store";
 import { toast } from "react-hot-toast";
 import { handleSchedule } from "@/store/slices/plan-Manage/scheduleHandleSlice";
+import { fetchScheduleDetail } from "@/store/slices/plan-Manage/singleScheduleDetailSlice";
 
 const avatars = ["/woman-1.png", "/woman-2.png", "/man-1.png", "/woman-3.png", "/man-2.png"];
 
@@ -26,10 +28,11 @@ export default function PlanRequestHeader({
   id: string;
   scheduleStatus: string;
 }) {
-  const dispatch = useDispatch();
-  const { loading, success, error } = useSelector((state) => state.scheduleHandle);
+  const dispatch = useDispatch<any>();
+  const { loading, success, error } = useSelector((state: RootState) => state.scheduleHandle);
 
   const handleAccept = () => {
+    if (loading) return;
     dispatch(
       handleSchedule({
         scheduleId: id,
@@ -39,13 +42,16 @@ export default function PlanRequestHeader({
       .unwrap()
       .then(() => {
         toast.success("Schedule accepted successfully!");
+        dispatch(fetchScheduleDetail(id));
       })
-      .catch(() => {
-        console.log("error ");
+      .catch((err: any) => {
+        console.log("error", err);
+        toast.error(err || "Failed to accept schedule");
       });
   };
 
   const handleReject = () => {
+    if (loading) return;
     dispatch(
       handleSchedule({
         scheduleId: id,
@@ -55,9 +61,11 @@ export default function PlanRequestHeader({
       .unwrap()
       .then(() => {
         toast.success("Schedule rejected");
+        dispatch(fetchScheduleDetail(id));
       })
-      .catch(() => {
-        console.log("error ");
+      .catch((err: any) => {
+        console.log("error", err);
+        toast.error(err || "Failed to reject schedule");
       });
   };
 
@@ -81,17 +89,19 @@ export default function PlanRequestHeader({
           <div className="flex gap-3">
             <button
               onClick={handleReject}
-              className="text-(--destructive) border border-(--destructive) rounded-8 flex items-center gap-2 px-4 py-2 bg-(--background) hover:bg-(--destructive-0)"
+              disabled={loading}
+              className={`text-(--destructive) border border-(--destructive) rounded-8 flex items-center gap-2 px-4 py-2 bg-(--background) hover:bg-(--destructive-0) ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               <X className="w-4" />
               Reject
             </button>
             <button
               onClick={handleAccept}
-              className="bg-(--primary) hover:bg-(--primary-2) text-(--light) rounded-8 flex items-center gap-2 px-4 py-2"
+              disabled={loading}
+              className={`bg-(--primary) hover:bg-(--primary-2) text-(--light) rounded-8 flex items-center gap-2 px-4 py-2 ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
-              Accept
-              <ChevronRight className="w-4" />
+              {loading ? "Processing..." : "Accept"}
+              {!loading && <ChevronRight className="w-4" />}
             </button>
           </div>
         )}
