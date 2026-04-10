@@ -482,7 +482,7 @@ export default function TableFilter({
                     onChange={setSelectedExpenseStatus}
                     options={[
                       { value: "pending", label: "Pending" },
-                      { value: "approved", label: "Accepted" },
+                      { value: "approved", label: "Approved" },
                       { value: "rejected", label: "Rejected" },
                     ]}
                     placeholder="Select status"
