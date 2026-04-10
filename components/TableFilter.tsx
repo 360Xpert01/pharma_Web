@@ -20,6 +20,7 @@ interface TableFilterProps {
   showTeamFilters?: boolean;
   showTargetFilters?: boolean;
   showDistributorFilters?: boolean;
+  showExpenseFilters?: boolean;
   isAllocate?: boolean;
   channelId?: string;
   onApply?: () => void;
@@ -50,6 +51,7 @@ export default function TableFilter({
   showTeamFilters = false,
   showTargetFilters = false,
   showDistributorFilters = false,
+  showExpenseFilters = false,
   isAllocate = false,
   channelId,
   onApply,
@@ -72,6 +74,7 @@ export default function TableFilter({
   const [selectedGiveawayStatus, setSelectedGiveawayStatus] = useState("");
   const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
   const [selectedChannel, setSelectedChannel] = useState("");
+  const [selectedExpenseStatus, setSelectedExpenseStatus] = useState("");
 
   // Distributor Filter States
   const [selectedDistributorStatus, setSelectedDistributorStatus] = useState("");
@@ -468,6 +471,25 @@ export default function TableFilter({
                   />
                 </div>
               </>
+            ) : showExpenseFilters ? (
+              <>
+                {/* Status Filter for Expenses */}
+                <div>
+                  <FormSelect
+                    label="Status"
+                    name="status"
+                    value={selectedExpenseStatus}
+                    onChange={setSelectedExpenseStatus}
+                    options={[
+                      { value: "pending", label: "Pending" },
+                      { value: "approved", label: "Accepted" },
+                      { value: "rejected", label: "Rejected" },
+                    ]}
+                    placeholder="Select status"
+                    className="mb-0"
+                  />
+                </div>
+              </>
             ) : null}
 
             {/* Status Filter (Common for Doctor, Employee, Product, and Team) */}
@@ -504,7 +526,8 @@ export default function TableFilter({
               !isAllocate &&
               !showTeamFilters &&
               !showTargetFilters &&
-              !showDistributorFilters && (
+              !showDistributorFilters &&
+              !showExpenseFilters && (
                 /* Date Range */
                 <div>
                   <FormSelect
@@ -539,6 +562,7 @@ export default function TableFilter({
                   setSelectedSupervisor("");
                   setSelectedStatus("");
                   setSelectedDateRange("");
+                  setSelectedExpenseStatus("");
                   setSelectedCategoryId("");
                   setSelectedProductStatus("");
                   setSelectedGiveawayStatus("");
@@ -585,11 +609,13 @@ export default function TableFilter({
                       supervisorId: selectedSupervisor,
                       // Product filters
                       categoryId: selectedCategoryId,
-                      status: showProductFilters
-                        ? selectedProductStatus
-                        : showGiveawayFilters
-                          ? selectedGiveawayStatus
-                          : selectedStatus,
+                      status: showExpenseFilters
+                        ? selectedExpenseStatus
+                        : showProductFilters
+                          ? selectedProductStatus
+                          : showGiveawayFilters
+                            ? selectedGiveawayStatus
+                            : selectedStatus,
                       employeeId: selectedEmployeeId,
                       channelId: selectedChannel,
                       distributorStatus: selectedDistributorStatus,
