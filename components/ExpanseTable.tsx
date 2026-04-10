@@ -1,136 +1,113 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
-
-interface ExpenseRow {
-  id: string;
-  employee1: { name: string; role: string; avatar?: string };
-  employee2: { name: string; role: string; avatar?: string };
-  totalExpense: number;
-  approved: number;
-  rejected: number;
-}
-
-const expenseData: ExpenseRow[] = [
-  {
-    id: "1",
-    employee1: { name: "Sarah Johnson", role: "Marketing Specialist" },
-    employee2: { name: "Dr. Herbert R.", role: "Heart Specialist" },
-    totalExpense: 2550,
-    approved: 1500,
-    rejected: 150,
-  },
-  {
-    id: "2",
-    employee1: { name: "Michael Smith", role: "Software Engineer" },
-    employee2: { name: "Dr. Emily T.", role: "Neurosurgeon" },
-    totalExpense: 3000,
-    approved: 2000,
-    rejected: 100,
-  },
-  {
-    id: "3",
-    employee1: { name: "Jessica Williams", role: "Product Designer" },
-    employee2: { name: "Dr. Kevin L.", role: "Orthopedic Surgeon" },
-    totalExpense: 4000,
-    approved: 2500,
-    rejected: 150,
-  },
-  {
-    id: "4",
-    employee1: { name: "David Brown", role: "Data Analyst" },
-    employee2: { name: "Dr. Laura P.", role: "Pediatrician" },
-    totalExpense: 3550,
-    approved: 2000,
-    rejected: 150,
-  },
-  {
-    id: "5",
-    employee1: { name: "Linda Garcia", role: "UX Researcher" },
-    employee2: { name: "Dr. Alex Q.", role: "Dermatologist" },
-    totalExpense: 4450,
-    approved: 3000,
-    rejected: 150,
-  },
-  {
-    id: "6",
-    employee1: { name: "James Miller", role: "Web Developer" },
-    employee2: { name: "Dr. Nancy S.", role: "Cardiologist" },
-    totalExpense: 5000,
-    approved: 3500,
-    rejected: 150,
-  },
-  {
-    id: "7",
-    employee1: { name: "Patricia Martinez", role: "Content Writer" },
-    employee2: { name: "Dr. Mark T.", role: "Oncologist" },
-    totalExpense: 3320,
-    approved: 1700,
-    rejected: 150,
-  },
-  {
-    id: "8",
-    employee1: { name: "Robert Davis", role: "Sales Executive" },
-    employee2: { name: "Dr. Susan W.", role: "Gynecologist" },
-    totalExpense: 4420,
-    approved: 2700,
-    rejected: 150,
-  },
-  {
-    id: "9",
-    employee1: { name: "Jennifer Lee", role: "Graphic Designer" },
-    employee2: { name: "Dr. William H.", role: "Urologist" },
-    totalExpense: 3770,
-    approved: 2200,
-    rejected: 150,
-  },
-];
+import { useAppDispatch, useAppSelector } from "@/store";
+import { fetchCrmExpenses, ExpenseClaim } from "@/store/slices/expense/expenseSlice";
+import { updateExpenseStatus } from "@/store/slices/expense/expenseStatusSlice";
+import { toast } from "sonner";
 
 const DEFAULT_AVATAR = "/girlPic.png";
 
-export default function ExpenseApprovalTable() {
-  // Simulate loading and error states (replace with actual API call state)
-  const [loading] = useState(false);
-  const [error] = useState<string | null>(null);
+interface ExpanseTableProps {
+  searchTerm?: string;
+  filters?: {
+    status?: string;
+  };
+}
 
-  const handleRetry = () => {
-    window.location.reload();
+export default function ExpenseApprovalTable({ searchTerm = "", filters = {} }: ExpanseTableProps) {
+  const dispatch = useAppDispatch();
+  const { data, pagination, loading, statusUpdating, error } = useAppSelector(
+    (state) => state.expense
+  );
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [activeId, setActiveId] = useState<{ id: string; action: "approved" | "rejected" } | null>(
+    null
+  );
+
+  useEffect(() => {
+    dispatch(
+      fetchCrmExpenses({
+        page: currentPage,
+        limit: pageSize,
+        search: searchTerm,
+        status: filters.status,
+      })
+    );
+  }, [dispatch, currentPage, pageSize, searchTerm, filters.status]);
+
+  const handlePaginationChange = (page: number, size: number) => {
+    setCurrentPage(page);
+    setPageSize(size);
   };
 
-  const columns: ColumnDef<ExpenseRow>[] = [
+  const handleRetry = () => {
+    dispatch(
+      fetchCrmExpenses({
+        page: currentPage,
+        limit: pageSize,
+        search: searchTerm,
+        status: filters.status,
+      })
+    );
+  };
+
+  const handleStatusUpdate = async (callId: string, status: "approved" | "rejected") => {
+    setActiveId({ id: callId, action: status });
+    try {
+      await dispatch(updateExpenseStatus({ callId, status })).unwrap();
+      toast.success(`Expense ${status} successfully`);
+      // Re-fetch with current state to ensure data integrity
+      dispatch(
+        fetchCrmExpenses({
+          page: currentPage,
+          limit: pageSize,
+          search: searchTerm,
+          status: filters.status,
+        })
+      );
+    } catch (err: any) {
+      toast.error(err || `Failed to ${status} expense`);
+    } finally {
+      setActiveId(null);
+    }
+  };
+
+  const columns: ColumnDef<ExpenseClaim>[] = [
     {
       header: "Employee",
-      accessorKey: "employee1",
+      accessorKey: "salesRepName",
       cell: ({ row }) => (
         <div className="flex items-center gap-3">
           <img
-            src={row.original.employee1.avatar || DEFAULT_AVATAR}
-            alt={row.original.employee1.name}
+            src={row.original.salesRepImage || DEFAULT_AVATAR}
+            alt={row.original.salesRepName}
             className="w-10 h-10 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
           />
           <div className="truncate">
-            <div className="t-td-b truncate">{row.original.employee1.name}</div>
-            <div className="t-cap truncate">{row.original.employee1.role}</div>
+            <div className="t-td-b truncate">{row.original.salesRepName}</div>
+            <div className="t-cap truncate">Sales Representative</div>
           </div>
         </div>
       ),
     },
     {
-      header: "Doctor",
-      accessorKey: "employee2",
+      header: "Doctor / Party",
+      accessorKey: "partyName",
       cell: ({ row }) => (
         <div className="flex items-center gap-3">
           <img
-            src={row.original.employee2.avatar || DEFAULT_AVATAR}
-            alt={row.original.employee2.name}
+            src={row.original.partyImage || DEFAULT_AVATAR}
+            alt={row.original.partyName || "Unknown"}
             className="w-10 h-10 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
           />
           <div className="truncate">
-            <div className="t-td-b truncate">{row.original.employee2.name}</div>
-            <div className="t-cap truncate">{row.original.employee2.role}</div>
+            <div className="t-td-b truncate">{row.original.partyName || "N/A"}</div>
+            <div className="t-cap truncate">{row.original.partySpecialization || "N/A"}</div>
           </div>
         </div>
       ),
@@ -139,64 +116,113 @@ export default function ExpenseApprovalTable() {
       header: "Total Expense",
       accessorKey: "totalExpense",
       cell: ({ row }) => (
-        <div className="text-center">
+        <div className="flex items-center gap-2 justify-start w-full">
           <div className="t-val-sm t-warn">
             {row.original.totalExpense.toLocaleString()}
-            <span className="t-sm t-warn pl-1">PKR</span>
+            <span className="t-sm t-warn pl-1 font-normal opacity-70 uppercase">PKR</span>
           </div>
         </div>
       ),
     },
     {
       header: "Approved",
-      accessorKey: "approved",
+      accessorKey: "approvedAmount",
       cell: ({ row }) => (
-        <div className="text-center">
+        <div className="flex items-center gap-2 justify-start w-full">
           <div className="t-val-sm t-ok">
-            {row.original.approved.toLocaleString()}
-            <span className="t-sm t-ok pl-1">PKR</span>
+            {row.original.approvedAmount.toLocaleString()}
+            <span className="t-sm t-ok pl-1 font-normal opacity-70 uppercase">PKR</span>
           </div>
         </div>
       ),
     },
     {
       header: "Rejected",
-      accessorKey: "rejected",
+      accessorKey: "rejectedAmount",
       cell: ({ row }) => (
-        <div className="text-center">
+        <div className="flex items-center gap-2 justify-start w-full">
           <div className="t-val-sm t-err">
-            {row.original.rejected.toLocaleString()}
-            <span className="t-sm t-err pl-1">PKR</span>
+            {row.original.rejectedAmount.toLocaleString()}
+            <span className="t-sm t-err pl-1 font-normal opacity-70 uppercase">PKR</span>
           </div>
         </div>
       ),
     },
     {
       id: "actions",
-      header: "Actions",
-      cell: () => (
-        <div className="flex gap-3 justify-center">
-          <button className="px-6 py-1 bg-(--primary) text-(--light) font-medium rounded-8 hover:bg-(--primary-2) transition shadow-soft">
-            Approve
-          </button>
-          <button className="px-6 py-1 bg-[var(--background)] text-(--destructive) font-medium rounded-8 border border-(--destructive) hover:bg-(--destructive-0) transition shadow-soft">
-            Reject
-          </button>
-        </div>
-      ),
+      header: () => <div className="text-center w-full">Actions</div>,
+      enableSorting: false,
+      cell: ({ row }) => {
+        const { status } = row.original;
+        const isUpdatingRow = statusUpdating && activeId?.id === row.original.callId;
+        const isUpdatingApprove = isUpdatingRow && activeId?.action === "approved";
+        const isUpdatingReject = isUpdatingRow && activeId?.action === "rejected";
+
+        if (status === "pending") {
+          return (
+            <div className="flex gap-3 justify-center w-full">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleStatusUpdate(row.original.callId, "approved");
+                }}
+                className="px-6 py-1.5 bg-(--primary) text-(--light) font-semibold rounded-8 hover:bg-(--primary-2) active:scale-95 transition-all shadow-soft disabled:opacity-50 disabled:grayscale-[0.3] disabled:cursor-not-allowed min-w-[100px] flex items-center justify-center text-sm"
+                disabled={loading || statusUpdating}
+              >
+                {isUpdatingApprove ? (
+                  <div className="w-5 h-5 border-2 border-(--light)/30 border-t-(--light) rounded-full animate-spin" />
+                ) : (
+                  "Approve"
+                )}
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleStatusUpdate(row.original.callId, "rejected");
+                }}
+                className="px-6 py-1.5 bg-[var(--background)] text-(--destructive) font-semibold rounded-8 border border-(--destructive) hover:bg-(--destructive-0) active:scale-95 transition-all shadow-soft disabled:opacity-50 disabled:grayscale-[0.3] disabled:cursor-not-allowed min-w-[100px] flex items-center justify-center text-sm"
+                disabled={loading || statusUpdating}
+              >
+                {isUpdatingReject ? (
+                  <div className="w-5 h-5 border-2 border-(--destructive)/30 border-t-(--destructive) rounded-full animate-spin" />
+                ) : (
+                  "Reject"
+                )}
+              </button>
+            </div>
+          );
+        }
+
+        return (
+          <div className="flex justify-center w-full">
+            <span
+              className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border shadow-sm ${
+                status === "approved"
+                  ? "bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800"
+                  : "bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800"
+              }`}
+            >
+              {status}
+            </span>
+          </div>
+        );
+      },
     },
   ];
 
   return (
     <div className="w-full bg-(--gray-0)/50 p-4">
       <CenturoTable
-        data={expenseData}
+        data={data}
         columns={columns}
         loading={loading}
         error={error}
         onRetry={handleRetry}
         enablePagination={true}
-        pageSize={10}
+        serverSidePagination={true}
+        pageSize={pageSize}
+        totalItems={pagination.totalCount}
+        onPaginationChange={handlePaginationChange}
         PaginationComponent={TablePagination}
         emptyMessage="No expense data found"
       />

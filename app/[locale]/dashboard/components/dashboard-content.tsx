@@ -242,6 +242,9 @@ export function DashboardContent({
     zoneId?: string;
     regionId?: string;
   }>({});
+  const [expenseFilters, setExpenseFilters] = useState<{
+    status?: string;
+  }>({});
 
   const handleSettings = () => {
     if (settingsRoute) {
@@ -589,8 +592,14 @@ export function DashboardContent({
 
         {ExpansTable && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading={campHeading} filterT={filterT} />
-            <ExpanseTable />
+            <TableHeader
+              campHeading={campHeading}
+              filterT={filterT}
+              onSearch={setSearchTerm}
+              showExpenseFilters={true}
+              onApplyFilters={setExpenseFilters}
+            />
+            <ExpanseTable searchTerm={searchTerm} filters={expenseFilters} />
           </div>
         )}
 

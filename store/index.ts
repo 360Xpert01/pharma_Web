@@ -113,6 +113,7 @@ import getDistributorByIdReducer from "./slices/distributor/getDistributorByIdSl
 import updateDistributorReducer from "./slices/distributor/updateDistributorSlice";
 import allPermissionGroupsReducer from "./slices/permissionGroup/getAllPermissionGroupsSlice";
 import getUserProfileReducer from "./slices/auth/getUserProfileSlice";
+import expenseReducer from "./slices/expense/expenseSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -224,6 +225,7 @@ const rootReducer = combineReducers({
   updateDistributor: updateDistributorReducer,
   allPermissionGroups: allPermissionGroupsReducer,
   getUserProfile: getUserProfileReducer,
+  expense: expenseReducer,
 });
 
 const persistConfig = {
