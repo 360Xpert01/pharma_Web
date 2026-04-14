@@ -158,7 +158,7 @@ export default function ExpenseApprovalTable({ searchTerm = "", filters = {} }: 
         const isUpdatingApprove = isUpdatingRow && activeId?.action === "approved";
         const isUpdatingReject = isUpdatingRow && activeId?.action === "rejected";
 
-        if (status === "pending") {
+        if (status?.toLowerCase() === "pending") {
           return (
             <div className="flex gap-3 justify-center w-full">
               <button
@@ -196,8 +196,8 @@ export default function ExpenseApprovalTable({ searchTerm = "", filters = {} }: 
         return (
           <div className="flex justify-center w-full">
             <span
-              className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border shadow-sm ${
-                status === "approved"
+              className={`px-4 py-1.5 rounded-8 text-[10px] font-bold uppercase tracking-widest border shadow-sm ${
+                status?.toLowerCase() === "approved"
                   ? "bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800"
                   : "bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800"
               }`}
