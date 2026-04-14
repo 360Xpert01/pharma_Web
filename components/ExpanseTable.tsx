@@ -172,7 +172,7 @@ export default function ExpenseApprovalTable({ searchTerm = "", filters = {} }: 
                 {isUpdatingApprove ? (
                   <div className="w-5 h-5 border-2 border-(--light)/30 border-t-(--light) rounded-full animate-spin" />
                 ) : (
-                  "Approve"
+                  "Approve All"
                 )}
               </button>
               <button
@@ -186,7 +186,7 @@ export default function ExpenseApprovalTable({ searchTerm = "", filters = {} }: 
                 {isUpdatingReject ? (
                   <div className="w-5 h-5 border-2 border-(--destructive)/30 border-t-(--destructive) rounded-full animate-spin" />
                 ) : (
-                  "Reject"
+                  "Reject All"
                 )}
               </button>
             </div>
