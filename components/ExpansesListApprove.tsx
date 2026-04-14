@@ -48,7 +48,7 @@ export default function ExpenseApprovalList() {
     },
   ]);
 
-  const [selectedExpense, setSelectedExpense] = useState<(typeof expenses)[0] | null>(null);
+  const [selectedExpense, setSelectedExpense] = useState<any | null>(null);
   const from = "2026-01-12";
   const to = "2026-01-13";
 
@@ -281,13 +281,7 @@ export default function ExpenseApprovalList() {
       <ExpenseDetailsModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
-        expenses={expenses}
         selectedExpenseData={selectedExpense}
-        totalExpense={5620}
-        approvedAmount={520}
-        rejectedAmount={520}
-        onApprove={(id) => console.log("Approve:", id)}
-        onReject={(id) => console.log("Reject:", id)}
         isLoading={approving}
       />
 
