@@ -11,9 +11,11 @@ import { addDays, format } from "date-fns";
 import ExpenseDetailsModal from "./ExpenseDetailsModal";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchWeeklyCallExpenses } from "@/store/slices/employeeProfile/weeklyCallExpensesSlice";
+import { updateExpenseStatus } from "@/store/slices/expense/expenseStatusSlice";
 import { useSearchParams } from "next/navigation";
 import ImageWithFallback from "./shared/ImageWithFallback";
 import { ConfirmModal } from "./shared/confirm-modal";
+import { toast } from "react-hot-toast";
 interface ExpenseItem {
   id: string;
   name: string;
@@ -24,96 +26,6 @@ interface ExpenseItem {
   approved: number;
   rejected: number;
 }
-
-const expensesData: ExpenseItem[] = [
-  {
-    id: "1",
-    name: "Dr. Herbert R.",
-    role: "Heart Specialist",
-    avatar: "/api/placeholder/40/40",
-    status: "Review",
-    total: 250,
-    approved: 150,
-    rejected: 150,
-  },
-  {
-    id: "2",
-    name: "Ms. Clara S.",
-    role: "Pediatrician",
-    avatar: "/api/placeholder/40/40",
-    status: "Rejected",
-    total: 250,
-    approved: 150,
-    rejected: 150,
-  },
-  {
-    id: "3",
-    name: "Ms. Clara S.",
-    role: "Pediatrician",
-    avatar: "/api/placeholder/40/40",
-    status: "Rejected",
-    total: 250,
-    approved: 150,
-    rejected: 150,
-  },
-  {
-    id: "4",
-    name: "Dr. Herbert R.",
-    role: "Heart Specialist",
-    avatar: "/api/placeholder/40/40",
-    status: "Review",
-    total: 250,
-    approved: 150,
-    rejected: 150,
-  },
-  {
-    id: "5",
-    name: "Dr. Herbert R.",
-    role: "Heart Specialist",
-    avatar: "/api/placeholder/40/40",
-    status: "Review",
-    total: 250,
-    approved: 150,
-    rejected: 150,
-  },
-  {
-    id: "6",
-    name: "Dr. Herbert R.",
-    role: "Heart Specialist",
-    avatar: "/api/placeholder/40/40",
-    status: "Review",
-    total: 250,
-    approved: 150,
-    rejected: 150,
-  },
-  {
-    id: "7",
-    name: "Ms. Clara S.",
-    role: "Pediatrician",
-    avatar: "/api/placeholder/40/40",
-    status: "Rejected",
-    total: 250,
-    approved: 150,
-    rejected: 150,
-  },
-  {
-    id: "8",
-    name: "Ms. Clara S.",
-    role: "Pediatrician",
-    avatar: "/api/placeholder/40/40",
-    status: "Rejected",
-    total: 250,
-    approved: 150,
-    rejected: 150,
-  },
-];
-
-const expenses = [
-  { id: "1", description: "Client Dinner - Business Meeting", amount: 520, status: "approved" },
-  { id: "2", description: "Client Dinner - Business Meeting", amount: 520, status: "rejected" },
-  { id: "3", description: "Client Dinner - Business Meeting", amount: 520 },
-  { id: "4", description: "Client Dinner - Business Meeting", amount: 520 },
-];
 
 export default function ExpenseApprovalList() {
   const searchParams = useSearchParams();
@@ -167,9 +79,31 @@ export default function ExpenseApprovalList() {
     "dd MMM yyyy"
   )}`;
 
-  const handleCardClick = (expense: (typeof expenses)[0]) => {
-    setSelectedExpense(expense); // sirf clicked wala expense save karo
+  const handleCardClick = (expense: any) => {
+    setSelectedExpense(expense);
     setShowModal(true);
+  };
+
+  const [statusUpdating, setStatusUpdating] = useState<string | null>(null);
+
+  const handleStatusUpdate = async (callId: string, status: "approved" | "rejected") => {
+    setStatusUpdating(callId);
+    try {
+      await dispatch(updateExpenseStatus({ callId, status }) as any).unwrap();
+      toast.success(`Expense ${status} successfully`);
+      // Refresh the list
+      dispatch(
+        fetchWeeklyCallExpenses({
+          salesmanId: id as string,
+          from: dataStart,
+          to: dataEnd,
+        }) as any
+      );
+    } catch (err: any) {
+      toast.error(err || `Failed to ${status} expense`);
+    } finally {
+      setStatusUpdating(null);
+    }
   };
   return (
     <div className="">
@@ -270,7 +204,9 @@ export default function ExpenseApprovalList() {
                           className={`px-2 py-0.5 text-xs font-medium rounded-8 ${
                             item.status === "Pending"
                               ? "bg-(--warning-light) text-(--warning-2)"
-                              : "bg-(--success-light) text-(--success)"
+                              : item.status === "Rejected" || item.status === "rejected"
+                                ? "bg-(--destructive-light) text-(--destructive)"
+                                : "bg-(--success-light) text-(--success)"
                           }`}
                         >
                           {item.status}
@@ -307,16 +243,31 @@ export default function ExpenseApprovalList() {
                   {/* Right: Action Buttons */}
                   {item.status === "Pending" && (
                     <div className="flex items-center gap-3 w-[20%] justify-end">
-                      <Button variant="primary" size="sm" rounded="xl" className="px-5">
-                        Approve
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        rounded="xl"
+                        className="px-5"
+                        disabled={statusUpdating === item.id}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleStatusUpdate(item.id, "approved");
+                        }}
+                      >
+                        {statusUpdating === item.id ? "..." : "Approve"}
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         rounded="xl"
                         className="px-5 border-(--destructive-1) text-(--destructive) hover:bg-(--destructive-light) hover:text-(--destructive) hover:border-(--destructive)"
+                        disabled={statusUpdating === item.id}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleStatusUpdate(item.id, "rejected");
+                        }}
                       >
-                        Reject
+                        {statusUpdating === item.id ? "..." : "Reject"}
                       </Button>
                     </div>
                   )}

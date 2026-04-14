@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { X, CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { updateCallStatus } from "@/store/slices/employeeProfile/callSlice";
+import { updateExpenseStatus } from "@/store/slices/expense/expenseStatusSlice";
 import { useDispatch } from "react-redux";
 
 interface ExpenseItem {
@@ -15,6 +16,7 @@ interface ExpenseModalProps {
   isOpen: boolean;
   onClose: () => void;
   selectedExpenseData?: {
+    id: string;
     totalExpense: number;
     approvedExpense: number;
     rejectedExpense: number;
@@ -44,6 +46,27 @@ export default function ExpenseDetailsModal({
 
   if (!isOpen) return null;
 
+  const handleBulkUpdate = async (newStatus: "approved" | "rejected") => {
+    if (!selectedExpenseData?.id) return;
+    setUpdatingId("bulk");
+    try {
+      const resp: any = await dispatch(
+        updateExpenseStatus({
+          callId: selectedExpenseData.id,
+          status: newStatus,
+        })
+      );
+
+      // endpointSuffix logic in expenseStatusSlice uses approve-all/reject-all
+      if (resp.meta.requestStatus === "fulfilled") {
+        setLocalExpenses((prev) => prev.map((exp) => ({ ...exp, status: newStatus })));
+      }
+    } catch (error) {
+      console.error("Bulk update failed:", error);
+    } finally {
+      setUpdatingId(null);
+    }
+  };
   const handleUpdateStatus = async (newStatus: "approved" | "rejected", callId: string) => {
     setUpdatingId(callId);
     try {
@@ -54,8 +77,8 @@ export default function ExpenseDetailsModal({
         })
       );
 
-      // Agar response success hai toh local state filter/update karein
-      if (resp.payload?.success) {
+      // Check if response is successful (it returns the updated object with an id)
+      if (resp.payload && (resp.payload.id || resp.payload.success)) {
         setLocalExpenses((prev) =>
           prev.map((exp) => (exp.id === callId ? { ...exp, status: newStatus } : exp))
         );
@@ -74,12 +97,30 @@ export default function ExpenseDetailsModal({
         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-5 text-white">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold">Expense Details</h2>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-white/20 rounded-full transition-colors"
-            >
-              <X size={24} />
-            </button>
+            <div className="flex items-center gap-3">
+              <div className="flex gap-2 mr-4">
+                <button
+                  onClick={() => handleBulkUpdate("approved")}
+                  disabled={updatingId !== null}
+                  className="px-3 py-1 bg-white/20 hover:bg-white/30 rounded-lg text-xs font-bold uppercase transition-colors disabled:opacity-50"
+                >
+                  Approve All
+                </button>
+                <button
+                  onClick={() => handleBulkUpdate("rejected")}
+                  disabled={updatingId !== null}
+                  className="px-3 py-1 bg-white/20 hover:bg-white/30 rounded-lg text-xs font-bold uppercase transition-colors disabled:opacity-50"
+                >
+                  Reject All
+                </button>
+              </div>
+              <button
+                onClick={onClose}
+                className="p-2 hover:bg-white/20 rounded-full transition-colors"
+              >
+                <X size={24} />
+              </button>
+            </div>
           </div>
           <p className="mt-1 text-blue-100">Review and manage individual expense items</p>
         </div>
@@ -136,18 +177,18 @@ export default function ExpenseDetailsModal({
                     </div>
 
                     <div className="flex items-center gap-2">
-                      {updatingId === exp.id ? (
+                      {updatingId === exp.id || updatingId === "bulk" ? (
                         <div className="flex items-center gap-2 text-blue-600 px-4">
                           <Loader2 className="animate-spin" size={20} />
                           <span className="text-sm font-medium">Updating...</span>
                         </div>
                       ) : exp.status === "approved" ? (
-                        <div className="flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-lg">
+                        <div className="flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-8">
                           <CheckCircle size={18} />
                           <span className="font-bold text-sm uppercase">Approved</span>
                         </div>
                       ) : exp.status === "rejected" ? (
-                        <div className="flex items-center gap-2 px-4 py-2 bg-red-100 text-red-700 rounded-lg">
+                        <div className="flex items-center gap-2 px-4 py-2 bg-red-100 text-red-700 rounded-8">
                           <XCircle size={18} />
                           <span className="font-bold text-sm uppercase">Rejected</span>
                         </div>
@@ -155,13 +196,13 @@ export default function ExpenseDetailsModal({
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleUpdateStatus("approved", exp.id)}
-                            className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-semibold shadow-sm"
+                            className="px-4 py-2 bg-emerald-600 text-white rounded-8 hover:bg-emerald-700 transition-colors text-sm font-semibold shadow-sm"
                           >
                             Approve
                           </button>
                           <button
                             onClick={() => handleUpdateStatus("rejected", exp.id)}
-                            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-semibold shadow-sm"
+                            className="px-4 py-2 bg-red-500 text-white rounded-8 hover:bg-red-600 transition-colors text-sm font-semibold shadow-sm"
                           >
                             Reject
                           </button>
@@ -181,7 +222,7 @@ export default function ExpenseDetailsModal({
         <div className="px-6 py-4 border-t bg-gray-50 flex justify-end">
           <button
             onClick={onClose}
-            className="px-6 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors font-medium"
+            className="px-6 py-2 bg-gray-800 text-white rounded-8 hover:bg-gray-900 transition-colors font-medium"
           >
             Done
           </button>
