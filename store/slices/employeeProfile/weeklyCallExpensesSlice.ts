@@ -17,7 +17,7 @@ export interface WeeklyExpenseResponse {
   totalExpense: number;
   approvedAmount: number;
   rejectedAmount: number;
-  expenses: ExpenseItem[];
+  completedCalls: any[]; // Changed from expenses to completedCalls based on API data
 }
 
 interface WeeklyCallExpensesState {

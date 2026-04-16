@@ -1,16 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { X, CheckCircle, XCircle, Loader2 } from "lucide-react";
-import { updateCallStatus } from "@/store/slices/employeeProfile/callSlice";
+import { X, Loader2 } from "lucide-react";
 import { updateExpenseStatus } from "@/store/slices/expense/expenseStatusSlice";
-import { useDispatch } from "react-redux";
-
-interface ExpenseItem {
-  id: string;
-  title: string;
-  amount: number;
-  status: "approved" | "rejected" | "pending";
-}
+import { useAppDispatch, useAppSelector } from "@/store";
+import { fetchExpenseDetailsByCallId } from "@/store/slices/expense/getDetailedExpenseSlice";
+import { updateSingleExpenseItemStatus } from "@/store/slices/expense/updateSingleExpenseStatus";
 
 interface ExpenseModalProps {
   isOpen: boolean;
@@ -20,29 +14,32 @@ interface ExpenseModalProps {
     totalExpense: number;
     approvedExpense: number;
     rejectedExpense: number;
-    callExpenses: ExpenseItem[];
   };
   isLoading?: boolean;
+  showBulkActions?: boolean;
+  onSuccess?: () => void;
 }
 
 export default function ExpenseDetailsModal({
   isOpen,
   onClose,
   selectedExpenseData,
-  isLoading: externalLoading = false,
+  showBulkActions = true,
+  onSuccess,
 }: ExpenseModalProps) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+  const { data: detailedExpenses, loading: detailsLoading } = useAppSelector(
+    (state) => state.detailedExpense
+  );
 
-  // Local state to manage UI updates immediately after dispatch
-  const [localExpenses, setLocalExpenses] = useState<ExpenseItem[]>([]);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
-  // Sync local state when modal opens or data changes
+  // Fetch details when modal opens
   useEffect(() => {
-    if (selectedExpenseData?.callExpenses) {
-      setLocalExpenses(selectedExpenseData.callExpenses);
+    if (isOpen && selectedExpenseData?.id) {
+      dispatch(fetchExpenseDetailsByCallId(selectedExpenseData.id));
     }
-  }, [selectedExpenseData]);
+  }, [isOpen, selectedExpenseData?.id, dispatch]);
 
   if (!isOpen) return null;
 
@@ -50,38 +47,34 @@ export default function ExpenseDetailsModal({
     if (!selectedExpenseData?.id) return;
     setUpdatingId("bulk");
     try {
-      const resp: any = await dispatch(
+      await dispatch(
         updateExpenseStatus({
           callId: selectedExpenseData.id,
           status: newStatus,
         })
       );
-
-      // endpointSuffix logic in expenseStatusSlice uses approve-all/reject-all
-      if (resp.meta.requestStatus === "fulfilled") {
-        setLocalExpenses((prev) => prev.map((exp) => ({ ...exp, status: newStatus })));
-      }
+      dispatch(fetchExpenseDetailsByCallId(selectedExpenseData.id));
+      if (onSuccess) onSuccess();
     } catch (error) {
       console.error("Bulk update failed:", error);
     } finally {
       setUpdatingId(null);
     }
   };
+
   const handleUpdateStatus = async (newStatus: "approved" | "rejected", callId: string) => {
     setUpdatingId(callId);
     try {
       const resp: any = await dispatch(
-        updateCallStatus({
-          callId,
+        updateSingleExpenseItemStatus({
+          id: callId,
           status: newStatus,
         })
       );
 
-      // Check if response is successful (it returns the updated object with an id)
-      if (resp.payload && (resp.payload.id || resp.payload.success)) {
-        setLocalExpenses((prev) =>
-          prev.map((exp) => (exp.id === callId ? { ...exp, status: newStatus } : exp))
-        );
+      if (resp.meta.requestStatus === "fulfilled") {
+        // Status update is handled in the slice extraReducers
+        if (onSuccess) onSuccess();
       }
     } catch (error) {
       console.error("Update failed:", error);
@@ -92,140 +85,167 @@ export default function ExpenseDetailsModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in-95">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-5 text-white">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold">Expense Details</h2>
-            <div className="flex items-center gap-3">
-              <div className="flex gap-2 mr-4">
-                <button
-                  onClick={() => handleBulkUpdate("approved")}
-                  disabled={updatingId !== null}
-                  className="px-3 py-1 bg-white/20 hover:bg-white/30 rounded-lg text-xs font-bold uppercase transition-colors disabled:opacity-50"
-                >
-                  Approve All
-                </button>
-                <button
-                  onClick={() => handleBulkUpdate("rejected")}
-                  disabled={updatingId !== null}
-                  className="px-3 py-1 bg-white/20 hover:bg-white/30 rounded-lg text-xs font-bold uppercase transition-colors disabled:opacity-50"
-                >
-                  Reject All
-                </button>
-              </div>
-              <button
-                onClick={onClose}
-                className="p-2 hover:bg-white/20 rounded-full transition-colors"
-              >
-                <X size={24} />
-              </button>
-            </div>
-          </div>
-          <p className="mt-1 text-blue-100">Review and manage individual expense items</p>
-        </div>
+      <div className="bg-(--background) rounded-8 shadow-soft w-full max-w-4xl overflow-hidden animate-in fade-in zoom-in-95">
+        {/* Header Section */}
+        <div className="p-4 sm:p-8 pb-4 relative">
+          <button
+            onClick={onClose}
+            className="absolute right-4 top-4 sm:right-6 sm:top-6 p-2 t-mute hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <X size={20} />
+          </button>
 
-        {/* Summary Cards */}
-        <div className="p-6 border-b bg-gray-50">
-          <div className="grid grid-cols-3 gap-4 text-center">
-            <div className="bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
-              <p className="text-xs text-gray-500 uppercase font-semibold">Total</p>
-              <p className="text-xl font-bold text-gray-800">
-                {selectedExpenseData?.totalExpense.toLocaleString()}{" "}
-                <span className="text-sm">PKR</span>
-              </p>
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pr-10 gap-4">
+              <h1 className="t-h1 text-gray-900">Expense Details</h1>
+              {showBulkActions && (
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => handleBulkUpdate("approved")}
+                    disabled={updatingId !== null}
+                    className="px-4 sm:px-5 py-2 bg-primary text-white rounded-8 t-label-b hover:bg-primary-2 transition-all disabled:opacity-50 active:scale-95 whitespace-nowrap text-xs sm:text-sm"
+                  >
+                    Approve All
+                  </button>
+                  <button
+                    onClick={() => handleBulkUpdate("rejected")}
+                    disabled={updatingId !== null}
+                    className="px-4 sm:px-5 py-2 bg-white t-err border border-destructive rounded-8 t-label-b hover:bg-red-50 transition-all disabled:opacity-50 active:scale-95 whitespace-nowrap text-xs sm:text-sm"
+                  >
+                    Reject All
+                  </button>
+                </div>
+              )}
             </div>
-            <div className="bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
-              <p className="text-xs text-green-600 uppercase font-semibold">Approved</p>
-              <p className="text-xl font-bold text-green-600">
-                {selectedExpenseData?.approvedExpense.toLocaleString()}{" "}
-                <span className="text-sm">PKR</span>
-              </p>
-            </div>
-            <div className="bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
-              <p className="text-xs text-red-600 uppercase font-semibold">Rejected</p>
-              <p className="text-xl font-bold text-red-600">
-                {selectedExpenseData?.rejectedExpense.toLocaleString()}{" "}
-                <span className="text-sm">PKR</span>
-              </p>
+
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+              <div className="max-w-md">
+                <p className="t-md t-mute mb-4">
+                  Please review and confirm this expense before approval or rejection
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 sm:flex gap-4 sm:gap-8 md:gap-10">
+                <div className="flex flex-col items-start">
+                  <p className="t-over t-mute mb-1 text-[10px]">Total Expense</p>
+                  <p className="t-val-sm t-warn flex items-baseline gap-1">
+                    {selectedExpenseData?.totalExpense.toLocaleString()}
+                    <span className="text-[10px] font-medium">PKR</span>
+                  </p>
+                </div>
+                <div className="flex flex-col items-start">
+                  <p className="t-over t-mute mb-1 text-[10px]">Approved</p>
+                  <p className="t-val-sm t-ok flex items-baseline gap-1">
+                    {selectedExpenseData?.approvedExpense.toLocaleString()}
+                    <span className="text-[10px] font-medium">PKR</span>
+                  </p>
+                </div>
+                <div className="flex flex-col items-start">
+                  <p className="t-over t-mute mb-1 text-[10px]">Rejected</p>
+                  <p className="t-val-sm t-err flex items-baseline gap-1">
+                    {selectedExpenseData?.rejectedExpense.toLocaleString()}
+                    <span className="text-[10px] font-medium">PKR</span>
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Expense List */}
-        <div className="p-6 max-h-[50vh] overflow-y-auto">
-          <div className="space-y-3">
-            {localExpenses.length > 0 ? (
-              localExpenses.map((exp) => (
-                <div
-                  key={exp.id}
-                  className={`p-4 rounded-xl border transition-all ${
-                    exp.status === "approved"
-                      ? "bg-green-50 border-green-200"
-                      : exp.status === "rejected"
-                        ? "bg-red-50 border-red-200"
-                        : "bg-white border-gray-200"
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900">{exp.title}</h3>
-                      <p className="text-lg font-bold text-gray-700">
-                        {exp.amount.toLocaleString()}{" "}
-                        <span className="text-sm font-normal">PKR</span>
-                      </p>
-                    </div>
+        <div className="p-4 sm:p-8 pt-4 pb-10 max-h-[460px] overflow-y-auto custom-scrollbar border-t border-gray-100">
+          {detailsLoading ? (
+            <div className="flex flex-col items-center justify-center py-20 gap-4">
+              <Loader2 className="animate-spin text-primary" size={40} />
+              <p className="t-mute t-md">Loading expense details</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {detailedExpenses.length > 0 ? (
+                detailedExpenses.map((exp) => {
+                  const status = exp.status?.toLowerCase();
+                  return (
+                    <div
+                      key={exp.id}
+                      className={`p-4 rounded-8 border-2 transition-all duration-300 ${
+                        status === "approved"
+                          ? "border-success bg-white"
+                          : status === "rejected"
+                            ? "border-destructive bg-white"
+                            : "border-gray-200 bg-white"
+                      }`}
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-2">
+                        <div className="flex-1">
+                          <h3
+                            className={`t-h5 font-semibold ${
+                              status === "approved"
+                                ? "t-ok text-success"
+                                : status === "rejected"
+                                  ? "t-err text-destructive"
+                                  : "text-gray-900"
+                            }`}
+                          >
+                            {exp.title}
+                          </h3>
+                        </div>
 
-                    <div className="flex items-center gap-2">
-                      {updatingId === exp.id || updatingId === "bulk" ? (
-                        <div className="flex items-center gap-2 text-blue-600 px-4">
-                          <Loader2 className="animate-spin" size={20} />
-                          <span className="text-sm font-medium">Updating...</span>
-                        </div>
-                      ) : exp.status === "approved" ? (
-                        <div className="flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-8">
-                          <CheckCircle size={18} />
-                          <span className="font-bold text-sm uppercase">Approved</span>
-                        </div>
-                      ) : exp.status === "rejected" ? (
-                        <div className="flex items-center gap-2 px-4 py-2 bg-red-100 text-red-700 rounded-8">
-                          <XCircle size={18} />
-                          <span className="font-bold text-sm uppercase">Rejected</span>
-                        </div>
-                      ) : (
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => handleUpdateStatus("approved", exp.id)}
-                            className="px-4 py-2 bg-emerald-600 text-white rounded-8 hover:bg-emerald-700 transition-colors text-sm font-semibold shadow-sm"
+                        <div className="flex flex-wrap items-center gap-4 sm:gap-12 md:gap-16">
+                          <p
+                            className={`t-val font-bold ${
+                              status === "approved"
+                                ? "t-ok text-success"
+                                : status === "rejected"
+                                  ? "t-err text-destructive"
+                                  : "text-gray-700"
+                            } flex items-baseline gap-2 text-xl`}
                           >
-                            Approve
-                          </button>
-                          <button
-                            onClick={() => handleUpdateStatus("rejected", exp.id)}
-                            className="px-4 py-2 bg-red-500 text-white rounded-8 hover:bg-red-600 transition-colors text-sm font-semibold shadow-sm"
-                          >
-                            Reject
-                          </button>
+                            {exp.amount.toLocaleString()}
+                            <span className="text-[12px] font-semibold uppercase">PKR</span>
+                          </p>
+
+                          <div className="min-w-[140px] flex sm:justify-end">
+                            {updatingId === exp.id || updatingId === "bulk" ? (
+                              <div className="flex justify-center w-full">
+                                <Loader2 className="animate-spin text-primary" size={24} />
+                              </div>
+                            ) : status === "approved" ? (
+                              <div className="px-8 py-2 bg-success text-white rounded-8 t-label-b text-sm flex items-center justify-center min-w-[120px]">
+                                Approved
+                              </div>
+                            ) : status === "rejected" ? (
+                              <div className="px-8 py-2 bg-white t-err border border-destructive rounded-8 t-label-b text-sm flex items-center justify-center min-w-[120px]">
+                                Rejected
+                              </div>
+                            ) : (
+                              <div className="flex gap-3">
+                                <button
+                                  onClick={() => handleUpdateStatus("approved", exp.id)}
+                                  className="px-6 sm:px-7 py-2 bg-primary text-white rounded-8 t-label-b text-sm shadow-soft hover:bg-primary-2 transition-all active:scale-95"
+                                >
+                                  Approve
+                                </button>
+                                <button
+                                  onClick={() => handleUpdateStatus("rejected", exp.id)}
+                                  className="px-6 sm:px-7 py-2 bg-white t-err border border-destructive rounded-8 t-label-b text-sm hover:bg-red-50 transition-all active:scale-95"
+                                >
+                                  Reject
+                                </button>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      )}
+                      </div>
                     </div>
-                  </div>
+                  );
+                })
+              ) : (
+                <div className="text-center py-16 bg-gray-50 rounded-8 border border-dashed border-gray-300">
+                  <p className="t-mute t-sm">No expense records found for this claim.</p>
                 </div>
-              ))
-            ) : (
-              <div className="text-center py-10 text-gray-400">No expense records found.</div>
-            )}
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="px-6 py-4 border-t bg-gray-50 flex justify-end">
-          <button
-            onClick={onClose}
-            className="px-6 py-2 bg-gray-800 text-white rounded-8 hover:bg-gray-900 transition-colors font-medium"
-          >
-            Done
-          </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

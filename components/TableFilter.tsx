@@ -34,7 +34,6 @@ interface TableFilterProps {
     status?: string;
     employeeId?: string;
     channelId?: string;
-    // Distributor filters
     distributorStatus?: string;
     distributorTypeId?: string;
     zoneId?: string;
@@ -119,7 +118,7 @@ export default function TableFilter({
       dispatch(getProductCategories());
     }
     if (isAllocate && isFilterOpen) {
-      dispatch(getAllUsers({ page: 1, limit: 100 })); // Fetch more users for dropdown
+      dispatch(getAllUsers({ page: 1, limit: 100 }));
     }
     if (showDistributorFilters && isFilterOpen) {
       dispatch(getAllDistributorTypes({ limit: 100 }));
@@ -158,6 +157,7 @@ export default function TableFilter({
             <div className="flex items-center justify-between">
               <h3 className="t-h4">Filter by</h3>
               <button
+                type="button"
                 onClick={() => setIsFilterOpen(false)}
                 className="text-[var(--gray-4)] hover:text-[var(--gray-6)] cursor-pointer transition"
               >
@@ -167,7 +167,6 @@ export default function TableFilter({
 
             {showDoctorFilters ? (
               <>
-                {/* Segment Filter */}
                 <div>
                   <FormSelect
                     label="Segment"
@@ -186,8 +185,6 @@ export default function TableFilter({
                     className="mb-0"
                   />
                 </div>
-
-                {/* Specialization Filter - Only show if channel is "Doctor" */}
                 {isDoctorChannel && (
                   <div>
                     <FormSelect
@@ -209,7 +206,6 @@ export default function TableFilter({
               </>
             ) : showEmployeeFilters ? (
               <>
-                {/* Role Filter */}
                 <div>
                   <FormSelect
                     label="Role"
@@ -226,8 +222,6 @@ export default function TableFilter({
                     className="mb-0"
                   />
                 </div>
-
-                {/* Team Filter */}
                 <div>
                   <FormSelect
                     label="Team"
@@ -244,8 +238,6 @@ export default function TableFilter({
                     className="mb-0"
                   />
                 </div>
-
-                {/* Supervisor Filter */}
                 <div>
                   <FormSelect
                     label="Supervisor"
@@ -265,7 +257,6 @@ export default function TableFilter({
               </>
             ) : showProductFilters ? (
               <>
-                {/* Category Filter */}
                 <div>
                   <FormSelect
                     label="Category"
@@ -285,7 +276,6 @@ export default function TableFilter({
               </>
             ) : showGiveawayFilters ? (
               <>
-                {/* Status Filter for Giveaways */}
                 <div>
                   <FormSelect
                     label="Status"
@@ -303,7 +293,6 @@ export default function TableFilter({
               </>
             ) : isAllocate ? (
               <>
-                {/* Employee Filter */}
                 <div>
                   <FormSelect
                     label="Employee"
@@ -323,7 +312,6 @@ export default function TableFilter({
               </>
             ) : showTeamFilters ? (
               <>
-                {/* Channel Filter for Teams */}
                 <div>
                   <FormSelect
                     label="Channel"
@@ -343,7 +331,6 @@ export default function TableFilter({
               </>
             ) : showTargetFilters ? (
               <>
-                {/* Employee Filter - Show only Sales Reps */}
                 <div>
                   <FormSelect
                     label="Employee (Sales Rep)"
@@ -364,8 +351,6 @@ export default function TableFilter({
                     className="mb-0"
                   />
                 </div>
-
-                {/* Team Filter */}
                 <div>
                   <FormSelect
                     label="Team"
@@ -382,8 +367,6 @@ export default function TableFilter({
                     className="mb-0"
                   />
                 </div>
-
-                {/* Supervisor Filter */}
                 <div>
                   <FormSelect
                     label="Supervisor"
@@ -403,7 +386,6 @@ export default function TableFilter({
               </>
             ) : showDistributorFilters ? (
               <>
-                {/* Status */}
                 <div>
                   <FormSelect
                     label="Status"
@@ -418,8 +400,6 @@ export default function TableFilter({
                     className="mb-0"
                   />
                 </div>
-
-                {/* Distributor Type */}
                 <div>
                   <FormSelect
                     label="Distributor Type"
@@ -431,8 +411,6 @@ export default function TableFilter({
                     className="mb-0"
                   />
                 </div>
-
-                {/* Zone */}
                 <div>
                   <FormSelect
                     label="Zone"
@@ -440,7 +418,7 @@ export default function TableFilter({
                     value={selectedZoneId}
                     onChange={(v) => {
                       setSelectedZoneId(v);
-                      setSelectedRegionId(""); // reset region on zone change
+                      setSelectedRegionId("");
                     }}
                     options={zones.map((z) => ({
                       value: z.id,
@@ -450,8 +428,6 @@ export default function TableFilter({
                     className="mb-0"
                   />
                 </div>
-
-                {/* Region */}
                 <div>
                   <FormSelect
                     label="Region"
@@ -473,7 +449,6 @@ export default function TableFilter({
               </>
             ) : showExpenseFilters ? (
               <>
-                {/* Status Filter for Expenses */}
                 <div>
                   <FormSelect
                     label="Status"
@@ -492,7 +467,6 @@ export default function TableFilter({
               </>
             ) : null}
 
-            {/* Status Filter (Common for Doctor, Employee, Product, and Team) */}
             {(showDoctorFilters ||
               showEmployeeFilters ||
               showProductFilters ||
@@ -528,7 +502,6 @@ export default function TableFilter({
               !showTargetFilters &&
               !showDistributorFilters &&
               !showExpenseFilters && (
-                /* Date Range */
                 <div>
                   <FormSelect
                     label="Date Range"
@@ -568,7 +541,10 @@ export default function TableFilter({
                   setSelectedGiveawayStatus("");
                   setSelectedEmployeeId("");
                   setSelectedChannel("");
-                  // Trigger filter update with empty values
+                  setSelectedDistributorStatus("");
+                  setSelectedDistributorTypeId("");
+                  setSelectedZoneId("");
+                  setSelectedRegionId("");
                   if (onApplyFilters) {
                     onApplyFilters({
                       segmentId: "",
@@ -600,14 +576,11 @@ export default function TableFilter({
                   e.stopPropagation();
                   if (onApplyFilters) {
                     onApplyFilters({
-                      // Doctor filters
                       segmentId: selectedSegment,
                       specializationId: selectedSpecialization,
-                      // Employee filters
                       roleId: selectedRole,
                       teamId: selectedTeam,
                       supervisorId: selectedSupervisor,
-                      // Product filters
                       categoryId: selectedCategoryId,
                       status: showExpenseFilters
                         ? selectedExpenseStatus

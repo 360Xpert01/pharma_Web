@@ -1,9 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import Image from "next/image";
-import { Button } from "@/components/ui/button/button";
+import { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight, Eye, Loader2 } from "lucide-react";
 import { DateRange, Range } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
@@ -16,16 +14,6 @@ import { useSearchParams } from "next/navigation";
 import ImageWithFallback from "./shared/ImageWithFallback";
 import { ConfirmModal } from "./shared/confirm-modal";
 import { toast } from "react-hot-toast";
-interface ExpenseItem {
-  id: string;
-  name: string;
-  role: string;
-  avatar: string;
-  status: "Review" | "Rejected";
-  total: number;
-  approved: number;
-  rejected: number;
-}
 
 export default function ExpenseApprovalList() {
   const searchParams = useSearchParams();
@@ -105,6 +93,14 @@ export default function ExpenseApprovalList() {
       setStatusUpdating(null);
     }
   };
+
+  const filteredExpenses = expensesAPI
+    .map((group: any) => ({
+      ...group,
+      calls: group.calls.filter((call: any) => call.totalExpense > 0),
+    }))
+    .filter((group: any) => group.calls.length > 0);
+
   return (
     <div className="">
       <div className="mt-3">
@@ -136,7 +132,7 @@ export default function ExpenseApprovalList() {
 
               <div className="flex justify-end gap-3 mt-3 pt-3 border-t">
                 <button
-                  onClick={() => setIsDiscardModalOpen(true)}
+                  onClick={() => setShowCalendar(false)}
                   className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded"
                 >
                   Cancel
@@ -161,13 +157,28 @@ export default function ExpenseApprovalList() {
           )}
         </div>
 
-        <div className="space-y-3">
-          {expensesAPI.map((item) => (
-            <div key={item.callDate} className="mb-8">
-              {/* Date as section header */}
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-20 grayscale opacity-50">
+            <Loader2 className="w-10 h-10 animate-spin text-(--primary) mb-4" />
+            <p className="t-label-sm">Loading weekly expenses...</p>
+          </div>
+        ) : filteredExpenses.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 grayscale opacity-50 border-2 border-dashed border-(--gray-2) rounded-12 bg-(--gray-0)/5 transition-all hover:bg-(--gray-0)/10">
+            <div className="w-16 h-16 bg-(--gray-1) rounded-full flex items-center justify-center mb-4">
+              <ChevronLeft className="w-8 h-8 text-(--gray-4) opacity-20" />
+              <ChevronRight className="w-8 h-8 text-(--gray-4) opacity-20 -ml-4" />
+            </div>
+            <p className="t-h4 text-(--gray-5)">No data found</p>
+            <p className="t-sm text-(--gray-4)">Try adjusting your date range filter</p>
+          </div>
+        ) : (
+          <div className="space-y-1">
+            {filteredExpenses.map(({ callDate, calls }: any) => (
+              <div key={callDate} className="mb-8">
+                {/* Date as section header */}
 
-              {/* <h3 className="t-h3 mb-4 font-bold text-lg">
-            {new Date(item.callDate).toLocaleDateString("en-US", {
+                {/* <h3 className="t-h3 mb-4 font-bold text-lg">
+            {new Date(callDate).toLocaleDateString("en-US", {
               weekday: "long",
               year: "numeric",
               month: "long",
@@ -175,107 +186,94 @@ export default function ExpenseApprovalList() {
             })}
           </h3> */}
 
-              {item.calls.map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => handleCardClick(item)}
-                  className="flex items-center rounded-8 shadow-soft  bg-(--background) p-4 cursor-pointer hover:shadow-md hover:border-(--primary) transition-all"
-                >
-                  {/* Left: User Info */}
-                  <div className="flex items-center gap-4 w-[25%]">
-                    <div className="relative">
-                      <div className="w-14 h-14 rounded-8 overflow-hidden border-2 border-white shadow-soft">
-                        <ImageWithFallback
-                          src={item.profilepicture}
-                          alt={item.name}
-                          width={50}
-                          height={50}
-                          className="object-cover"
-                          fallbackSrc="/girlPic.png"
-                        />
+                {calls.map((call: any) => (
+                  <div
+                    key={call.id}
+                    onClick={() => handleCardClick(call)}
+                    className="flex items-center rounded-8 shadow-soft bg-(--background) p-4 cursor-pointer mb-4 last:mb-0"
+                  >
+                    {/* Left: User Info */}
+                    <div className="flex items-center gap-4 w-[25%]">
+                      <div className="relative">
+                        <div className="w-14 h-14 rounded-8 overflow-hidden border-2 border-white">
+                          <ImageWithFallback
+                            src={call.profilepicture}
+                            alt={call.name}
+                            width={50}
+                            height={50}
+                            className="object-cover"
+                            fallbackSrc="/girlPic.png"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <h3 className="t-label-b">{call.fullname}</h3>
+                        <div className="flex items-center gap-2">
+                          <p className="t-sm">{call.specialization}</p>
+                          <span
+                            className={`px-2 py-0.5 text-xs font-medium rounded-8 ${
+                              call.status === "Pending"
+                                ? "bg-(--warning-light) text-(--warning-2)"
+                                : call.status === "Rejected" || call.status === "rejected"
+                                  ? "bg-(--destructive-light) text-(--destructive)"
+                                  : "bg-(--success-light) text-(--success)"
+                            }`}
+                          >
+                            {call.status}
+                          </span>
+                        </div>
                       </div>
                     </div>
 
-                    <div>
-                      <h3 className="t-label-b">{item.fullname}</h3>
-                      <div className="flex items-center gap-2">
-                        <p className="t-sm">{item.specialization}</p>
-                        <span
-                          className={`px-2 py-0.5 text-xs font-medium rounded-8 ${
-                            item.status === "Pending"
-                              ? "bg-(--warning-light) text-(--warning-2)"
-                              : item.status === "Rejected" || item.status === "rejected"
-                                ? "bg-(--destructive-light) text-(--destructive)"
-                                : "bg-(--success-light) text-(--success)"
-                          }`}
-                        >
-                          {item.status}
-                        </span>
+                    {/* Date Column */}
+                    <div className="w-[15%] text-center">
+                      <p className="t-cap">Date</p>
+                      <p className="t-label-sm">
+                        {callDate ? format(new Date(callDate), "dd MMM yyyy") : "N/A"}
+                      </p>
+                    </div>
+
+                    {/* Center: Expense Breakdown - Three evenly distributed columns */}
+                    <div className="flex items-center flex-1">
+                      <div className="w-1/3 text-center">
+                        <p className="t-cap">Total Expense</p>
+                        <p className="t-val-sm t-warn">
+                          {call.totalExpense.toLocaleString()}
+                          <span className="t-sm t-warn ml-1">PKR</span>
+                        </p>
+                      </div>
+                      <div className="w-1/3 text-center">
+                        <p className="t-cap">Approved</p>
+                        <p className="t-val-sm t-ok">
+                          {call.approvedExpense.toLocaleString()}
+                          <span className="t-sm t-ok ml-1">PKR</span>
+                        </p>
+                      </div>
+                      <div className="w-1/3 text-center">
+                        <p className="t-cap">Rejected</p>
+                        <p className="t-val-sm t-err">
+                          {call.rejectedExpense.toLocaleString()}
+                          <span className="t-sm t-err ml-1">PKR</span>
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Right: Detail Action */}
+                    <div className="flex items-center justify-end w-[10%]">
+                      <div
+                        className="p-2 hover:bg-gray-100 rounded-full text-blue-600 transition-colors"
+                        title="View Details"
+                      >
+                        <Eye size={20} />
                       </div>
                     </div>
                   </div>
-
-                  {/* Center: Expense Breakdown - Three evenly distributed columns */}
-                  <div className="flex items-center flex-1">
-                    <div className="w-1/3 text-center">
-                      <p className="t-cap">Total Expense</p>
-                      <p className="t-val-sm t-warn">
-                        {item.totalExpense.toLocaleString()}
-                        <span className="t-sm t-warn ml-1">PKR</span>
-                      </p>
-                    </div>
-                    <div className="w-1/3 text-center">
-                      <p className="t-cap">Approved</p>
-                      <p className="t-val-sm t-ok">
-                        {item.approvedExpense.toLocaleString()}
-                        <span className="t-sm t-ok ml-1">PKR</span>
-                      </p>
-                    </div>
-                    <div className="w-1/3 text-center">
-                      <p className="t-cap">Rejected</p>
-                      <p className="t-val-sm t-err">
-                        {item.rejectedExpense.toLocaleString()}
-                        <span className="t-sm t-err ml-1">PKR</span>
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Right: Action Buttons */}
-                  {item.status === "Pending" && (
-                    <div className="flex items-center gap-3 w-[20%] justify-end">
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        rounded="xl"
-                        className="px-5"
-                        disabled={statusUpdating === item.id}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleStatusUpdate(item.id, "approved");
-                        }}
-                      >
-                        {statusUpdating === item.id ? "..." : "Approve"}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        rounded="xl"
-                        className="px-5 border-(--destructive-1) text-(--destructive) hover:bg-(--destructive-light) hover:text-(--destructive) hover:border-(--destructive)"
-                        disabled={statusUpdating === item.id}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleStatusUpdate(item.id, "rejected");
-                        }}
-                      >
-                        {statusUpdating === item.id ? "..." : "Reject"}
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <ExpenseDetailsModal
@@ -283,18 +281,16 @@ export default function ExpenseApprovalList() {
         onClose={() => setShowModal(false)}
         selectedExpenseData={selectedExpense}
         isLoading={approving}
-      />
-
-      <ConfirmModal
-        isOpen={isDiscardModalOpen}
-        onClose={() => setIsDiscardModalOpen(false)}
-        onConfirm={() => {
-          setIsDiscardModalOpen(false);
-          setShowCalendar(false);
+        showBulkActions={false}
+        onSuccess={() => {
+          dispatch(
+            fetchWeeklyCallExpenses({
+              salesmanId: id as string,
+              from: dataStart,
+              to: dataEnd,
+            }) as any
+          );
         }}
-        title="Discard date selection?"
-        description="Are you sure you want to discard your selected date range?"
-        confirmLabel="Discard"
       />
     </div>
   );
