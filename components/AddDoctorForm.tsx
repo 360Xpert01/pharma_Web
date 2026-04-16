@@ -320,6 +320,54 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  {fieldConfig.partyType === "DOCTOR" && (
+                    <FormInput
+                      label="Clinic name"
+                      name={`clinicName-${location.id}`}
+                      type="text"
+                      value={location.clinicName}
+                      onChange={(value) => {
+                        updateLocation(location.id, "clinicName", value);
+                        clearFieldError(`locations.${index}.clinicName`);
+                      }}
+                      placeholder="Enter clinic name"
+                      required
+                      error={getErrorMessage(`locations.${index}.clinicName`)}
+                    />
+                  )}
+
+                  <DayRangePicker
+                    label="Visiting days"
+                    from={location.visitingDays.from}
+                    to={location.visitingDays.to}
+                    onChange={(from, to) => {
+                      updateLocation(location.id, "visitingDays", { from, to });
+                      clearFieldError(`locations.${index}.visitingDays.from`);
+                      clearFieldError(`locations.${index}.visitingDays.to`);
+                    }}
+                    required
+                    error={
+                      getErrorMessage(`locations.${index}.visitingDays.from`) ||
+                      getErrorMessage(`locations.${index}.visitingDays.to`)
+                    }
+                  />
+
+                  <TimeRangePicker
+                    label="Visiting Hours"
+                    from={location.visitingHours.from}
+                    to={location.visitingHours.to}
+                    onChange={(from, to) => {
+                      updateLocation(location.id, "visitingHours", { from, to });
+                      clearFieldError(`locations.${index}.visitingHours.from`);
+                      clearFieldError(`locations.${index}.visitingHours.to`);
+                    }}
+                    required
+                    error={
+                      getErrorMessage(`locations.${index}.visitingHours.from`) ||
+                      getErrorMessage(`locations.${index}.visitingHours.to`)
+                    }
+                  />
+
                   <FormSelect
                     label="Bricks"
                     name={`bricks-${location.id}`}
@@ -375,52 +423,6 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
                       updateLocation(location.id, "longitude", value);
                     }}
                     placeholder="Enter longitude"
-                  />
-
-                  <FormInput
-                    label="Clinic name"
-                    name={`clinicName-${location.id}`}
-                    type="text"
-                    value={location.clinicName}
-                    onChange={(value) => {
-                      updateLocation(location.id, "clinicName", value);
-                      clearFieldError(`locations.${index}.clinicName`);
-                    }}
-                    placeholder="Enter clinic name"
-                    required
-                    error={getErrorMessage(`locations.${index}.clinicName`)}
-                  />
-
-                  <DayRangePicker
-                    label="Visiting days"
-                    from={location.visitingDays.from}
-                    to={location.visitingDays.to}
-                    onChange={(from, to) => {
-                      updateLocation(location.id, "visitingDays", { from, to });
-                      clearFieldError(`locations.${index}.visitingDays.from`);
-                      clearFieldError(`locations.${index}.visitingDays.to`);
-                    }}
-                    required
-                    error={
-                      getErrorMessage(`locations.${index}.visitingDays.from`) ||
-                      getErrorMessage(`locations.${index}.visitingDays.to`)
-                    }
-                  />
-
-                  <TimeRangePicker
-                    label="Visiting Hours"
-                    from={location.visitingHours.from}
-                    to={location.visitingHours.to}
-                    onChange={(from, to) => {
-                      updateLocation(location.id, "visitingHours", { from, to });
-                      clearFieldError(`locations.${index}.visitingHours.from`);
-                      clearFieldError(`locations.${index}.visitingHours.to`);
-                    }}
-                    required
-                    error={
-                      getErrorMessage(`locations.${index}.visitingHours.from`) ||
-                      getErrorMessage(`locations.${index}.visitingHours.to`)
-                    }
                   />
                 </div>
               </div>

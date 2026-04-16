@@ -8,6 +8,9 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import { fetchCrmExpenses, ExpenseClaim } from "@/store/slices/expense/expenseSlice";
 import { updateExpenseStatus } from "@/store/slices/expense/expenseStatusSlice";
 import { toast } from "sonner";
+import { format } from "date-fns";
+import { Eye } from "lucide-react";
+import ExpenseDetailsModal from "./ExpenseDetailsModal";
 
 const DEFAULT_AVATAR = "/girlPic.png";
 
@@ -28,6 +31,8 @@ export default function ExpenseApprovalTable({ searchTerm = "", filters = {} }: 
   const [activeId, setActiveId] = useState<{ id: string; action: "approved" | "rejected" } | null>(
     null
   );
+  const [showModal, setShowModal] = useState(false);
+  const [selectedExpense, setSelectedExpense] = useState<any>(null);
 
   useEffect(() => {
     dispatch(
@@ -113,6 +118,15 @@ export default function ExpenseApprovalTable({ searchTerm = "", filters = {} }: 
       ),
     },
     {
+      header: "Date",
+      accessorKey: "callDate",
+      cell: ({ row }) => (
+        <div className="t-label-sm">
+          {row.original.callDate ? format(new Date(row.original.callDate), "dd MMM yyyy") : "N/A"}
+        </div>
+      ),
+    },
+    {
       header: "Total Expense",
       accessorKey: "totalExpense",
       cell: ({ row }) => (
@@ -154,56 +168,26 @@ export default function ExpenseApprovalTable({ searchTerm = "", filters = {} }: 
       enableSorting: false,
       cell: ({ row }) => {
         const { status } = row.original;
-        const isUpdatingRow = statusUpdating && activeId?.id === row.original.callId;
-        const isUpdatingApprove = isUpdatingRow && activeId?.action === "approved";
-        const isUpdatingReject = isUpdatingRow && activeId?.action === "rejected";
-
-        if (status?.toLowerCase() === "pending") {
-          return (
-            <div className="flex gap-3 justify-center w-full">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleStatusUpdate(row.original.callId, "approved");
-                }}
-                className="px-6 py-1.5 bg-(--primary) text-(--light) font-semibold rounded-8 hover:bg-(--primary-2) active:scale-95 transition-all shadow-soft disabled:opacity-50 disabled:grayscale-[0.3] disabled:cursor-not-allowed min-w-[100px] flex items-center justify-center text-sm"
-                disabled={loading || statusUpdating}
-              >
-                {isUpdatingApprove ? (
-                  <div className="w-5 h-5 border-2 border-(--light)/30 border-t-(--light) rounded-full animate-spin" />
-                ) : (
-                  "Approve All"
-                )}
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleStatusUpdate(row.original.callId, "rejected");
-                }}
-                className="px-6 py-1.5 bg-[var(--background)] text-(--destructive) font-semibold rounded-8 border border-(--destructive) hover:bg-(--destructive-0) active:scale-95 transition-all shadow-soft disabled:opacity-50 disabled:grayscale-[0.3] disabled:cursor-not-allowed min-w-[100px] flex items-center justify-center text-sm"
-                disabled={loading || statusUpdating}
-              >
-                {isUpdatingReject ? (
-                  <div className="w-5 h-5 border-2 border-(--destructive)/30 border-t-(--destructive) rounded-full animate-spin" />
-                ) : (
-                  "Reject All"
-                )}
-              </button>
-            </div>
-          );
-        }
 
         return (
-          <div className="flex justify-center w-full">
-            <span
-              className={`px-4 py-1.5 rounded-8 text-[10px] font-bold uppercase tracking-widest border shadow-sm ${
-                status?.toLowerCase() === "approved"
-                  ? "bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800"
-                  : "bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800"
-              }`}
+          <div className="flex items-center justify-center gap-3 w-full">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedExpense({
+                  id: row.original.callId,
+                  totalExpense: row.original.totalExpense,
+                  approvedExpense: row.original.approvedAmount,
+                  rejectedExpense: row.original.rejectedAmount,
+                  callExpenses: [], // Will be fetched or shown as empty if not available in row
+                });
+                setShowModal(true);
+              }}
+              className="p-2 hover:bg-gray-100 rounded-full text-blue-600 transition-colors"
+              title="View Details"
             >
-              {status}
-            </span>
+              <Eye size={18} />
+            </button>
           </div>
         );
       },
@@ -225,6 +209,25 @@ export default function ExpenseApprovalTable({ searchTerm = "", filters = {} }: 
         onPaginationChange={handlePaginationChange}
         PaginationComponent={TablePagination}
         emptyMessage="No expense data found"
+      />
+
+      <ExpenseDetailsModal
+        isOpen={showModal}
+        onClose={() => {
+          setShowModal(false);
+        }}
+        selectedExpenseData={selectedExpense}
+        isLoading={loading}
+        onSuccess={() => {
+          dispatch(
+            fetchCrmExpenses({
+              page: currentPage,
+              limit: pageSize,
+              search: searchTerm,
+              status: filters.status,
+            })
+          );
+        }}
       />
     </div>
   );
