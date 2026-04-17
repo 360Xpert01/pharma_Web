@@ -17,7 +17,9 @@ const DEFAULT_AVATAR = "/girlPic.png";
 interface ExpanseTableProps {
   searchTerm?: string;
   filters?: {
-    status?: string;
+    from?: string;
+    to?: string;
+    doctorId?: string;
   };
 }
 
@@ -40,10 +42,12 @@ export default function ExpenseApprovalTable({ searchTerm = "", filters = {} }: 
         page: currentPage,
         limit: pageSize,
         search: searchTerm,
-        status: filters.status,
+        from: filters.from,
+        to: filters.to,
+        doctorId: filters.doctorId,
       })
     );
-  }, [dispatch, currentPage, pageSize, searchTerm, filters.status]);
+  }, [dispatch, currentPage, pageSize, searchTerm, filters.from, filters.to, filters.doctorId]);
 
   const handlePaginationChange = (page: number, size: number) => {
     setCurrentPage(page);
@@ -56,7 +60,9 @@ export default function ExpenseApprovalTable({ searchTerm = "", filters = {} }: 
         page: currentPage,
         limit: pageSize,
         search: searchTerm,
-        status: filters.status,
+        from: filters.from,
+        to: filters.to,
+        doctorId: filters.doctorId,
       })
     );
   };
@@ -224,7 +230,9 @@ export default function ExpenseApprovalTable({ searchTerm = "", filters = {} }: 
               page: currentPage,
               limit: pageSize,
               search: searchTerm,
-              status: filters.status,
+              from: filters.from,
+              to: filters.to,
+              doctorId: filters.doctorId,
             })
           );
         }}

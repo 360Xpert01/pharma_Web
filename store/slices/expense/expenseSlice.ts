@@ -52,7 +52,7 @@ interface FetchExpensesParams {
   search?: string;
   from?: string;
   to?: string;
-  status?: string;
+  doctorId?: string;
 }
 
 export const fetchCrmExpenses = createAsyncThunk<
@@ -74,7 +74,7 @@ export const fetchCrmExpenses = createAsyncThunk<
     const queryParams: any = { page, limit, search };
     if (params?.from) queryParams.from = params.from;
     if (params?.to) queryParams.to = params.to;
-    if (params?.status) queryParams.status = params.status;
+    if (params?.doctorId) queryParams.doctorId = params.doctorId;
 
     const response = await axios.get<{
       success: boolean;
