@@ -37,6 +37,9 @@ interface UsersHeaderProps {
     distributorTypeId?: string;
     zoneId?: string;
     regionId?: string;
+    from?: string;
+    to?: string;
+    doctorId?: string;
   }) => void;
 }
 

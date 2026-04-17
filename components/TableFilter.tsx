@@ -10,7 +10,9 @@ import { getAllUsers } from "@/store/slices/employee/getAllUsersSlice";
 import { getProductCategories } from "@/store/slices/product/getProductCategoriesSlice";
 import { getAllDistributorTypes } from "@/store/slices/distributorType/getAllDistributorTypesSlice";
 import { getBrickList } from "@/store/slices/brick/getBrickListSlice";
+import { getPartiesByChannelType } from "@/store/slices/party/partiesSlice";
 import FormSelect from "@/components/form/FormSelect";
+import { FormInput } from "@/components/form";
 
 interface TableFilterProps {
   showDoctorFilters?: boolean;
@@ -38,6 +40,9 @@ interface TableFilterProps {
     distributorTypeId?: string;
     zoneId?: string;
     regionId?: string;
+    from?: string;
+    to?: string;
+    doctorId?: string;
   }) => void;
   onClear?: () => void;
 }
@@ -81,6 +86,10 @@ export default function TableFilter({
   const [selectedZoneId, setSelectedZoneId] = useState("");
   const [selectedRegionId, setSelectedRegionId] = useState("");
 
+  const [selectedFromDate, setSelectedFromDate] = useState("");
+  const [selectedToDate, setSelectedToDate] = useState("");
+  const [selectedDoctorId, setSelectedDoctorId] = useState("");
+
   // Redux state for filters
   const { specializations } = useAppSelector((state) => state.allSpecializations);
   const { segments } = useAppSelector((state) => state.allSegments);
@@ -93,6 +102,7 @@ export default function TableFilter({
   // Redux state for distributor filters
   const { distributorTypes } = useAppSelector((state) => state.allDistributorTypes);
   const { zones, regions } = useAppSelector((state) => state.brickList);
+  const { parties } = useAppSelector((state) => state.parties);
 
   // Cascaded regions
   const filteredRegions = regions.filter((r) => r.parentId === selectedZoneId);
@@ -123,6 +133,16 @@ export default function TableFilter({
     if (showDistributorFilters && isFilterOpen) {
       dispatch(getAllDistributorTypes({ limit: 100 }));
       dispatch(getBrickList());
+    }
+    if (showExpenseFilters && isFilterOpen) {
+      // Fetch doctors/parties. Use 'Doctor' channel if possible.
+      const doctorChannel = channels.find((ch) => ch.name.toLowerCase().includes("doctor"));
+      dispatch(
+        getPartiesByChannelType({
+          channelTypeId: doctorChannel?.id || "",
+          limit: 100,
+        })
+      );
     }
   }, [
     dispatch,
@@ -450,17 +470,38 @@ export default function TableFilter({
             ) : showExpenseFilters ? (
               <>
                 <div>
+                  <FormInput
+                    label="From"
+                    name="from"
+                    type="date"
+                    value={selectedFromDate}
+                    onChange={setSelectedFromDate}
+                    className="mb-0"
+                  />
+                </div>
+                <div>
+                  <FormInput
+                    label="To"
+                    name="to"
+                    type="date"
+                    value={selectedToDate}
+                    onChange={setSelectedToDate}
+                    className="mb-0"
+                  />
+                </div>
+                <div>
                   <FormSelect
-                    label="Status"
-                    name="status"
-                    value={selectedExpenseStatus}
-                    onChange={setSelectedExpenseStatus}
+                    label="Doctor / Party"
+                    name="doctorId"
+                    value={selectedDoctorId}
+                    onChange={setSelectedDoctorId}
                     options={[
-                      { value: "pending", label: "Pending" },
-                      { value: "approved", label: "Approved" },
-                      { value: "rejected", label: "Rejected" },
+                      ...parties.map((p) => ({
+                        value: p.party_id || p.id || "",
+                        label: p.party_name || p.name || "",
+                      })),
                     ]}
-                    placeholder="Select status"
+                    placeholder="Select doctor"
                     className="mb-0"
                   />
                 </div>
@@ -545,6 +586,9 @@ export default function TableFilter({
                   setSelectedDistributorTypeId("");
                   setSelectedZoneId("");
                   setSelectedRegionId("");
+                  setSelectedFromDate("");
+                  setSelectedToDate("");
+                  setSelectedDoctorId("");
                   if (onApplyFilters) {
                     onApplyFilters({
                       segmentId: "",
@@ -560,6 +604,9 @@ export default function TableFilter({
                       distributorTypeId: "",
                       zoneId: "",
                       regionId: "",
+                      from: "",
+                      to: "",
+                      doctorId: "",
                     });
                   }
                   onClear?.();
@@ -595,6 +642,9 @@ export default function TableFilter({
                       distributorTypeId: selectedDistributorTypeId,
                       zoneId: selectedZoneId,
                       regionId: selectedRegionId,
+                      from: selectedFromDate,
+                      to: selectedToDate,
+                      doctorId: selectedDoctorId,
                     });
                   }
                   onApply?.();

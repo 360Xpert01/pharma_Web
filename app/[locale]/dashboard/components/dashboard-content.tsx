@@ -243,7 +243,9 @@ export function DashboardContent({
     regionId?: string;
   }>({});
   const [expenseFilters, setExpenseFilters] = useState<{
-    status?: string;
+    from?: string;
+    to?: string;
+    doctorId?: string;
   }>({});
 
   const handleSettings = () => {
