@@ -3,8 +3,9 @@ import { z } from "zod";
 export const doctorSchema = z.object({
   pmdcNumber: z
     .string()
-    .min(1, { message: "PMDC Number is required" })
-    .transform((val) => val.trim()),
+    .optional()
+    .or(z.literal(""))
+    .transform((val) => val?.trim() || ""),
   userName: z
     .string()
     .min(2, { message: "Name must be at least 2 characters long" })
@@ -12,24 +13,29 @@ export const doctorSchema = z.object({
     .transform((val) => val.trim()),
   contactNumber: z
     .string()
-    .min(1, { message: "Contact number is required" })
-    .transform((val) => val.replace(/\D/g, ""))
-    .refine((val) => val.length >= 10 && val.length <= 15, {
+    .optional()
+    .or(z.literal(""))
+    .transform((val) => (val ? val.replace(/\D/g, "") : ""))
+    .refine((val) => !val || (val.length >= 10 && val.length <= 15), {
       message: "Contact number must be 10-15 digits",
     }),
-  qualification: z.string().min(1, { message: "Qualification is required" }),
-  specialization: z.string().min(1, { message: "Speciality is required" }),
-  segment: z.string().min(1, { message: "Segment is required" }),
+  qualification: z.string().optional().or(z.literal("")),
+  specialization: z.string().optional().or(z.literal("")),
+  segment: z.string().optional().or(z.literal("")),
   designation: z
     .string()
-    .min(1, { message: "Designation is required" })
-    .transform((val) => val.trim()),
+    .optional()
+    .or(z.literal(""))
+    .transform((val) => val?.trim() || ""),
   email: z
     .string()
-    .min(1, { message: "Email is required" })
-    .email({ message: "Please provide a valid email address" })
-    .transform((val) => val.toLowerCase()),
-  dateOfBirth: z.string().min(1, { message: "Date of birth is required" }),
+    .optional()
+    .or(z.literal(""))
+    .refine((val) => !val || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val), {
+      message: "Please provide a valid email address",
+    })
+    .transform((val) => val?.toLowerCase() || ""),
+  dateOfBirth: z.string().optional().or(z.literal("")),
   parent: z.string().optional().or(z.literal("")),
   locations: z
     .array(

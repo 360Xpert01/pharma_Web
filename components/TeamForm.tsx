@@ -175,6 +175,7 @@ export default function TeamForm() {
             loading={productsLoading}
             error={getErrorMessage("productIds")}
             onSearchChange={() => clearFieldError("productIds")}
+            required
           />
         </div>
 
@@ -182,6 +183,9 @@ export default function TeamForm() {
         <div className="space-y-6 py-8">
           <div>
             <h2 className="t-h2 mb-4">Assign Members</h2>
+            <p className="t-label mb-2">
+              Select Members <span className="text-(--destructive)">*</span>
+            </p>
 
             <MemberSearch
               allMembers={

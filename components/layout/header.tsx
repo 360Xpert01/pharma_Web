@@ -58,7 +58,7 @@ const Navbar = () => {
         { label: "Attendance & Tracking", href: "/dashboard" },
         { label: "Distributors", href: "/dashboard/Distributors-Management" },
         { label: "Leave Management", href: "/dashboard" },
-        { label: "Expense Requests", href: "/dashboard/request-View" },
+        // { label: "Expense Requests", href: "/dashboard/request-View" },
       ],
     },
     {
