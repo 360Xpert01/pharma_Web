@@ -115,7 +115,6 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
               clearFieldError("pmdcNumber");
             }}
             placeholder="Enter PMDC number"
-            required
             error={getErrorMessage("pmdcNumber")}
           />
         )}
@@ -147,7 +146,6 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
               clearFieldError("contactNumber");
             }}
             placeholder="Enter contact number"
-            required
             error={getErrorMessage("contactNumber")}
           />
         )}
@@ -168,7 +166,6 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
               })),
             ]}
             placeholder="Select qualification"
-            required
             loading={qualificationsLoading}
             error={getErrorMessage("qualification")}
           />
@@ -188,7 +185,6 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
               label: spec.name,
             }))}
             placeholder="Select speciality"
-            required
             loading={specializationsLoading}
             error={getErrorMessage("specialization")}
           />
@@ -212,7 +208,6 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
                 })),
             ]}
             placeholder="Select segment"
-            required
             loading={segmentsLoading}
             error={getErrorMessage("segment")}
           />
@@ -229,7 +224,6 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
               clearFieldError("designation");
             }}
             placeholder="Enter designation"
-            required
             error={getErrorMessage("designation")}
           />
         )}
@@ -245,7 +239,6 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
               clearFieldError("email");
             }}
             placeholder="Enter email address"
-            required
             error={getErrorMessage("email")}
           />
         )}
@@ -261,7 +254,6 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
               clearFieldError("dateOfBirth");
             }}
             placeholder="Select date of birth"
-            required
             error={getErrorMessage("dateOfBirth")}
           />
         )}
@@ -282,16 +274,13 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
               })),
             ]}
             placeholder="Select parent"
-            required
             error={getErrorMessage("parent")}
           />
         )}
 
         {fieldConfig.status && (
           <div className="flex flex-col gap-2">
-            <label className="t-label">
-              Status <span className="t-err">*</span>
-            </label>
+            <label className="t-label">Status</label>
             <StatusToggle status={status} onChange={(newStatus) => setStatus(newStatus)} />
           </div>
         )}

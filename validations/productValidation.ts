@@ -14,7 +14,7 @@ export const productSchema = z
       .min(1, "Product code is required")
       .max(255, "Product code cannot exceed 255 characters"),
 
-    productCategoryId: z.string().uuid("Invalid category ID format"),
+    productCategoryId: z.string().min(1, "Product category is required"),
     productFormula: z.string().max(255, "Product formula cannot exceed 255 characters").optional(),
 
     imageUrl: z

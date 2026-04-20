@@ -100,6 +100,7 @@ export default function AddAllocateGivewaySample({
   const [selectedGiveaways, setSelectedGiveaways] = useState<GiveawayItem[]>([]);
   const [selectedSamples, setSelectedSamples] = useState<SampleItem[]>([]);
   const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
+  const [showEmployeeError, setShowEmployeeError] = useState(false);
 
   // Fetch employees, giveaways, and product SKUs on mount
   useEffect(() => {
@@ -228,6 +229,7 @@ export default function AddAllocateGivewaySample({
   const handleSelectEmployee = (employee: EmployeeData) => {
     setSelectedEmployee(employee);
     setEmployeeSearch(`${employee.firstName} ${employee.lastName}`);
+    setShowEmployeeError(false);
     console.log("selectedEmployee", employee);
     setShowEmployeeDropdown(false);
   };
@@ -315,9 +317,15 @@ export default function AddAllocateGivewaySample({
 
   const handleAllocate = () => {
     if (!selectedEmployee) {
+      setShowEmployeeError(true);
+      toast.error("Please select an employee first");
       return;
     }
-    if (selectedGiveaways.length === 0 && selectedSamples.length === 0) {
+    if (
+      selectedGiveaways.filter((g) => g.quantity > 0).length === 0 &&
+      selectedSamples.filter((s) => s.quantity > 0).length === 0
+    ) {
+      toast.error("Please add at least one giveaway and sample");
       return;
     }
 
@@ -376,6 +384,9 @@ export default function AddAllocateGivewaySample({
                   <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-(--primary)" />
                 )}
               </div>
+              {showEmployeeError && !selectedEmployee && (
+                <p className="mt-1 text-xs text-(--destructive)">Employee selection is required</p>
+              )}
 
               {/* Employee Dropdown */}
               {showEmployeeDropdown &&
@@ -506,9 +517,9 @@ export default function AddAllocateGivewaySample({
           </button>
           <button
             onClick={handleAllocate}
-            disabled={!selectedEmployee || allocateLoading}
+            disabled={allocateLoading || updateLoading}
             className={`px-10 py-3 bg-(--primary) text-(--light) rounded-8 hover:bg-(--primary-2) transition flex items-center gap-2 shadow-soft cursor-pointer ${
-              !selectedEmployee || allocateLoading ? "opacity-50 cursor-not-allowed" : ""
+              allocateLoading || updateLoading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
             {allocateLoading || updateLoading ? (

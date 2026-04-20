@@ -20,6 +20,7 @@ interface ProductSearchProps {
   className?: string;
   error?: string;
   onSearchChange?: (query: string) => void;
+  required?: boolean;
 }
 
 export default function ProductSearch({
@@ -30,6 +31,7 @@ export default function ProductSearch({
   className = "",
   error = "",
   onSearchChange,
+  required = false,
 }: ProductSearchProps) {
   const hasError = !!error;
   const [searchQuery, setSearchQuery] = useState("");
@@ -64,8 +66,10 @@ export default function ProductSearch({
   };
 
   return (
-    <div className={`space-y-4 ${className}`}>
-      <label className="t-label block">Select Products</label>
+    <div className={`space-y-2 ${className}`}>
+      <label className="t-label block">
+        Select Products {required && <span className="text-(--destructive)">*</span>}
+      </label>
 
       <div className="relative max-w-full ml-0">
         <div className="flex items-center gap-4">

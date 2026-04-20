@@ -96,7 +96,7 @@ export default function TimeRangePicker({
           </div>
         </PopoverContent>
       </Popover>
-      {error && <p className="t-err mt-1">{error}</p>}
+      {error && <p className="mt-1 t-sm t-err">{error}</p>}
     </div>
   );
 }
