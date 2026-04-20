@@ -48,6 +48,19 @@ export default function DayRangePicker({
 
   const displayText = from && to ? `${from} - ${to}` : from ? `${from} - ...` : "Select day range";
 
+  const hasError = !!error;
+
+  const getInputClasses = () => {
+    const baseClasses =
+      "mt-1 w-full h-12 px-4 py-3 border rounded-8 outline-none transition-all cursor-pointer";
+
+    if (hasError) {
+      return `${baseClasses} border-(--destructive) focus:ring-2 focus:ring-(--destructive) focus:border-(--destructive)`;
+    }
+
+    return `${baseClasses} border-(--gray-3) focus:ring-2 focus:ring-(--primary) focus:border-(--primary)`;
+  };
+
   return (
     <div className={className}>
       <label className="t-label">
@@ -56,17 +69,17 @@ export default function DayRangePicker({
       </label>
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            className={cn(
-              "mt-1 w-full h-12 px-4 py-3 text-left font-normal border-(--gray-3) rounded-8 outline-none transition-all focus:ring-2 focus:ring-(--primary) focus:border-(--primary)",
-              from ? "text-black" : "text-(--gray-5)"
-            )}
-            iconRight={CalendarDays}
-            iconClassName="h-5 w-5 text-black"
-          >
-            {displayText}
-          </Button>
+          <div className="relative">
+            <input
+              type="text"
+              readOnly
+              aria-invalid={hasError}
+              value={from && to ? `${from} - ${to}` : from ? `${from} - ...` : ""}
+              placeholder="Select day range"
+              className={`${getInputClasses()} ${from ? "text-black" : "text-(--gray-5)"}`}
+            />
+            <CalendarDays className="absolute right-4 top-1/2 -translate-y-1/2 mt-0.5 h-5 w-5 text-black pointer-events-none" />
+          </div>
         </PopoverTrigger>
         <PopoverContent className="w-64 p-3 bg-[var(--background)] border border-(--gray-3) rounded-8 shadow-lg">
           <div className="grid grid-cols-1 gap-1">
