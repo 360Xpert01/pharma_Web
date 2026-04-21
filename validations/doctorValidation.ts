@@ -1,5 +1,32 @@
 import { z } from "zod";
 
+const baseLocationSchema = z.object({
+  zone: z.string().min(1, { message: "Zone is required" }),
+  region: z.string().min(1, { message: "Region is required" }),
+  bricks: z.string().min(1, { message: "Bricks is required" }),
+  clinicName: z
+    .string()
+    .optional()
+    .or(z.literal(""))
+    .transform((val) => val?.trim() || ""),
+  visitingDays: z.object({
+    from: z.string().min(1, { message: "From day is required" }),
+    to: z.string().min(1, { message: "To day is required" }),
+  }),
+  visitingHours: z.object({
+    from: z.string().min(1, { message: "From time is required" }),
+    to: z.string().min(1, { message: "To time is required" }),
+  }),
+  latitude: z
+    .union([z.string(), z.number()])
+    .optional()
+    .transform((val) => (typeof val === "string" ? parseFloat(val) : val)),
+  longitude: z
+    .union([z.string(), z.number()])
+    .optional()
+    .transform((val) => (typeof val === "string" ? parseFloat(val) : val)),
+});
+
 export const doctorSchema = z.object({
   pmdcNumber: z
     .string()
@@ -43,30 +70,11 @@ export const doctorSchema = z.object({
   parent: z.string().optional().or(z.literal("")),
   locations: z
     .array(
-      z.object({
-        zone: z.string().min(1, { message: "Zone is required" }),
-        region: z.string().min(1, { message: "Region is required" }),
-        bricks: z.string().min(1, { message: "Bricks is required" }),
+      baseLocationSchema.extend({
         clinicName: z
           .string()
           .min(1, { message: "Clinic name is required" })
           .transform((val) => val.trim()),
-        visitingDays: z.object({
-          from: z.string().min(1, { message: "From day is required" }),
-          to: z.string().min(1, { message: "To day is required" }),
-        }),
-        visitingHours: z.object({
-          from: z.string().min(1, { message: "From time is required" }),
-          to: z.string().min(1, { message: "To time is required" }),
-        }),
-        latitude: z
-          .union([z.string(), z.number()])
-          .optional()
-          .transform((val) => (typeof val === "string" ? parseFloat(val) : val)),
-        longitude: z
-          .union([z.string(), z.number()])
-          .optional()
-          .transform((val) => (typeof val === "string" ? parseFloat(val) : val)),
       })
     )
     .min(1, { message: "At least one location is required" }),
@@ -81,6 +89,7 @@ export const organizationSchema = doctorSchema
     specialization: true,
     designation: true,
     dateOfBirth: true,
+    locations: true,
   })
   .extend({
     pmdcNumber: z.string().optional(),
@@ -88,6 +97,7 @@ export const organizationSchema = doctorSchema
     specialization: z.string().optional(),
     designation: z.string().optional(),
     dateOfBirth: z.string().optional(),
+    locations: z.array(baseLocationSchema).min(1, { message: "At least one location is required" }),
   });
 
 export type OrganizationFormValues = z.infer<typeof organizationSchema>;
