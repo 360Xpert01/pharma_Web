@@ -21,7 +21,11 @@ export const doctorSchema = z.object({
     }),
   qualification: z.string().optional().or(z.literal("")),
   specialization: z.string().optional().or(z.literal("")),
-  segment: z.string().optional().or(z.literal("")),
+  segment: z
+    .string()
+    .optional()
+    .or(z.literal(""))
+    .transform((val) => (val && val.trim() !== "" ? val : null)),
   designation: z
     .string()
     .optional()
@@ -34,7 +38,7 @@ export const doctorSchema = z.object({
     .refine((val) => !val || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val), {
       message: "Please provide a valid email address",
     })
-    .transform((val) => val?.toLowerCase() || ""),
+    .transform((val) => (val && val.trim() !== "" ? val.toLowerCase() : null)),
   dateOfBirth: z.string().optional().or(z.literal("")),
   parent: z.string().optional().or(z.literal("")),
   locations: z

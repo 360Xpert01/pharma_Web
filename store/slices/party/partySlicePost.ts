@@ -40,18 +40,18 @@ export interface PartyLocation {
 export interface BasicInfo {
   party_type: "DOCTOR" | "CLINIC" | string;
   name: string;
-  email: string;
+  email: string | null;
   phoneNumber: string;
   image: string;
   description: string;
-  segmentId: string;
+  segmentId: string | null;
   status: "ACTIVE" | "INACTIVE" | string;
 }
 
 export interface PartyAttributes {
   specialization: string; // UUID
   qualification: string;
-  segment: string;
+  segment: string | null;
   designation: string;
   date_of_birth: string;
   pmdcNumber: string;
