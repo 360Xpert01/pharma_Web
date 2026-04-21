@@ -14,7 +14,7 @@ export interface FieldConfig {
   dateOfBirth: boolean;
   parent: boolean;
   status: boolean;
-  partyType: "DOCTOR" | "ORGANIZATION";
+  partyType: string;
 }
 
 /**
@@ -55,7 +55,7 @@ export const channelFieldConfigs: Record<string, FieldConfig> = {
     dateOfBirth: false,
     parent: false,
     status: true,
-    partyType: "ORGANIZATION",
+    partyType: "Pharmacies",
   },
 
   // Key Accounts channel configuration
