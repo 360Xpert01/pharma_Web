@@ -3,6 +3,8 @@
 import React, { useEffect, useRef } from "react";
 import { MoreVertical, LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { usePermission } from "@/hooks/usePermission";
+import type { Action } from "@/lib/rbac";
 
 export interface DropdownItem {
   label: string;
@@ -10,6 +12,7 @@ export interface DropdownItem {
   icon?: LucideIcon;
   variant?: "default" | "danger";
   disabled?: boolean;
+  action?: Action | Action[];
 }
 
 interface TableActionDropdownProps {
@@ -46,6 +49,14 @@ export default function TableActionDropdown({
   triggerClassName,
 }: TableActionDropdownProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { canDo } = usePermission();
+
+  // Filter items based on permissions
+  const allowedItems = items.filter((item) => {
+    if (!item.action) return true;
+    const actions = Array.isArray(item.action) ? item.action : [item.action];
+    return actions.some((a) => canDo(a));
+  });
 
   // Handle click outside
   useEffect(() => {
@@ -109,7 +120,7 @@ export default function TableActionDropdown({
             role="menu"
           >
             <div className="py-1">
-              {items.map((item, index) => {
+              {allowedItems.map((item, index) => {
                 const Icon = item.icon;
                 const isDisabled = item.disabled;
                 const isDanger = item.variant === "danger";

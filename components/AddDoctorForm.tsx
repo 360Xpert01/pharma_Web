@@ -290,6 +290,7 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
             <h2 className="t-h2">Location</h2>
             <Button
               onClick={addLocation}
+              action="add"
               variant="primary"
               size="lg"
               icon={Plus}
@@ -311,6 +312,7 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
                     <Button
                       onClick={() => removeLocation(location.id)}
                       variant="ghost"
+                      action="add"
                       size="icon"
                       className="text-[var(--destructive)] hover:text-[var(--destructive)] hover:bg-[var(---bg-transparent)]"
                     >
@@ -448,6 +450,7 @@ export default function AddDoctorForm({ idForm }: { idForm?: string }) {
           rounded="full"
           className="shadow-soft"
           onClick={handleSubmit}
+          action={isUpdateMode ? "edit" : "add"}
           loading={createLoading}
         >
           {"Add " + currentChannel?.name}

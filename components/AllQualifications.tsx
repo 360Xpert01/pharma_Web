@@ -13,6 +13,7 @@ import {
   resetQualificationsState,
 } from "@/store/slices/qualification/getAllQualificationsSlice";
 import EditIcon from "@/components/svgs/edit-icon";
+import { RoleGuard } from "@/components/shared/RoleGuard";
 
 interface Qualification {
   id: string;
@@ -121,16 +122,18 @@ export default function AllQualifications({ onEditQualification }: AllQualificat
       header: "",
       cell: ({ row }) => (
         <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleEdit(row.original.id);
-            }}
-            className="group hover:opacity-80 transition cursor-pointer"
-            title="Edit Qualification"
-          >
-            <EditIcon />
-          </button>
+          <RoleGuard action="edit">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleEdit(row.original.id);
+              }}
+              className="group hover:opacity-80 transition cursor-pointer"
+              title="Edit Qualification"
+            >
+              <EditIcon />
+            </button>
+          </RoleGuard>
         </div>
       ),
     },

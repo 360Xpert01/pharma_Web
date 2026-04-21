@@ -10,6 +10,7 @@ import EyeIcon from "@/components/svgs/eye-icon";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllTeams } from "@/store/slices/team/getAllTeamsSlice";
+import { RoleGuard } from "@/components/shared/RoleGuard";
 
 interface Team {
   id: string;
@@ -193,15 +194,17 @@ export default function CampaignsTable({
       enableSorting: false,
       cell: ({ row }) => (
         <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
-          <button
-            onClick={() => {
-              router.push(`/dashboard/UpdateTeamForm?id=${row.original.id}&mode=update`);
-            }}
-            className="group hover:opacity-80 transition cursor-pointer"
-            title="Edit Campaign"
-          >
-            <EditIcon />
-          </button>
+          <RoleGuard action="edit">
+            <button
+              onClick={() => {
+                router.push(`/dashboard/UpdateTeamForm?id=${row.original.id}&mode=update`);
+              }}
+              className="group hover:opacity-80 transition cursor-pointer"
+              title="Edit Campaign"
+            >
+              <EditIcon />
+            </button>
+          </RoleGuard>
           <button
             onClick={() => console.log("View", row.original.id)}
             className="group hover:opacity-80 transition cursor-pointer"

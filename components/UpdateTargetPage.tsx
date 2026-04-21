@@ -337,6 +337,7 @@ export default function UpdateTargetPage() {
           <Button
             type="button"
             onClick={handleUpdateTarget}
+            action="edit"
             variant="primary"
             size="lg"
             rounded="full"

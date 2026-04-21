@@ -2,6 +2,7 @@
 
 import React from "react";
 import ImageWithFallback from "@/components/shared/ImageWithFallback";
+import { usePermission } from "@/hooks/usePermission";
 
 export interface SKU {
   id: string;
@@ -26,6 +27,9 @@ export default function ProductTargetRow({
   skuTargets,
   onSkuTargetChange,
 }: ProductTargetRowProps) {
+  const { canDo } = usePermission();
+  const isReadOnly = !canDo("edit") && !canDo("add");
+
   return (
     <div className="flex gap-8 items-center bg-white rounded-8 p-4">
       {/* Product Branding */}
@@ -56,8 +60,9 @@ export default function ProductTargetRow({
                 <input
                   type="text"
                   placeholder="Enter target"
-                  className="w-full h-full text-right t-sm font-bold text-(--gray-9) focus:outline-none placeholder:text-(--gray-3) placeholder:font-normal bg-transparent"
+                  className={`w-full h-full text-right t-sm font-bold text-(--gray-9) focus:outline-none placeholder:text-(--gray-3) placeholder:font-normal bg-transparent ${isReadOnly ? "cursor-default" : ""}`}
                   value={skuTargets[sku.id] || ""}
+                  readOnly={isReadOnly}
                   onChange={(e) => onSkuTargetChange(sku.id, e.target.value)}
                 />
                 {/* <span className="ml-1 text-(--gray-5) select-none text-xs">%</span> */}

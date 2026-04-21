@@ -295,6 +295,7 @@ export default function AddDoctorSegmentsCard({
             {/* Add/Update Button */}
             <Button
               onClick={handleSubmit}
+              action={isUpdateMode ? "edit" : "add"}
               disabled={
                 (isUpdateMode ? updateLoading : loading) ||
                 !segmentName.trim() ||

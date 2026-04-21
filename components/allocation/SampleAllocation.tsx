@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Search, Plus, Loader2 } from "lucide-react";
 import EditIcon from "@/components/svgs/edit-icon";
 import DeleteIcon from "@/components/svgs/delete-icon";
+import { RoleGuard } from "@/components/shared/RoleGuard";
 
 interface SampleItem {
   id: string;
@@ -153,18 +154,20 @@ export default function SampleAllocation({
             </div>
           )}
         </div>
-        <div className="flex items-end">
-          <button
-            onClick={() => {
-              const input = dropdownRef.current?.querySelector("input");
-              if (input) input.focus();
-            }}
-            className="h-12 px-5 bg-(--primary) text-(--light) rounded-8 hover:bg-(--primary-2) transition flex items-center gap-2 text-sm font-medium cursor-pointer whitespace-nowrap"
-          >
-            <Plus className="w-4 h-4" />
-            Add Sample
-          </button>
-        </div>
+        <RoleGuard action="add">
+          <div className="flex items-end">
+            <button
+              onClick={() => {
+                const input = dropdownRef.current?.querySelector("input");
+                if (input) input.focus();
+              }}
+              className="h-12 px-5 bg-(--primary) text-(--light) rounded-8 hover:bg-(--primary-2) transition flex items-center gap-2 text-sm font-medium cursor-pointer whitespace-nowrap"
+            >
+              <Plus className="w-4 h-4" />
+              Add Sample
+            </button>
+          </div>
+        </RoleGuard>
       </div>
 
       {/* Sample Cards Grid */}
@@ -206,23 +209,27 @@ export default function SampleAllocation({
                         <span className="text-xs font-medium text-(--gray-5)">QTY</span>
                         <span className="text-sm font-bold text-(--gray-9)">{item.quantity}</span>
                       </div>
-                      <button
-                        onClick={() => setEditingId(item.id)}
-                        className="p-1 px-2 text-(--primary) rounded-4 transition cursor-pointer"
-                        title="Edit quantity"
-                      >
-                        <EditIcon />
-                      </button>
+                      <RoleGuard action="edit">
+                        <button
+                          onClick={() => setEditingId(item.id)}
+                          className="p-1 px-2 text-(--primary) rounded-4 transition cursor-pointer"
+                          title="Edit quantity"
+                        >
+                          <EditIcon />
+                        </button>
+                      </RoleGuard>
                     </div>
                   )}
 
-                  <button
-                    onClick={() => onRemoveSample(item.id)}
-                    className="flex items-center justify-center w-9 h-9 text-(--destructive) rounded-8 transition cursor-pointer shrink-0"
-                    title="Delete"
-                  >
-                    <DeleteIcon />
-                  </button>
+                  <RoleGuard action="delete">
+                    <button
+                      onClick={() => onRemoveSample(item.id)}
+                      className="flex items-center justify-center w-9 h-9 text-(--destructive) rounded-8 transition cursor-pointer shrink-0"
+                      title="Delete"
+                    >
+                      <DeleteIcon />
+                    </button>
+                  </RoleGuard>
                 </div>
               </div>
             ))}

@@ -303,6 +303,7 @@ export default function AddSpecialitiesCard({
             {/* Add/Update Button */}
             <Button
               onClick={handleSubmit}
+              action={isUpdateMode ? "edit" : "add"}
               disabled={
                 (isUpdateMode ? updateLoading : loading) ||
                 !specializationName.trim() ||

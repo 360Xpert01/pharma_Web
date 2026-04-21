@@ -123,7 +123,7 @@ export default function AddSampleForm() {
             <Button variant="outline" size="lg" rounded="full" onClick={handleDiscard}>
               Discard
             </Button>
-            <Button variant="primary" size="lg" icon={Plus} rounded="full">
+            <Button variant="primary" size="lg" icon={Plus} rounded="full" action="add">
               Add Sample
             </Button>
           </div>

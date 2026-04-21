@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllDistributors } from "@/store/slices/distributor/getAllDistributorsSlice";
 import EditIcon from "@/components/svgs/edit-icon";
 import EyeIcon from "@/components/svgs/eye-icon";
+import { RoleGuard } from "@/components/shared/RoleGuard";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import StatusBadge from "@/components/shared/StatusBadge";
@@ -190,16 +191,18 @@ export default function DistributorTable({
         enableSorting: false,
         cell: ({ row }) => (
           <div className="flex items-center gap-3">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                router.push(`/dashboard/UpdateDistributor?id=${row.original.id}`);
-              }}
-              className="hover:opacity-80 transition cursor-pointer"
-              title="Edit Distributor"
-            >
-              <EditIcon />
-            </button>
+            <RoleGuard action="edit">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push(`/dashboard/UpdateDistributor?id=${row.original.id}`);
+                }}
+                className="hover:opacity-80 transition cursor-pointer"
+                title="Edit Distributor"
+              >
+                <EditIcon />
+              </button>
+            </RoleGuard>
             <Link
               href={`/dashboard/Distributor-Profile?id=${row.original.id}`}
               className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"

@@ -12,6 +12,7 @@ import {
   resetAllocationListState,
 } from "@/store/slices/allocation/getAllocationListSlice";
 import EditIcon from "@/components/svgs/edit-icon";
+import { RoleGuard } from "@/components/shared/RoleGuard";
 
 interface AllocationRecord {
   userId: string;
@@ -172,16 +173,18 @@ export default function AllocatedGiveawaysTable({
       header: "",
       cell: ({ row }) => (
         <div className="flex justify-center">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleViewDetails(row.original.userId);
-            }}
-            className="group hover:opacity-80 transition cursor-pointer"
-            title="View Details"
-          >
-            <EditIcon />
-          </button>
+          <RoleGuard action="edit">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleViewDetails(row.original.userId);
+              }}
+              className="group hover:opacity-80 transition cursor-pointer"
+              title="View Details"
+            >
+              <EditIcon />
+            </button>
+          </RoleGuard>
         </div>
       ),
     },

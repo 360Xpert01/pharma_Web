@@ -153,11 +153,13 @@ export default function RolesCardList({ searchTerm = "", filters }: UserRolesPro
               {
                 label: "Edit",
                 onClick: () => console.log("Edit", row.original.id),
+                action: "edit",
               },
               {
                 label: "Delete",
                 onClick: () => console.log("Delete", row.original.id),
                 variant: "danger" as const,
+                action: "delete",
               },
             ]}
           />

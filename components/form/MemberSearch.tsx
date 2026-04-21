@@ -176,6 +176,7 @@ export default function MemberSearch({
                 <Button
                   size="icon-sm"
                   variant="ghost"
+                  action="delete"
                   onClick={() => handleRemoveMember(member.id)}
                   className="bg-(--destructive-0) text-(--destructive) hover:bg-(--destructive-1) ml-2"
                 >

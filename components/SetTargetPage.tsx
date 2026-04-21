@@ -286,6 +286,7 @@ export default function SetTargetPage() {
           <Button
             type="button"
             onClick={handleSetTarget}
+            action="add"
             variant="primary"
             size="lg"
             rounded="full"

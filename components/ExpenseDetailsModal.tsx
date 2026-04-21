@@ -1,6 +1,6 @@
-"use client";
 import React, { useState, useEffect } from "react";
 import { X, Loader2 } from "lucide-react";
+import { RoleGuard } from "@/components/shared/RoleGuard";
 import { updateExpenseStatus } from "@/store/slices/expense/expenseStatusSlice";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { fetchExpenseDetailsByCallId } from "@/store/slices/expense/getDetailedExpenseSlice";
@@ -100,20 +100,24 @@ export default function ExpenseDetailsModal({
               <h1 className="t-h1 text-gray-900">Expense Details</h1>
               {showBulkActions && (
                 <div className="flex gap-3">
-                  <button
-                    onClick={() => handleBulkUpdate("approved")}
-                    disabled={updatingId !== null}
-                    className="px-4 sm:px-5 py-2 bg-primary text-white rounded-8 t-label-b hover:bg-primary-2 transition-all disabled:opacity-50 active:scale-95 whitespace-nowrap text-xs sm:text-sm"
-                  >
-                    Approve All
-                  </button>
-                  <button
-                    onClick={() => handleBulkUpdate("rejected")}
-                    disabled={updatingId !== null}
-                    className="px-4 sm:px-5 py-2 bg-white t-err border border-destructive rounded-8 t-label-b hover:bg-red-50 transition-all disabled:opacity-50 active:scale-95 whitespace-nowrap text-xs sm:text-sm"
-                  >
-                    Reject All
-                  </button>
+                  <RoleGuard action="approve">
+                    <button
+                      onClick={() => handleBulkUpdate("approved")}
+                      disabled={updatingId !== null}
+                      className="px-4 sm:px-5 py-2 bg-primary text-white rounded-8 t-label-b hover:bg-primary-2 transition-all disabled:opacity-50 active:scale-95 whitespace-nowrap text-xs sm:text-sm"
+                    >
+                      Approve All
+                    </button>
+                  </RoleGuard>
+                  <RoleGuard action="reject">
+                    <button
+                      onClick={() => handleBulkUpdate("rejected")}
+                      disabled={updatingId !== null}
+                      className="px-4 sm:px-5 py-2 bg-white t-err border border-destructive rounded-8 t-label-b hover:bg-red-50 transition-all disabled:opacity-50 active:scale-95 whitespace-nowrap text-xs sm:text-sm"
+                    >
+                      Reject All
+                    </button>
+                  </RoleGuard>
                 </div>
               )}
             </div>
@@ -219,18 +223,22 @@ export default function ExpenseDetailsModal({
                               </div>
                             ) : (
                               <div className="flex gap-3">
-                                <button
-                                  onClick={() => handleUpdateStatus("approved", exp.id)}
-                                  className="px-6 sm:px-7 py-2 bg-primary text-white rounded-8 t-label-b text-sm shadow-soft hover:bg-primary-2 transition-all active:scale-95"
-                                >
-                                  Approve
-                                </button>
-                                <button
-                                  onClick={() => handleUpdateStatus("rejected", exp.id)}
-                                  className="px-6 sm:px-7 py-2 bg-white t-err border border-destructive rounded-8 t-label-b text-sm hover:bg-red-50 transition-all active:scale-95"
-                                >
-                                  Reject
-                                </button>
+                                <RoleGuard action="approve">
+                                  <button
+                                    onClick={() => handleUpdateStatus("approved", exp.id)}
+                                    className="px-6 sm:px-7 py-2 bg-primary text-white rounded-8 t-label-b text-sm shadow-soft hover:bg-primary-2 transition-all active:scale-95"
+                                  >
+                                    Approve
+                                  </button>
+                                </RoleGuard>
+                                <RoleGuard action="reject">
+                                  <button
+                                    onClick={() => handleUpdateStatus("rejected", exp.id)}
+                                    className="px-6 sm:px-7 py-2 bg-white t-err border border-destructive rounded-8 t-label-b text-sm hover:bg-red-50 transition-all active:scale-95"
+                                  >
+                                    Reject
+                                  </button>
+                                </RoleGuard>
                               </div>
                             )}
                           </div>

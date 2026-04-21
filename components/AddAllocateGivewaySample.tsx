@@ -346,25 +346,19 @@ export default function AddAllocateGivewaySample() {
           >
             Discard
           </button>
-          <button
+          <Button
             onClick={handleAllocate}
             disabled={!selectedEmployee || allocateLoading}
-            className={`px-10 py-3 bg-(--primary) text-(--light) rounded-8 hover:bg-(--primary-2) transition flex items-center gap-2 shadow-soft cursor-pointer ${
-              !selectedEmployee || allocateLoading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            action="add"
+            variant="primary"
+            size="lg"
+            icon={Plus}
+            rounded="default"
+            className="shadow-soft"
+            loading={allocateLoading}
           >
-            {allocateLoading ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                Allocating...
-              </>
-            ) : (
-              <>
-                <Plus className="w-5 h-5" />
-                Allocate
-              </>
-            )}
-          </button>
+            {allocateLoading ? "Allocating..." : "Allocate"}
+          </Button>
         </div>
       </div>
 

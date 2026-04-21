@@ -301,6 +301,7 @@ export default function AddQualificationsCard({
             {/* Add/Update Button */}
             <Button
               onClick={handleSubmit}
+              action={isUpdateMode ? "edit" : "add"}
               disabled={
                 (isUpdateMode ? updateLoading : loading) ||
                 !qualificationName.trim() ||

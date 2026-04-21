@@ -303,6 +303,7 @@ export default function AllocateUserForm() {
           </Button>
           <Button
             onClick={handleSubmit}
+            action="add"
             disabled={allocateLoading}
             loading={allocateLoading}
             variant="primary"

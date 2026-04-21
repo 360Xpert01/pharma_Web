@@ -376,6 +376,7 @@ export default function DistributorForm({ mode, distributorId }: DistributorForm
           <Button
             type="button"
             onClick={handleSubmit}
+            action={isUpdateMode ? "edit" : "add"}
             disabled={formLoading}
             loading={formLoading}
             icon={Plus}

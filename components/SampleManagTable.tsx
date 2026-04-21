@@ -121,15 +121,18 @@ export default function SampleManagTable({
               {
                 label: "Edit",
                 onClick: () => console.log("Edit", row.original.id),
+                action: "edit",
               },
               {
                 label: "Duplicate",
                 onClick: () => console.log("Duplicate", row.original.id),
+                action: "add",
               },
               {
                 label: "Delete",
                 onClick: () => console.log("Delete", row.original.id),
                 variant: "danger",
+                action: "delete",
               },
             ]}
           />

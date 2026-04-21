@@ -13,6 +13,7 @@ import {
   type TargetListItem,
 } from "@/store/slices/target/getTargetListSlice";
 import EditIcon from "@/components/svgs/edit-icon";
+import { RoleGuard } from "@/components/shared/RoleGuard";
 import TargetExpandedRow from "@/components/TargetExpandedRow";
 
 // Helper function to get month name
@@ -184,16 +185,18 @@ export default function TargetListView({
           >
             <EyeIcon />
           </button> */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleViewDetails(e, row.original.targetId, row.original.userId);
-            }}
-            className="group hover:opacity-80 transition cursor-pointer"
-            title="Edit Target"
-          >
-            <EditIcon />
-          </button>
+          <RoleGuard action="edit">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleViewDetails(e, row.original.targetId, row.original.userId);
+              }}
+              className="group hover:opacity-80 transition cursor-pointer"
+              title="Edit Target"
+            >
+              <EditIcon />
+            </button>
+          </RoleGuard>
         </div>
       ),
     },

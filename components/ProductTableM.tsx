@@ -9,6 +9,7 @@ import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import EditIcon from "@/components/svgs/edit-icon";
 import EyeIcon from "@/components/svgs/eye-icon";
+import { RoleGuard } from "@/components/shared/RoleGuard";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllProducts } from "@/store/slices/product/getAllProductsSlice";
 
@@ -145,16 +146,18 @@ export default function MedicineTable({
       cell: ({ row }) => (
         <div className="flex items-center gap-3 justify-end" onClick={(e) => e.stopPropagation()}>
           {/* Edit Icon */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              router.push(`/dashboard/UpdateProduct?id=${row.original.id}`);
-            }}
-            className="group hover:opacity-80 transition cursor-pointer"
-            title="Edit Product"
-          >
-            <EditIcon />
-          </button>
+          <RoleGuard action="edit">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                router.push(`/dashboard/UpdateProduct?id=${row.original.id}`);
+              }}
+              className="group hover:opacity-80 transition cursor-pointer"
+              title="Edit Product"
+            >
+              <EditIcon />
+            </button>
+          </RoleGuard>
 
           {/* View Icon */}
           <button

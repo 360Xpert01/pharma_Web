@@ -149,6 +149,7 @@ export default function AddCallPointForm() {
                 icon={Plus}
                 rounded="full"
                 onClick={handleSubmit}
+                action="add"
                 loading={loading}
                 disabled={!locationTitle.trim() || !latitude.trim() || !longitude.trim()}
               >
