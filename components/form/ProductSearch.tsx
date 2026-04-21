@@ -99,7 +99,7 @@ export default function ProductSearch({
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-(--gray-4)" />
           </div>
           <div className="flex-shrink-0">
-            <Button variant="primary" size="lg" icon={Plus} rounded="default">
+            <Button variant="primary" size="lg" icon={Plus} action="add" rounded="default">
               Add Products
             </Button>
           </div>
@@ -151,6 +151,7 @@ export default function ProductSearch({
               <Button
                 size="icon"
                 variant="ghost"
+                action="delete"
                 onClick={() => handleRemoveProduct(product.id)}
                 className="bg-(--transparent) text-(--destructive) hover:bg-(--transparent) hover:text-(--destructive)"
               >

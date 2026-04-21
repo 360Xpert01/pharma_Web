@@ -9,6 +9,7 @@ import { getAllGiveaways, GiveawayItemDisplay } from "@/store/slices/giveaway/ge
 import { useRouter } from "next/navigation";
 import EditIcon from "@/components/svgs/edit-icon";
 import EyeIcon from "@/components/svgs/eye-icon";
+import { RoleGuard } from "@/components/shared/RoleGuard";
 
 interface Giveaway extends GiveawayItemDisplay {}
 
@@ -108,16 +109,18 @@ export default function GiveawayTable({
       cell: ({ row }) => (
         <div className="flex items-center gap-3 justify-end" onClick={(e) => e.stopPropagation()}>
           {/* Edit Icon */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              router.push(`/dashboard/UpdateGiveaway?id=${row.original.id}`);
-            }}
-            className="group hover:opacity-80 transition cursor-pointer"
-            title="Edit Giveaway"
-          >
-            <EditIcon />
-          </button>
+          <RoleGuard action="edit">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                router.push(`/dashboard/UpdateGiveaway?id=${row.original.id}`);
+              }}
+              className="group hover:opacity-80 transition cursor-pointer"
+              title="Edit Giveaway"
+            >
+              <EditIcon />
+            </button>
+          </RoleGuard>
 
           {/* View Icon */}
           <button

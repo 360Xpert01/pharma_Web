@@ -394,6 +394,7 @@ export default function ProductForm({ mode = "add", productId }: ProductFormProp
         </Button>
         <Button
           onClick={handleSubmit}
+          action={mode === "edit" ? "edit" : "add"}
           disabled={(mode === "edit" ? updateLoading : productLoading) || uploadLoading}
           loading={(mode === "edit" ? updateLoading : productLoading) || uploadLoading}
           variant="primary"

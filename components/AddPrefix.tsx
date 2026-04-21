@@ -210,6 +210,7 @@ export default function AddPrefixNameComponent() {
                   icon={Plus}
                   rounded="default"
                   onClick={handleAddPrefix}
+                  action="add"
                   loading={createLoading}
                   disabled={!selectedTable || !prefix}
                 >

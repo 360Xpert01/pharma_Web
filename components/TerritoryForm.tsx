@@ -244,6 +244,7 @@ export default function TerritoryForm({ territoryId }: { territoryId?: string | 
           </Button>
           <Button
             onClick={handleSubmit}
+            action={isEditMode ? "edit" : "add"}
             disabled={isLoading}
             loading={isLoading}
             variant="primary"

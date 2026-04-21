@@ -107,11 +107,13 @@ export default function CallPointsList() {
               {
                 label: "Edit",
                 onClick: () => console.log("Edit", row.original.id),
+                action: "edit",
               },
               {
                 label: "Delete",
                 onClick: () => console.log("Delete", row.original.id),
                 variant: "danger",
+                action: "delete",
               },
             ]}
           />

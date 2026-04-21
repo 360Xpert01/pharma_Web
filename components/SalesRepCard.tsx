@@ -13,6 +13,7 @@ export interface ProductTarget {
 }
 import EditIcon from "./svgs/edit-icon";
 import DeleteIcon from "./svgs/delete-icon";
+import { RoleGuard } from "@/components/shared/RoleGuard";
 
 export interface SalesRep {
   id: string;
@@ -208,18 +209,22 @@ export default function SalesRepCard({
                       </div>
                       {/* Edit and Delete Buttons */}
                       <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => toggleEdit(leftProduct.id)}
-                          className="group hover:opacity-80 transition cursor-pointer"
-                        >
-                          <EditIcon />
-                        </button>
-                        <button
-                          onClick={() => onDeleteProduct(rep.id, leftProduct.id)}
-                          className="group hover:opacity-80 transition cursor-pointer"
-                        >
-                          <DeleteIcon />
-                        </button>
+                        <RoleGuard action="edit">
+                          <button
+                            onClick={() => toggleEdit(leftProduct.id)}
+                            className="group hover:opacity-80 transition cursor-pointer"
+                          >
+                            <EditIcon />
+                          </button>
+                        </RoleGuard>
+                        <RoleGuard action="delete">
+                          <button
+                            onClick={() => onDeleteProduct(rep.id, leftProduct.id)}
+                            className="group hover:opacity-80 transition cursor-pointer"
+                          >
+                            <DeleteIcon />
+                          </button>
+                        </RoleGuard>
                       </div>
                     </div>
                   )}
@@ -280,18 +285,22 @@ export default function SalesRepCard({
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => toggleEdit(rightProduct.id)}
-                          className="group hover:opacity-80 transition cursor-pointer"
-                        >
-                          <EditIcon />
-                        </button>
-                        <button
-                          onClick={() => onDeleteProduct(rep.id, rightProduct.id)}
-                          className="group hover:opacity-80 transition cursor-pointer"
-                        >
-                          <DeleteIcon />
-                        </button>
+                        <RoleGuard action="edit">
+                          <button
+                            onClick={() => toggleEdit(rightProduct.id)}
+                            className="group hover:opacity-80 transition cursor-pointer"
+                          >
+                            <EditIcon />
+                          </button>
+                        </RoleGuard>
+                        <RoleGuard action="delete">
+                          <button
+                            onClick={() => onDeleteProduct(rep.id, rightProduct.id)}
+                            className="group hover:opacity-80 transition cursor-pointer"
+                          >
+                            <DeleteIcon />
+                          </button>
+                        </RoleGuard>
                       </div>
                     </div>
                   )}

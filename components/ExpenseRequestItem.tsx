@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Check, X } from "lucide-react";
+import { RoleGuard } from "./shared/RoleGuard";
 
 interface ExpenseRequestItemProps {
   title: string;
@@ -25,40 +26,44 @@ const ExpenseRequestItem: React.FC<ExpenseRequestItemProps> = ({
       </div>
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-2">
-          <button
-            onClick={onApprove}
-            disabled={isLoading}
-            className="px-4 py-2 bg-(--primary) text-(--light) t-sm font-medium rounded-8 hover:bg-(--primary-2) transition-colors flex items-center gap-1 shadow-soft disabled:opacity-50 disabled:cursor-not-allowed min-w-[100px] justify-center"
-          >
-            {isLoading ? (
-              <>
-                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                Loading...
-              </>
-            ) : (
-              <>
-                <Check className="w-4 h-4" />
-                Approve
-              </>
-            )}
-          </button>
-          <button
-            onClick={onReject}
-            disabled={isLoading}
-            className="px-4 py-2 border border-(--destructive) text-(--destructive) t-sm font-medium rounded-8 hover:bg-(--destructive-0) transition-colors flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed min-w-[100px] justify-center"
-          >
-            {isLoading ? (
-              <>
-                <span className="w-4 h-4 border-2 border-(--destructive)/30 border-t-(--destructive) rounded-full animate-spin"></span>
-                Loading...
-              </>
-            ) : (
-              <>
-                <X className="w-4 h-4" />
-                Reject
-              </>
-            )}
-          </button>
+          <RoleGuard action="edit">
+            <button
+              onClick={onApprove}
+              disabled={isLoading}
+              className="px-4 py-2 bg-(--primary) text-(--light) t-sm font-medium rounded-8 hover:bg-(--primary-2) transition-colors flex items-center gap-1 shadow-soft disabled:opacity-50 disabled:cursor-not-allowed min-w-[100px] justify-center"
+            >
+              {isLoading ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                  Loading...
+                </>
+              ) : (
+                <>
+                  <Check className="w-4 h-4" />
+                  Approve
+                </>
+              )}
+            </button>
+          </RoleGuard>
+          <RoleGuard action="edit">
+            <button
+              onClick={onReject}
+              disabled={isLoading}
+              className="px-4 py-2 border border-(--destructive) text-(--destructive) t-sm font-medium rounded-8 hover:bg-(--destructive-0) transition-colors flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed min-w-[100px] justify-center"
+            >
+              {isLoading ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-(--destructive)/30 border-t-(--destructive) rounded-full animate-spin"></span>
+                  Loading...
+                </>
+              ) : (
+                <>
+                  <X className="w-4 h-4" />
+                  Reject
+                </>
+              )}
+            </button>
+          </RoleGuard>
         </div>
       </div>
     </div>

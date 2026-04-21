@@ -10,6 +10,7 @@ import StatusBadge from "@/components/shared/StatusBadge";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { getAllSegments, resetSegmentsState } from "@/store/slices/segment/getAllSegmentsSlice";
 import EditIcon from "@/components/svgs/edit-icon";
+import { RoleGuard } from "@/components/shared/RoleGuard";
 
 interface DoctorSegment {
   id: string;
@@ -115,16 +116,18 @@ export default function AllDoctorSegments({ onEditSegment }: AllDoctorSegmentsPr
       header: "",
       cell: ({ row }) => (
         <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleEdit(row.original.id);
-            }}
-            className="group hover:opacity-80 transition cursor-pointer"
-            title="Edit Segment"
-          >
-            <EditIcon />
-          </button>
+          <RoleGuard action="edit">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleEdit(row.original.id);
+              }}
+              className="group hover:opacity-80 transition cursor-pointer"
+              title="Edit Segment"
+            >
+              <EditIcon />
+            </button>
+          </RoleGuard>
         </div>
       ),
     },

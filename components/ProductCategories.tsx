@@ -188,6 +188,7 @@ export default function ProductCategories({
             {/* Submit Button */}
             <Button
               onClick={handleSubmit}
+              action={isUpdateMode ? "edit" : "add"}
               disabled={!categoryName.trim() || creatingLoading || updatingLoading}
               variant="primary"
               size="lg"

@@ -327,6 +327,7 @@ export default function GiveawayForm({ mode = "add", giveawayId }: GiveawayFormP
               icon={mode === "add" ? Plus : undefined}
               rounded="full"
               onClick={handleSubmit}
+              action={mode === "update" ? "edit" : "add"}
               loading={
                 createLoading || prefixLoading || fetchLoading || uploadLoading || updateLoading
               }

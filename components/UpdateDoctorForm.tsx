@@ -294,6 +294,7 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
             <Button
               onClick={addLocation}
               variant="primary"
+              action="edit"
               size="lg"
               icon={Plus}
               rounded="full"
@@ -314,6 +315,7 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
                     <Button
                       onClick={() => removeLocation(location.id)}
                       variant="ghost"
+                      action="edit"
                       size="icon"
                       className="text-[var(--destructive)] hover:text-[var(--destructive)] hover:bg-[var(---bg-transparent)]"
                     >
@@ -447,6 +449,7 @@ export default function UpdateDoctorForm({ partyId, channelId }: UpdateDoctorFor
         <Button
           variant="primary"
           size="lg"
+          action="edit"
           icon={Plus}
           rounded="full"
           className="shadow-soft"

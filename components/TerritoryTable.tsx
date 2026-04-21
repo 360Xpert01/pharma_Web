@@ -11,6 +11,7 @@ import {
 } from "@/store/slices/territory";
 import { toast } from "react-hot-toast";
 import EditIcon from "@/components/svgs/edit-icon";
+import { RoleGuard } from "@/components/shared/RoleGuard";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 
@@ -144,17 +145,18 @@ export default function TerritoryTable({
         enableSorting: false,
         cell: ({ row }) => (
           <div className="flex items-center gap-3">
-            {/* Edit Icon */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                router.push(`/dashboard/territory-form?id=${row.original.id}`);
-              }}
-              className="group hover:opacity-80 transition cursor-pointer"
-              title="Edit Territory"
-            >
-              <EditIcon />
-            </button>
+            <RoleGuard action="edit">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push(`/dashboard/territory-form?id=${row.original.id}`);
+                }}
+                className="group hover:opacity-80 transition cursor-pointer"
+                title="Edit Territory"
+              >
+                <EditIcon />
+              </button>
+            </RoleGuard>
           </div>
         ),
       },

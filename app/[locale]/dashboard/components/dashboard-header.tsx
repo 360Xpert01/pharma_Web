@@ -57,26 +57,28 @@ export function DashboardHeader({
 
         {/* Action Buttons */}
         {!btnTrue && (
-          <button
-            className="p-3 cursor-pointer bg-(--primary) hover:bg-(--primary-2) text-sm text-(--light) rounded-8 flex items-center"
+          <Button
+            className="h-11 px-5"
             onClick={onAddClick || onSettings}
             title={t("tooltips.settings")}
             aria-label={t("tooltips.settings")}
+            icon={Plus}
+            action="add"
           >
-            <Plus className={cn("h-4 w-4 mr-1", pulseAddBtn)} />
             {btnAdd || "add"}
-          </button>
+          </Button>
         )}
 
         {!btnReqquest && !btnTrue && btntextReq && (
-          <button
-            className="p-3 bg-(--primary) cursor-pointer hover:bg-(--primary-2) text-sm text-(--light) rounded-8 flex items-center"
+          <Button
+            className="h-11 px-5"
             onClick={onSettingView}
             title={t("tooltips.settings")}
             aria-label={t("tooltips.settings")}
+            action="view" // or specific permission if needed
           >
             {btntextReq || "add"}
-          </button>
+          </Button>
         )}
       </div>
     </div>

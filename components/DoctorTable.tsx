@@ -13,6 +13,7 @@ import { getFieldConfigByChannel } from "@/utils/doctorFormConfig";
 import { getPartiesByChannelType, PartyItem } from "@/store/slices/party/partiesSlice";
 import EditIcon from "@/components/svgs/edit-icon";
 import EyeIcon from "@/components/svgs/eye-icon";
+import { RoleGuard } from "@/components/shared/RoleGuard";
 
 interface Doctor extends PartyItem {}
 
@@ -281,19 +282,21 @@ export default function DoctorsTable({
       cell: ({ row }) => (
         <div className="flex items-center gap-3">
           {/* Edit Icon */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              const partyId = row.original?.party_id || row.original?.id;
-              if (partyId) {
-                router.push(`/dashboard/update-doctor/${partyId}?channelId=${id}`);
-              }
-            }}
-            className="group hover:opacity-80 transition cursor-pointer"
-            title="Edit Doctor"
-          >
-            <EditIcon />
-          </button>
+          <RoleGuard action="edit">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                const partyId = row.original?.party_id || row.original?.id;
+                if (partyId) {
+                  router.push(`/dashboard/update-doctor/${partyId}?channelId=${id}`);
+                }
+              }}
+              className="group hover:opacity-80 transition cursor-pointer"
+              title="Edit Doctor"
+            >
+              <EditIcon />
+            </button>
+          </RoleGuard>
 
           {/* View Icon */}
           <Link

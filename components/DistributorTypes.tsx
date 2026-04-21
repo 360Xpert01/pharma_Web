@@ -306,6 +306,7 @@ export default function AddDistributorTypesCard({
             {/* Add/Update Button */}
             <Button
               onClick={handleSubmit}
+              action={isUpdateMode ? "edit" : "add"}
               disabled={
                 (isUpdateMode ? updateLoading : loading) ||
                 !distributorTypeName.trim() ||

@@ -7,6 +7,7 @@ import TablePagination from "@/components/TablePagination";
 import TableActionDropdown from "@/components/shared/table/TableActionDropdown";
 import StatusBadge from "@/components/shared/StatusBadge";
 import EditIcon from "@/components/svgs/edit-icon";
+import { RoleGuard } from "@/components/shared/RoleGuard";
 import { useAppDispatch, useAppSelector } from "@/store";
 import {
   getAllProductCategories,
@@ -104,16 +105,18 @@ export default function AllProductCategories({ onEditCategory }: AllProductCateg
       header: "",
       cell: ({ row }) => (
         <div className="flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleEdit(row.original.id);
-            }}
-            className="group hover:opacity-80 transition cursor-pointer"
-            title="Edit Category"
-          >
-            <EditIcon />
-          </button>
+          <RoleGuard action="edit">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleEdit(row.original.id);
+              }}
+              className="group hover:opacity-80 transition cursor-pointer"
+              title="Edit Category"
+            >
+              <EditIcon />
+            </button>
+          </RoleGuard>
         </div>
       ),
     },

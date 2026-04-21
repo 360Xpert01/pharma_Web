@@ -255,6 +255,7 @@ export default function TeamForm() {
           </Button>
           <Button
             onClick={handleSubmit}
+            action={isUpdateMode ? "edit" : "add"}
             disabled={loading}
             loading={loading}
             variant="primary"

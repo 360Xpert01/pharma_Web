@@ -431,6 +431,7 @@ export default function AddNewRoleForm() {
             icon={Plus}
             rounded="full"
             onClick={handleSubmit}
+            action="add"
             loading={loading || prefixLoading}
           >
             {loading ? "Creating..." : "Add Role"}

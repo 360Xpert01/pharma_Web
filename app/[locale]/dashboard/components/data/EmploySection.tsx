@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import EditIcon from "@/components/svgs/edit-icon";
 import EyeIcon from "@/components/svgs/eye-icon";
+import { RoleGuard } from "@/components/shared/RoleGuard";
 
 import SalesDashboard1 from "../SalesDashboard1";
 import CenturoTable from "@/components/shared/table/CeturoTable";
@@ -175,17 +176,18 @@ export default function SalesTeamTable({
         enableSorting: false, // Explicitly disable sorting for action column
         cell: ({ row }) => (
           <div className="flex items-center gap-3">
-            {/* Edit Icon */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                router.push(`/dashboard/UpdateEmployees?id=${row.original.id}`);
-              }}
-              className="group hover:opacity-80 transition cursor-pointer"
-              title="Edit Employee"
-            >
-              <EditIcon />
-            </button>
+            <RoleGuard action="edit">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push(`/dashboard/UpdateEmployees?id=${row.original.id}`);
+                }}
+                className="group hover:opacity-80 transition cursor-pointer"
+                title="Edit Employee"
+              >
+                <EditIcon />
+              </button>
+            </RoleGuard>
 
             {/* Info Icon - Opens Statistics */}
             {/* <button

@@ -15,21 +15,7 @@ export function resolveBaseRole(permissionGroup: string): BaseRole {
 export const ROLE_NAV_ACCESS: Record<BaseRole, string[]> = {
   ADMIN: ["*"],
   CSUITE: ["*", "!Control Center"],
-  MANAGER: [
-    "Dashboard",
-    "People & Teams",
-    "Attendance & Tracking",
-    "Expense Requests",
-    "DCR & Field Ops",
-    "Planning",
-    "Monthly Work plans",
-    "Execution",
-    "Attendance",
-    "Admin",
-    "Expense Claims",
-    "Reports",
-    "Daily Call Reports",
-  ],
+  MANAGER: ["*", "!Control Center"],
   SALES: [],
   UNKNOWN: [],
 };
@@ -40,16 +26,36 @@ export type Action = "view" | "add" | "edit" | "delete";
 export const ROLE_ACTIONS: Record<BaseRole, Action[]> = {
   ADMIN: ["view", "add", "edit", "delete"],
   CSUITE: ["view"],
-  MANAGER: ["view", "add", "edit"],
+  MANAGER: ["view"], // Standardized to view-only/approvals (represented as 'view' for now)
   SALES: [],
   UNKNOWN: [],
 };
 
 // ─── Route-level access ───────────────────────────────────────────────────────
+// Explicitly list routes that belong to "Control Center" to block them
+const CONTROL_CENTER_ROUTES = [
+  "/dashboard/bricks-hierarchy",
+  "/dashboard/role-hierarchy",
+  "/dashboard/AddPrefix",
+  "/dashboard/territory-Management",
+  "/dashboard/Channals",
+  "/dashboard/Add-Call-points",
+  "/dashboard/product-categories",
+  "/dashboard/doctor-segments",
+  "/dashboard/doctor-qualifications",
+  "/dashboard/distributor-types",
+  "/dashboard/doctor-specialities",
+  "/dashboard/User-Role",
+  "/dashboard/csvImports",
+  "/integrations/api",
+  "/integrations/import",
+  "/integrations/bi",
+];
+
 export const ROLE_ROUTE_ACCESS: Record<BaseRole, string[]> = {
   ADMIN: ["*"],
-  CSUITE: ["*"],
-  MANAGER: ["/dashboard", "/support"],
+  CSUITE: ["*", ...CONTROL_CENTER_ROUTES.map((r) => `!${r}`)],
+  MANAGER: ["*", ...CONTROL_CENTER_ROUTES.map((r) => `!${r}`)],
   SALES: [],
   UNKNOWN: [],
 };
@@ -70,5 +76,11 @@ export function canDo(permissionGroup: string, action: Action): boolean {
 export function canAccessRoute(permissionGroup: string, pathname: string): boolean {
   const baseRole = resolveBaseRole(permissionGroup);
   const allowed = ROLE_ROUTE_ACCESS[baseRole];
+
+  // First check if explicitly blocked
+  if (allowed?.some((r) => r.startsWith("!") && pathname.startsWith(r.slice(1)))) {
+    return false;
+  }
+
   return allowed?.includes("*") || allowed?.some((r) => pathname.startsWith(r)) || false;
 }

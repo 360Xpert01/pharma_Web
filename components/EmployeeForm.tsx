@@ -807,17 +807,17 @@ export default function EmployeeForm({ mode, userId }: EmployeeFormProps) {
             Discard
           </Button>
           <Button
-            type="button"
             onClick={handleSubmit}
+            action={isUpdateMode ? "edit" : "add"}
             disabled={loading}
             loading={loading}
-            icon={Plus}
             variant="primary"
             size="lg"
+            icon={Plus}
             rounded="full"
-            className="px-8 shadow-soft"
+            className="shadow-soft"
           >
-            {uploadLoading ? "Uploading..." : buttonText}
+            {buttonText}
           </Button>
         </div>
       </div>
