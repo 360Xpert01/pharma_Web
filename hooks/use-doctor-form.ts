@@ -364,7 +364,7 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
       locations,
     };
 
-    const isOrganization = fieldConfig.partyType === "ORGANIZATION";
+    const isOrganization = fieldConfig.partyType !== "DOCTOR";
     const schema = isOrganization ? organizationSchema : doctorSchema;
 
     const validation = schema.safeParse(formData);
@@ -388,7 +388,7 @@ export const useDoctorForm = (idForm?: string, partyIdOverride?: string) => {
     const payload = {
       channelTypeId: channel || idForm || "",
       basicInfo: {
-        party_type: fieldConfig.partyType || "DOCTOR",
+        party_type: currentChannel?.name || fieldConfig.partyType || "DOCTOR",
         name: validatedData.userName,
         email: validatedData.email,
         phoneNumber: validatedData.contactNumber,
