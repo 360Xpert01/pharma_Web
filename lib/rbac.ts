@@ -14,8 +14,8 @@ export function resolveBaseRole(permissionGroup: string): BaseRole {
 // ─── Nav item access per role ─────────────────────────────────────────────────
 export const ROLE_NAV_ACCESS: Record<BaseRole, string[]> = {
   ADMIN: ["*"],
-  CSUITE: ["*", "!Control Center"],
-  MANAGER: ["*", "!Control Center"],
+  CSUITE: ["*", "!Control Center", "!Accounts"],
+  MANAGER: ["*", "!Control Center", "!Accounts"],
   SALES: [],
   UNKNOWN: [],
 };
