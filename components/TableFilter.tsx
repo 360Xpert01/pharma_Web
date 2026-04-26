@@ -23,6 +23,8 @@ interface TableFilterProps {
   showTargetFilters?: boolean;
   showDistributorFilters?: boolean;
   showExpenseFilters?: boolean;
+  showDcrFilters?: boolean;
+  showAttendanceFilters?: boolean;
   isAllocate?: boolean;
   channelId?: string;
   onApply?: () => void;
@@ -56,6 +58,8 @@ export default function TableFilter({
   showTargetFilters = false,
   showDistributorFilters = false,
   showExpenseFilters = false,
+  showDcrFilters = false,
+  showAttendanceFilters = false,
   isAllocate = false,
   channelId,
   onApply,
@@ -143,6 +147,10 @@ export default function TableFilter({
           limit: 100,
         })
       );
+    }
+    if ((showDcrFilters || showAttendanceFilters) && isFilterOpen) {
+      dispatch(getAllUsers({ page: 1, limit: 100 }));
+      dispatch(getBrickList());
     }
   }, [
     dispatch,
@@ -506,6 +514,90 @@ export default function TableFilter({
                   />
                 </div>
               </>
+            ) : showDcrFilters ? (
+              <>
+                <div>
+                  <FormInput
+                    label="From Date"
+                    name="from"
+                    type="date"
+                    value={selectedFromDate}
+                    onChange={setSelectedFromDate}
+                    className="mb-0"
+                  />
+                </div>
+                <div>
+                  <FormInput
+                    label="To Date"
+                    name="to"
+                    type="date"
+                    value={selectedToDate}
+                    onChange={setSelectedToDate}
+                    className="mb-0"
+                  />
+                </div>
+                <div>
+                  <FormSelect
+                    label="Sales Representative"
+                    name="employeeId"
+                    value={selectedEmployeeId}
+                    onChange={setSelectedEmployeeId}
+                    options={[
+                      ...users
+                        .filter((user) =>
+                          (user.role?.roleName ?? "").toLowerCase().includes("sales representative")
+                        )
+                        .map((user) => ({
+                          value: user.id,
+                          label: `${user.firstName} ${user.lastName}`,
+                        })),
+                    ]}
+                    placeholder="Select sales rep"
+                    className="mb-0"
+                  />
+                </div>
+                <div>
+                  <FormSelect
+                    label="Territory / Brick"
+                    name="regionId"
+                    value={selectedRegionId}
+                    onChange={setSelectedRegionId}
+                    options={regions.map((r) => ({
+                      value: r.id,
+                      label: r.description ? `${r.name} - ${r.description}` : r.name,
+                    }))}
+                    placeholder="Select territory"
+                    className="mb-0"
+                  />
+                </div>
+              </>
+            ) : showAttendanceFilters ? (
+              <>
+                <div>
+                  <FormInput
+                    label="Date"
+                    name="from"
+                    type="date"
+                    value={selectedFromDate}
+                    onChange={setSelectedFromDate}
+                    className="mb-0"
+                  />
+                </div>
+                <div>
+                  <FormSelect
+                    label="Territory / Brick"
+                    name="regionId"
+                    value={selectedRegionId}
+                    onChange={setSelectedRegionId}
+                    options={regions.map((r) => ({
+                      value: r.id,
+                      label: r.description ? `${r.name} - ${r.description}` : r.name,
+                    }))}
+                    placeholder="Select territory"
+                    className="mb-0"
+                  />
+                </div>
+              </>
             ) : null}
 
             {(showDoctorFilters ||
@@ -542,7 +634,9 @@ export default function TableFilter({
               !showTeamFilters &&
               !showTargetFilters &&
               !showDistributorFilters &&
-              !showExpenseFilters && (
+              !showExpenseFilters &&
+              !showDcrFilters &&
+              !showAttendanceFilters && (
                 <div>
                   <FormSelect
                     label="Date Range"

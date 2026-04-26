@@ -38,7 +38,7 @@ import AllDistributorTypes from "@/components/AllDistributorTypes";
 import Specialities from "@/components/Specialities";
 import AllSpecialities from "@/components/AllSpecialities";
 import AddSampleForm from "@/components/AddSampleForm";
-import AddGiveawayForm from "@/components/AddGiveawayForm";
+// import AddGiveawayForm from "@/components/AddGiveawayForm";
 import ProductForm from "@/components/ProductForm";
 import AddDoctorForm from "@/components/AddDoctorForm";
 import AddEmployeeForm from "@/components/AddEmployee";
@@ -75,6 +75,7 @@ import DistributorTable from "@/components/DistributorTable";
 import AddDistributor from "@/components/AddDistributor";
 import UpdateDistributorForm from "@/components/UpdateDistributorForm";
 import DistributorProfileTabs from "@/components/DistributorProfileTabs";
+import AttendanceTable from "@/components/AttendanceTable";
 
 export function DashboardContent({
   isLoading: externalLoading = false,
@@ -168,6 +169,8 @@ export function DashboardContent({
   distributorProfileBtn,
   showDistributorTabs,
   distributorId,
+  AttendanceTable: showAttendanceTable,
+  icon,
 }: DashboardProps) {
   const { isLoading, isLocalLoading, handleRefresh } = useDashboard();
   const router = useRouter();
@@ -247,6 +250,18 @@ export function DashboardContent({
     to?: string;
     doctorId?: string;
   }>({});
+  const [dcrFilters, setDcrFilters] = useState<{
+    from?: string;
+    to?: string;
+    employeeId?: string;
+    regionId?: string;
+  }>({});
+  const [attendanceFilters, setAttendanceFilters] = useState<{
+    from?: string;
+    regionId?: string;
+  }>({
+    from: new Date().toISOString().split("T")[0], // Default to today
+  });
 
   const handleSettings = () => {
     if (settingsRoute) {
@@ -567,8 +582,28 @@ export function DashboardContent({
 
         {DCRTable && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading={campHeading} filterT={filterT} />
-            <DcrTable />
+            <TableHeader
+              campHeading={campHeading}
+              filterT={filterT}
+              showDcrFilters={true}
+              onApplyFilters={setDcrFilters}
+              onSearch={setSearchTerm}
+            />
+            <DcrTable filters={dcrFilters} searchTerm={searchTerm} />
+          </div>
+        )}
+
+        {showAttendanceTable && (
+          <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
+            <TableHeader
+              campHeading={campHeading}
+              filterT={filterT}
+              showAttendanceFilters={true}
+              onApplyFilters={setAttendanceFilters}
+              onSearch={setSearchTerm}
+              icon={icon}
+            />
+            <AttendanceTable filters={attendanceFilters} searchTerm={searchTerm} />
           </div>
         )}
 

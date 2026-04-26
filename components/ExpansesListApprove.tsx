@@ -213,8 +213,8 @@ export default function ExpenseApprovalList({
                       <div className="relative">
                         <div className="w-14 h-14 rounded-8 overflow-hidden border-2 border-white">
                           <ImageWithFallback
-                            src={call.profilepicture}
-                            alt={call.name}
+                            src={call.profilepicture || call.partyImage}
+                            alt={call.fullname || call.partyName || "User"}
                             width={50}
                             height={50}
                             className="object-cover"
@@ -224,14 +224,20 @@ export default function ExpenseApprovalList({
                       </div>
 
                       <div>
-                        <h3 className="t-label-b">{call.fullname}</h3>
+                        <h3 className="t-label-b">
+                          {call.fullname || call.partyName || "Unknown"}
+                        </h3>
                         <div className="flex items-center gap-2">
-                          <p className="t-sm">{call.specialization}</p>
+                          <p className="t-sm">
+                            {call.specialization || call.partySpecialization || "Unknown"}
+                          </p>
                           <span
                             className={`px-2 py-0.5 text-xs font-medium rounded-8 ${
                               call.status === "Pending"
                                 ? "bg-(--warning-light) text-(--warning-2)"
-                                : call.status === "Rejected" || call.status === "rejected"
+                                : call.status === "Rejected" ||
+                                    call.status === "rejected" ||
+                                    call.status === "Rejected"
                                   ? "bg-(--destructive-light) text-(--destructive)"
                                   : "bg-(--success-light) text-(--success)"
                             }`}
