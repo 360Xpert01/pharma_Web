@@ -83,6 +83,25 @@ export default function ExpenseDetailsModal({
     }
   };
 
+  const totalApproved =
+    detailedExpenses.length > 0
+      ? detailedExpenses
+          .filter((exp: any) => exp.status?.toLowerCase() === "approved")
+          .reduce((sum: number, exp: any) => sum + exp.amount, 0)
+      : selectedExpenseData?.approvedExpense || 0;
+
+  const totalRejected =
+    detailedExpenses.length > 0
+      ? detailedExpenses
+          .filter((exp: any) => exp.status?.toLowerCase() === "rejected")
+          .reduce((sum: number, exp: any) => sum + exp.amount, 0)
+      : selectedExpenseData?.rejectedExpense || 0;
+
+  const totalExpense =
+    detailedExpenses.length > 0
+      ? detailedExpenses.reduce((sum: number, exp: any) => sum + exp.amount, 0)
+      : selectedExpenseData?.totalExpense || 0;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="bg-(--background) rounded-8 shadow-soft w-full max-w-4xl overflow-hidden animate-in fade-in zoom-in-95">
@@ -133,21 +152,21 @@ export default function ExpenseDetailsModal({
                 <div className="flex flex-col items-start">
                   <p className="t-over t-mute mb-1 text-[10px]">Total Expense</p>
                   <p className="t-val-sm t-warn flex items-baseline gap-1">
-                    {selectedExpenseData?.totalExpense.toLocaleString()}
+                    {totalExpense.toLocaleString()}
                     <span className="text-[10px] font-medium">PKR</span>
                   </p>
                 </div>
                 <div className="flex flex-col items-start">
                   <p className="t-over t-mute mb-1 text-[10px]">Approved</p>
                   <p className="t-val-sm t-ok flex items-baseline gap-1">
-                    {selectedExpenseData?.approvedExpense.toLocaleString()}
+                    {totalApproved.toLocaleString()}
                     <span className="text-[10px] font-medium">PKR</span>
                   </p>
                 </div>
                 <div className="flex flex-col items-start">
                   <p className="t-over t-mute mb-1 text-[10px]">Rejected</p>
                   <p className="t-val-sm t-err flex items-baseline gap-1">
-                    {selectedExpenseData?.rejectedExpense.toLocaleString()}
+                    {totalRejected.toLocaleString()}
                     <span className="text-[10px] font-medium">PKR</span>
                   </p>
                 </div>

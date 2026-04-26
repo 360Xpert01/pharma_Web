@@ -21,12 +21,12 @@ export const ROLE_NAV_ACCESS: Record<BaseRole, string[]> = {
 };
 
 // ─── What actions each role can perform ──────────────────────────────────────
-export type Action = "view" | "add" | "edit" | "delete";
+export type Action = "view" | "add" | "edit" | "delete" | "approve" | "reject";
 
 export const ROLE_ACTIONS: Record<BaseRole, Action[]> = {
-  ADMIN: ["view", "add", "edit", "delete"],
+  ADMIN: ["view", "add", "edit", "delete", "approve", "reject"],
   CSUITE: ["view"],
-  MANAGER: ["view"], // Standardized to view-only/approvals (represented as 'view' for now)
+  MANAGER: ["view", "approve", "reject"], // Standardized to view-only/approvals (represented as 'view' for now)
   SALES: [],
   UNKNOWN: [],
 };
