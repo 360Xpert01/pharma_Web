@@ -14,53 +14,68 @@ import { useSearchParams } from "next/navigation";
 import ImageWithFallback from "./shared/ImageWithFallback";
 import { ConfirmModal } from "./shared/confirm-modal";
 import { toast } from "react-hot-toast";
+import NoDataFound from "./shared/NoDataFound";
 
-export default function ExpenseApprovalList() {
+export default function ExpenseApprovalList({
+  dateRange,
+  setDateRange,
+}: {
+  dateRange: Range[];
+  setDateRange: (range: Range[]) => void;
+}) {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
+  const selectionRange = dateRange[0];
+
+  const [dataStart, setDataStart] = useState(format(selectionRange.startDate!, "yyyy-MM-dd"));
+  const [dataEnd, setDataEnd] = useState(format(selectionRange.endDate!, "yyyy-MM-dd"));
+
+  // Update dataStart/dataEnd when dateRange prop changes
+  useEffect(() => {
+    setDataStart(format(selectionRange.startDate!, "yyyy-MM-dd"));
+    setDataEnd(format(selectionRange.endDate!, "yyyy-MM-dd"));
+  }, [selectionRange.startDate, selectionRange.endDate]);
+
   const [showCalendar, setShowCalendar] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
   const [approving, setApproving] = useState(false);
-  const [dataStart, setDataStart] = useState(format(new Date(), "yyyy-MM-dd"));
-  const [dataEnd, setDataEnd] = useState(format(new Date(), "yyyy-MM-dd"));
-  console.log("dataStart", dataStart);
-  console.log("dataEnd", dataEnd);
-  const currentDate = format(new Date(), "yyyy-MM-dd");
-  const sevenDaysAfter = format(addDays(new Date(), 7), "yyyy-MM-dd");
-  const [dateRange, setDateRange] = useState<Range[]>([
-    {
-      startDate: new Date(), // 2026-01-14
-      endDate: new Date(sevenDaysAfter),
-      key: "selection",
-    },
-  ]);
 
   const [selectedExpense, setSelectedExpense] = useState<any | null>(null);
-  const from = "2026-01-12";
-  const to = "2026-01-13";
+
+  const handleSelect = (ranges: any) => {
+    setDateRange([ranges.selection]);
+  };
+
+  const handlePrevWeek = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const newStart = addDays(selectionRange.startDate!, -7);
+    const newEnd = addDays(selectionRange.endDate!, -7);
+    setDateRange([{ startDate: newStart, endDate: newEnd, key: "selection" }]);
+  };
+
+  const handleNextWeek = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const newStart = addDays(selectionRange.startDate!, 7);
+    const newEnd = addDays(selectionRange.endDate!, 7);
+    setDateRange([{ startDate: newStart, endDate: newEnd, key: "selection" }]);
+  };
 
   const dispatch = useDispatch();
   const { data, loading, error } = useSelector((state: any) => state.weekelyCallExpenses);
   const expensesAPI = data?.completedCalls || [];
 
   useEffect(() => {
-    dispatch(
-      fetchWeeklyCallExpenses({
-        salesmanId: id,
-        from: currentDate,
-        to: sevenDaysAfter,
-      })
-    );
-  }, [dispatch, from, to]);
-
-  const selectionRange = dateRange[0];
-
-  const handleSelect = (ranges: any) => {
-    setDateRange([ranges.selection]);
-    setDataStart(format(ranges.selection.startDate!, "yyyy-MM-dd"));
-    setDataEnd(format(ranges.selection.endDate!, "yyyy-MM-dd"));
-  };
+    if (id) {
+      dispatch(
+        fetchWeeklyCallExpenses({
+          salesmanId: id,
+          from: dataStart,
+          to: dataEnd,
+        }) as any
+      );
+    }
+  }, [dispatch, id, dataStart, dataEnd]);
 
   const displayText = `${format(selectionRange.startDate!, "dd MMM yyyy")} - ${format(
     selectionRange.endDate!,
@@ -106,13 +121,21 @@ export default function ExpenseApprovalList() {
       <div className="mt-3">
         <div className="flex items-center justify-between mb-6 relative">
           <h2 className="t-h3">Weekly Expenses</h2>
-          <div
-            className="flex items-center gap-2 text-(--primary) text-sm font-medium cursor-pointer hover:opacity-80 transition"
-            onClick={() => setShowCalendar(!showCalendar)}
-          >
-            <ChevronLeft className="w-4 h-4" />
-            <span>{displayText}</span>
-            <ChevronRight className="w-4 h-4" />
+          <div className="flex items-center gap-2 text-(--primary) text-sm font-medium">
+            <ChevronLeft
+              className="w-4 h-4 cursor-pointer hover:bg-blue-50 rounded-full transition"
+              onClick={handlePrevWeek}
+            />
+            <span
+              className="cursor-pointer hover:opacity-80 transition"
+              onClick={() => setShowCalendar(!showCalendar)}
+            >
+              {displayText}
+            </span>
+            <ChevronRight
+              className="w-4 h-4 cursor-pointer hover:bg-blue-50 rounded-full transition"
+              onClick={handleNextWeek}
+            />
           </div>
 
           {/* Calendar Popup */}
@@ -163,14 +186,7 @@ export default function ExpenseApprovalList() {
             <p className="t-label-sm">Loading weekly expenses...</p>
           </div>
         ) : filteredExpenses.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 grayscale opacity-50 border-2 border-dashed border-(--gray-2) rounded-12 bg-(--gray-0)/5 transition-all hover:bg-(--gray-0)/10">
-            <div className="w-16 h-16 bg-(--gray-1) rounded-full flex items-center justify-center mb-4">
-              <ChevronLeft className="w-8 h-8 text-(--gray-4) opacity-20" />
-              <ChevronRight className="w-8 h-8 text-(--gray-4) opacity-20 -ml-4" />
-            </div>
-            <p className="t-h4 text-(--gray-5)">No data found</p>
-            <p className="t-sm text-(--gray-4)">Try adjusting your date range filter</p>
-          </div>
+          <NoDataFound />
         ) : (
           <div className="space-y-1">
             {filteredExpenses.map(({ callDate, calls }: any) => (
@@ -197,8 +213,8 @@ export default function ExpenseApprovalList() {
                       <div className="relative">
                         <div className="w-14 h-14 rounded-8 overflow-hidden border-2 border-white">
                           <ImageWithFallback
-                            src={call.profilepicture}
-                            alt={call.name}
+                            src={call.profilepicture || call.partyImage}
+                            alt={call.fullname || call.partyName || "User"}
                             width={50}
                             height={50}
                             className="object-cover"
@@ -208,14 +224,20 @@ export default function ExpenseApprovalList() {
                       </div>
 
                       <div>
-                        <h3 className="t-label-b">{call.fullname}</h3>
+                        <h3 className="t-label-b">
+                          {call.fullname || call.partyName || "Unknown"}
+                        </h3>
                         <div className="flex items-center gap-2">
-                          <p className="t-sm">{call.specialization}</p>
+                          <p className="t-sm">
+                            {call.specialization || call.partySpecialization || "Unknown"}
+                          </p>
                           <span
                             className={`px-2 py-0.5 text-xs font-medium rounded-8 ${
                               call.status === "Pending"
                                 ? "bg-(--warning-light) text-(--warning-2)"
-                                : call.status === "Rejected" || call.status === "rejected"
+                                : call.status === "Rejected" ||
+                                    call.status === "rejected" ||
+                                    call.status === "Rejected"
                                   ? "bg-(--destructive-light) text-(--destructive)"
                                   : "bg-(--success-light) text-(--success)"
                             }`}
@@ -281,7 +303,7 @@ export default function ExpenseApprovalList() {
         onClose={() => setShowModal(false)}
         selectedExpenseData={selectedExpense}
         isLoading={approving}
-        showBulkActions={false}
+        showBulkActions={true}
         onSuccess={() => {
           dispatch(
             fetchWeeklyCallExpenses({

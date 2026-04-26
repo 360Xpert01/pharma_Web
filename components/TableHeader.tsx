@@ -20,6 +20,8 @@ interface UsersHeaderProps {
   showTargetFilters?: boolean;
   showDistributorFilters?: boolean;
   showExpenseFilters?: boolean;
+  showDcrFilters?: boolean;
+  showAttendanceFilters?: boolean;
   isAllocate?: boolean;
   channelId?: string;
   onApplyFilters?: (filters: {
@@ -58,6 +60,8 @@ export default function UsersHeader({
   showTargetFilters = false,
   showDistributorFilters = false,
   showExpenseFilters = false,
+  showDcrFilters = false,
+  showAttendanceFilters = false,
   isAllocate = false,
   channelId,
   onApplyFilters,
@@ -103,6 +107,8 @@ export default function UsersHeader({
               showTargetFilters={showTargetFilters}
               showDistributorFilters={showDistributorFilters}
               showExpenseFilters={showExpenseFilters}
+              showDcrFilters={showDcrFilters}
+              showAttendanceFilters={showAttendanceFilters}
               isAllocate={isAllocate}
               channelId={channelId}
               onApplyFilters={onApplyFilters}
@@ -112,21 +118,6 @@ export default function UsersHeader({
 
         {/* Right: Checkbox + Sort Dropdown + Export Button */}
         <div className="flex items-center gap-3">
-          {/* Quick Sort Dropdown */}
-          {/* <FormSelect
-            label=""
-            name="sortBy"
-            value={sortBy}
-            onChange={setSortBy}
-            options={[
-              { value: "recently-created", label: "Recently Created" },
-              { value: "recently-modified", label: "Recently Modified" },
-            ]}
-            placeholder="Quick Sort"
-            className="mb-0"
-            selectClassName="mt-0"
-          /> */}
-
           {/* Export Button */}
           <div
             onClick={() => setOpenId(!openId)}

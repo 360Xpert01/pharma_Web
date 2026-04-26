@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
+import { ChevronLeft, ChevronRight, MapPin, Loader2 } from "lucide-react";
 import ImageWithFallback from "./shared/ImageWithFallback";
 import { DateRange, Range } from "react-date-range";
 import "react-date-range/dist/styles.css"; // main style file
@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { useSearchParams } from "next/navigation";
 import { ConfirmModal } from "./shared/confirm-modal";
+import NoDataFound from "./shared/NoDataFound";
 
 interface Appointment {
   id: string;
@@ -75,41 +76,55 @@ const appointments: Appointment[] = [
   },
 ];
 
-export default function TodaysAppointments(params: { id: string }) {
+export default function TodaysAppointments({
+  dateRange,
+  setDateRange,
+}: {
+  dateRange: Range[];
+  setDateRange: (range: Range[]) => void;
+}) {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
 
   const [showCalendar, setShowCalendar] = useState(false);
-  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
   const dispatch = useDispatch();
-
-  const [dataStart, setDataStart] = useState(format(new Date(), "yyyy-MM-dd"));
-  const [dataEnd, setDataEnd] = useState(format(new Date(), "yyyy-MM-dd"));
-  const currentDate = format(new Date(), "yyyy-MM-dd");
-  const sevenDaysAfter = format(addDays(new Date(), 7), "yyyy-MM-dd");
-  const [dateRange, setDateRange] = useState<Range[]>([
-    {
-      startDate: new Date(), // 2026-01-14
-      endDate: new Date(sevenDaysAfter),
-      key: "selection",
-    },
-  ]);
 
   const selectionRange = dateRange[0];
 
+  const [dataStart, setDataStart] = useState(format(selectionRange.startDate!, "yyyy-MM-dd"));
+  const [dataEnd, setDataEnd] = useState(format(selectionRange.endDate!, "yyyy-MM-dd"));
+
+  // Update dataStart/dataEnd when dateRange prop changes
+  useEffect(() => {
+    setDataStart(format(selectionRange.startDate!, "yyyy-MM-dd"));
+    setDataEnd(format(selectionRange.endDate!, "yyyy-MM-dd"));
+  }, [selectionRange.startDate, selectionRange.endDate]);
+
   const handleSelect = (ranges: any) => {
     setDateRange([ranges.selection]);
-    setDataStart(format(ranges.selection.startDate!, "yyyy-MM-dd"));
-    setDataEnd(format(ranges.selection.endDate!, "yyyy-MM-dd"));
+  };
+
+  const handlePrevWeek = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const newStart = addDays(selectionRange.startDate!, -7);
+    const newEnd = addDays(selectionRange.endDate!, -7);
+    setDateRange([{ startDate: newStart, endDate: newEnd, key: "selection" }]);
+  };
+
+  const handleNextWeek = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const newStart = addDays(selectionRange.startDate!, 7);
+    const newEnd = addDays(selectionRange.endDate!, 7);
+    setDateRange([{ startDate: newStart, endDate: newEnd, key: "selection" }]);
   };
 
   useEffect(() => {
-    dispatch(fetchWeeklyCallSchedule({ salesmanId: id, from: currentDate, to: sevenDaysAfter }));
-  }, [dispatch]);
+    if (id) {
+      dispatch(fetchWeeklyCallSchedule({ salesmanId: id, from: dataStart, to: dataEnd }) as any);
+    }
+  }, [dispatch, id, dataStart, dataEnd]);
 
   const { data, loading, error } = useSelector((state: RootState) => state.weeklyCalls);
-
-  console.log("Weekly", data);
 
   // Format display text
   const displayText = `${format(selectionRange.startDate!, "dd MMM yyyy")} - ${format(
@@ -124,13 +139,21 @@ export default function TodaysAppointments(params: { id: string }) {
         <h2 className="t-h3">Weekly Appointments</h2>
 
         {/* Clickable date range */}
-        <div
-          className="flex items-center gap-2 text-primary text-sm font-medium cursor-pointer hover:opacity-80 transition"
-          onClick={() => setShowCalendar(!showCalendar)}
-        >
-          <ChevronLeft className="w-4 h-4" />
-          <span>{displayText}</span>
-          <ChevronRight className="w-4 h-4" />
+        <div className="flex items-center gap-2 text-primary text-sm font-medium">
+          <ChevronLeft
+            className="w-4 h-4 cursor-pointer hover:bg-blue-50 rounded-full transition"
+            onClick={handlePrevWeek}
+          />
+          <span
+            className="cursor-pointer hover:opacity-80 transition"
+            onClick={() => setShowCalendar(!showCalendar)}
+          >
+            {displayText}
+          </span>
+          <ChevronRight
+            className="w-4 h-4 cursor-pointer hover:bg-blue-50 rounded-full transition"
+            onClick={handleNextWeek}
+          />
         </div>
       </div>
 
@@ -143,22 +166,24 @@ export default function TodaysAppointments(params: { id: string }) {
             moveRangeOnFirstSelection={false}
             ranges={dateRange}
             direction="horizontal"
-            months={1} // show 2 months side by side
-            showDateDisplay={false} // hide top input boxes
+            months={1}
+            showDateDisplay={false}
             showMonthAndYearPickers={true}
             rangeColors={["#3b82f6", "#3b82f6"]}
           />
 
           <div className="flex justify-end gap-3 mt-3 pt-3 border-t">
             <button
-              onClick={() => setIsDiscardModalOpen(true)}
+              onClick={() => setShowCalendar(false)}
               className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded"
             >
               Cancel
             </button>
             <button
               onClick={() => {
-                dispatch(fetchWeeklyCallSchedule({ salesmanId: id, from: dataStart, to: dataEnd }));
+                dispatch(
+                  fetchWeeklyCallSchedule({ salesmanId: id, from: dataStart, to: dataEnd }) as any
+                );
                 setShowCalendar(false);
               }}
               className="px-4 py-2 text-sm bg-primary text-white rounded hover:bg-blue-600"
@@ -170,77 +195,72 @@ export default function TodaysAppointments(params: { id: string }) {
       )}
 
       {/* Appointments List */}
-      {data.map((day) => (
-        <div key={day.callDate} className="mb-8 px-4">
-          {/* Date as section header */}
-          <h3 className="t-h3 mb-4 font-bold text-lg">
-            {new Date(day.callDate).toLocaleDateString("en-US", {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </h3>
+      {loading ? (
+        <div className="flex flex-col items-center justify-center py-20 grayscale opacity-50">
+          <Loader2 className="w-10 h-10 animate-spin text-(--primary) mb-4" />
+          <p className="t-label-sm">Loading weekly appointments...</p>
+        </div>
+      ) : data.length === 0 ? (
+        <NoDataFound />
+      ) : (
+        data.map((day: any) => (
+          <div key={day.callDate} className="mb-8 px-4">
+            {/* Date as section header */}
+            <h3 className="t-h3 mb-4 font-bold text-lg">
+              {new Date(day.callDate).toLocaleDateString("en-US", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </h3>
 
-          {/* Yahan Grid apply kiya hai: Ek line mein 3 items ke liye */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {day.doctorClinicDetail.map((detail) => (
-              <div
-                key={detail.callId || detail.id}
-                className="bg-white rounded-8 shadow-soft p-5 flex flex-col justify-between border border-gray-100"
-              >
-                {/* Title or Header if needed (Optional) */}
-                <h4 className="text-md font-bold mb-3">Meeting with {detail.fullname}</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {day.doctorClinicDetail.map((detail: any) => (
+                <div
+                  key={detail.callId || detail.id}
+                  className="bg-white rounded-8 shadow-soft p-5 flex flex-col justify-between border border-gray-100"
+                >
+                  <h4 className="text-md font-bold mb-3">Meeting with {detail.fullname}</h4>
 
-                <div className="flex flex-col gap-4">
-                  {/* Doctor Info */}
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-8 overflow-hidden flex-shrink-0">
-                      <ImageWithFallback
-                        src={detail.profilepicture}
-                        alt={detail.fullname}
-                        width={48}
-                        height={48}
-                        className="object-cover w-full h-full"
-                        fallbackSrc="/girlPic.png"
-                      />
+                  <div className="flex flex-col gap-4">
+                    {/* Doctor Info */}
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-8 overflow-hidden flex-shrink-0">
+                        <ImageWithFallback
+                          src={detail.profilepicture}
+                          alt={detail.fullname}
+                          width={48}
+                          height={48}
+                          className="object-cover w-full h-full"
+                          fallbackSrc="/girlPic.png"
+                        />
+                      </div>
+                      <div className="overflow-hidden">
+                        <h4 className="t-label font-medium truncate">{detail.fullname}</h4>
+                        <p className="t-cap text-gray-600 truncate">{detail.specialization}</p>
+                      </div>
                     </div>
-                    <div className="overflow-hidden">
-                      <h4 className="t-label font-medium truncate">{detail.fullname}</h4>
-                      <p className="t-cap text-gray-600 truncate">{detail.specialization}</p>
-                    </div>
-                  </div>
 
-                  {/* Clinic Info */}
-                  <div className="flex items-start gap-3 border-t pt-3">
-                    <div className="w-10 h-10 rounded-8 bg-blue-50 flex items-center justify-center flex-shrink-0">
-                      <MapPin className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <div className="overflow-hidden">
-                      <h4 className="t-label font-medium truncate">{detail.clinicname}</h4>
-                      <p className="t-cap text-gray-500 text-xs line-clamp-2">
-                        {detail.clinicaddress}
-                      </p>
+                    {/* Clinic Info */}
+                    <div className="flex items-start gap-3 border-t pt-3">
+                      <div className="w-10 h-10 rounded-8 bg-blue-50 flex items-center justify-center flex-shrink-0">
+                        <MapPin className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div className="overflow-hidden">
+                        <h4 className="t-label font-medium truncate">{detail.clinicname}</h4>
+                        <p className="t-cap text-gray-500 text-xs line-clamp-2">
+                          {detail.clinicaddress}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
-
-      <ConfirmModal
-        isOpen={isDiscardModalOpen}
-        onClose={() => setIsDiscardModalOpen(false)}
-        onConfirm={() => {
-          setIsDiscardModalOpen(false);
-          setShowCalendar(false);
-        }}
-        title="Discard date selection?"
-        description="Are you sure you want to discard your selected date range?"
-        confirmLabel="Discard"
-      />
+        ))
+      )}
     </div>
   );
 }

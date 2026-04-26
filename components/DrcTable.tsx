@@ -1,222 +1,212 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchCallReports } from "@/store/slices/DCR/scheduleSlice";
-import { RootState } from "@/store";
 
 interface DcrRecord {
   id: number;
-  employee1: { name: string; role: string };
-  employee2: { name: string; role: string };
-  specialty: string;
-  area: string;
-  doctor: string;
-  medicine: string;
-  strengths: string[];
+  reportDate: string;
+  saleRepName: string;
+  saleRepPicture?: string;
+  saleRepRole?: string;
+  territory: string;
+  doctorName: string;
+  doctorSpecialization: string;
+  startTime: string;
+  duration: string;
+  samplesGiven: string;
+  orderTaken: string;
+  notes: string;
 }
 
 const tableData: DcrRecord[] = [
   {
     id: 1,
-    employee1: { name: "Mohammad Amir", role: "Sales Representative" },
-    employee2: { name: "Mohammad Amir", role: "Team Lead" },
-    specialty: "Cardiologist",
-    area: "Gulshan-e-iqbal",
-    doctor: "Dr. Rashid Ahmed",
-    medicine: "Amoxicillin",
-    strengths: ["Tablet 10Mg", "Tablet 40Mg"],
+    reportDate: "2024-04-25",
+    saleRepName: "Mohammad Amir",
+    saleRepRole: "Sales Representative",
+    territory: "Gulshan-e-Iqbal",
+    doctorName: "Dr. Rashid Ahmed",
+    doctorSpecialization: "Cardiologist",
+    startTime: "10:30 AM",
+    duration: "15 mins",
+    samplesGiven: "Amoxicillin (5), Panadol (10)",
+    orderTaken: "100 units",
+    notes: "Doctor was interested in the new cardiac drug.",
   },
   {
     id: 2,
-    employee1: { name: "Sara Khan", role: "Marketing Manager" },
-    employee2: { name: "Sara Khan", role: "Senior Manager" },
-    specialty: "Pediatrician",
-    area: "Clifton",
-    doctor: "Dr. Ayesha Farooq",
-    medicine: "Ibuprofen",
-    strengths: ["Tablet 200Mg", "Tablet 400Mg"],
+    reportDate: "2024-04-26",
+    saleRepName: "Sara Khan",
+    saleRepRole: "Sales Representative",
+    territory: "Clifton",
+    doctorName: "Dr. Ayesha Farooq",
+    doctorSpecialization: "Pediatrician",
+    startTime: "11:00 AM",
+    duration: "20 mins",
+    samplesGiven: "Ibuprofen (2)",
+    orderTaken: "None",
+    notes: "Requested a focus group meeting for next month.",
   },
   {
     id: 3,
-    employee1: { name: "Ali Raza", role: "Product Owner" },
-    employee2: { name: "Ali Raza", role: "Project Manager" },
-    specialty: "Dermatologist",
-    area: "Korangi",
-    doctor: "Dr. Bilal Shah",
-    medicine: "Cetirizine",
-    strengths: ["Tablet 10Mg", "Tablet 20Mg"],
-  },
-  {
-    id: 4,
-    employee1: { name: "Fatima Bano", role: "UX Designer" },
-    employee2: { name: "Fatima Bano", role: "Lead Designer" },
-    specialty: "Orthopedist",
-    area: "DHA",
-    doctor: "Dr. Nida Malik",
-    medicine: "Paracetamol",
-    strengths: ["Tablet 500Mg", "Tablet 1G"],
-  },
-  {
-    id: 5,
-    employee1: { name: "Owais Tariq", role: "Data Analyst" },
-    employee2: { name: "Owais Tariq", role: "Senior Analyst" },
-    specialty: "Neurologist",
-    area: "Nazimabad",
-    doctor: "Dr. Fariha Khan",
-    medicine: "Metformin",
-    strengths: ["Tablet 500Mg", "Tablet 1000Mg"],
-  },
-  {
-    id: 6,
-    employee1: { name: "Nida Hussain", role: "Web Developer" },
-    employee2: { name: "Nida Hussain", role: "Technical Lead" },
-    specialty: "Gynecologist",
-    area: "Malir",
-    doctor: "Dr. Samina Iftikhar",
-    medicine: "Aspirin",
-    strengths: ["Tablet 100Mg", "Tablet 300Mg"],
-  },
-  {
-    id: 7,
-    employee1: { name: "Hassan Ali", role: "System Administrator" },
-    employee2: { name: "Hassan Ali", role: "IT Manager" },
-    specialty: "Oncologist",
-    area: "Kech",
-    doctor: "Dr. Asif Malik",
-    medicine: "Simvastatin",
-    strengths: ["Tablet 10Mg", "Tablet 20Mg"],
-  },
-  {
-    id: 8,
-    employee1: { name: "Zara Malik", role: "Content Writer" },
-    employee2: { name: "Zara Malik", role: "Content Lead" },
-    specialty: "Ophthalmologist",
-    area: "Gulistan-e-Jauhar",
-    doctor: "Dr. Hina Shah",
-    medicine: "Lisinopril",
-    strengths: ["Tablet 5Mg", "Tablet 10Mg"],
-  },
-  {
-    id: 9,
-    employee1: { name: "Bilal Ahmed", role: "Graphic Designer" },
-    employee2: { name: "Bilal Ahmed", role: "Creative Head" },
-    specialty: "Urologist",
-    area: "FB Area",
-    doctor: "Dr. Talha Qureshi",
-    medicine: "Atorvastatin",
-    strengths: ["Tablet 20Mg", "Tablet 40Mg"],
+    reportDate: "2024-04-24",
+    saleRepName: "Ali Raza",
+    saleRepRole: "Sales Representative",
+    territory: "Korangi",
+    doctorName: "Dr. Bilal Shah",
+    doctorSpecialization: "Dermatologist",
+    startTime: "02:15 PM",
+    duration: "10 mins",
+    samplesGiven: "Cetirizine (8)",
+    orderTaken: "50 units",
+    notes: "Follow-up required on the recent clinical trial data.",
   },
 ];
 
 const DEFAULT_AVATAR = "/girlPic.png";
 
-export default function DcrTable() {
-  // Simulate loading and error states (replace with actual API call state)
-  // const [loading] = useState(false);
-  // const [error] = useState<string | null>(null);
+export default function DcrTable({
+  filters,
+  searchTerm = "",
+}: {
+  filters?: { from?: string; to?: string; employeeId?: string; regionId?: string };
+  searchTerm?: string;
+}) {
+  // Use mock data only
+  const displayData = useMemo(() => {
+    return tableData.filter((item: any) => {
+      // Search filter
+      const matchesSearch = searchTerm
+        ? item.saleRepName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.doctorName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.territory?.toLowerCase().includes(searchTerm.toLowerCase())
+        : true;
 
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(fetchCallReports());
-  }, [dispatch]);
-  const { data, loading, error } = useSelector((state: RootState) => state.callReports);
+      // Date range filter
+      const itemDate = new Date(item.reportDate);
+      const matchesFromDate = filters?.from ? itemDate >= new Date(filters.from) : true;
+      const matchesToDate = filters?.to ? itemDate <= new Date(filters.to) : true;
 
-  console.log("sadw234", data);
+      // Sales Rep filter (assuming ID match or name match for dummy)
+      const matchesSalesRep = filters?.employeeId
+        ? item.saleRepId === filters.employeeId || item.saleRepName.includes(filters.employeeId)
+        : true;
 
-  // Define columns for CenturoTable
-  const columns: ColumnDef<DcrRecord>[] = [
+      // Territory filter (assuming regionId matches territory name or id)
+      const matchesTerritory = filters?.regionId
+        ? item.regionId === filters.regionId || item.territory === filters.regionId
+        : true;
+
+      return (
+        matchesSearch && matchesFromDate && matchesToDate && matchesSalesRep && matchesTerritory
+      );
+    });
+  }, [searchTerm, filters]);
+
+  const columns: ColumnDef<any>[] = [
     {
-      header: "lineManagerPicture",
-      accessorKey: "lineManagerPicture",
-      cell: ({ row }) => (
-        <div className="flex items-center gap-3">
-          <img
-            src={row.original.lineManagerPicture || DEFAULT_AVATAR}
-            alt={row.original.lineManagerName}
-            className="w-12 h-12 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
-          />
-          <div>
-            <p className="t-td-b">{row.original.lineManagerName}</p>
-            <p className="t-cap">{row.original.lineManagerRole}</p>
-          </div>
-        </div>
+      header: "Report Date",
+      accessorKey: "reportDate",
+      cell: ({ row }: { row: { original: any } }) => (
+        <p className="t-label">{row.original.reportDate || "N/A"}</p>
       ),
     },
     {
-      header: "Line Manager",
-      accessorKey: "employee2",
-      cell: ({ row }) => (
+      header: "Representative",
+      accessorKey: "saleRepName",
+      cell: ({ row }: { row: { original: any } }) => (
         <div className="flex items-center gap-3">
           <img
             src={row.original.saleRepPicture || DEFAULT_AVATAR}
-            alt={row.original.saleRepName.name}
-            className="w-12 h-12 rounded-8 object-cover border-2 border-(--light) shadow-soft flex-shrink-0"
+            alt={row.original.saleRepName}
+            className="w-10 h-10 rounded-8 object-cover border border-(--gray-2) shadow-soft flex-shrink-0"
           />
           <div>
             <p className="t-td-b">{row.original.saleRepName}</p>
-            <p className="t-cap">{row.original.saleRepRole}</p>
+            <p className="t-cap">{row.original.saleRepRole || "Sales Rep"}</p>
           </div>
         </div>
       ),
     },
     {
-      header: "Specialization",
-      accessorKey: "specialty",
-      cell: ({ row }) => <p className="t-label">{row.original.doctorSpecialization}</p>,
+      header: "Territory/Brick",
+      accessorKey: "territory",
+      cell: ({ row }: { row: { original: any } }) => (
+        <p className="t-label">{row.original.territory || "N/A"}</p>
+      ),
     },
     {
-      header: "Location",
-      accessorKey: "area",
-      cell: ({ row }) => <p className="t-label">{row.original.lineManagerRole}</p>,
+      header: "Doctor/Store Name",
+      accessorKey: "doctorName",
+      cell: ({ row }: { row: { original: any } }) => (
+        <p className="t-td-b">{row.original.doctorName}</p>
+      ),
     },
     {
-      header: "Doctor",
-      accessorKey: "doctor",
-      cell: ({ row }) => <p className="t-td-b">{row.original.doctorName}</p>,
+      header: "Speciality/Category",
+      accessorKey: "doctorSpecialization",
+      cell: ({ row }: { row: { original: any } }) => (
+        <p className="t-label">
+          {row.original.doctorSpecialization || row.original.specialty || "N/A"}
+        </p>
+      ),
     },
     {
-      header: "Product",
-      accessorKey: "medicine",
-      cell: ({ row }) => <p className="t-td-b">{row.original.saleRepRole}</p>,
+      header: "Call Start Time",
+      accessorKey: "startTime",
+      cell: ({ row }: { row: { original: any } }) => (
+        <p className="t-label">{row.original.startTime || "N/A"}</p>
+      ),
     },
     {
-      header: "SKU's",
-      accessorKey: "strengths",
-      cell: ({ row }) => (
-        <div className="flex flex-wrap gap-2">
-          {row.original.products.map((s, i) => (
-            <span
-              key={i}
-              className="px-3 py-1 bg-(--gray-1) text-(--gray-7) rounded-8 text-xs whitespace-nowrap"
-            >
-              {s}
-            </span>
-          ))}
-        </div>
+      header: "Duration",
+      accessorKey: "duration",
+      cell: ({ row }: { row: { original: any } }) => (
+        <p className="t-label">{row.original.duration || "N/A"}</p>
+      ),
+    },
+    {
+      header: "Samples Given",
+      accessorKey: "samplesGiven",
+      cell: ({ row }: { row: { original: any } }) => (
+        <p className="t-label truncate max-w-[150px]" title={row.original.samplesGiven}>
+          {row.original.samplesGiven || "None"}
+        </p>
+      ),
+    },
+    {
+      header: "Order Taken",
+      accessorKey: "orderTaken",
+      cell: ({ row }: { row: { original: any } }) => (
+        <p className="t-label">{row.original.orderTaken || "None"}</p>
+      ),
+    },
+    {
+      header: "Remarks",
+      accessorKey: "notes",
+      cell: ({ row }: { row: { original: any } }) => (
+        <p className="t-label truncate max-w-[200px]" title={row.original.notes}>
+          {row.original.notes || "No notes"}
+        </p>
       ),
     },
   ];
 
-  const handleRetry = () => {
-    window.location.reload();
-  };
-
   return (
     <div className="w-full">
       <CenturoTable
-        data={data}
+        data={displayData}
         columns={columns}
-        loading={loading}
-        error={error}
-        onRetry={handleRetry}
+        loading={false}
+        error={null}
+        onRetry={() => {}}
         enablePagination={true}
         pageSize={10}
         PaginationComponent={TablePagination}
-        emptyMessage="No DCR records found"
+        emptyMessage="No DCR records found matching your filters"
       />
     </div>
   );

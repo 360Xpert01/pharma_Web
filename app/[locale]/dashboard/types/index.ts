@@ -198,4 +198,5 @@ export interface DashboardProps {
   distributorProfileBtn?: boolean;
   showDistributorTabs?: boolean;
   distributorId?: string | null;
+  AttendanceTable?: boolean;
 }

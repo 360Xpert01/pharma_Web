@@ -19,6 +19,9 @@ import GiveawaysDetail from "@/components/GiveawaysDetail";
 import DeviceList from "@/components/DeviceList";
 import AnimatedTabs from "@/components/shared/AnimatedTabs";
 import MonthlyCalls from "@/components/MonthlyCalls";
+import NoDataFound from "@/components/shared/NoDataFound";
+import { addDays } from "date-fns";
+import { Range } from "react-date-range";
 
 type TabType = "Appointments" | "Attendance" | "Expenses" | "Samples" | "Giveaways" | "Devices";
 
@@ -29,6 +32,13 @@ export default function EmployeeProfileTabs({ candidate }: { candidate?: any }) 
   const { user } = useAppSelector((state) => state.getUserById);
 
   const [activeTab, setActiveTab] = useState<TabType>("Appointments");
+  const [dateRange, setDateRange] = useState<Range[]>([
+    {
+      startDate: new Date(),
+      endDate: addDays(new Date(), 7),
+      key: "selection",
+    },
+  ]);
 
   const tabs = [
     { id: "Appointments" as TabType, label: "Appointments" },
@@ -47,8 +57,11 @@ export default function EmployeeProfileTabs({ candidate }: { candidate?: any }) 
 
   if (!user) {
     return (
-      <div className="text-center py-20 bg-gray-50 rounded-8 border-2 border-dashed border-gray-200">
-        <p className="text-gray-500 font-medium">No employee data found</p>
+      <div className="p-6 bg-background rounded-8 shadow-soft">
+        <NoDataFound
+          title="No employee data found"
+          description="The requested employee profile could not be found."
+        />
       </div>
     );
   }
@@ -117,19 +130,19 @@ export default function EmployeeProfileTabs({ candidate }: { candidate?: any }) 
 
         {activeTab === "Appointments" && (
           <div className="w-full">
-            <TodaysAppointments />
+            <TodaysAppointments dateRange={dateRange} setDateRange={setDateRange} />
           </div>
         )}
 
         {activeTab === "Attendance" && (
           <div className="w-full">
-            <WeeklyAttendance />
+            <WeeklyAttendance dateRange={dateRange} setDateRange={setDateRange} />
           </div>
         )}
 
         {activeTab === "Expenses" && (
           <div className="w-full">
-            <ExpansesListApprove />
+            <ExpansesListApprove dateRange={dateRange} setDateRange={setDateRange} />
           </div>
         )}
 

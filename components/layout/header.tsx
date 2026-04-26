@@ -55,7 +55,7 @@ const Navbar = () => {
         // { label: "Employees (Rep, Manager, Admin)", href: "/dashboard/Employees-Management" },
         { label: "Employees", href: "/dashboard/Employees-Management" },
         { label: "Teams", href: "/dashboard/campaign-Management" },
-        { label: "Attendance & Tracking", href: "/dashboard" },
+        { label: "Attendance & Tracking", href: "/dashboard/attendence" },
         { label: "Distributors", href: "/dashboard/Distributors-Management" },
         { label: "Leave Management", href: "/dashboard" },
         // { label: "Expense Requests", href: "/dashboard/request-View" },
@@ -99,7 +99,7 @@ const Navbar = () => {
           label: "Execution",
           items: [
             { label: "Live GPS Tracking", href: "/dashboard/plan-Management" },
-            { label: "Attendance", href: "/dashboard/giveaway-Management" },
+            { label: "Attendance", href: "/dashboard/attendence" },
             { label: "Travel & Mileage", href: "/dashboard/giveaway-Management" },
           ],
         },

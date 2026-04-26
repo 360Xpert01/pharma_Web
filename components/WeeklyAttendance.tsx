@@ -10,59 +10,86 @@ import "react-date-range/dist/theme/default.css"; // theme css file
 import { format, addDays } from "date-fns";
 import { fetchAttendanceList } from "@/store/slices/Attendance/AttandanceGetSlice";
 import { ConfirmModal } from "./shared/confirm-modal";
+import NoDataFound from "./shared/NoDataFound";
+import { Loader2 } from "lucide-react";
 
-export default function AttendanceDashboard() {
+export default function AttendanceDashboard({
+  dateRange,
+  setDateRange,
+}: {
+  dateRange: Range[];
+  setDateRange: (range: Range[]) => void;
+}) {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
 
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
-  const [dataStart, setDataStart] = useState(format(new Date(), "yyyy-MM-dd"));
-  const [dataEnd, setDataEnd] = useState(format(addDays(new Date(), 7), "yyyy-MM-dd"));
-  const currentDate = format(new Date(), "yyyy-MM-dd");
-  const sevenDaysAfter = format(addDays(new Date(), 7), "yyyy-MM-dd");
-
-  const [dateRange, setDateRange] = useState<Range[]>([
-    {
-      startDate: new Date(),
-      endDate: addDays(new Date(), 7),
-      key: "selection",
-    },
-  ]);
-
   const selectionRange = dateRange[0];
+
+  const [dataStart, setDataStart] = useState(format(selectionRange.startDate!, "yyyy-MM-dd"));
+  const [dataEnd, setDataEnd] = useState(format(selectionRange.endDate!, "yyyy-MM-dd"));
+
+  // Update dataStart/dataEnd when dateRange prop changes
+  useEffect(() => {
+    setDataStart(format(selectionRange.startDate!, "yyyy-MM-dd"));
+    setDataEnd(format(selectionRange.endDate!, "yyyy-MM-dd"));
+  }, [selectionRange.startDate, selectionRange.endDate]);
+
+  const [showCalendar, setShowCalendar] = useState(false);
 
   const handleSelect = (ranges: any) => {
     setDateRange([ranges.selection]);
-    setDataStart(format(ranges.selection.startDate!, "yyyy-MM-dd"));
-    setDataEnd(format(ranges.selection.endDate!, "yyyy-MM-dd"));
   };
 
-  const attendanceList = useAppSelector((state) => state.attendance.list);
+  const handlePrevWeek = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const newStart = addDays(selectionRange.startDate!, -7);
+    const newEnd = addDays(selectionRange.endDate!, -7);
+    setDateRange([{ startDate: newStart, endDate: newEnd, key: "selection" }]);
+  };
+
+  const handleNextWeek = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const newStart = addDays(selectionRange.startDate!, 7);
+    const newEnd = addDays(selectionRange.endDate!, 7);
+    setDateRange([{ startDate: newStart, endDate: newEnd, key: "selection" }]);
+  };
+
+  const { list: attendanceList, loading } = useAppSelector((state) => state.attendance);
   console.log(attendanceList, "attendanceList");
 
   useEffect(() => {
     if (id) {
       dispatch(fetchAttendanceList({ userId: id, from: dataStart, to: dataEnd }));
     }
-  }, [dispatch, id]);
+  }, [dispatch, id, dataStart, dataEnd]);
+
+  const displayText = `${format(selectionRange.startDate!, "dd MMM yyyy")} - ${format(
+    selectionRange.endDate!,
+    "dd MMM yyyy"
+  )}`;
 
   return (
     <div className=" mx-auto ">
       {/* Header */}
       <div className="flex items-center justify-between mb-8 relative">
-        <h2 className="text-2xl font-bold text-gray-800">Weekly Attendance</h2>
-        <div
-          className="flex items-center gap-4 bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-100 cursor-pointer"
-          onClick={() => setShowCalendar(!showCalendar)}
-        >
-          <ChevronLeft className="w-5 h-5 text-blue-600" />
-          <span className="text-sm font-semibold text-gray-700">
-            {format(selectionRange.startDate!, "dd MMM, yyyy")} -{" "}
-            {format(selectionRange.endDate!, "dd MMM, yyyy")}
+        <h2 className="t-h3">Weekly Attendance</h2>
+
+        <div className="flex items-center gap-2 text-primary text-sm font-medium">
+          <ChevronLeft
+            className="w-4 h-4 cursor-pointer hover:bg-blue-50 rounded-full transition"
+            onClick={handlePrevWeek}
+          />
+          <span
+            className="cursor-pointer hover:opacity-80 transition"
+            onClick={() => setShowCalendar(!showCalendar)}
+          >
+            {displayText}
           </span>
-          <ChevronRight className="w-5 h-5 text-blue-600" />
+          <ChevronRight
+            className="w-4 h-4 cursor-pointer hover:bg-blue-50 rounded-full transition"
+            onClick={handleNextWeek}
+          />
         </div>
 
         {/* Calendar Popup */}
@@ -82,7 +109,7 @@ export default function AttendanceDashboard() {
 
             <div className="flex justify-end gap-3 mt-3 pt-3 border-t">
               <button
-                onClick={() => setIsDiscardModalOpen(true)}
+                onClick={() => setShowCalendar(false)}
                 className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded"
               >
                 Cancel
@@ -94,7 +121,7 @@ export default function AttendanceDashboard() {
                   }
                   setShowCalendar(false);
                 }}
-                className="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+                className="px-4 py-2 text-sm bg-primary text-white rounded hover:bg-blue-600"
               >
                 Apply
               </button>
@@ -105,7 +132,12 @@ export default function AttendanceDashboard() {
 
       {/* Attendance List */}
       <div className="space-y-3">
-        {attendanceList && attendanceList.length > 0 ? (
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-20 grayscale opacity-50">
+            <Loader2 className="w-10 h-10 animate-spin text-(--primary) mb-4" />
+            <p className="t-label-sm">Loading weekly attendance...</p>
+          </div>
+        ) : attendanceList && attendanceList.length > 0 ? (
           attendanceList.map((item: any, index: any) => {
             const record = item.records && item.records.length > 0 ? item.records[0] : null;
             return (
@@ -170,23 +202,9 @@ export default function AttendanceDashboard() {
             );
           })
         ) : (
-          <div className="text-center py-10 text-gray-500">
-            No attendance data found for the selected range.
-          </div>
+          <NoDataFound />
         )}
       </div>
-
-      <ConfirmModal
-        isOpen={isDiscardModalOpen}
-        onClose={() => setIsDiscardModalOpen(false)}
-        onConfirm={() => {
-          setIsDiscardModalOpen(false);
-          setShowCalendar(false);
-        }}
-        title="Discard date selection?"
-        description="Are you sure you want to discard your selected date range?"
-        confirmLabel="Discard"
-      />
     </div>
   );
 }
