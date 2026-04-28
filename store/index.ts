@@ -88,6 +88,7 @@ import partyPlanReducer from "./slices/party/partyPlanSlice";
 import pendingRequestsReducer from "./slices/PendingRequest/pendingRequestsSlice";
 import handleOtpSliceReducer from "./slices/PendingRequest/handleOtpRequestsSlice";
 import attendanceReducer from "./slices/Attendance/AttandanceGetSlice";
+import attendanceListReducer from "./slices/Attendance/AttendanceListSlice";
 import userSamplesReducer from "./slices/UserSamples/userSamplesSlice";
 import userGiveawaysReducer from "./slices/UserGiveaways/userGiveawaysSlice";
 import userDevicesReducer from "./slices/device/getUserDevicesSlice";
@@ -201,6 +202,7 @@ const rootReducer = combineReducers({
   pendingRequests: pendingRequestsReducer,
   handleOtp: handleOtpSliceReducer,
   attendance: attendanceReducer,
+  attendanceList: attendanceListReducer,
   userSamples: userSamplesReducer,
   userGiveaways: userGiveawaysReducer,
   userDevices: userDevicesReducer,

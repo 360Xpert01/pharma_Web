@@ -1,54 +1,19 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
-
-interface AttendanceRecord {
-  id: number;
-  date: string;
-  saleRepName: string;
-  saleRepPicture?: string;
-  saleRepRole?: string;
-  territory: string;
-  checkInTime: string;
-  checkOutTime: string;
-  totalHours: string;
-}
-
-const tableData: AttendanceRecord[] = [
-  {
-    id: 1,
-    date: new Date().toISOString().split("T")[0],
-    saleRepName: "Mohammad Amir",
-    saleRepRole: "Sales Representative",
-    territory: "Gulshan-e-Iqbal",
-    checkInTime: "09:00 AM",
-    checkOutTime: "05:30 PM",
-    totalHours: "8h 30m",
-  },
-  {
-    id: 2,
-    date: new Date().toISOString().split("T")[0],
-    saleRepName: "Sara Khan",
-    saleRepRole: "Sales Representative",
-    territory: "Clifton",
-    checkInTime: "09:15 AM",
-    checkOutTime: "05:45 PM",
-    totalHours: "8h 30m",
-  },
-  {
-    id: 3,
-    date: new Date().toISOString().split("T")[0],
-    saleRepName: "Ali Raza",
-    saleRepRole: "Sales Representative",
-    territory: "Korangi",
-    checkInTime: "08:45 AM",
-    checkOutTime: "06:00 PM",
-    totalHours: "9h 15m",
-  },
-];
+import { useAppDispatch, useAppSelector } from "@/store";
+import {
+  fetchAttendanceTableList,
+  selectAttendanceTableList,
+  selectAttendanceTablePagination,
+  selectAttendanceTableLoading,
+  selectAttendanceTableError,
+  AttendanceItem,
+  AttendanceRecordItem,
+} from "@/store/slices/Attendance/AttendanceListSlice";
 
 const DEFAULT_AVATAR = "/girlPic.png";
 
@@ -56,26 +21,81 @@ export default function AttendanceTable({
   filters,
   searchTerm = "",
 }: {
-  filters?: { from?: string; regionId?: string };
+  filters?: { from?: string; to?: string; regionId?: string };
   searchTerm?: string;
 }) {
+  const dispatch = useAppDispatch();
+  const list = useAppSelector(selectAttendanceTableList);
+  const pagination = useAppSelector(selectAttendanceTablePagination);
+  const loading = useAppSelector(selectAttendanceTableLoading);
+  const error = useAppSelector(selectAttendanceTableError);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  useEffect(() => {
+    dispatch(
+      fetchAttendanceTableList({
+        from: filters?.from,
+        to: filters?.to,
+        regionId: filters?.regionId,
+        searchTerm,
+        page: currentPage,
+        limit: pageSize,
+      })
+    );
+  }, [dispatch, filters, searchTerm, currentPage, pageSize]);
+
+  // Flatten nested records into individual table rows
   const displayData = useMemo(() => {
-    return tableData.filter((item) => {
-      // Search filter
-      const matchesSearch = searchTerm
-        ? item.saleRepName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.territory?.toLowerCase().includes(searchTerm.toLowerCase())
-        : true;
+    const flattened: any[] = [];
+    if (!list || !Array.isArray(list)) return flattened;
 
-      // Date filter
-      const matchesDate = filters?.from ? item.date === filters.from : true;
+    list.forEach((item: AttendanceItem, itemIndex: number) => {
+      // Common representative info
+      const repName = item.user?.name || item.name || "N/A";
+      const repEmail = item.user?.email || item.email || "N/A";
+      const date = item.attendanceDateFormatted || "N/A";
 
-      // Territory filter
-      const matchesTerritory = filters?.regionId ? item.territory === filters.regionId : true;
-
-      return matchesSearch && matchesDate && matchesTerritory;
+      if (item.records && item.records.length > 0) {
+        item.records.forEach((record: AttendanceRecordItem, recordIndex: number) => {
+          flattened.push({
+            id: record.id || `${item.id || itemIndex}-${recordIndex}`,
+            date: date,
+            saleRepName: repName,
+            saleRepEmail: repEmail,
+            territory: record.territory?.pulseCode || item.territory?.pulseCode || "N/A",
+            territoryName: record.territory?.description || item.territory?.description || "",
+            checkInTime: record.checkInAtPKT || "N/A",
+            checkOutTime: record.checkOutAtPKT || "Still in",
+            totalHours: formatSeconds(record.totalSeconds ?? null),
+          });
+        });
+      } else {
+        // Handle case where item itself contains attendance data (flat structure)
+        flattened.push({
+          id: item.id || `item-${itemIndex}`,
+          date: date,
+          saleRepName: repName,
+          saleRepEmail: repEmail,
+          territory: item.territory?.pulseCode || "N/A",
+          territoryName: item.territory?.description || "",
+          checkInTime: item.checkInAtPKT || "N/A",
+          checkOutTime: item.checkOutAtPKT || "Still in",
+          totalHours: formatSeconds(item.totalSeconds ?? null),
+        });
+      }
     });
-  }, [searchTerm, filters]);
+    return flattened;
+  }, [list]);
+
+  function formatSeconds(seconds: number | null): string {
+    if (seconds === null || seconds === undefined) return "N/A";
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    if (h > 0) return `${h}h ${m}m`;
+    return `${m}m`;
+  }
 
   const columns: ColumnDef<any>[] = [
     {
@@ -89,13 +109,13 @@ export default function AttendanceTable({
       cell: ({ row }: { row: { original: any } }) => (
         <div className="flex items-center gap-3">
           <img
-            src={row.original.saleRepPicture || DEFAULT_AVATAR}
+            src={DEFAULT_AVATAR}
             alt={row.original.saleRepName}
             className="w-10 h-10 rounded-8 object-cover border border-(--gray-2) shadow-soft flex-shrink-0"
           />
           <div>
             <p className="t-td-b">{row.original.saleRepName}</p>
-            <p className="t-cap">{row.original.saleRepRole || "Sales Rep"}</p>
+            <p className="t-cap">{row.original.saleRepEmail}</p>
           </div>
         </div>
       ),
@@ -104,7 +124,12 @@ export default function AttendanceTable({
       header: "Region/Territory",
       accessorKey: "territory",
       cell: ({ row }: { row: { original: any } }) => (
-        <p className="t-label">{row.original.territory}</p>
+        <div>
+          <p className="t-td-b">{row.original.territory}</p>
+          {row.original.territoryName && (
+            <p className="t-cap text-(--gray-5)">{row.original.territoryName}</p>
+          )}
+        </div>
       ),
     },
     {
@@ -118,7 +143,7 @@ export default function AttendanceTable({
       header: "Check-out Time",
       accessorKey: "checkOutTime",
       cell: ({ row }: { row: { original: any } }) => (
-        <p className="t-label">{row.original.checkOutTime || "Still in"}</p>
+        <p className="t-label">{row.original.checkOutTime}</p>
       ),
     },
     {
@@ -130,16 +155,35 @@ export default function AttendanceTable({
     },
   ];
 
+  const handlePaginationChange = (page: number, size: number) => {
+    setCurrentPage(page);
+    setPageSize(size);
+  };
+
   return (
     <div className="w-full">
       <CenturoTable
         data={displayData}
         columns={columns}
-        loading={false}
-        error={null}
-        onRetry={() => {}}
+        loading={loading}
+        error={error}
+        onRetry={() => {
+          dispatch(
+            fetchAttendanceTableList({
+              from: filters?.from,
+              to: filters?.to,
+              regionId: filters?.regionId,
+              searchTerm,
+              page: currentPage,
+              limit: pageSize,
+            })
+          );
+        }}
         enablePagination={true}
-        pageSize={10}
+        serverSidePagination={true}
+        totalItems={pagination.total}
+        pageSize={pageSize}
+        onPaginationChange={handlePaginationChange}
         PaginationComponent={TablePagination}
         emptyMessage="No attendance records found matching your filters"
       />
