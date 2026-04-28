@@ -116,6 +116,7 @@ import allPermissionGroupsReducer from "./slices/permissionGroup/getAllPermissio
 import getUserProfileReducer from "./slices/auth/getUserProfileSlice";
 import expenseReducer from "./slices/expense/expenseSlice";
 import detailedExpenseReducer from "./slices/expense/getDetailedExpenseSlice";
+import dailyCallReportReducer from "./slices/DCR/dailyCallReportSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -230,6 +231,7 @@ const rootReducer = combineReducers({
   getUserProfile: getUserProfileReducer,
   expense: expenseReducer,
   detailedExpense: detailedExpenseReducer,
+  dailyCallReport: dailyCallReportReducer,
 });
 
 const persistConfig = {
