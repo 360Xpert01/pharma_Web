@@ -258,9 +258,11 @@ export function DashboardContent({
   }>({});
   const [attendanceFilters, setAttendanceFilters] = useState<{
     from?: string;
+    to?: string;
     regionId?: string;
   }>({
-    from: new Date().toISOString().split("T")[0], // Default to today
+    from: "",
+    to: "",
   });
 
   const handleSettings = () => {

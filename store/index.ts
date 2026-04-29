@@ -88,6 +88,7 @@ import partyPlanReducer from "./slices/party/partyPlanSlice";
 import pendingRequestsReducer from "./slices/PendingRequest/pendingRequestsSlice";
 import handleOtpSliceReducer from "./slices/PendingRequest/handleOtpRequestsSlice";
 import attendanceReducer from "./slices/Attendance/AttandanceGetSlice";
+import attendanceListReducer from "./slices/Attendance/AttendanceListSlice";
 import userSamplesReducer from "./slices/UserSamples/userSamplesSlice";
 import userGiveawaysReducer from "./slices/UserGiveaways/userGiveawaysSlice";
 import userDevicesReducer from "./slices/device/getUserDevicesSlice";
@@ -115,6 +116,7 @@ import allPermissionGroupsReducer from "./slices/permissionGroup/getAllPermissio
 import getUserProfileReducer from "./slices/auth/getUserProfileSlice";
 import expenseReducer from "./slices/expense/expenseSlice";
 import detailedExpenseReducer from "./slices/expense/getDetailedExpenseSlice";
+import dailyCallReportReducer from "./slices/DCR/dailyCallReportSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -201,6 +203,7 @@ const rootReducer = combineReducers({
   pendingRequests: pendingRequestsReducer,
   handleOtp: handleOtpSliceReducer,
   attendance: attendanceReducer,
+  attendanceList: attendanceListReducer,
   userSamples: userSamplesReducer,
   userGiveaways: userGiveawaysReducer,
   userDevices: userDevicesReducer,
@@ -228,6 +231,7 @@ const rootReducer = combineReducers({
   getUserProfile: getUserProfileReducer,
   expense: expenseReducer,
   detailedExpense: detailedExpenseReducer,
+  dailyCallReport: dailyCallReportReducer,
 });
 
 const persistConfig = {

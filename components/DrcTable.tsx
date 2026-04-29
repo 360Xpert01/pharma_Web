@@ -1,70 +1,17 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
-
-interface DcrRecord {
-  id: number;
-  reportDate: string;
-  saleRepName: string;
-  saleRepPicture?: string;
-  saleRepRole?: string;
-  territory: string;
-  doctorName: string;
-  doctorSpecialization: string;
-  startTime: string;
-  duration: string;
-  samplesGiven: string;
-  orderTaken: string;
-  notes: string;
-}
-
-const tableData: DcrRecord[] = [
-  {
-    id: 1,
-    reportDate: "2024-04-25",
-    saleRepName: "Mohammad Amir",
-    saleRepRole: "Sales Representative",
-    territory: "Gulshan-e-Iqbal",
-    doctorName: "Dr. Rashid Ahmed",
-    doctorSpecialization: "Cardiologist",
-    startTime: "10:30 AM",
-    duration: "15 mins",
-    samplesGiven: "Amoxicillin (5), Panadol (10)",
-    orderTaken: "100 units",
-    notes: "Doctor was interested in the new cardiac drug.",
-  },
-  {
-    id: 2,
-    reportDate: "2024-04-26",
-    saleRepName: "Sara Khan",
-    saleRepRole: "Sales Representative",
-    territory: "Clifton",
-    doctorName: "Dr. Ayesha Farooq",
-    doctorSpecialization: "Pediatrician",
-    startTime: "11:00 AM",
-    duration: "20 mins",
-    samplesGiven: "Ibuprofen (2)",
-    orderTaken: "None",
-    notes: "Requested a focus group meeting for next month.",
-  },
-  {
-    id: 3,
-    reportDate: "2024-04-24",
-    saleRepName: "Ali Raza",
-    saleRepRole: "Sales Representative",
-    territory: "Korangi",
-    doctorName: "Dr. Bilal Shah",
-    doctorSpecialization: "Dermatologist",
-    startTime: "02:15 PM",
-    duration: "10 mins",
-    samplesGiven: "Cetirizine (8)",
-    orderTaken: "50 units",
-    notes: "Follow-up required on the recent clinical trial data.",
-  },
-];
+import { useAppDispatch, useAppSelector } from "@/store";
+import {
+  fetchDailyCallReport,
+  DailyCallRecord,
+  CallProduct,
+  CallSample,
+} from "@/store/slices/DCR/dailyCallReportSlice";
+import { format } from "date-fns";
 
 const DEFAULT_AVATAR = "/girlPic.png";
 
@@ -75,58 +22,86 @@ export default function DcrTable({
   filters?: { from?: string; to?: string; employeeId?: string; regionId?: string };
   searchTerm?: string;
 }) {
-  // Use mock data only
+  const dispatch = useAppDispatch();
+  const { list, pagination, loading, error } = useAppSelector((state) => state.dailyCallReport);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  useEffect(() => {
+    dispatch(
+      fetchDailyCallReport({
+        from: filters?.from,
+        to: filters?.to,
+        salrepname: filters?.employeeId,
+        territoryname: filters?.regionId,
+        search: searchTerm,
+        page: currentPage,
+        limit: pageSize,
+      })
+    );
+  }, [dispatch, filters, searchTerm, currentPage, pageSize]);
+
   const displayData = useMemo(() => {
-    return tableData.filter((item: any) => {
-      // Search filter
-      const matchesSearch = searchTerm
-        ? item.saleRepName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.doctorName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.territory?.toLowerCase().includes(searchTerm.toLowerCase())
-        : true;
+    return (list || []).map((item: DailyCallRecord) => {
+      const formatProductList = (items: (CallProduct | CallSample)[]) => {
+        if (!items || items.length === 0) return "None";
+        return items
+          .map((i) => `${i?.productId?.slice(0, 8) || "Unknown"} (${i?.quantity || 0})`)
+          .join(", ");
+      };
 
-      // Date range filter
-      const itemDate = new Date(item.reportDate);
-      const matchesFromDate = filters?.from ? itemDate >= new Date(filters.from) : true;
-      const matchesToDate = filters?.to ? itemDate <= new Date(filters.to) : true;
+      // Handle time parsing: API gives "10:26", Date wants full date
+      let formattedTime = item?.checkInAt || "N/A";
+      if (item?.checkInAt && item?.callDate) {
+        try {
+          const dateStr = item.callDate.includes("T") ? item.callDate.split("T")[0] : item.callDate;
+          const fullDate = new Date(`${dateStr}T${item.checkInAt}`);
+          if (!isNaN(fullDate.getTime())) {
+            formattedTime = format(fullDate, "hh:mm a");
+          }
+        } catch (e) {
+          console.error("Time parsing error", e);
+        }
+      }
 
-      // Sales Rep filter (assuming ID match or name match for dummy)
-      const matchesSalesRep = filters?.employeeId
-        ? item.saleRepId === filters.employeeId || item.saleRepName.includes(filters.employeeId)
-        : true;
-
-      // Territory filter (assuming regionId matches territory name or id)
-      const matchesTerritory = filters?.regionId
-        ? item.regionId === filters.regionId || item.territory === filters.regionId
-        : true;
-
-      return (
-        matchesSearch && matchesFromDate && matchesToDate && matchesSalesRep && matchesTerritory
-      );
+      return {
+        ...item,
+        reportDate: item?.callDate ? format(new Date(item.callDate), "yyyy-MM-dd") : "N/A",
+        saleRepName: item?.salrepname || "N/A",
+        territory: item?.territoryname || "N/A",
+        doctorName: item?.partyname || "N/A",
+        doctorSpecialization: item?.segment || "N/A",
+        startTime: formattedTime,
+        samplesGiven: formatProductList(item?.callSamples || []),
+        orderTaken: formatProductList(item?.callProducts || []),
+        notes: item?.comments || item?.remarks || "No notes",
+        isFake: item?.fake_call === true || item?.fake_call === "true",
+      };
     });
-  }, [searchTerm, filters]);
+  }, [list]);
 
   const columns: ColumnDef<any>[] = [
     {
       header: "Report Date",
       accessorKey: "reportDate",
-      cell: ({ row }: { row: { original: any } }) => (
-        <p className="t-label">{row.original.reportDate || "N/A"}</p>
-      ),
+      cell: ({ row }) => <p className="t-label">{row.original?.reportDate || "N/A"}</p>,
     },
     {
       header: "Representative",
       accessorKey: "saleRepName",
-      cell: ({ row }: { row: { original: any } }) => (
+      cell: ({ row }) => (
         <div className="flex items-center gap-3">
           <img
-            src={row.original.saleRepPicture || DEFAULT_AVATAR}
-            alt={row.original.saleRepName}
+            src={DEFAULT_AVATAR}
+            alt={row.original?.saleRepName}
             className="w-10 h-10 rounded-8 object-cover border border-(--gray-2) shadow-soft flex-shrink-0"
           />
           <div>
-            <p className="t-td-b">{row.original.saleRepName}</p>
-            <p className="t-cap">{row.original.saleRepRole || "Sales Rep"}</p>
+            <div className="flex items-center gap-2">
+              <p className="t-td-b">{row.original?.saleRepName || "N/A"}</p>
+            </div>
+            <p className="t-cap">Sales Rep</p>
           </div>
         </div>
       ),
@@ -134,77 +109,95 @@ export default function DcrTable({
     {
       header: "Territory/Brick",
       accessorKey: "territory",
-      cell: ({ row }: { row: { original: any } }) => (
-        <p className="t-label">{row.original.territory || "N/A"}</p>
-      ),
+      cell: ({ row }) => <p className="t-label">{row.original?.territory || "N/A"}</p>,
     },
     {
       header: "Doctor/Store Name",
       accessorKey: "doctorName",
-      cell: ({ row }: { row: { original: any } }) => (
-        <p className="t-td-b">{row.original.doctorName}</p>
-      ),
+      cell: ({ row }) => <p className="t-td-b">{row.original?.doctorName || "N/A"}</p>,
     },
     {
       header: "Speciality/Category",
       accessorKey: "doctorSpecialization",
-      cell: ({ row }: { row: { original: any } }) => (
-        <p className="t-label">
-          {row.original.doctorSpecialization || row.original.specialty || "N/A"}
-        </p>
-      ),
+      cell: ({ row }) => <p className="t-label">{row.original?.doctorSpecialization || "N/A"}</p>,
     },
     {
       header: "Call Start Time",
       accessorKey: "startTime",
-      cell: ({ row }: { row: { original: any } }) => (
-        <p className="t-label">{row.original.startTime || "N/A"}</p>
-      ),
+      cell: ({ row }) => <p className="t-label">{row.original?.startTime || "N/A"}</p>,
     },
     {
-      header: "Duration",
-      accessorKey: "duration",
-      cell: ({ row }: { row: { original: any } }) => (
-        <p className="t-label">{row.original.duration || "N/A"}</p>
+      header: "GPS Verified",
+      accessorKey: "isFake",
+      cell: ({ row }) => (
+        <p
+          className={`t-label font-bold ${
+            row.original?.isFake ? "text-red-600" : "text-green-600"
+          }`}
+        >
+          {row.original?.isFake ? "True" : "False"}
+        </p>
       ),
     },
     {
       header: "Samples Given",
       accessorKey: "samplesGiven",
-      cell: ({ row }: { row: { original: any } }) => (
-        <p className="t-label truncate max-w-[150px]" title={row.original.samplesGiven}>
-          {row.original.samplesGiven || "None"}
+      cell: ({ row }) => (
+        <p className="t-label truncate max-w-[150px]" title={row.original?.samplesGiven}>
+          {row.original?.samplesGiven || "None"}
         </p>
       ),
     },
     {
       header: "Order Taken",
       accessorKey: "orderTaken",
-      cell: ({ row }: { row: { original: any } }) => (
-        <p className="t-label">{row.original.orderTaken || "None"}</p>
+      cell: ({ row }) => (
+        <p className="t-label truncate max-w-[150px]" title={row.original?.orderTaken}>
+          {row.original?.orderTaken || "None"}
+        </p>
       ),
     },
     {
       header: "Remarks",
       accessorKey: "notes",
-      cell: ({ row }: { row: { original: any } }) => (
-        <p className="t-label truncate max-w-[200px]" title={row.original.notes}>
-          {row.original.notes || "No notes"}
+      cell: ({ row }) => (
+        <p className="t-label truncate max-w-[200px]" title={row.original?.notes}>
+          {row.original?.notes || "No notes"}
         </p>
       ),
     },
   ];
+
+  const handlePaginationChange = (page: number, size: number) => {
+    setCurrentPage(page);
+    setPageSize(size);
+  };
 
   return (
     <div className="w-full">
       <CenturoTable
         data={displayData}
         columns={columns}
-        loading={false}
-        error={null}
-        onRetry={() => {}}
+        loading={loading}
+        error={error}
+        onRetry={() => {
+          dispatch(
+            fetchDailyCallReport({
+              from: filters?.from,
+              to: filters?.to,
+              salrepname: filters?.employeeId,
+              territoryname: filters?.regionId,
+              search: searchTerm,
+              page: currentPage,
+              limit: pageSize,
+            })
+          );
+        }}
         enablePagination={true}
-        pageSize={10}
+        serverSidePagination={true}
+        totalItems={pagination.total}
+        pageSize={pageSize}
+        onPaginationChange={handlePaginationChange}
         PaginationComponent={TablePagination}
         emptyMessage="No DCR records found matching your filters"
       />

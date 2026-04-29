@@ -575,11 +575,21 @@ export default function TableFilter({
               <>
                 <div>
                   <FormInput
-                    label="Date"
+                    label="From Date"
                     name="from"
                     type="date"
                     value={selectedFromDate}
                     onChange={setSelectedFromDate}
+                    className="mb-0"
+                  />
+                </div>
+                <div>
+                  <FormInput
+                    label="To Date"
+                    name="to"
+                    type="date"
+                    value={selectedToDate}
+                    onChange={setSelectedToDate}
                     className="mb-0"
                   />
                 </div>
