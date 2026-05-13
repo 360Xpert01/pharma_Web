@@ -139,7 +139,7 @@ export default function AttendanceDashboard({
           </div>
         ) : attendanceList && attendanceList.length > 0 ? (
           attendanceList.map((item: any, index: any) => {
-            const record = item.records && item.records.length > 0 ? item.records[0] : null;
+            const record = item.records && item.records.length > 0 ? item.records[0] : item;
             return (
               <div
                 key={index}
@@ -147,7 +147,9 @@ export default function AttendanceDashboard({
               >
                 {/* Day & Date */}
                 <div className="col-span-3">
-                  <h4 className="text-lg font-bold text-gray-900 leading-tight">{item.day}</h4>
+                  <h4 className="text-lg font-bold text-gray-900 leading-tight">
+                    {item.dayName || item.day || "N/A"}
+                  </h4>
                   <p className="text-sm text-gray-500 font-medium">
                     {item.attendanceDateFormatted}
                   </p>

@@ -75,6 +75,11 @@ interface FetchScheduleParams {
   page?: number;
   limit?: number;
   search?: string;
+  sort?: string;
+  order?: string;
+  status?: string;
+  month?: number | string;
+  year?: number | string;
 }
 
 export const fetchCrmSchedule = createAsyncThunk<
@@ -99,7 +104,16 @@ export const fetchCrmSchedule = createAsyncThunk<
       data: ScheduleItem[];
       pagination: PaginationInfo;
     }>(`${API_BASE_URL}api/v1/schedule/crm`, {
-      params: { page, limit, search },
+      params: {
+        page,
+        limit,
+        search,
+        ...(params?.sort && { sort: params.sort }),
+        ...(params?.order && { order: params.order }),
+        ...(params?.status && { status: params.status }),
+        ...(params?.month && { month: params.month }),
+        ...(params?.year && { year: params.year }),
+      },
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
