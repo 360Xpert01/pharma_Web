@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { ChevronRight, Eye } from "lucide-react";
 import Link from "next/link";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, SortingState } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import StatusBadge from "@/components/shared/StatusBadge";
@@ -33,8 +33,7 @@ export default function CampaignApprovalTable({
     status?: string;
     month?: number | string;
     year?: number | string;
-    from?: string;
-    to?: string;
+    teamId?: string;
   };
 }) {
   const dispatch = useDispatch<any>();
@@ -42,18 +41,38 @@ export default function CampaignApprovalTable({
 
   const { data, loading, error, pagination } = useSelector((state: any) => state.schedule);
 
-  const buildDispatchParams = (page: number, limit: number) => ({
-    page,
-    limit,
-    search: searchTerm,
-    ...(filters?.status && { status: filters.status }),
-    ...(filters?.month && { month: filters.month }),
-    ...(filters?.year && { year: filters.year }),
-  });
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  // Map UI column ids to backend sort field names (schedule.repository.js sortMap)
+  const SORT_FIELD_MAP: Record<string, string> = {
+    salesmanName: "salesmanName",
+    month: "month",
+    year: "year",
+    teamName: "teamName",
+    status: "status",
+    createdAt: "createdAt",
+  };
+
+  const buildDispatchParams = (page: number, limit: number) => {
+    const rawSortField = sorting.length > 0 ? sorting[0].id : "createdAt";
+    const sortField = SORT_FIELD_MAP[rawSortField] ?? "createdAt";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "desc";
+
+    return {
+      page,
+      limit,
+      search: searchTerm,
+      sort: sortField,
+      order: sortOrder,
+      ...(filters?.status && { status: filters.status }),
+      ...(filters?.month && { month: filters.month }),
+      ...(filters?.year && { year: filters.year }),
+    };
+  };
 
   useEffect(() => {
     dispatch(fetchCrmSchedule(buildDispatchParams(1, 10)));
-  }, [dispatch, searchTerm, filters]);
+  }, [dispatch, searchTerm, filters, sorting]);
 
   const handleRetry = () => {
     dispatch(fetchCrmSchedule(buildDispatchParams(pagination.page, pagination.limit)));
@@ -86,6 +105,7 @@ export default function CampaignApprovalTable({
 
   const columns: ColumnDef<CampaignItem>[] = [
     {
+      id: "salesmanName",
       header: "Salesman Name",
       accessorKey: "salesmanName",
       cell: ({ row }) => (
@@ -95,6 +115,7 @@ export default function CampaignApprovalTable({
       ),
     },
     {
+      id: "month",
       header: "Month",
       accessorKey: "month",
       cell: ({ row }) => (
@@ -104,6 +125,7 @@ export default function CampaignApprovalTable({
       ),
     },
     {
+      id: "year",
       header: "Year",
       accessorKey: "year",
       cell: ({ row }) => (
@@ -113,6 +135,7 @@ export default function CampaignApprovalTable({
       ),
     },
     {
+      id: "teamName",
       header: "Team Name",
       accessorKey: "teamName",
       cell: ({ row }) => (
@@ -122,6 +145,7 @@ export default function CampaignApprovalTable({
       ),
     },
     {
+      id: "status",
       header: "Status",
       accessorKey: "status",
       cell: ({ row }) => (
@@ -131,6 +155,7 @@ export default function CampaignApprovalTable({
       ),
     },
     {
+      id: "createdAt",
       header: "Created",
       accessorKey: "createdAt",
       cell: ({ row }) => (
@@ -142,6 +167,7 @@ export default function CampaignApprovalTable({
     {
       id: "actions",
       header: "",
+      enableSorting: false,
       cell: ({ row }) => (
         <Link
           href={`/dashboard/plan-Request/${row.original.id}`}
@@ -163,6 +189,10 @@ export default function CampaignApprovalTable({
         onRetry={handleRetry}
         enablePagination={true}
         serverSidePagination={true}
+        enableSorting={true}
+        serverSideSorting={true}
+        onSortChange={(newSorting) => setSorting(newSorting)}
+        sorting={sorting}
         totalItems={pagination.total}
         onPaginationChange={handlePaginationChange}
         pageSize={pagination.limit}

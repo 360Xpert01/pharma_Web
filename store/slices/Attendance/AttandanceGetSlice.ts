@@ -49,9 +49,10 @@ export const fetchAttendanceList = createAsyncThunk<
       },
     });
 
-    // API response adjust karo (common patterns)
-    // agar response.data.attendance ya response.data.data array hai
-    return response.data.data || response.data.attendance || response.data;
+    // API returns { success, data: [...], pagination: {...} }
+    // response.data.data is the items array; handle nested wrapper too
+    const resData = response.data?.data;
+    return Array.isArray(resData) ? resData : resData?.data || resData || [];
   } catch (err: any) {
     const message =
       err.response?.data?.message || err.message || "User ki attendance list load nahi ho saki";

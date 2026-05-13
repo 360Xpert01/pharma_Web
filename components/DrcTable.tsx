@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo, useEffect, useState } from "react";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, SortingState } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -27,8 +27,24 @@ export default function DcrTable({
 
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  // Map UI column ids to backend sort field names (call.repository.js sortMap)
+  const SORT_FIELD_MAP: Record<string, string> = {
+    reportDate: "callDate",
+    saleRepName: "salrepname",
+    territory: "territoryname",
+    doctorName: "partyname",
+    doctorSpecialization: "segment",
+    startTime: "checkInAt",
+    isFake: "fake_call",
+  };
 
   useEffect(() => {
+    const rawSortField = sorting.length > 0 ? sorting[0].id : "reportDate";
+    const sortField = SORT_FIELD_MAP[rawSortField] ?? "callDate";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "desc";
+
     dispatch(
       fetchDailyCallReport({
         from: filters?.from,
@@ -38,9 +54,11 @@ export default function DcrTable({
         search: searchTerm,
         page: currentPage,
         limit: pageSize,
+        sort: sortField,
+        order: sortOrder,
       })
     );
-  }, [dispatch, filters, searchTerm, currentPage, pageSize]);
+  }, [dispatch, filters, searchTerm, currentPage, pageSize, sorting]);
 
   const displayData = useMemo(() => {
     return (list || []).map((item: DailyCallRecord) => {
@@ -83,11 +101,13 @@ export default function DcrTable({
 
   const columns: ColumnDef<any>[] = [
     {
+      id: "reportDate",
       header: "Report Date",
       accessorKey: "reportDate",
       cell: ({ row }) => <p className="t-label">{row.original?.reportDate || "N/A"}</p>,
     },
     {
+      id: "saleRepName",
       header: "Representative",
       accessorKey: "saleRepName",
       cell: ({ row }) => (
@@ -107,26 +127,31 @@ export default function DcrTable({
       ),
     },
     {
+      id: "territory",
       header: "Territory/Brick",
       accessorKey: "territory",
       cell: ({ row }) => <p className="t-label">{row.original?.territory || "N/A"}</p>,
     },
     {
+      id: "doctorName",
       header: "Doctor/Store Name",
       accessorKey: "doctorName",
       cell: ({ row }) => <p className="t-td-b">{row.original?.doctorName || "N/A"}</p>,
     },
     {
+      id: "doctorSpecialization",
       header: "Speciality/Category",
       accessorKey: "doctorSpecialization",
       cell: ({ row }) => <p className="t-label">{row.original?.doctorSpecialization || "N/A"}</p>,
     },
     {
+      id: "startTime",
       header: "Call Start Time",
       accessorKey: "startTime",
       cell: ({ row }) => <p className="t-label">{row.original?.startTime || "N/A"}</p>,
     },
     {
+      id: "isFake",
       header: "GPS Verified",
       accessorKey: "isFake",
       cell: ({ row }) => (
@@ -140,8 +165,10 @@ export default function DcrTable({
       ),
     },
     {
+      id: "samplesGiven",
       header: "Samples Given",
       accessorKey: "samplesGiven",
+      enableSorting: false,
       cell: ({ row }) => (
         <p className="t-label truncate max-w-[150px]" title={row.original?.samplesGiven}>
           {row.original?.samplesGiven || "None"}
@@ -149,8 +176,10 @@ export default function DcrTable({
       ),
     },
     {
+      id: "orderTaken",
       header: "Order Taken",
       accessorKey: "orderTaken",
+      enableSorting: false,
       cell: ({ row }) => (
         <p className="t-label truncate max-w-[150px]" title={row.original?.orderTaken}>
           {row.original?.orderTaken || "None"}
@@ -158,8 +187,10 @@ export default function DcrTable({
       ),
     },
     {
+      id: "notes",
       header: "Remarks",
       accessorKey: "notes",
+      enableSorting: false,
       cell: ({ row }) => (
         <p className="t-label truncate max-w-[200px]" title={row.original?.notes}>
           {row.original?.notes || "No notes"}
@@ -181,6 +212,10 @@ export default function DcrTable({
         loading={loading}
         error={error}
         onRetry={() => {
+          const rawSortField = sorting.length > 0 ? sorting[0].id : "reportDate";
+          const sortField = SORT_FIELD_MAP[rawSortField] ?? "callDate";
+          const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "desc";
+
           dispatch(
             fetchDailyCallReport({
               from: filters?.from,
@@ -190,11 +225,17 @@ export default function DcrTable({
               search: searchTerm,
               page: currentPage,
               limit: pageSize,
+              sort: sortField,
+              order: sortOrder,
             })
           );
         }}
         enablePagination={true}
         serverSidePagination={true}
+        enableSorting={true}
+        serverSideSorting={true}
+        onSortChange={(newSorting) => setSorting(newSorting)}
+        sorting={sorting}
         totalItems={pagination.total}
         pageSize={pageSize}
         onPaginationChange={handlePaginationChange}
