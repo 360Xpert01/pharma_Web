@@ -14,6 +14,7 @@ import {
 import { HierarchyNode } from "@/components/HierarchyNode";
 import { useTeamForm } from "@/hooks/user-team-form";
 import { ConfirmModal } from "./shared/confirm-modal";
+import { RoleGuard } from "@/components/shared/RoleGuard";
 import { useState } from "react";
 
 import { useSearchParams, useRouter } from "next/navigation";
@@ -22,9 +23,12 @@ export default function TeamForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const teamId = searchParams.get("id");
-  const mode = searchParams.get("mode") === "update" ? "update" : "add";
+  const rawMode = searchParams.get("mode");
+  const mode = rawMode === "update" ? "update" : rawMode === "view" ? "view" : "add";
+  const isViewMode = mode === "view";
 
-  const { state, actions } = useTeamForm(mode, teamId || undefined);
+  // In view mode, use "update" for the hook so it loads team data, but we'll disable inputs
+  const { state, actions } = useTeamForm(isViewMode ? "update" : mode, teamId || undefined);
 
   const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
@@ -76,6 +80,7 @@ export default function TeamForm() {
 
   const isUpdateMode = mode === "update";
   const loading = isUpdateMode ? updateTeamLoading : createTeamLoading;
+  const isReadOnly = isViewMode;
 
   return (
     <div className=" ">
@@ -88,7 +93,7 @@ export default function TeamForm() {
             <FormInput
               label="Pulse Code"
               name="pulseCode"
-              value={isUpdateMode ? pulseCode : "TO BE GENERATED"}
+              value={isUpdateMode || isViewMode ? pulseCode : "TO BE GENERATED"}
               onChange={() => {}}
               placeholder="Auto-generated"
               required
@@ -103,11 +108,15 @@ export default function TeamForm() {
               type="text"
               value={teamName}
               onChange={(value) => {
-                setTeamName(value);
-                clearFieldError("name");
+                if (!isReadOnly) {
+                  setTeamName(value);
+                  clearFieldError("name");
+                }
               }}
               placeholder="Enter team name"
               required
+              readOnly={isReadOnly}
+              className={isReadOnly ? "cursor-not-allowed" : ""}
               error={getErrorMessage("name")}
             />
 
@@ -244,35 +253,54 @@ export default function TeamForm() {
         </div>
 
         {/* Buttons */}
-        <div className="flex justify-end gap-4 pt-6">
-          <Button
-            variant="outline"
-            size="lg"
-            rounded="default"
-            onClick={() => setIsDiscardModalOpen(true)}
-          >
-            Discard
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            action={isUpdateMode ? "edit" : "add"}
-            disabled={loading}
-            loading={loading}
-            variant="primary"
-            size="lg"
-            icon={Plus}
-            rounded="default"
-            className="shadow-soft"
-          >
-            {loading
-              ? isUpdateMode
-                ? "Updating..."
-                : "Creating..."
-              : isUpdateMode
-                ? "Update Team"
-                : "Add Team"}
-          </Button>
-        </div>
+        {isViewMode ? (
+          <div className="flex justify-end gap-4 pt-6">
+            <Button variant="outline" size="lg" rounded="default" onClick={() => router.back()}>
+              Back
+            </Button>
+            <RoleGuard action="edit">
+              <Button
+                onClick={() => router.push(`/dashboard/UpdateTeamForm?id=${teamId}&mode=update`)}
+                variant="primary"
+                size="lg"
+                rounded="default"
+                className="shadow-soft"
+              >
+                Edit Team
+              </Button>
+            </RoleGuard>
+          </div>
+        ) : (
+          <div className="flex justify-end gap-4 pt-6">
+            <Button
+              variant="outline"
+              size="lg"
+              rounded="default"
+              onClick={() => setIsDiscardModalOpen(true)}
+            >
+              Discard
+            </Button>
+            <Button
+              onClick={handleSubmit}
+              action={isUpdateMode ? "edit" : "add"}
+              disabled={loading}
+              loading={loading}
+              variant="primary"
+              size="lg"
+              icon={Plus}
+              rounded="default"
+              className="shadow-soft"
+            >
+              {loading
+                ? isUpdateMode
+                  ? "Updating..."
+                  : "Creating..."
+                : isUpdateMode
+                  ? "Update Team"
+                  : "Add Team"}
+            </Button>
+          </div>
+        )}
       </div>
 
       <ConfirmModal

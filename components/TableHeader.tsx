@@ -22,6 +22,7 @@ interface UsersHeaderProps {
   showExpenseFilters?: boolean;
   showDcrFilters?: boolean;
   showAttendanceFilters?: boolean;
+  showPlanFilters?: boolean;
   isAllocate?: boolean;
   channelId?: string;
   onApplyFilters?: (filters: {
@@ -42,7 +43,11 @@ interface UsersHeaderProps {
     from?: string;
     to?: string;
     doctorId?: string;
+    // Plan filters
+    month?: number | string;
+    year?: number | string;
   }) => void;
+  icon?: React.ReactNode;
 }
 
 export default function UsersHeader({
@@ -62,6 +67,7 @@ export default function UsersHeader({
   showExpenseFilters = false,
   showDcrFilters = false,
   showAttendanceFilters = false,
+  showPlanFilters = false,
   isAllocate = false,
   channelId,
   onApplyFilters,
@@ -109,6 +115,7 @@ export default function UsersHeader({
               showExpenseFilters={showExpenseFilters}
               showDcrFilters={showDcrFilters}
               showAttendanceFilters={showAttendanceFilters}
+              showPlanFilters={showPlanFilters}
               isAllocate={isAllocate}
               channelId={channelId}
               onApplyFilters={onApplyFilters}

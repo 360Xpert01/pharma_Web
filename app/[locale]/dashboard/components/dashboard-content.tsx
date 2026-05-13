@@ -264,6 +264,12 @@ export function DashboardContent({
     from: "",
     to: "",
   });
+  const [workPlanFilters, setWorkPlanFilters] = useState<{
+    status?: string;
+    month?: number | string;
+    year?: number | string;
+    teamId?: string;
+  }>({});
 
   const handleSettings = () => {
     if (settingsRoute) {
@@ -624,8 +630,14 @@ export function DashboardContent({
 
         {PlanTable && (
           <div className="rounded-md p-3 shadow-soft bg-[var(--background)]">
-            <TableHeader campHeading={campHeading} filterT={filterT} onSearch={setSearchTerm} />
-            <PlansTableManag searchTerm={searchTerm} />
+            <TableHeader
+              campHeading={campHeading}
+              filterT={filterT}
+              onSearch={setSearchTerm}
+              showPlanFilters={true}
+              onApplyFilters={setWorkPlanFilters}
+            />
+            <PlansTableManag searchTerm={searchTerm} filters={workPlanFilters} />
           </div>
         )}
 

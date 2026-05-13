@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo, useEffect, useState } from "react";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, SortingState } from "@tanstack/react-table";
 import CenturoTable from "@/components/shared/table/CeturoTable";
 import TablePagination from "@/components/TablePagination";
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -32,8 +32,23 @@ export default function AttendanceTable({
 
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  // Map UI column ids to backend sort field names (attendance.repository.js sortMap)
+  const SORT_FIELD_MAP: Record<string, string> = {
+    date: "attendanceDate",
+    saleRepName: "userName",
+    territory: "territory",
+    checkInTime: "checkInAt",
+    checkOutTime: "checkOutAt",
+    totalHours: "totalSeconds",
+  };
 
   useEffect(() => {
+    const rawSortField = sorting.length > 0 ? sorting[0].id : "date";
+    const sortField = SORT_FIELD_MAP[rawSortField] ?? "attendanceDate";
+    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "desc";
+
     dispatch(
       fetchAttendanceTableList({
         from: filters?.from,
@@ -42,9 +57,11 @@ export default function AttendanceTable({
         searchTerm,
         page: currentPage,
         limit: pageSize,
+        sort: sortField,
+        order: sortOrder,
       })
     );
-  }, [dispatch, filters, searchTerm, currentPage, pageSize]);
+  }, [dispatch, filters, searchTerm, currentPage, pageSize, sorting]);
 
   // Flatten nested records into individual table rows
   const displayData = useMemo(() => {
@@ -99,11 +116,13 @@ export default function AttendanceTable({
 
   const columns: ColumnDef<any>[] = [
     {
+      id: "date",
       header: "Date",
       accessorKey: "date",
       cell: ({ row }: { row: { original: any } }) => <p className="t-label">{row.original.date}</p>,
     },
     {
+      id: "saleRepName",
       header: "Representative",
       accessorKey: "saleRepName",
       cell: ({ row }: { row: { original: any } }) => (
@@ -121,6 +140,7 @@ export default function AttendanceTable({
       ),
     },
     {
+      id: "territory",
       header: "Region/Territory",
       accessorKey: "territory",
       cell: ({ row }: { row: { original: any } }) => (
@@ -133,6 +153,7 @@ export default function AttendanceTable({
       ),
     },
     {
+      id: "checkInTime",
       header: "Check-in Time",
       accessorKey: "checkInTime",
       cell: ({ row }: { row: { original: any } }) => (
@@ -140,6 +161,7 @@ export default function AttendanceTable({
       ),
     },
     {
+      id: "checkOutTime",
       header: "Check-out Time",
       accessorKey: "checkOutTime",
       cell: ({ row }: { row: { original: any } }) => (
@@ -147,6 +169,7 @@ export default function AttendanceTable({
       ),
     },
     {
+      id: "totalHours",
       header: "Total Working Hours",
       accessorKey: "totalHours",
       cell: ({ row }: { row: { original: any } }) => (
@@ -168,6 +191,10 @@ export default function AttendanceTable({
         loading={loading}
         error={error}
         onRetry={() => {
+          const rawSortField = sorting.length > 0 ? sorting[0].id : "date";
+          const sortField = SORT_FIELD_MAP[rawSortField] ?? "attendanceDate";
+          const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "desc";
+
           dispatch(
             fetchAttendanceTableList({
               from: filters?.from,
@@ -176,11 +203,17 @@ export default function AttendanceTable({
               searchTerm,
               page: currentPage,
               limit: pageSize,
+              sort: sortField,
+              order: sortOrder,
             })
           );
         }}
         enablePagination={true}
         serverSidePagination={true}
+        enableSorting={true}
+        serverSideSorting={true}
+        onSortChange={(newSorting) => setSorting(newSorting)}
+        sorting={sorting}
         totalItems={pagination.total}
         pageSize={pageSize}
         onPaginationChange={handlePaginationChange}

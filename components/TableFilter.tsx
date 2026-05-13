@@ -25,6 +25,7 @@ interface TableFilterProps {
   showExpenseFilters?: boolean;
   showDcrFilters?: boolean;
   showAttendanceFilters?: boolean;
+  showPlanFilters?: boolean;
   isAllocate?: boolean;
   channelId?: string;
   onApply?: () => void;
@@ -45,6 +46,9 @@ interface TableFilterProps {
     from?: string;
     to?: string;
     doctorId?: string;
+    // Plan filters
+    month?: number | string;
+    year?: number | string;
   }) => void;
   onClear?: () => void;
 }
@@ -60,6 +64,7 @@ export default function TableFilter({
   showExpenseFilters = false,
   showDcrFilters = false,
   showAttendanceFilters = false,
+  showPlanFilters = false,
   isAllocate = false,
   channelId,
   onApply,
@@ -93,6 +98,10 @@ export default function TableFilter({
   const [selectedFromDate, setSelectedFromDate] = useState("");
   const [selectedToDate, setSelectedToDate] = useState("");
   const [selectedDoctorId, setSelectedDoctorId] = useState("");
+
+  // Plan filter states
+  const [selectedPlanMonth, setSelectedPlanMonth] = useState("");
+  const [selectedPlanYear, setSelectedPlanYear] = useState("");
 
   // Redux state for filters
   const { specializations } = useAppSelector((state) => state.allSpecializations);
@@ -151,6 +160,9 @@ export default function TableFilter({
     if ((showDcrFilters || showAttendanceFilters) && isFilterOpen) {
       dispatch(getAllUsers({ page: 1, limit: 100 }));
       dispatch(getBrickList());
+    }
+    if (showPlanFilters && isFilterOpen) {
+      dispatch(getTeamAll());
     }
   }, [
     dispatch,
@@ -608,33 +620,114 @@ export default function TableFilter({
                   />
                 </div>
               </>
+            ) : showPlanFilters ? (
+              <>
+                <div>
+                  <FormSelect
+                    label="Month"
+                    name="planMonth"
+                    value={selectedPlanMonth}
+                    onChange={setSelectedPlanMonth}
+                    options={[
+                      { value: "1", label: "January" },
+                      { value: "2", label: "February" },
+                      { value: "3", label: "March" },
+                      { value: "4", label: "April" },
+                      { value: "5", label: "May" },
+                      { value: "6", label: "June" },
+                      { value: "7", label: "July" },
+                      { value: "8", label: "August" },
+                      { value: "9", label: "September" },
+                      { value: "10", label: "October" },
+                      { value: "11", label: "November" },
+                      { value: "12", label: "December" },
+                    ]}
+                    placeholder="Select month"
+                    className="mb-0"
+                  />
+                </div>
+                <div>
+                  <FormSelect
+                    label="Year"
+                    name="planYear"
+                    value={selectedPlanYear}
+                    onChange={setSelectedPlanYear}
+                    options={[
+                      {
+                        value: String(new Date().getFullYear() - 1),
+                        label: String(new Date().getFullYear() - 1),
+                      },
+                      {
+                        value: String(new Date().getFullYear()),
+                        label: String(new Date().getFullYear()),
+                      },
+                      {
+                        value: String(new Date().getFullYear() + 1),
+                        label: String(new Date().getFullYear() + 1),
+                      },
+                    ]}
+                    placeholder="Select year"
+                    className="mb-0"
+                  />
+                </div>
+                <div>
+                  <FormSelect
+                    label="Team"
+                    name="teamId"
+                    value={selectedTeam}
+                    onChange={setSelectedTeam}
+                    options={[
+                      ...teams.map((team) => ({
+                        value: team.id,
+                        label: team.name,
+                      })),
+                    ]}
+                    placeholder="Select team"
+                    className="mb-0"
+                  />
+                </div>
+                <div>
+                  <FormSelect
+                    label="Status"
+                    name="planStatus"
+                    value={selectedStatus}
+                    onChange={setSelectedStatus}
+                    options={[
+                      { value: "Pending", label: "Pending" },
+                      { value: "Accepted", label: "Accepted" },
+                      { value: "Rejected", label: "Rejected" },
+                      { value: "Under Review", label: "Under Review" },
+                    ]}
+                    placeholder="Select status"
+                    className="mb-0"
+                  />
+                </div>
+              </>
             ) : null}
 
-            {(showDoctorFilters ||
-              showEmployeeFilters ||
-              showProductFilters ||
-              showTeamFilters) && (
-              <div>
-                <FormSelect
-                  label="Status"
-                  name="status"
-                  value={showProductFilters ? selectedProductStatus : selectedStatus}
-                  onChange={showProductFilters ? setSelectedProductStatus : setSelectedStatus}
-                  options={[
-                    { value: "true", label: "Active" },
-                    { value: "false", label: "Inactive" },
-                    ...(showEmployeeFilters
-                      ? [
-                          { value: "pending", label: "Pending" },
-                          { value: "suspended", label: "Suspended" },
-                        ]
-                      : []),
-                  ]}
-                  placeholder="Select Status"
-                  className="mb-0"
-                />
-              </div>
-            )}
+            {(showDoctorFilters || showEmployeeFilters || showProductFilters || showTeamFilters) &&
+              !showPlanFilters && (
+                <div>
+                  <FormSelect
+                    label="Status"
+                    name="status"
+                    value={showProductFilters ? selectedProductStatus : selectedStatus}
+                    onChange={showProductFilters ? setSelectedProductStatus : setSelectedStatus}
+                    options={[
+                      { value: "true", label: "Active" },
+                      { value: "false", label: "Inactive" },
+                      ...(showEmployeeFilters
+                        ? [
+                            { value: "pending", label: "Pending" },
+                            { value: "suspended", label: "Suspended" },
+                          ]
+                        : []),
+                    ]}
+                    placeholder="Select Status"
+                    className="mb-0"
+                  />
+                </div>
+              )}
 
             {!showDoctorFilters &&
               !showEmployeeFilters &&
@@ -646,7 +739,8 @@ export default function TableFilter({
               !showDistributorFilters &&
               !showExpenseFilters &&
               !showDcrFilters &&
-              !showAttendanceFilters && (
+              !showAttendanceFilters &&
+              !showPlanFilters && (
                 <div>
                   <FormSelect
                     label="Date Range"
@@ -693,6 +787,8 @@ export default function TableFilter({
                   setSelectedFromDate("");
                   setSelectedToDate("");
                   setSelectedDoctorId("");
+                  setSelectedPlanMonth("");
+                  setSelectedPlanYear("");
                   if (onApplyFilters) {
                     onApplyFilters({
                       segmentId: "",
@@ -711,6 +807,8 @@ export default function TableFilter({
                       from: "",
                       to: "",
                       doctorId: "",
+                      month: "",
+                      year: "",
                     });
                   }
                   onClear?.();
@@ -749,6 +847,8 @@ export default function TableFilter({
                       from: selectedFromDate,
                       to: selectedToDate,
                       doctorId: selectedDoctorId,
+                      month: selectedPlanMonth,
+                      year: selectedPlanYear,
                     });
                   }
                   onApply?.();
