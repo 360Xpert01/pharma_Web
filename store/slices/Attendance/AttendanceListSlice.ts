@@ -68,6 +68,8 @@ interface FetchAttendanceParams {
   limit?: number;
   regionId?: string;
   searchTerm?: string;
+  sort?: string;
+  order?: string;
 }
 
 export const fetchAttendanceTableList = createAsyncThunk<
@@ -87,8 +89,10 @@ export const fetchAttendanceTableList = createAsyncThunk<
     if (params.userId) queryParams.userId = params.userId;
     if (params.from) queryParams.from = params.from;
     if (params.to) queryParams.to = params.to;
-    if (params.regionId) queryParams.regionId = params.regionId;
+    if (params.regionId) queryParams.territoryId = params.regionId;
     if (params.searchTerm) queryParams.search = params.searchTerm;
+    if (params.sort) queryParams.sort = params.sort;
+    if (params.order) queryParams.order = params.order;
 
     const response = await axios.get(`${baseUrl}api/v1/attendance/list`, {
       headers: {

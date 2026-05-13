@@ -70,6 +70,8 @@ interface FetchDailyCallReportParams {
   page?: number;
   limit?: number;
   search?: string;
+  sort?: string;
+  order?: string;
 }
 
 export const fetchDailyCallReport = createAsyncThunk<
@@ -90,6 +92,8 @@ export const fetchDailyCallReport = createAsyncThunk<
     if (params.from) queryParams.from = params.from;
     if (params.to) queryParams.to = params.to;
     if (params.search) queryParams.search = params.search;
+    if (params.sort) queryParams.sort = params.sort;
+    if (params.order) queryParams.order = params.order;
 
     const response = await axios.get(`${baseUrl}api/v1/call/daily-call-report`, {
       headers: {

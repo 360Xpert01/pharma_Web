@@ -24,24 +24,43 @@ interface CampaignItem {
   teamName?: string;
 }
 
-export default function CampaignApprovalTable({ searchTerm = "" }: { searchTerm?: string }) {
+export default function CampaignApprovalTable({
+  searchTerm = "",
+  filters,
+}: {
+  searchTerm?: string;
+  filters?: {
+    status?: string;
+    month?: number | string;
+    year?: number | string;
+    from?: string;
+    to?: string;
+  };
+}) {
   const dispatch = useDispatch<any>();
   const { isManager } = usePermission();
 
   const { data, loading, error, pagination } = useSelector((state: any) => state.schedule);
 
+  const buildDispatchParams = (page: number, limit: number) => ({
+    page,
+    limit,
+    search: searchTerm,
+    ...(filters?.status && { status: filters.status }),
+    ...(filters?.month && { month: filters.month }),
+    ...(filters?.year && { year: filters.year }),
+  });
+
   useEffect(() => {
-    dispatch(fetchCrmSchedule({ page: 1, limit: 10, search: searchTerm }));
-  }, [dispatch, searchTerm]);
+    dispatch(fetchCrmSchedule(buildDispatchParams(1, 10)));
+  }, [dispatch, searchTerm, filters]);
 
   const handleRetry = () => {
-    dispatch(
-      fetchCrmSchedule({ page: pagination.page, limit: pagination.limit, search: searchTerm })
-    );
+    dispatch(fetchCrmSchedule(buildDispatchParams(pagination.page, pagination.limit)));
   };
 
   const handlePaginationChange = (page: number, limit: number) => {
-    dispatch(fetchCrmSchedule({ page, limit, search: searchTerm }));
+    dispatch(fetchCrmSchedule(buildDispatchParams(page, limit)));
   };
 
   const getMonthDisplay = (m: string | number) => {
