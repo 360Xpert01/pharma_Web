@@ -206,7 +206,7 @@ export default function CampaignsTable({
             </button>
           </RoleGuard>
           <button
-            onClick={() => router.push(`/dashboard/UpdateTeamForm?id=${row.original.id}&mode=view`)}
+            onClick={() => router.push(`/dashboard/team-details?id=${row.original.id}`)}
             className="group hover:opacity-80 transition cursor-pointer"
             title="View Details"
           >

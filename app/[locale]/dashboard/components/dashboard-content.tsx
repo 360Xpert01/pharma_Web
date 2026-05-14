@@ -67,6 +67,7 @@ import GiveawayForm from "@/components/GivewayForm";
 import UpdateDoctorForm from "@/components/UpdateDoctorForm";
 import ProductDetails from "@/components/ProducDetails";
 import GiveawayDetail from "@/components/GiveawayDetail";
+import TeamDetails from "@/components/TeamDetails";
 import TerritoryConflictsPage from "@/components/TerritoryConflictsPage";
 import TerritoryTable from "@/components/TerritoryTable";
 import TerritoryForm from "@/components/TerritoryForm";
@@ -157,6 +158,7 @@ export function DashboardContent({
   partyId,
   channelId,
   productDetailBtn,
+  teamDetailBtn,
   giveawayDetail,
   pulseAddBtn,
   territoryConflicts,
@@ -350,20 +352,22 @@ export function DashboardContent({
         !qualificationsTrue &&
         !distributorTypesTrue &&
         !specialitiesTrue && (
-          <DashboardHeader
-            onRefresh={handleRefresh}
-            onSettings={handleSettings}
-            isLoading={combinedLoading}
-            title={sample}
-            description={descrip}
-            btnAdd={btnAdd}
-            btnTrue={btnTrue}
-            btntextReq={btntextReq}
-            btnReqquest={btnReqquest}
-            onSettingView={handleSettingView}
-            pulseAddBtn={pulseAddBtn}
-            onAddClick={onAddClick}
-          />
+          <div className="px-6">
+            <DashboardHeader
+              onRefresh={handleRefresh}
+              onSettings={handleSettings}
+              isLoading={combinedLoading}
+              title={sample}
+              description={descrip}
+              btnAdd={btnAdd}
+              btnTrue={btnTrue}
+              btntextReq={btntextReq}
+              btnReqquest={btnReqquest}
+              onSettingView={handleSettingView}
+              pulseAddBtn={pulseAddBtn}
+              onAddClick={onAddClick}
+            />
+          </div>
         )}
 
       <div className="space-y-10 ">
@@ -744,6 +748,8 @@ export function DashboardContent({
         )}
 
         {productDetailBtn && <ProductDetails candidate={candidate} />}
+
+        {teamDetailBtn && <TeamDetails />}
 
         {giveawayDetail && <GiveawayDetail />}
 
