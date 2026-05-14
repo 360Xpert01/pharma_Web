@@ -53,7 +53,9 @@ const UserProfile: FC<UserProfileProps> = ({ candidate, productData }) => {
       </div>
 
       {/* Name */}
-      <h2 className="text-3xl font-bold text-center text-gray-9 mb-2">{Name}</h2>
+      <h2 className="text-2xl font-bold text-center text-gray-9 mb-2 break-all w-full px-2">
+        {Name}
+      </h2>
 
       {/* Role */}
       {role && role !== "N/A" && (

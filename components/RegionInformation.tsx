@@ -11,6 +11,7 @@ interface RegionInformationProps {
   status?: string;
   category?: string;
   formula?: string;
+  callPoint?: string;
 }
 
 const RegionInformation: FC<RegionInformationProps> = ({
@@ -23,6 +24,7 @@ const RegionInformation: FC<RegionInformationProps> = ({
   status,
   formula,
   team,
+  callPoint,
 }) => {
   // Determine status badge styling
   const getStatusBadgeClass = (status: string = "") => {
@@ -99,6 +101,14 @@ const RegionInformation: FC<RegionInformationProps> = ({
           <div className="flex justify-between items-center">
             <span className="text-sm text-(--gray-5)">Formula</span>
             <span className="text-sm text-(--gray-9) font-bold">{formula}</span>
+          </div>
+        )}
+
+        {/* Call Point */}
+        {callPoint && (
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-(--gray-5)">Call Point</span>
+            <span className="text-sm text-(--gray-9) font-bold">{callPoint}</span>
           </div>
         )}
 

@@ -133,6 +133,7 @@ export interface DashboardProps {
   doctorForm?: boolean;
   channalTrue?: boolean;
   employeeProfileBtn?: boolean;
+  teamDetailBtn?: boolean;
   candidate?: {
     name: string;
     email: string;
