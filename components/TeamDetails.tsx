@@ -1,54 +1,70 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useAppDispatch, useAppSelector } from "@/store";
-import { getTeamById, resetGetTeamByIdState } from "@/store/slices/team/getTeamByIdSlice";
-import UserProfile from "@/components/UserProfile";
-import RegionInformation from "@/components/RegionInformation";
-import DoctorStatsCard from "./DoctorStatsCard";
-import SalesTrend from "./SalesTrend";
-import CenturoTable from "@/components/shared/table/CeturoTable";
-import { ColumnDef } from "@tanstack/react-table";
-import Image from "next/image";
-import StatusBadge from "@/components/shared/StatusBadge";
-import AnimatedTabs from "@/components/shared/AnimatedTabs";
+import { useAppSelector } from "@/store";
+import {
+  FormInput,
+  FormSelect,
+  FormMultiSelect,
+  StatusToggle,
+  ProductSearch,
+  MemberSearch,
+} from "@/components/form";
+import { HierarchyNode } from "@/components/HierarchyNode";
+import { useTeamForm } from "@/hooks/user-team-form";
 
+/**
+ * TeamDetails renders a read-only replica of the team update form.
+ * It reuses the same form state/layout as TeamForm but disables every
+ * input. Editing happens via the "Edit Team" button in the page header,
+ * which navigates to the Update Team form.
+ */
 export default function TeamDetails() {
   const searchParams = useSearchParams();
   const teamId = searchParams.get("id");
-  const dispatch = useAppDispatch();
 
-  const { team, loading, error } = useAppSelector((state) => state.getTeamById);
-  const [activeTab, setActiveTab] = useState("Members");
+  // Use "update" mode so the hook loads the existing team data.
+  const { state } = useTeamForm("update", teamId || undefined);
 
-  const tabs = [
-    { id: "Members", label: "Team Members" },
-    { id: "Products", label: "Team Products" },
-  ];
+  // Loading / error / empty gating comes straight from the fetch slice.
+  const { team, loading: teamLoading, error: teamError } = useAppSelector((s) => s.getTeamById);
 
-  useEffect(() => {
-    if (teamId) {
-      dispatch(getTeamById(teamId));
-    }
+  const {
+    channels,
+    channelsLoading,
+    callPoints,
+    callPointsLoading,
+    allProducts,
+    productsLoading,
+    salesRepUsers,
+    usersLoading,
+    availableTerritories,
+    status,
+    teamName,
+    pulseCode,
+    selectedChannelId,
+    selectedCallPoints,
+    products,
+    selectedMembers,
+    mergedHierarchy,
+    hierarchyLoading,
+    assignedTerritories,
+    territorySearchQuery,
+    activeTerritorySearchUserId,
+  } = state;
 
-    return () => {
-      dispatch(resetGetTeamByIdState());
-    };
-  }, [dispatch, teamId]);
-
-  if (loading) {
+  if (teamLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-(--primary)"></div>
       </div>
     );
   }
 
-  if (error) {
+  if (teamError) {
     return (
-      <div className="flex items-center justify-center min-h-[400px] text-destructive">
-        Error: {error}
+      <div className="flex items-center justify-center min-h-[400px] text-(--destructive)">
+        Error: {teamError}
       </div>
     );
   }
@@ -59,133 +75,157 @@ export default function TeamDetails() {
     );
   }
 
-  const { result, teamProducts, teamUsers, memberInfo } = team;
-
-  const defaultCandidate = {
-    name: result.name || "N/A",
-    email: "",
-    phone: "",
-    pulseCode: result.pulseCode || "N/A",
-  };
-
-  // Join call point names if they exist
-  const callPointsDisplay = result.callPoints?.map((cp: any) => cp.name).join(", ") || "N/A";
-
-  const productColumns: ColumnDef<any>[] = [
-    {
-      header: "Product Name",
-      accessorKey: "name",
-      cell: ({ row }) => row.original.name || "N/A",
-    },
-    {
-      header: "Formula",
-      accessorKey: "productFormula",
-      cell: ({ row }) => row.original.productFormula || "N/A",
-    },
-    {
-      header: "Status",
-      accessorKey: "status",
-      cell: ({ row }) => <StatusBadge status={row.original.status || "active"} />,
-    },
-  ];
-
-  const memberColumns: ColumnDef<any>[] = [
-    {
-      header: "Member Name",
-      accessorKey: "user.name",
-      cell: ({ row }) => (
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
-            {row.original.user?.profilePicture ? (
-              <img
-                src={row.original.user.profilePicture}
-                alt={row.original.user.name || "User"}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <span className="text-xs text-gray-400">NA</span>
-            )}
-          </div>
-          <span className="font-medium text-gray-9">{row.original.user?.name || "N/A"}</span>
-        </div>
-      ),
-    },
-    {
-      header: "Role",
-      accessorKey: "user.role",
-      cell: ({ row }) => row.original.user?.role || "N/A",
-    },
-    {
-      header: "Territory Code",
-      accessorKey: "territory.pulseCode",
-      cell: ({ row }) => row.original.territory?.pulseCode || "N/A",
-    },
-  ];
-
-  // Flatten products from the nested teamProducts structure
-  const allProducts = teamProducts?.flatMap((tp) => tp.product || []) || [];
+  // No-op: every control below is read-only, handlers are never invoked.
+  const noop = () => {};
 
   return (
-    <div className="p-6 bg-[#F8FAFC] min-h-screen space-y-6">
-      {/* Top Section: Sidebar + Main Content Area */}
-      <div className="flex flex-col lg:flex-row gap-6 w-full">
-        {/* LEFT SIDEBAR */}
-        <div className="w-full lg:w-[25%] space-y-6">
-          <UserProfile candidate={defaultCandidate} />
-          <RegionInformation
-            status={result.isActive ? "Active" : "Inactive"}
-            legacy={result.legacyCode || "N/A"}
-            channel={result.channelName || "N/A"}
-            callPoint={callPointsDisplay}
+    <div>
+      <div className="bg-[var(--light)] rounded-8 shadow-soft p-8 space-y-10">
+        {/* Team Name Section */}
+        <div className="space-y-6">
+          <h2 className="t-h2">Team Name</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <FormInput
+              label="Pulse Code"
+              name="pulseCode"
+              value={pulseCode || "N/A"}
+              onChange={noop}
+              placeholder="N/A"
+              required
+              readOnly
+              className="cursor-not-allowed"
+            />
+
+            <FormInput
+              label="Team Name"
+              name="teamName"
+              type="text"
+              value={teamName}
+              onChange={noop}
+              placeholder="N/A"
+              required
+              readOnly
+              className="cursor-not-allowed"
+            />
+
+            <FormSelect
+              label="Channel Name"
+              name="channelId"
+              value={selectedChannelId}
+              onChange={noop}
+              options={(Array.isArray(channels) ? channels : []).map((channel) => ({
+                value: channel.id,
+                label: channel.name,
+              }))}
+              placeholder="N/A"
+              required
+              loading={channelsLoading}
+              disabled
+            />
+
+            <div className="flex justify-center items-center">
+              <StatusToggle status={status} onChange={noop} readOnly />
+            </div>
+          </div>
+
+          <div className="max-w-md">
+            <FormMultiSelect
+              label="Call Points"
+              name="callPoints"
+              value={selectedCallPoints}
+              onChange={noop}
+              options={(Array.isArray(callPoints) ? callPoints : []).map((callPoint) => ({
+                value: callPoint.id,
+                label: callPoint.name,
+              }))}
+              placeholder="N/A"
+              required
+              loading={callPointsLoading}
+              disabled
+            />
+          </div>
+        </div>
+
+        {/* Selected Products */}
+        <div className="max-w-full">
+          <ProductSearch
+            allProducts={
+              allProducts?.map((p) => ({
+                id: p.id || "",
+                code: p.productCode || "",
+                name: p.name || "",
+                category: p.productCategory || "",
+                skus: p.productSkus || [],
+              })) || []
+            }
+            selectedProducts={products}
+            onProductsChange={noop}
+            loading={productsLoading}
+            required
+            readOnly
           />
         </div>
 
-        {/* RIGHT MAIN CONTENT */}
-        <div className="w-full lg:w-[75%] space-y-6">
-          <div className="w-full">
-            <DoctorStatsCard />
-          </div>
-          <div className="w-full">
-            <SalesTrend />
-          </div>
-        </div>
-      </div>
+        {/* Assigned Members */}
+        <div className="space-y-6 py-8">
+          <div>
+            <h2 className="t-h2 mb-4">Assigned Members</h2>
 
-      {/* Tabbed Content Section */}
-      <div className="bg-white p-6 rounded-8 shadow-soft border border-gray-1">
-        <div className="mb-6">
-          <AnimatedTabs
-            tabs={tabs}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            variant="secondary"
-            size="md"
-          />
-        </div>
-
-        {activeTab === "Members" && (
-          <div className="w-full">
-            <h3 className="text-lg font-bold mb-4 text-gray-9">Team Members</h3>
-            <CenturoTable
-              data={teamUsers || []}
-              columns={memberColumns}
-              loading={false}
-              emptyMessage="No members assigned to this team"
+            <MemberSearch
+              allMembers={
+                salesRepUsers?.map((user) => ({
+                  id: user.id || "",
+                  firstName: user.firstName || "",
+                  lastName: user.lastName || "",
+                  pulseCode: user.pulseCode || "",
+                  email: user.email || "",
+                  roleName: user.roleName || "",
+                  profilePicture: user.profilePicture || "",
+                })) || []
+              }
+              selectedMembers={selectedMembers}
+              onMembersChange={noop}
+              loading={usersLoading}
+              label=""
+              readOnly
             />
           </div>
-        )}
 
-        {activeTab === "Products" && (
-          <div className="w-full">
-            <h3 className="text-lg font-bold mb-4 text-gray-9">Team Products</h3>
-            <CenturoTable
-              data={allProducts}
-              columns={productColumns}
-              loading={false}
-              emptyMessage="No products assigned to this team"
-            />
-          </div>
-        )}
+          {/* Hierarchy Tree (read-only) */}
+          {Array.isArray(mergedHierarchy) && mergedHierarchy.length > 0 && (
+            <div className="relative mt-6 space-y-4">
+              {mergedHierarchy.map((hierarchyRoot) => (
+                <HierarchyNode
+                  key={hierarchyRoot.userId}
+                  node={hierarchyRoot}
+                  level={0}
+                  availableTerritories={availableTerritories}
+                  assignedTerritories={assignedTerritories}
+                  onAssignTerritory={noop}
+                  onRemoveTerritory={noop}
+                  territorySearchQuery={territorySearchQuery}
+                  activeTerritorySearchUserId={activeTerritorySearchUserId}
+                  onTerritorySearchChange={noop}
+                  onToggleTerritorySearch={noop}
+                  readOnly
+                />
+              ))}
+            </div>
+          )}
+
+          {hierarchyLoading && (
+            <div className="flex items-center justify-center py-8">
+              <div className="t-mute">Loading hierarchy...</div>
+            </div>
+          )}
+
+          {mergedHierarchy.length === 0 && !hierarchyLoading && selectedMembers.length > 0 && (
+            <div className="flex items-center justify-center py-8">
+              <div className="t-mute">No hierarchy data found</div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

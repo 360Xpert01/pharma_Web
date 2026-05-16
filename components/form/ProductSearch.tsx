@@ -21,6 +21,7 @@ interface ProductSearchProps {
   error?: string;
   onSearchChange?: (query: string) => void;
   required?: boolean;
+  readOnly?: boolean;
 }
 
 export default function ProductSearch({
@@ -32,6 +33,7 @@ export default function ProductSearch({
   error = "",
   onSearchChange,
   required = false,
+  readOnly = false,
 }: ProductSearchProps) {
   const hasError = !!error;
   const [searchQuery, setSearchQuery] = useState("");
@@ -68,47 +70,53 @@ export default function ProductSearch({
   return (
     <div className={`space-y-2 ${className}`}>
       <label className="t-label block">
-        Select Products {required && <span className="text-(--destructive)">*</span>}
+        Select Products {required && !readOnly && <span className="text-(--destructive)">*</span>}
       </label>
 
-      <div className="relative max-w-full ml-0">
-        <div className="flex items-center gap-4">
-          <div className="relative flex-1">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setShowSearchResults(true);
-                onSearchChange?.(e.target.value);
-              }}
-              onFocus={() => setShowSearchResults(true)}
-              onBlur={() => {
-                // Delay to allow click on dropdown items
-                setTimeout(() => setShowSearchResults(false), 200);
-              }}
-              placeholder={loading ? "Loading products..." : "Search product name..."}
-              disabled={loading}
-              aria-invalid={hasError}
-              className={`mt-1 w-full h-12 px-4 py-3 pl-12 border rounded-8 outline-none transition-all disabled:bg-(--gray-1) disabled:cursor-not-allowed ${
-                hasError
-                  ? "border-(--destructive) focus:ring-2 focus:ring-(--destructive) focus:border-(--destructive)"
-                  : "border-(--gray-3) focus:ring-2 focus:ring-(--primary) focus:border-(--primary)"
-              }`}
-            />
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-(--gray-4)" />
+      {!readOnly && (
+        <div className="relative max-w-full ml-0">
+          <div className="flex items-center gap-4">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setShowSearchResults(true);
+                  onSearchChange?.(e.target.value);
+                }}
+                onFocus={() => setShowSearchResults(true)}
+                onBlur={() => {
+                  // Delay to allow click on dropdown items
+                  setTimeout(() => setShowSearchResults(false), 200);
+                }}
+                placeholder={loading ? "Loading products..." : "Search product name..."}
+                disabled={loading}
+                aria-invalid={hasError}
+                className={`mt-1 w-full h-12 px-4 py-3 pl-12 border rounded-8 outline-none transition-all disabled:bg-(--gray-1) disabled:cursor-not-allowed ${
+                  hasError
+                    ? "border-(--destructive) focus:ring-2 focus:ring-(--destructive) focus:border-(--destructive)"
+                    : "border-(--gray-3) focus:ring-2 focus:ring-(--primary) focus:border-(--primary)"
+                }`}
+              />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-(--gray-4)" />
+            </div>
+            <div className="flex-shrink-0">
+              <Button variant="primary" size="lg" icon={Plus} action="add" rounded="default">
+                Add Products
+              </Button>
+            </div>
           </div>
-          <div className="flex-shrink-0">
-            <Button variant="primary" size="lg" icon={Plus} action="add" rounded="default">
-              Add Products
-            </Button>
-          </div>
+          {hasError && <p className="mt-1 t-sm t-err">{error}</p>}
         </div>
-        {hasError && <p className="mt-1 t-sm t-err">{error}</p>}
-      </div>
+      )}
+
+      {readOnly && selectedProducts.length === 0 && (
+        <p className="t-mute py-3">No products assigned to this team</p>
+      )}
 
       {/* Search Results Dropdown */}
-      {showSearchResults && searchQuery && !loading && (
+      {!readOnly && showSearchResults && searchQuery && !loading && (
         <div className="absolute z-10 w-full mt-2 bg-(--light) border border-(--gray-2) rounded-8 shadow-soft max-h-96 overflow-y-auto">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
@@ -148,15 +156,17 @@ export default function ProductSearch({
                 <p className="text-sm text-(--gray-4) font-medium">{product.code}</p>
                 <p className="text-sm font-bold text-(--gray-9)">{product.name}</p>
               </div>
-              <Button
-                size="icon"
-                variant="ghost"
-                action="delete"
-                onClick={() => handleRemoveProduct(product.id)}
-                className="bg-(--transparent) text-(--destructive) hover:bg-(--transparent) hover:text-(--destructive)"
-              >
-                <Trash2 className="w-4 h-4" />
-              </Button>
+              {!readOnly && (
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  action="delete"
+                  onClick={() => handleRemoveProduct(product.id)}
+                  className="bg-(--transparent) text-(--destructive) hover:bg-(--transparent) hover:text-(--destructive)"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              )}
             </div>
           ))}
         </div>

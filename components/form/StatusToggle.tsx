@@ -8,6 +8,7 @@ interface StatusToggleProps {
   className?: string;
   activeLabel?: string;
   inactiveLabel?: string;
+  readOnly?: boolean;
 }
 
 export default function StatusToggle({
@@ -16,28 +17,39 @@ export default function StatusToggle({
   className = "",
   activeLabel = "Active",
   inactiveLabel = "Inactive",
+  readOnly = false,
 }: StatusToggleProps) {
   return (
     <div className={`flex ${className}`}>
-      <div className="inline-flex border border-(--gray-3) rounded-full p-1 bg-(--gray-0) overflow-hidden">
+      <div
+        className={`inline-flex border border-(--gray-3) rounded-full p-1 bg-(--gray-0) overflow-hidden ${
+          readOnly ? "opacity-90" : ""
+        }`}
+      >
         <button
           type="button"
-          onClick={() => onChange("Active")}
-          className={`px-6 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
+          disabled={readOnly}
+          onClick={() => !readOnly && onChange("Active")}
+          className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+            readOnly ? "cursor-not-allowed" : "cursor-pointer"
+          } ${
             status === "Active"
               ? "bg-(--primary) text-(--light)"
-              : "text-(--gray-6) hover:bg-(--gray-1)"
+              : `text-(--gray-6) ${readOnly ? "" : "hover:bg-(--gray-1)"}`
           }`}
         >
           {activeLabel}
         </button>
         <button
           type="button"
-          onClick={() => onChange("Inactive")}
-          className={`px-6 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
+          disabled={readOnly}
+          onClick={() => !readOnly && onChange("Inactive")}
+          className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+            readOnly ? "cursor-not-allowed" : "cursor-pointer"
+          } ${
             status === "Inactive"
               ? "bg-(--primary) text-(--light)"
-              : "text-(--gray-6) hover:bg-(--gray-1)"
+              : `text-(--gray-6) ${readOnly ? "" : "hover:bg-(--gray-1)"}`
           }`}
         >
           {inactiveLabel}

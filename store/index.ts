@@ -21,6 +21,7 @@ import registerEmployeeReducer from "./slices/employee/registerEmployee";
 import updateEmployeeReducer from "./slices/employee/updateEmployeeSlice";
 import getUserByIdReducer from "./slices/employee/getUserByIdSlice";
 import allUsersReducer from "./slices/employee/getAllUsersSlice";
+import filterUsersReducer from "./slices/employee/getFilterUsersSlice";
 import usersByRoleReducer from "./slices/employee/getUsersByRoleSlice";
 import userHierarchyReducer from "./slices/employee/getUserHierarchySlice";
 import allChannelsReducer from "./slices/channel/getAllChannelsSlice";
@@ -136,6 +137,7 @@ const rootReducer = combineReducers({
   updateEmployee: updateEmployeeReducer,
   getUserById: getUserByIdReducer,
   allUsers: allUsersReducer,
+  filterUsers: filterUsersReducer,
   usersByRole: usersByRoleReducer,
   userHierarchy: userHierarchyReducer,
   allChannels: allChannelsReducer,

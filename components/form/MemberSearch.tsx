@@ -25,6 +25,7 @@ interface MemberSearchProps {
   className?: string;
   error?: string; // ✅ validation error
   onSearchChange?: (q: string) => void;
+  readOnly?: boolean;
 }
 
 export default function MemberSearch({
@@ -37,6 +38,7 @@ export default function MemberSearch({
   className = "",
   error = "",
   onSearchChange,
+  readOnly = false,
 }: MemberSearchProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearchResults, setShowSearchResults] = useState(false);
@@ -84,7 +86,7 @@ export default function MemberSearch({
         {/* ✅ INPUT + ERROR WRAPPER */}
         <div className="max-w-md">
           {/* Input container */}
-          <div className="relative">
+          <div className={`relative ${readOnly ? "hidden" : ""}`}>
             <input
               type="text"
               value={searchQuery}
@@ -110,10 +112,10 @@ export default function MemberSearch({
           </div>
 
           {/* ✅ Error BELOW input (no layout break) */}
-          {hasError && <p className="mt-1 t-sm t-err">{error}</p>}
+          {hasError && !readOnly && <p className="mt-1 t-sm t-err">{error}</p>}
 
           {/* Dropdown */}
-          {showSearchResults && !loading && (
+          {!readOnly && showSearchResults && !loading && (
             <div className="relative">
               <div className="absolute z-10 w-full mt-2 bg-(--light) border border-(--gray-2) rounded-8 shadow-soft max-h-64 overflow-y-auto">
                 {filteredMembers.length > 0 ? (
@@ -144,6 +146,10 @@ export default function MemberSearch({
           )}
         </div>
 
+        {readOnly && selectedMembers.length === 0 && (
+          <p className="t-mute py-3">No members assigned to this team</p>
+        )}
+
         {/* Selected Members */}
         {selectedMembers.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-3">
@@ -173,15 +179,17 @@ export default function MemberSearch({
                   <p className="text-xs text-(--gray-5)">{member.pulseCode}</p>
                 </div>
 
-                <Button
-                  size="icon-sm"
-                  variant="ghost"
-                  action="delete"
-                  onClick={() => handleRemoveMember(member.id)}
-                  className="bg-(--destructive-0) text-(--destructive) hover:bg-(--destructive-1) ml-2"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </Button>
+                {!readOnly && (
+                  <Button
+                    size="icon-sm"
+                    variant="ghost"
+                    action="delete"
+                    onClick={() => handleRemoveMember(member.id)}
+                    className="bg-(--destructive-0) text-(--destructive) hover:bg-(--destructive-1) ml-2"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </Button>
+                )}
               </div>
             ))}
           </div>

@@ -60,6 +60,7 @@ export default function TeamForm() {
     createTeamLoading,
     updateTeamLoading,
     teamLoading,
+    teamError,
   } = state;
 
   const {
@@ -81,6 +82,22 @@ export default function TeamForm() {
   const isUpdateMode = mode === "update";
   const loading = isUpdateMode ? updateTeamLoading : createTeamLoading;
   const isReadOnly = isViewMode;
+
+  if (teamLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-(--primary)"></div>
+      </div>
+    );
+  }
+
+  if (teamError) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px] text-(--destructive)">
+        Error: {teamError}
+      </div>
+    );
+  }
 
   return (
     <div className=" ">

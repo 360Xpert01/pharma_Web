@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import Link from "next/link";
@@ -47,41 +47,62 @@ export default function SalesTeamTable({
   const { users, loading, error, pagination } = useAppSelector((s) => s.allUsers);
   const [sorting, setSorting] = useState<any[]>([]);
 
-  // Merge external filters with internal state
-  const filters = externalFilters || {};
+  // Page + page size are owned here so the fetch, the rendered rows and the
+  // pagination footer all derive from a single source of truth. Previously the
+  // fetch used a hardcoded page/limit while the footer read CenturoTable's
+  // independent internal state, so "Records 1-23 of 23 / Show 100" could be
+  // shown while only a handful of rows were actually fetched.
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
-  // Fetch users on mount and when filters/sorting change
+  // Merge external filters with internal state.
+  // Memoized so the fetch effect only re-runs when the filters actually
+  // change (not on every render), keeping pagination stable.
+  const filters = useMemo(() => externalFilters || {}, [externalFilters]);
+
+  // Track the previous query to detect when search/filters/sort change.
+  const prevQueryRef = useRef({ searchTerm, filters, sorting });
+
+  // Fetch whenever the query or pagination changes.
   useEffect(() => {
+    // Detect if the query (search, filters, or sorting) has changed.
+    const queryChanged =
+      prevQueryRef.current.searchTerm !== searchTerm ||
+      prevQueryRef.current.filters !== filters ||
+      prevQueryRef.current.sorting !== sorting;
+
+    // If the query changed, we MUST fetch from page 1.
+    // We also update our local 'page' state so the UI stays in sync.
+    let effectivePage = page;
+    if (queryChanged) {
+      effectivePage = 1;
+      setPage(1);
+      // Update the ref so we don't trigger a reset on the next render (when 'page' state update hits)
+      prevQueryRef.current = { searchTerm, filters, sorting };
+    }
+
     const sortField = sorting.length > 0 ? sorting[0].id : "";
     const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
 
     dispatch(
       getAllUsers({
         search: searchTerm,
-        page: 1,
-        limit: 10,
-        sort: sortField,
-        order: sortOrder as any,
-        ...filters,
-      })
-    );
-  }, [dispatch, searchTerm, filters, sorting]);
-
-  // Handle pagination changes
-  const handlePaginationChange = (page: number, pageSize: number) => {
-    const sortField = sorting.length > 0 ? sorting[0].id : "";
-    const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
-
-    dispatch(
-      getAllUsers({
-        search: searchTerm,
-        page,
+        page: effectivePage,
         limit: pageSize,
         sort: sortField,
         order: sortOrder as any,
         ...filters,
       })
     );
+  }, [dispatch, searchTerm, filters, sorting, page, pageSize]);
+
+  const handlePaginationChange = (nextPage: number, nextPageSize: number) => {
+    if (nextPageSize !== pageSize) {
+      setPageSize(nextPageSize);
+      setPage(1);
+    } else {
+      setPage(nextPage);
+    }
   };
 
   // ================= DATA =================
@@ -220,24 +241,30 @@ export default function SalesTeamTable({
       columns={columns}
       loading={loading}
       error={error}
-      onRetry={() =>
+      onRetry={() => {
+        const sortField = sorting.length > 0 ? sorting[0].id : "";
+        const sortOrder = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "";
         dispatch(
           getAllUsers({
-            page: 1,
-            limit: 10,
+            search: searchTerm,
+            page,
+            limit: pageSize,
+            sort: sortField,
+            order: sortOrder as any,
             ...filters,
           })
-        )
-      }
+        );
+      }}
       enableSorting={true}
       enableExpanding={true}
       enablePagination={true}
       serverSidePagination={true}
       serverSideSorting={true}
       totalItems={pagination?.total || 0}
+      serverCurrentPage={page}
       onPaginationChange={handlePaginationChange}
       onSortChange={(newSorting) => setSorting(newSorting)}
-      pageSize={10}
+      pageSize={pageSize}
       emptyMessage="No employees found"
       renderExpandedRow={() => <SalesDashboard1 />}
       PaginationComponent={TablePagination}
