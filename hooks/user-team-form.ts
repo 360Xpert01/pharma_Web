@@ -602,6 +602,7 @@ export function useTeamForm(mode: "add" | "update" = "add", teamId?: string) {
       createTeamLoading,
       updateTeamLoading,
       teamLoading,
+      teamError,
     },
     actions: {
       setStatus,

@@ -87,6 +87,7 @@ interface HierarchyNodeProps {
   activeTerritorySearchUserId: string | null;
   onTerritorySearchChange: (query: string) => void;
   onToggleTerritorySearch: (userId: string | null) => void;
+  readOnly?: boolean;
 }
 
 // Recursive Hierarchy Node Component with Territory Assignment
@@ -101,6 +102,7 @@ export function HierarchyNode({
   activeTerritorySearchUserId,
   onTerritorySearchChange,
   onToggleTerritorySearch,
+  readOnly = false,
 }: HierarchyNodeProps) {
   const [isOpen, setIsOpen] = useState(true);
   const hasChildren = Array.isArray(node.children) && node.children.length > 0;
@@ -169,22 +171,24 @@ export function HierarchyNode({
             {userTerritory && (
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--primary)] text-[var(--primary-foreground)] text-sm font-medium rounded-8 whitespace-nowrap">
                 {userTerritory.pulseCode}
-                <Button
-                  size="icon-sm"
-                  variant="ghost"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onRemoveTerritory(node.userId);
-                  }}
-                  className="w-4 h-4 hover:bg-[var(--primary-2)]"
-                >
-                  <X className="w-3 h-3" />
-                </Button>
+                {!readOnly && (
+                  <Button
+                    size="icon-sm"
+                    variant="ghost"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onRemoveTerritory(node.userId);
+                    }}
+                    className="w-4 h-4 hover:bg-[var(--primary-2)]"
+                  >
+                    <X className="w-3 h-3" />
+                  </Button>
+                )}
               </span>
             )}
 
             {/* Assign Territory Button OR Search Input */}
-            {isSearchActive ? (
+            {readOnly ? null : isSearchActive ? (
               <div className="relative" onClick={(e) => e.stopPropagation()}>
                 <div className="relative">
                   <input
@@ -297,6 +301,7 @@ export function HierarchyNode({
                 activeTerritorySearchUserId={activeTerritorySearchUserId}
                 onTerritorySearchChange={onTerritorySearchChange}
                 onToggleTerritorySearch={onToggleTerritorySearch}
+                readOnly={readOnly}
               />
             ))}
           </div>

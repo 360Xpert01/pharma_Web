@@ -127,14 +127,16 @@ export default function FormMultiSelect({
                   onClick={(e) => e.stopPropagation()}
                 >
                   {item.label}
-                  <button
-                    type="button"
-                    onClick={(e) => handleRemove(item.value, e)}
-                    className="hover:bg-blue-600 rounded-full p-0.5 transition-colors flex items-center justify-center"
-                    aria-label={`Remove ${item.label}`}
-                  >
-                    <X size={14} strokeWidth={2.5} className="cursor-pointer" />
-                  </button>
+                  {!disabled && (
+                    <button
+                      type="button"
+                      onClick={(e) => handleRemove(item.value, e)}
+                      className="hover:bg-blue-600 rounded-full p-0.5 transition-colors flex items-center justify-center"
+                      aria-label={`Remove ${item.label}`}
+                    >
+                      <X size={14} strokeWidth={2.5} className="cursor-pointer" />
+                    </button>
+                  )}
                 </span>
               ))
             )}

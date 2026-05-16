@@ -6,7 +6,7 @@ import { getAllSegments } from "@/store/slices/segment/getAllSegmentsSlice";
 import { getAllChannels } from "@/store/slices/channel/getAllChannelsSlice";
 import { getAllRoles } from "@/store/slices/role/getAllRolesSlice";
 import { getTeamAll } from "@/store/slices/team/getTeamAllSlice";
-import { getAllUsers } from "@/store/slices/employee/getAllUsersSlice";
+import { getFilterUsers } from "@/store/slices/employee/getFilterUsersSlice";
 import { getProductCategories } from "@/store/slices/product/getProductCategoriesSlice";
 import { getAllDistributorTypes } from "@/store/slices/distributorType/getAllDistributorTypesSlice";
 import { getBrickList } from "@/store/slices/brick/getBrickListSlice";
@@ -109,7 +109,7 @@ export default function TableFilter({
   const { channels } = useAppSelector((state) => state.allChannels);
   const { roles } = useAppSelector((state) => state.allRoles);
   const { teams } = useAppSelector((state) => state.teamAll);
-  const { users } = useAppSelector((state) => state.allUsers);
+  const { users } = useAppSelector((state) => state.filterUsers);
   const { categories } = useAppSelector((state) => state.productCategories);
 
   // Redux state for distributor filters
@@ -135,13 +135,13 @@ export default function TableFilter({
     if ((showEmployeeFilters || showTargetFilters) && isFilterOpen) {
       dispatch(getAllRoles());
       dispatch(getTeamAll());
-      dispatch(getAllUsers({ page: 1, limit: 100 }));
+      dispatch(getFilterUsers({ page: 1, limit: 100 }));
     }
     if (showProductFilters && isFilterOpen) {
       dispatch(getProductCategories());
     }
     if (isAllocate && isFilterOpen) {
-      dispatch(getAllUsers({ page: 1, limit: 100 }));
+      dispatch(getFilterUsers({ page: 1, limit: 100 }));
     }
     if (showDistributorFilters && isFilterOpen) {
       dispatch(getAllDistributorTypes({ limit: 100 }));
@@ -158,7 +158,7 @@ export default function TableFilter({
       );
     }
     if ((showDcrFilters || showAttendanceFilters) && isFilterOpen) {
-      dispatch(getAllUsers({ page: 1, limit: 100 }));
+      dispatch(getFilterUsers({ page: 1, limit: 100 }));
       dispatch(getBrickList());
     }
     if (showPlanFilters && isFilterOpen) {

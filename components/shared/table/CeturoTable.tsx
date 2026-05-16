@@ -35,6 +35,13 @@ interface CenturoTableProps<T> {
   serverSidePagination?: boolean;
   serverSideSorting?: boolean;
   totalItems?: number;
+  /**
+   * Authoritative current page from the server (1-based). When provided with
+   * serverSidePagination, the internal pagination state stays in sync with the
+   * data actually fetched — e.g. it snaps back to page 1 when filters/search
+   * change and the server returns the first page.
+   */
+  serverCurrentPage?: number;
   onPaginationChange?: (page: number, pageSize: number) => void;
   onSortChange?: (sorting: SortingState) => void;
   PaginationComponent?: React.ComponentType<{
@@ -90,6 +97,7 @@ export default function CenturoTable<T>({
   serverSidePagination = false,
   serverSideSorting = false,
   totalItems,
+  serverCurrentPage,
   onPaginationChange,
   onSortChange,
   PaginationComponent,
@@ -140,12 +148,33 @@ export default function CenturoTable<T>({
   const [currentPage, setCurrentPage] = React.useState(1);
   const [itemsPerPage, setItemsPerPage] = React.useState(pageSize);
 
+  // Keep internal pagination in sync with the server's authoritative page.
+  // Without this, applying a filter/search refetches page 1 on the server
+  // while the pagination control stays on the old page (broken pagination).
+  useEffect(() => {
+    if (
+      serverSidePagination &&
+      typeof serverCurrentPage === "number" &&
+      serverCurrentPage >= 1 &&
+      serverCurrentPage !== currentPage
+    ) {
+      setCurrentPage(serverCurrentPage);
+    }
+  }, [serverCurrentPage, serverSidePagination]);
+
   // Sync internal sorting with controlled sorting prop
   useEffect(() => {
     if (controlledSorting !== undefined) {
       setInternalSorting(controlledSorting);
     }
   }, [controlledSorting]);
+
+  // Sync internal itemsPerPage with pageSize prop
+  useEffect(() => {
+    if (pageSize !== undefined && pageSize !== itemsPerPage) {
+      setItemsPerPage(pageSize);
+    }
+  }, [pageSize]);
 
   const activeSorting =
     controlledSorting !== undefined && controlledSorting.length > 0
